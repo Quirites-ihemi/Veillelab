@@ -15,6 +15,9 @@
 .expertise-screen .rail-section{padding:0 0 21px!important;margin-bottom:19px!important;border-bottom:1px solid #e6ebf3!important;position:relative!important}
 .expertise-screen .rail-section:last-child{border-bottom:0!important}
 .expertise-screen .rail-section h3{font-size:14px!important;margin:0 0 13px!important;font-weight:760!important;display:flex!important;align-items:center!important;gap:8px!important;color:#12264d!important}
+.expertise-screen .expertise-intro .sidebar-intro-title{margin:0 0 12px!important;color:#14345d!important;font-size:20px!important;line-height:1.14!important;font-weight:820!important;letter-spacing:-.2px!important}
+.expertise-screen .expertise-intro .intro-full{display:grid;gap:10px}
+.expertise-screen .expertise-intro .intro-full p{margin:0!important}
 .expertise-screen .left-rail select{width:100%!important;height:42px!important;border:1px solid #d8e1ee!important;border-radius:9px!important;background:#fff!important;padding:0 10px!important;color:#18305f!important;font-size:11px!important}
 .expertise-screen .detail-drawer h2{font-size:23px!important;line-height:1.24!important;margin:0 0 17px!important;color:#071c45!important}
 .expertise-screen .drawer-definition{font-size:11px!important;line-height:1.65!important;color:#536686!important;margin:0 0 23px!important}
@@ -72,6 +75,15 @@
   box-shadow:-14px 0 34px rgba(20,42,74,.13)!important;
   padding:30px 30px 34px!important;
   overflow:auto!important;
+  transform:translateX(102%)!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:transform .22s ease,visibility .22s ease!important;
+}
+.expertise-screen .map-reading-drawer.open{
+  transform:translateX(0)!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
 }
 .expertise-screen .map-reading-close{
   position:absolute;
