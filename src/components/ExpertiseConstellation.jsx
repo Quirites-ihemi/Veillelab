@@ -416,68 +416,10 @@ export default function ExpertiseConstellation({
   ].join(' ')
 
   useEffect(() => {
-    // On réutilise l’illustration déjà présente dans le bandeau d’introduction,
-    // puis on masque ce bandeau supérieur.
-    const topBanner = document.querySelector('.expertise-transition-banner')
-    const topBannerImage = topBanner?.querySelector('img') || null
-
-    // Réécriture légère de la carte latérale d’introduction
-    const allEls = Array.from(document.querySelectorAll('aside h1, aside h2, aside h3, aside p, aside a, aside label, aside div, aside span, .expertise-sidebar h1, .expertise-sidebar h2, .expertise-sidebar h3, .expertise-sidebar p, .expertise-sidebar a, .expertise-sidebar label, .expertise-sidebar div, .expertise-sidebar span'))
-    const titleEl = allEls.find(el => (el.textContent || '').trim() === 'Pourquoi cette carte ?')
-    if (titleEl) {
-      // On supprime uniquement le petit sur-titre.
-      titleEl.style.display = 'none'
-
-      const introContainer = titleEl.parentElement
-      const siblings = Array.from(introContainer ? introContainer.children : [])
-      const firstParagraph = siblings.find(el => /^Les publications du ministère/i.test((el.textContent || '').trim()))
-
-      if (introContainer && topBannerImage && !introContainer.querySelector('.sidebar-intro-visual')) {
-        const visual = topBannerImage.cloneNode(true)
-        visual.className = 'sidebar-intro-visual'
-        visual.removeAttribute('width')
-        visual.removeAttribute('height')
-
-        if (firstParagraph) {
-          introContainer.insertBefore(visual, firstParagraph)
-        } else {
-          introContainer.prepend(visual)
-        }
-      }
-
-      if (firstParagraph) {
-        firstParagraph.textContent = 'Des publications aux savoir-faire du ministère'
-        firstParagraph.classList.add('sidebar-intro-title')
-        firstParagraph.style.fontSize = '22px'
-        firstParagraph.style.lineHeight = '1.12'
-        firstParagraph.style.fontWeight = '800'
-        firstParagraph.style.color = '#14345d'
-        firstParagraph.style.marginTop = '0'
-        firstParagraph.style.marginBottom = '12px'
-      }
-
-      // On garde le lien d'introduction, on masque seulement les autres paragraphes explicatifs.
-      siblings.forEach(el => {
-        if (el !== titleEl && el !== firstParagraph) {
-          const txt = (el.textContent || '').trim()
-          if (
-            txt &&
-            !/lire l’introduction complète|lire l'introduction complète|rechercher|afficher|entité|type d’expertise/i.test(txt)
-          ) {
-            if (el.tagName.toLowerCase() === 'p') {
-              el.style.display = 'none'
-            }
-          }
-        }
-      })
-    }
-
-    if (topBanner) {
-      topBanner.style.display = 'none'
-    }
-
-    // Masquer la rubrique "Afficher" et ses deux options pour faire remonter le filtre Entité(s).
+    // L’interface validée ne montre pas le bloc « Afficher ».
+    // On conserve les filtres Entité(s), Type d’expertise et les réglages d’affichage.
     const hideTextBlock = text => {
+      const allEls = Array.from(document.querySelectorAll('aside h1, aside h2, aside h3, aside p, aside a, aside label, aside div, aside span'))
       const el = allEls.find(node => (node.textContent || '').trim() === text)
       if (!el) return
       el.style.display = 'none'
@@ -493,7 +435,6 @@ export default function ExpertiseConstellation({
     hideTextBlock('Afficher')
     hideTextBlock('Toutes les expertises')
     hideTextBlock('Mes expertises uniquement')
-
   }, [])
 
   const hoveredNode = hoveredId ? byId.get(hoveredId) : null
@@ -663,7 +604,7 @@ export default function ExpertiseConstellation({
                   : cluster?.color || DEFAULT_CLUSTER_COLOR
 
               const radius =
-                Math.max(15, 11.5 + node.gephiSize * 1.30) *
+                Math.max(19, 14 + node.gephiSize * 1.55) *
                 nodeSize
 
               return (
@@ -935,31 +876,36 @@ export default function ExpertiseConstellation({
 
         .gephi-zoom-tools{
           position:absolute;
-          z-index:6;
+          z-index:8;
           right:14px;
-          bottom:16px;
+          top:14px;
+          bottom:auto;
           display:flex;
-          flex-direction:column;
+          flex-direction:row;
           overflow:hidden;
-          border:1px solid #dbe4f0;
-          border-radius:10px;
+          border:1.5px solid #8fb3ea;
+          border-radius:11px;
           background:#fff;
-          box-shadow:0 4px 14px rgba(15,46,85,.07);
+          box-shadow:0 6px 18px rgba(15,46,85,.13);
         }
 
         .gephi-zoom-tools button{
-          width:42px;
-          height:39px;
+          width:46px;
+          height:42px;
           border:0;
-          border-bottom:1px solid #e5ebf3;
+          border-right:1px solid #dce6f3;
           background:#fff;
-          color:#17376e;
-          font:800 17px/1 inherit;
+          color:#124f9d;
+          font:850 20px/1 inherit;
           cursor:pointer;
         }
 
+        .gephi-zoom-tools button:hover{
+          background:#f2f7ff;
+        }
+
         .gephi-zoom-tools button:last-child{
-          border-bottom:0;
+          border-right:0;
         }
 
         .gephi-back-cluster{
