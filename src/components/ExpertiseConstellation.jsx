@@ -319,10 +319,11 @@ export default function ExpertiseConstellation({
 
   // Géométrie des étiquettes de nœuds en vue cluster ouvert, exprimée en
   // pixels écran puis convertie en unités monde via `unit`.
-  const OPEN_LABEL_WIDTH = 190
-  const OPEN_LABEL_OFFSET = 34
-  const OPEN_LABEL_GAP = 30
-  const OPEN_LABEL_FONT = 11
+  const OPEN_LABEL_WIDTH = 230
+  const OPEN_LABEL_OFFSET = 30
+  const OPEN_LABEL_FONT_MAX = 17
+  const OPEN_LABEL_FONT_MIN = 11
+  const OPEN_LABEL_LINES = 3
 
   const model = useMemo(() => {
     const frameRatio = viewport.w / Math.max(1, viewport.h)
@@ -586,7 +587,7 @@ export default function ExpertiseConstellation({
     // résout donc le zoom sur la place qui reste réellement au nuage de nœuds.
     const freeW =
       viewport.w * 0.94 - 2 * (OPEN_LABEL_OFFSET + OPEN_LABEL_WIDTH)
-    const freeH = viewport.h * 0.94 - 2 * OPEN_LABEL_GAP
+    const freeH = viewport.h * 0.94 - 2 * OPEN_LABEL_FONT_MAX * 2
 
     const byWidth = (freeW * unit) / Math.max(1, spanX)
     const byHeight = (freeH * unit) / Math.max(1, spanY)
@@ -600,15 +601,20 @@ export default function ExpertiseConstellation({
     })
   }
 
+  // Étiquettes des nœuds en vue cluster ouvert. La police n'est plus une
+  // constante : elle est déduite de la hauteur disponible par étiquette, donc
+  // aussi grande que le cluster le permet. Retourne aussi ses propres mesures.
   const activeNodeLabels = useMemo(() => {
-    if (activeCluster === null) return []
+    const none = { items: [], font: OPEN_LABEL_FONT_MIN, rowHeight: 0 }
+    if (activeCluster === null) return none
 
     const cluster = clusterStats.find(item => item.id === activeCluster)
-    if (!cluster) return []
+    if (!cluster) return none
 
     const clusterNodes = positionedNodes.filter(
       node => node.clusterId === activeCluster
     )
+    if (!clusterNodes.length) return none
 
     const left = clusterNodes
       .filter(node => node.x < cluster.centerX)
@@ -618,36 +624,42 @@ export default function ExpertiseConstellation({
       .filter(node => node.x >= cluster.centerX)
       .sort((a, b) => a.y - b.y)
 
+    const perSide = Math.max(left.length, right.length, 1)
+    const rowPx = (viewport.h * 0.96) / perSide
+
+    const font = clamp(
+      rowPx / (OPEN_LABEL_LINES * 1.28 + 0.7),
+      OPEN_LABEL_FONT_MIN,
+      OPEN_LABEL_FONT_MAX
+    )
+
+    // Tout est exprimé en pixels écran puis ramené en unités monde.
+    const toWorld = px => (px * unit) / scale
+    const gap = toWorld(Math.max(rowPx, font * (OPEN_LABEL_LINES * 1.28 + 0.7)))
+
     const distribute = (items, side) => {
       if (!items.length) return []
 
-      // Divisé par le zoom : l'étiquetage garde la même taille apparente
-      // quel que soit le facteur d'agrandissement du cluster ouvert.
-      const gap = (OPEN_LABEL_GAP * unit) / scale
       const original = items.map(node => node.y)
       const placed = []
 
       items.forEach((node, index) => {
         const wanted = node.y
         const y =
-          index === 0
-            ? wanted
-            : Math.max(wanted, placed[index - 1].y + gap)
-
+          index === 0 ? wanted : Math.max(wanted, placed[index - 1].y + gap)
         placed.push({ node, y })
       })
 
       const avgOriginal =
         original.reduce((sum, value) => sum + value, 0) / original.length
-
       const avgPlaced =
         placed.reduce((sum, item) => sum + item.y, 0) / placed.length
 
       const shift = avgOriginal - avgPlaced
       const x =
         side === 'left'
-          ? cluster.minX - (OPEN_LABEL_OFFSET * unit) / scale
-          : cluster.maxX + (OPEN_LABEL_OFFSET * unit) / scale
+          ? cluster.minX - toWorld(OPEN_LABEL_OFFSET)
+          : cluster.maxX + toWorld(OPEN_LABEL_OFFSET)
 
       return placed.map(item => ({
         node: item.node,
@@ -657,11 +669,12 @@ export default function ExpertiseConstellation({
       }))
     }
 
-    return [
-      ...distribute(left, 'left'),
-      ...distribute(right, 'right'),
-    ]
-  }, [activeCluster, clusterStats, positionedNodes, unit, scale])
+    return {
+      items: [...distribute(left, 'left'), ...distribute(right, 'right')],
+      font,
+      rowHeight: rowPx,
+    }
+  }, [activeCluster, clusterStats, positionedNodes, unit, scale, viewport])
 
   const onPointerDown = event => {
     if (event.button !== 0) return
@@ -944,7 +957,9 @@ export default function ExpertiseConstellation({
 
               const radius =
                 Math.max(11, 7.5 + node.gephiSize * 0.70) *
-                nodeSize
+                nodeSize *
+                // Cluster ouvert : les nœuds cèdent la place au texte.
+                (activeCluster !== null ? 0.55 : 1)
 
               return (
                 <g
@@ -1102,25 +1117,20 @@ export default function ExpertiseConstellation({
 
           {activeCluster !== null && (
             <g className="entry-node-labels-open-cluster" pointerEvents="none">
-              {activeNodeLabels.map(item => {
-                const openFont = (OPEN_LABEL_FONT * unit) / scale
-                const openLine = openFont * 1.25
-                const lines = wrapLabel(item.node.label, 28)
-                const boxWidth = (OPEN_LABEL_WIDTH * unit) / scale
-                const boxHeight = Math.max(
-                  openLine * 2.2,
-                  openLine * lines.length + openLine
+              {activeNodeLabels.items.map(item => {
+                // Plus d'encadré : le texte seul, aussi grand que possible.
+                const openFont = (activeNodeLabels.font * unit) / scale
+                const openLine = openFont * 1.28
+                const lines = wrapLabel(
+                  item.node.label,
+                  26,
+                  OPEN_LABEL_LINES
                 )
-                const boxX =
-                  item.side === 'left'
-                    ? item.x - boxWidth
-                    : item.x
-                const boxY = item.y - boxHeight / 2
 
                 const textX =
                   item.side === 'left'
-                    ? item.x - openFont * 0.7
-                    : item.x + openFont * 0.7
+                    ? item.x - openFont * 0.5
+                    : item.x + openFont * 0.5
 
                 return (
                   <g key={`open-label-${item.node.id}`}>
@@ -1130,15 +1140,6 @@ export default function ExpertiseConstellation({
                       x2={item.x}
                       y2={item.y}
                       className="entry-open-label-link"
-                    />
-
-                    <rect
-                      x={boxX}
-                      y={boxY}
-                      width={boxWidth}
-                      height={boxHeight}
-                      rx={openFont * 0.6}
-                      className="entry-open-label-bg"
                     />
 
                     <text
@@ -1444,10 +1445,15 @@ export default function ExpertiseConstellation({
 
         .entry-open-node-label{
           fill:#0b2447;
-          font-size:12px;
-          font-weight:840;
-          paint-order:normal;
-          stroke:none;
+          font-weight:800;
+          /* Halo blanc en lieu et place de l'ancien encadré : le texte reste
+             lisible au-dessus des nœuds sans boîte opaque. non-scaling-stroke
+             maintient l'épaisseur en pixels écran malgré le zoom. */
+          paint-order:stroke;
+          stroke:#ffffff;
+          stroke-width:4px;
+          stroke-linejoin:round;
+          vector-effect:non-scaling-stroke;
         }
 
         .entry-family-legend{
