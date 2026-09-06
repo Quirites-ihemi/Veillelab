@@ -135,7 +135,7 @@ export default function Expertises({ data }) {
   const [introExpanded, setIntroExpanded] = useState(true)
   const [readingOpen, setReadingOpen] = useState(false)
 
-  const [nodeSize, setNodeSize] = useState(2.0)
+  const [nodeSize, setNodeSize] = useState(2.45)
   const [linkDensity, setLinkDensity] = useState(1)
   const [resetToken, setResetToken] = useState(0)
   const [fitToken, setFitToken] = useState(0)
@@ -370,7 +370,7 @@ export default function Expertises({ data }) {
             <input
               type="range"
               min="1.2"
-              max="2.7"
+              max="3.4"
               step="0.05"
               value={nodeSize}
               onChange={e =>
