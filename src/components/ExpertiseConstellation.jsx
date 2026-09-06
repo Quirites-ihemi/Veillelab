@@ -180,7 +180,7 @@ export function selectOverviewExpertises(nodes, limit = Infinity) {
   return selected
 }
 
-function wrapLabel(label, maxChars = 32) {
+function wrapLabel(label, maxChars = 32, maxLines = 3) {
   const words = String(label || '').split(/\s+/).filter(Boolean)
   const lines = []
   let current = ''
@@ -196,7 +196,7 @@ function wrapLabel(label, maxChars = 32) {
   })
 
   if (current) lines.push(current)
-  return lines.slice(0, 3)
+  return lines.slice(0, maxLines)
 }
 
 function familyColor(family) {
@@ -297,91 +297,72 @@ export default function ExpertiseConstellation({
     [edges, byId]
   )
 
-  const bounds = useMemo(() => {
-    const xs = []
-    const ys = []
+  // -------------------------------------------------------------------------
+  // MODÈLE DE MISE EN PAGE — passe unique, sans rétroaction.
+  //
+  // La taille des titres est calée sur une RÉFÉRENCE STABLE (l'emprise des
+  // nœuds seuls), jamais sur le cadre final. Sans cela on obtient une boucle
+  // divergente : un titre plus grand agrandit le cadre, qui agrandit le titre.
+  // Le cadre final, lui, englobe les boîtes de titre réelles — donc plus
+  // aucun titre n'est rogné.
+  // -------------------------------------------------------------------------
+  const TITLE_PX = 21
+  const TITLE_BOOST = 1.4
 
-    // Marge réservée aux titres de clusters, exprimée en unités monde.
-    // Les positions de titres sont calculées plus bas ; on réserve ici une
-    // enveloppe fixe plutôt que de créer une dépendance circulaire.
-    const LABEL_MARGIN = 150
+  // Seuil d'affichage permanent des titres de clusters. En deçà, le titre
+  // n'apparaît qu'au survol, au zoom, ou quand le cluster est ouvert.
+  const TITLE_MIN_NODES = 6
 
-    positionedNodes.forEach(node => {
-      xs.push(node.x - LABEL_MARGIN, node.x + LABEL_MARGIN)
-      ys.push(node.y - LABEL_MARGIN, node.y + LABEL_MARGIN)
-    })
-
-    if (!xs.length) {
-      return { minX: -900, maxX: 900, minY: -650, maxY: 950 }
-    }
-
-    return {
-      minX: Math.min(...xs),
-      maxX: Math.max(...xs),
-      minY: Math.min(...ys),
-      maxY: Math.max(...ys),
-    }
-  }, [positionedNodes])
-
-  const view = useMemo(() => {
-    const width = Math.max(1, bounds.maxX - bounds.minX)
-    const height = Math.max(1, bounds.maxY - bounds.minY)
-
-    const cx = bounds.minX + width / 2
-    const cy = bounds.minY + height / 2
-
-    // Le contenu est cadré dans un viewBox au format exact du conteneur.
-    // Avec preserveAspectRatio="xMidYMid meet", le navigateur n'ajoute alors
-    // plus de bandes vides : le graphe occupe toute la surface disponible.
+  const model = useMemo(() => {
     const frameRatio = viewport.w / Math.max(1, viewport.h)
 
-    let w = width * 1.04
-    let h = height * 1.06
+    const frame = (box, padX, padY) => {
+      const w = Math.max(1, box.maxX - box.minX) * padX
+      const h = Math.max(1, box.maxY - box.minY) * padY
+      const cx = (box.minX + box.maxX) / 2
+      const cy = (box.minY + box.maxY) / 2
 
-    if (w / h < frameRatio) {
-      w = h * frameRatio
-    } else {
-      h = w / frameRatio
+      let vw = w
+      let vh = h
+      if (vw / vh < frameRatio) vw = vh * frameRatio
+      else vh = vw / frameRatio
+
+      return { x: cx - vw / 2, y: cy - vh / 2, w: vw, h: vh }
     }
 
-    return { x: cx - w / 2, y: cy - h / 2, w, h }
-  }, [bounds, viewport])
+    if (!positionedNodes.length) {
+      const empty = frame(
+        { minX: -900, maxX: 900, minY: -650, maxY: 950 },
+        1.05,
+        1.06
+      )
+      return { view: empty, clusters: [], unit: empty.h / Math.max(1, viewport.h) }
+    }
 
-  // Unités monde par pixel écran : permet d'exprimer une taille de texte en
-  // pixels réels, indépendamment de l'emprise du graphe.
-  const unit = useMemo(
-    () => view.h / Math.max(1, viewport.h),
-    [view, viewport]
-  )
+    const nodeBox = {
+      minX: Math.min(...positionedNodes.map(n => n.x)),
+      maxX: Math.max(...positionedNodes.map(n => n.x)),
+      minY: Math.min(...positionedNodes.map(n => n.y)),
+      maxY: Math.max(...positionedNodes.map(n => n.y)),
+    }
 
+    const reference = frame(nodeBox, 1.3, 1.3)
+    const unit = reference.h / Math.max(1, viewport.h)
+    const titleSize = TITLE_PX * TITLE_BOOST * unit
+    const lineHeight = titleSize * 1.16
 
-  const viewCenter = useMemo(
-    () => ({
-      x: view.x + view.w / 2,
-      y: view.y + view.h / 2,
-    }),
-    [view]
-  )
-
-  const clusterStats = useMemo(() => {
     const grouped = new Map()
-
     positionedNodes.forEach(node => {
-      if (!grouped.has(node.clusterId)) {
-        grouped.set(node.clusterId, [])
-      }
+      if (!grouped.has(node.clusterId)) grouped.set(node.clusterId, [])
       grouped.get(node.clusterId).push(node)
     })
 
-    const titleSize = 21 * unit
-    const lineHeight = titleSize * 1.16
-
-    const stats = expertiseClusters
+    const clusters = expertiseClusters
       .filter(cluster => grouped.has(cluster.id))
       .map(cluster => {
         const clusterNodes = grouped.get(cluster.id)
-        const xs = clusterNodes.map(node => node.x)
-        const ys = clusterNodes.map(node => node.y)
+        const xs = clusterNodes.map(n => n.x)
+        const ys = clusterNodes.map(n => n.y)
 
         const minX = Math.min(...xs)
         const maxX = Math.max(...xs)
@@ -390,31 +371,49 @@ export default function ExpertiseConstellation({
         const centerX = (minX + maxX) / 2
         const centerY = (minY + maxY) / 2
 
-        // Halo calé sur l'étendue réelle des nœuds, plus sur une formule
-        // abstraite : un petit cluster n'a plus un halo démesuré.
         const spread = Math.max(
-          ...clusterNodes.map(node =>
-            Math.hypot(node.x - centerX, node.y - centerY)
-          )
+          ...clusterNodes.map(n => Math.hypot(n.x - centerX, n.y - centerY))
         )
 
-        // Le titre est repoussé hors de la constellation, dans la direction
-        // qui l'éloigne du centre du réseau.
+        // Quatre lignes autorisées : plus aucun titre tronqué.
+        const lines = wrapLabel(cluster.label, 26, 4)
+        const blockHeight =
+          lines.length * lineHeight + (cluster.transdirectional ? lineHeight : 0)
+        const halfW =
+          (Math.max(...lines.map(l => l.length)) * titleSize * 0.5) / 2
+        const halfH = blockHeight / 2
+
         let dx = centerX - GRAPH_CENTER.x
         let dy = centerY - GRAPH_CENTER.y
         const norm = Math.hypot(dx, dy) || 1
         dx /= norm
         dy /= norm
 
-        const lines = wrapLabel(cluster.label, 26)
-        const blockHeight =
-          lines.length * lineHeight + (cluster.transdirectional ? lineHeight : 0)
+        // L'écartement tient compte de la dimension du bloc DANS la direction
+        // où il part : un titre large chassé latéralement doit s'éloigner de
+        // sa demi-largeur, pas de sa demi-hauteur.
+        let offset =
+          spread + 20 * unit + Math.abs(dx) * halfW + Math.abs(dy) * halfH
+        let labelX = centerX + dx * offset
+        let labelY = centerY + dy * offset
 
-        const offset = spread + 40 + blockHeight * 0.55
+        // Répulsion contre les nœuds, bornée pour ne pas exiler le titre.
+        for (let step = 0; step < 12; step += 1) {
+          const hit = positionedNodes.some(
+            n =>
+              Math.abs(n.x - labelX) < halfW + 8 * unit &&
+              Math.abs(n.y - labelY) < halfH + 8 * unit
+          )
+          if (!hit) break
+          offset += 16 * unit
+          labelX = centerX + dx * offset
+          labelY = centerY + dy * offset
+        }
 
         return {
           ...cluster,
-          nodeIds: new Set(clusterNodes.map(node => node.id)),
+          showLabel: clusterNodes.length >= TITLE_MIN_NODES,
+          nodeIds: new Set(clusterNodes.map(n => n.id)),
           minX,
           maxX,
           minY,
@@ -425,27 +424,26 @@ export default function ExpertiseConstellation({
           blockHeight,
           titleSize,
           lineHeight,
-          labelWorldWidth: Math.max(...lines.map(l => l.length)) * titleSize * 0.5,
-          labelX: centerX + dx * offset,
-          labelY: centerY + dy * offset,
+          halfW,
+          halfH,
+          labelWorldWidth: halfW * 2,
+          labelX,
+          labelY,
           radius: Math.max(70, spread + 46),
         }
       })
 
-    // Désempilement vertical : deux titres qui se recouvrent sont écartés.
-    for (let pass = 0; pass < 40; pass += 1) {
-      for (let i = 0; i < stats.length; i += 1) {
-        for (let j = i + 1; j < stats.length; j += 1) {
-          const a = stats[i]
-          const b = stats[j]
-
-          const needX = (a.labelWorldWidth + b.labelWorldWidth) / 2
-          const needY = (a.blockHeight + b.blockHeight) / 2 + 10 * unit
-
-          const gapX = Math.abs(a.labelX - b.labelX)
+    // Désempilement vertical entre titres.
+    for (let iter = 0; iter < 60; iter += 1) {
+      for (let i = 0; i < clusters.length; i += 1) {
+        for (let j = i + 1; j < clusters.length; j += 1) {
+          const a = clusters[i]
+          const b = clusters[j]
+          if (!a.showLabel || !b.showLabel) continue
+          if (Math.abs(a.labelX - b.labelX) >= a.halfW + b.halfW) continue
+          const needY = a.halfH + b.halfH + 8 * unit
           const gapY = Math.abs(a.labelY - b.labelY)
-
-          if (gapX >= needX || gapY >= needY) continue
+          if (gapY >= needY) continue
 
           const push = (needY - gapY) / 2 + 1
           if (a.labelY <= b.labelY) {
@@ -459,8 +457,48 @@ export default function ExpertiseConstellation({
       }
     }
 
-    return stats
-  }, [positionedNodes, unit])
+    // Cadre final : nœuds ET boîtes de titre réelles.
+    const xs = [nodeBox.minX - 16 * unit, nodeBox.maxX + 16 * unit]
+    const ys = [nodeBox.minY - 16 * unit, nodeBox.maxY + 16 * unit]
+    clusters.forEach(c => {
+      if (!c.showLabel) return
+      xs.push(c.labelX - c.halfW, c.labelX + c.halfW)
+      ys.push(c.labelY - c.halfH - c.lineHeight, c.labelY + c.halfH)
+    })
+
+    const view = frame(
+      {
+        minX: Math.min(...xs),
+        maxX: Math.max(...xs),
+        minY: Math.min(...ys),
+        maxY: Math.max(...ys),
+      },
+      1.03,
+      1.04
+    )
+
+    return { view, clusters, unit: view.h / Math.max(1, viewport.h) }
+  }, [positionedNodes, viewport])
+
+  const view = model.view
+  const unit = model.unit
+  const clusterStats = model.clusters
+
+  const viewCenter = useMemo(
+    () => ({
+      x: view.x + view.w / 2,
+      y: view.y + view.h / 2,
+    }),
+    [view]
+  )
+
+  // Cluster actuellement survolé, déduit du nœud sous le curseur : il sert à
+  // révéler le titre des petits clusters, masqués en vue globale.
+  const hoveredClusterId = useMemo(() => {
+    if (!hoveredId) return null
+    const node = positionedNodes.find(n => n.id === hoveredId)
+    return node ? node.clusterId : null
+  }, [hoveredId, positionedNodes])
 
   const selectedId = selected?.id || null
 
@@ -926,6 +964,16 @@ export default function ExpertiseConstellation({
           {(mode === 'cluster' || mode === 'category') && (
             <g className="entry-cluster-labels">
               {clusterStats.map(cluster => {
+                // Titre permanent pour les grands clusters ; les autres
+                // n'apparaissent qu'au survol, au zoom ou à l'ouverture.
+                const revealed =
+                  cluster.showLabel ||
+                  activeCluster === cluster.id ||
+                  hoveredClusterId === cluster.id ||
+                  scale > 1.35
+
+                if (!revealed) return null
+
                 const dim =
                   activeCluster !== null &&
                   activeCluster !== cluster.id
