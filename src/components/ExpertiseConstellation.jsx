@@ -12,6 +12,131 @@ const FAMILY_COLORS = {
 
 const DEFAULT_CLUSTER_COLOR = '#cfd5dd'
 
+// ---------------------------------------------------------------------------
+// COMPACTAGE GÉOMÉTRIQUE — calculé une seule fois, au chargement du module.
+//
+// Les coordonnées Gephi ne sont PAS recalculées : chaque cluster est déplacé
+// comme un CORPS RIGIDE (translation pure), donc la forme interne de chaque
+// constellation est conservée au pixel près. Seule la position relative des
+// constellations change, ainsi que celle des micro-expertises isolées.
+//
+// Une expertise est « isolée » lorsqu'elle est seule dans sa classe de
+// modularité : critère déduit du seul expertiseGephiLayout, donc stable et
+// indépendant des filtres de la page.
+// ---------------------------------------------------------------------------
+
+const COMPACT = {
+  R0: 350,      // rayon en deçà duquel rien n'est déplacé
+  F: 0.45,      // compression radiale au-delà de R0
+  KY: 0.70,     // aplatissement vertical (le cadre est plus large que haut)
+  ITER: 300,    // passes de relaxation anti-chevauchement
+  WY: 0.22,     // séparation biaisée vers l'horizontale
+  CY: -46,      // barycentre du réseau connecté
+}
+
+function buildCompactLayout() {
+  const ids = Object.keys(expertiseGephiLayout)
+
+  const members = new Map()
+  ids.forEach(id => {
+    const c = expertiseGephiLayout[id].cluster
+    if (!members.has(c)) members.set(c, [])
+    members.get(c).push(id)
+  })
+
+  const bodies = []
+  members.forEach((arr, clusterId) => {
+    const solo = arr.length === 1
+    const group = solo ? arr.map(id => [id]) : [arr]
+
+    group.forEach(ids2 => {
+      const cx =
+        ids2.reduce((a, id) => a + expertiseGephiLayout[id].x, 0) / ids2.length
+      const cy =
+        ids2.reduce((a, id) => a + expertiseGephiLayout[id].y, 0) / ids2.length
+
+      const spread = Math.max(
+        ...ids2.map(id =>
+          Math.hypot(
+            expertiseGephiLayout[id].x - cx,
+            expertiseGephiLayout[id].y - cy
+          )
+        )
+      )
+
+      const r = Math.hypot(cx, cy - COMPACT.CY) || 1
+      const factor = solo ? COMPACT.F * 0.8 : COMPACT.F
+      const nr = r <= COMPACT.R0 ? r : COMPACT.R0 + (r - COMPACT.R0) * factor
+      const sc = nr / r
+
+      bodies.push({
+        ids: ids2,
+        clusterId,
+        solo,
+        ox: cx,
+        oy: cy,
+        x: cx * sc,
+        y: (cy - COMPACT.CY) * sc * COMPACT.KY + COMPACT.CY,
+        rad: spread + (solo ? 30 : 60),
+      })
+    })
+  })
+
+  for (let t = 0; t < COMPACT.ITER; t += 1) {
+    for (let i = 0; i < bodies.length; i += 1) {
+      for (let j = i + 1; j < bodies.length; j += 1) {
+        const a = bodies[i]
+        const b = bodies[j]
+        const dx = b.x - a.x
+        const dy = b.y - a.y
+        const d = Math.hypot(dx, dy) || 0.01
+        const need = a.rad + b.rad
+        if (d >= need) continue
+
+        let ux = dx / d
+        let uy = (dy / d) * COMPACT.WY
+        const un = Math.hypot(ux, uy) || 1
+        ux /= un
+        uy /= un
+
+        const push = ((need - d) / 2) * 0.6
+        a.x -= ux * push
+        a.y -= uy * push
+        b.x += ux * push
+        b.y += uy * push
+      }
+    }
+  }
+
+  const positions = {}
+  bodies.forEach(body => {
+    const tx = body.x - body.ox
+    const ty = body.y - body.oy
+    body.ids.forEach(id => {
+      positions[id] = {
+        x: expertiseGephiLayout[id].x + tx,
+        y: expertiseGephiLayout[id].y + ty,
+        size: expertiseGephiLayout[id].size,
+        cluster: expertiseGephiLayout[id].cluster,
+        isolated: body.solo,
+      }
+    })
+  })
+
+  return positions
+}
+
+const compactLayout = buildCompactLayout()
+
+const GRAPH_CENTER = (() => {
+  const pts = Object.values(compactLayout)
+  return {
+    x: pts.reduce((a, p) => a + p.x, 0) / pts.length,
+    y: pts.reduce((a, p) => a + p.y, 0) / pts.length,
+  }
+})()
+
+
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value))
 }
@@ -100,6 +225,29 @@ export default function ExpertiseConstellation({
   const [scale, setScale] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
 
+  // Dimensions réelles du cadre, en pixels. Elles servent à deux choses :
+  // aligner le viewBox sur le format du conteneur (plus de bandes latérales)
+  // et exprimer la taille des titres en pixels écran et non en unités monde.
+  const [viewport, setViewport] = useState({ w: 1120, h: 740 })
+
+  useEffect(() => {
+    const el = svgRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return undefined
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect()
+      if (rect.width > 0 && rect.height > 0) {
+        setViewport({ w: rect.width, h: rect.height })
+      }
+    }
+
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+
   const overviewNodes = useMemo(
     // ÉTAPE 2A — vue globale complète : 152 nœuds, plus d'échantillonnage.
     () => selectOverviewExpertises(nodes, Infinity),
@@ -122,7 +270,7 @@ export default function ExpertiseConstellation({
     () =>
       displayedNodes
         .map(node => {
-          const layout = expertiseGephiLayout[node.id]
+          const layout = compactLayout[node.id]
           if (!layout) return null
           return {
             ...node,
@@ -153,21 +301,14 @@ export default function ExpertiseConstellation({
     const xs = []
     const ys = []
 
+    // Marge réservée aux titres de clusters, exprimée en unités monde.
+    // Les positions de titres sont calculées plus bas ; on réserve ici une
+    // enveloppe fixe plutôt que de créer une dépendance circulaire.
+    const LABEL_MARGIN = 150
+
     positionedNodes.forEach(node => {
-      xs.push(node.x)
-      ys.push(node.y)
-    })
-
-    expertiseClusters.forEach(cluster => {
-      if (positionedNodes.some(node => node.clusterId === cluster.id)) {
-        const labelHalfWidth = (cluster.labelWidth || 240) / 2
-        const labelHalfHeight = cluster.transdirectional ? 54 : 42
-
-        xs.push(cluster.labelX - labelHalfWidth)
-        xs.push(cluster.labelX + labelHalfWidth)
-        ys.push(cluster.labelY - labelHalfHeight)
-        ys.push(cluster.labelY + labelHalfHeight)
-      }
+      xs.push(node.x - LABEL_MARGIN, node.x + LABEL_MARGIN)
+      ys.push(node.y - LABEL_MARGIN, node.y + LABEL_MARGIN)
     })
 
     if (!xs.length) {
@@ -185,16 +326,34 @@ export default function ExpertiseConstellation({
   const view = useMemo(() => {
     const width = Math.max(1, bounds.maxX - bounds.minX)
     const height = Math.max(1, bounds.maxY - bounds.minY)
-    const padX = width * 0.035
-    const padY = height * 0.04
 
-    return {
-      x: bounds.minX - padX,
-      y: bounds.minY - padY,
-      w: width + padX * 2,
-      h: height + padY * 2,
+    const cx = bounds.minX + width / 2
+    const cy = bounds.minY + height / 2
+
+    // Le contenu est cadré dans un viewBox au format exact du conteneur.
+    // Avec preserveAspectRatio="xMidYMid meet", le navigateur n'ajoute alors
+    // plus de bandes vides : le graphe occupe toute la surface disponible.
+    const frameRatio = viewport.w / Math.max(1, viewport.h)
+
+    let w = width * 1.04
+    let h = height * 1.06
+
+    if (w / h < frameRatio) {
+      w = h * frameRatio
+    } else {
+      h = w / frameRatio
     }
-  }, [bounds])
+
+    return { x: cx - w / 2, y: cy - h / 2, w, h }
+  }, [bounds, viewport])
+
+  // Unités monde par pixel écran : permet d'exprimer une taille de texte en
+  // pixels réels, indépendamment de l'emprise du graphe.
+  const unit = useMemo(
+    () => view.h / Math.max(1, viewport.h),
+    [view, viewport]
+  )
+
 
   const viewCenter = useMemo(
     () => ({
@@ -214,26 +373,94 @@ export default function ExpertiseConstellation({
       grouped.get(node.clusterId).push(node)
     })
 
-    return expertiseClusters
+    const titleSize = 21 * unit
+    const lineHeight = titleSize * 1.16
+
+    const stats = expertiseClusters
       .filter(cluster => grouped.has(cluster.id))
       .map(cluster => {
         const clusterNodes = grouped.get(cluster.id)
         const xs = clusterNodes.map(node => node.x)
         const ys = clusterNodes.map(node => node.y)
 
+        const minX = Math.min(...xs)
+        const maxX = Math.max(...xs)
+        const minY = Math.min(...ys)
+        const maxY = Math.max(...ys)
+        const centerX = (minX + maxX) / 2
+        const centerY = (minY + maxY) / 2
+
+        // Halo calé sur l'étendue réelle des nœuds, plus sur une formule
+        // abstraite : un petit cluster n'a plus un halo démesuré.
+        const spread = Math.max(
+          ...clusterNodes.map(node =>
+            Math.hypot(node.x - centerX, node.y - centerY)
+          )
+        )
+
+        // Le titre est repoussé hors de la constellation, dans la direction
+        // qui l'éloigne du centre du réseau.
+        let dx = centerX - GRAPH_CENTER.x
+        let dy = centerY - GRAPH_CENTER.y
+        const norm = Math.hypot(dx, dy) || 1
+        dx /= norm
+        dy /= norm
+
+        const lines = wrapLabel(cluster.label, 26)
+        const blockHeight =
+          lines.length * lineHeight + (cluster.transdirectional ? lineHeight : 0)
+
+        const offset = spread + 40 + blockHeight * 0.55
+
         return {
           ...cluster,
           nodeIds: new Set(clusterNodes.map(node => node.id)),
-          minX: Math.min(...xs),
-          maxX: Math.max(...xs),
-          minY: Math.min(...ys),
-          maxY: Math.max(...ys),
-          centerX: (Math.min(...xs) + Math.max(...xs)) / 2,
-          centerY: (Math.min(...ys) + Math.max(...ys)) / 2,
-          radius: 92 + Math.sqrt(clusterNodes.length) * 26,
+          minX,
+          maxX,
+          minY,
+          maxY,
+          centerX,
+          centerY,
+          lines,
+          blockHeight,
+          titleSize,
+          lineHeight,
+          labelWorldWidth: Math.max(...lines.map(l => l.length)) * titleSize * 0.5,
+          labelX: centerX + dx * offset,
+          labelY: centerY + dy * offset,
+          radius: Math.max(70, spread + 46),
         }
       })
-  }, [positionedNodes])
+
+    // Désempilement vertical : deux titres qui se recouvrent sont écartés.
+    for (let pass = 0; pass < 40; pass += 1) {
+      for (let i = 0; i < stats.length; i += 1) {
+        for (let j = i + 1; j < stats.length; j += 1) {
+          const a = stats[i]
+          const b = stats[j]
+
+          const needX = (a.labelWorldWidth + b.labelWorldWidth) / 2
+          const needY = (a.blockHeight + b.blockHeight) / 2 + 10 * unit
+
+          const gapX = Math.abs(a.labelX - b.labelX)
+          const gapY = Math.abs(a.labelY - b.labelY)
+
+          if (gapX >= needX || gapY >= needY) continue
+
+          const push = (needY - gapY) / 2 + 1
+          if (a.labelY <= b.labelY) {
+            a.labelY -= push
+            b.labelY += push
+          } else {
+            a.labelY += push
+            b.labelY -= push
+          }
+        }
+      }
+    }
+
+    return stats
+  }, [positionedNodes, unit])
 
   const selectedId = selected?.id || null
 
@@ -542,6 +769,7 @@ export default function ExpertiseConstellation({
         ref={svgRef}
         className="gephi-entry-svg"
         viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`}
+        preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label="Carte des expertises ministérielles"
         onPointerDown={onPointerDown}
@@ -563,14 +791,6 @@ export default function ExpertiseConstellation({
           {(mode === 'cluster' || mode === 'category') && (
             <g className="entry-cluster-halos" aria-hidden="true">
               {clusterStats.map(cluster => {
-                const clusterNodes = positionedNodes.filter(
-                  node => node.clusterId === cluster.id
-                )
-                const xs = clusterNodes.map(node => node.x)
-                const ys = clusterNodes.map(node => node.y)
-                const cx = (Math.min(...xs) + Math.max(...xs)) / 2
-                const cy = (Math.min(...ys) + Math.max(...ys)) / 2
-
                 const dim =
                   activeCluster !== null &&
                   activeCluster !== cluster.id
@@ -578,8 +798,8 @@ export default function ExpertiseConstellation({
                 return (
                   <circle
                     key={`halo-${cluster.id}`}
-                    cx={cx}
-                    cy={cy}
+                    cx={cluster.centerX}
+                    cy={cluster.centerY}
                     r={cluster.radius}
                     fill={cluster.color || DEFAULT_CLUSTER_COLOR}
                     opacity={dim ? 0.015 : 0.21}
@@ -657,7 +877,7 @@ export default function ExpertiseConstellation({
                   : cluster?.color || DEFAULT_CLUSTER_COLOR
 
               const radius =
-                Math.max(15, 11.5 + node.gephiSize * 1.30) *
+                Math.max(11, 7.5 + node.gephiSize * 0.70) *
                 nodeSize
 
               return (
@@ -710,8 +930,8 @@ export default function ExpertiseConstellation({
                   activeCluster !== null &&
                   activeCluster !== cluster.id
 
-                const lines = wrapLabel(cluster.label, mode === 'category' ? 22 : 24)
-                const lineHeight = 22
+                const lines = cluster.lines
+                const lineHeight = cluster.lineHeight
                 const totalHeight = (lines.length - 1) * lineHeight
 
                 return (
@@ -736,13 +956,10 @@ export default function ExpertiseConstellation({
                     }}
                   >
                     <rect
-                      x={cluster.labelX - (cluster.labelWidth || 240) / 2}
-                      y={cluster.labelY - totalHeight / 2 - 18}
-                      width={cluster.labelWidth || 240}
-                      height={
-                        totalHeight +
-                        (cluster.transdirectional ? 58 : 38)
-                      }
+                      x={cluster.labelX - cluster.labelWorldWidth / 2}
+                      y={cluster.labelY - totalHeight / 2 - lineHeight}
+                      width={cluster.labelWorldWidth}
+                      height={cluster.blockHeight + lineHeight}
                       fill="transparent"
                     />
 
@@ -751,6 +968,7 @@ export default function ExpertiseConstellation({
                       y={cluster.labelY - totalHeight / 2}
                       textAnchor="middle"
                       className="entry-cluster-title-svg"
+                      style={{ fontSize: `${cluster.titleSize}px` }}
                     >
                       {lines.map((line, index) => (
                         <tspan
@@ -766,9 +984,10 @@ export default function ExpertiseConstellation({
                     {cluster.transdirectional && (
                       <text
                         x={cluster.labelX}
-                        y={cluster.labelY + totalHeight / 2 + 26}
+                        y={cluster.labelY + totalHeight / 2 + lineHeight}
                         textAnchor="middle"
                         className="entry-cluster-transdirectional-svg"
+                        style={{ fontSize: `${cluster.titleSize * 0.62}px` }}
                       >
                         Cluster transdirectionnel
                       </text>
@@ -1067,6 +1286,7 @@ export default function ExpertiseConstellation({
           outline:none;
         }
 
+        /* La taille est désormais imposée en style inline, en pixels ecran. */
         .entry-cluster-title-svg{
           fill:#142f55;
           font-size:28px;
@@ -1306,12 +1526,6 @@ export default function ExpertiseConstellation({
         }
 
         @media(max-width:1380px){
-          .entry-cluster-title-svg{
-            font-size:24px;
-          }
-          .entry-cluster-transdirectional-svg{
-            font-size:11px;
-          }
 
           .gephi-entry-svg{
             height:700px;
