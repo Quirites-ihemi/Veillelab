@@ -21,7 +21,6 @@ export default function Header({active,onChange}){
     </nav>
     <div className="top-actions">
       <button className="round-action" aria-label="Aide">?</button>
-      <div className="avatar">NK</div>
     </div>
   </header>
 }
