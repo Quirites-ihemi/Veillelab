@@ -21,7 +21,10 @@ function nodeScore(node) {
   return Number(layout?.size || 0)
 }
 
-export function selectOverviewExpertises(nodes, limit = 80) {
+// ÉTAPE 2A — le plafond par défaut passe de 80 à Infinity.
+// La logique interne de la fonction est conservée telle quelle : elle reste
+// utilisable avec une limite explicite si un besoin d'échantillonnage revient.
+export function selectOverviewExpertises(nodes, limit = Infinity) {
   const eligible = (nodes || []).filter(node => expertiseGephiLayout[node.id])
 
   if (eligible.length <= limit) {
@@ -98,7 +101,8 @@ export default function ExpertiseConstellation({
   const [pan, setPan] = useState({ x: 0, y: 0 })
 
   const overviewNodes = useMemo(
-    () => selectOverviewExpertises(nodes, 80),
+    // ÉTAPE 2A — vue globale complète : 152 nœuds, plus d'échantillonnage.
+    () => selectOverviewExpertises(nodes, Infinity),
     [nodes]
   )
 
