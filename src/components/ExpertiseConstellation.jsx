@@ -84,6 +84,9 @@ export default function ExpertiseConstellation({
   linkDensity = 1,
   resetToken = 0,
   fitToken = 0,
+  readingOpen = false,
+  onToggleReading,
+  onCloseReading,
 }) {
   const svgRef = useRef(null)
   const dragRef = useRef(null)
@@ -444,29 +447,76 @@ export default function ExpertiseConstellation({
 
   return (
     <section className="constellation-shell gephi-entry-shell">
-      <div className="gephi-view-switch" aria-label="Mode de lecture du graphe">
+      <div className="gephi-view-switch map-reading-switch" aria-label="Lecture de la carte">
         <button
           type="button"
-          className={mode === 'cluster' ? 'active' : ''}
-          onClick={() => {
-            setMode('cluster')
-            setActiveCluster(null)
-          }}
+          className={readingOpen ? 'active' : ''}
+          onClick={() => onToggleReading?.()}
+          aria-expanded={readingOpen}
+          aria-controls="map-reading-inline"
         >
-          Clusters d’expertises
-        </button>
-
-        <button
-          type="button"
-          className={mode === 'category' ? 'active' : ''}
-          onClick={() => {
-            setMode('category')
-            setActiveCluster(null)
-          }}
-        >
-          Catégories d’expertise
+          ⓘ&nbsp;&nbsp;Lecture de la carte
         </button>
       </div>
+
+      {readingOpen && (
+        <section
+          id="map-reading-inline"
+          className="map-reading-inline"
+          aria-label="Lecture de la carte"
+        >
+          <button
+            type="button"
+            className="map-reading-inline-close"
+            onClick={() => onCloseReading?.()}
+            aria-label="Fermer la lecture de la carte"
+          >
+            ×
+          </button>
+
+          <h2>Lecture de la carte</h2>
+
+          <p>
+            Cette carte est un <strong>graphe en réseau réalisé avec Gephi</strong>.
+            Chaque point représente une <strong>micro-expertise</strong> identifiée
+            dans les publications du ministère. Les liens relient des expertises
+            qui sont <strong>associées dans une même publication</strong>. Le graphe
+            permet ainsi de visualiser non seulement des expertises prises
+            séparément, mais aussi la manière dont elles se combinent.
+          </p>
+
+          <p>
+            La disposition du réseau fait apparaître des ensembles plus densément
+            reliés. Un algorithme de <strong>clusterisation</strong> repère ces
+            communautés : un cluster rassemble des micro-expertises qui
+            entretiennent davantage de relations entre elles qu’avec le reste du
+            réseau. Les intitulés des clusters ont ensuite été construits à partir
+            de leur contenu afin d’en faciliter la lecture.
+            <strong> Ils ne correspondent donc ni à des catégories administratives
+            ni à un classement prédéfini.</strong>
+          </p>
+
+          <p>
+            Des expertises plus spécialisées ou isolées sont volontairement
+            conservées. <strong>L’absence de lien ne signifie pas qu’elles sont
+            moins importantes</strong>, mais seulement qu’aucune association
+            suffisante avec d’autres expertises n’apparaît dans le corpus étudié.
+          </p>
+
+          <p>
+            Certains clusters sont qualifiés de <strong>transdirectionnels</strong>
+            lorsqu’ils réunissent des expertises mobilisées dans les publications
+            de plusieurs entités du ministère. Ils font apparaître des domaines où
+            des savoir-faire, méthodes ou problèmes publics se croisent au-delà
+            des frontières organisationnelles.
+          </p>
+
+          <p className="map-reading-last">
+            Le graphe sera alimenté par les productions futures repérées par le
+            bulletin de veille.
+          </p>
+        </section>
+      )}
 
       <div className="gephi-zoom-tools" aria-label="Zoom du graphe">
         <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant">+</button>
@@ -566,18 +616,17 @@ export default function ExpertiseConstellation({
                   x2={target.x}
                   y2={target.y}
                   className={
-                    selectedId &&
-                    (
-                      edge.source === selectedId ||
-                      edge.target === selectedId
-                    )
-                      ? 'entry-edge active'
-                      : 'entry-edge'
+                    `${
+                      selectedId &&
+                      (edge.source === selectedId || edge.target === selectedId)
+                        ? 'entry-edge active'
+                        : 'entry-edge'
+                    } ${sameCluster ? 'intra-cluster' : 'inter-cluster'}`
                   }
                   opacity={
                     selectedActive && clusterActive
-                      ? (sameCluster ? 0.31 : 0.045) * linkDensity
-                      : activeCluster !== null ? 0.012 : 0.028
+                      ? (sameCluster ? 0.31 : 0.16) * linkDensity
+                      : activeCluster !== null ? 0.018 : (sameCluster ? 0.04 : 0.09)
                   }
                 />
               )
@@ -604,7 +653,7 @@ export default function ExpertiseConstellation({
                   : cluster?.color || DEFAULT_CLUSTER_COLOR
 
               const radius =
-                Math.max(19, 14 + node.gephiSize * 1.55) *
+                Math.max(24, 16 + node.gephiSize * 1.85) *
                 nodeSize
 
               return (
@@ -872,6 +921,71 @@ export default function ExpertiseConstellation({
         .gephi-view-switch button.active{
           background:#eef3fb;
           color:#123567;
+        }
+
+        .map-reading-inline{
+          position:absolute;
+          z-index:7;
+          left:14px;
+          top:62px;
+          width:min(640px,calc(100% - 190px));
+          max-height:min(58vh,560px);
+          overflow:auto;
+          padding:20px 22px 18px;
+          border:1px solid #d9e3ef;
+          border-radius:12px;
+          background:rgba(255,255,255,.985);
+          box-shadow:0 12px 30px rgba(18,46,83,.14);
+          color:#425a78;
+        }
+
+        .map-reading-inline h2{
+          margin:0 34px 14px 0;
+          color:#0b2751;
+          font-size:20px;
+          line-height:1.2;
+          letter-spacing:-.2px;
+        }
+
+        .map-reading-inline p{
+          margin:0 0 12px;
+          font-size:12.5px;
+          line-height:1.58;
+        }
+
+        .map-reading-inline strong{
+          color:#173b70;
+          font-weight:800;
+        }
+
+        .map-reading-inline .map-reading-last{
+          margin-bottom:0;
+          color:#254e85;
+          font-weight:700;
+        }
+
+        .map-reading-inline-close{
+          position:absolute;
+          top:10px;
+          right:12px;
+          width:30px;
+          height:30px;
+          border:0;
+          border-radius:7px;
+          background:transparent;
+          color:#17345f;
+          font:700 23px/1 inherit;
+          cursor:pointer;
+        }
+
+        .map-reading-inline-close:hover{
+          background:#eef3fb;
+        }
+
+        .entry-edge.inter-cluster{
+          stroke:#7d90aa;
+          stroke-width:1.75;
+          stroke-dasharray:3.5 3.5;
         }
 
         .gephi-zoom-tools{
