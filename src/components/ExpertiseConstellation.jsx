@@ -12,6 +12,10 @@ const FAMILY_COLORS = {
 
 const DEFAULT_CLUSTER_COLOR = '#cfd5dd'
 
+// Plafond de zoom. Relevé de 3 à 6 : les petites constellations butaient
+// dessus et ne remplissaient pas le cadre à l'ouverture.
+const MAX_SCALE = 6
+
 // ---------------------------------------------------------------------------
 // COMPACTAGE GÉOMÉTRIQUE — calculé une seule fois, au chargement du module.
 //
@@ -313,6 +317,13 @@ export default function ExpertiseConstellation({
   // n'apparaît qu'au survol, au zoom, ou quand le cluster est ouvert.
   const TITLE_MIN_NODES = 6
 
+  // Géométrie des étiquettes de nœuds en vue cluster ouvert, exprimée en
+  // pixels écran puis convertie en unités monde via `unit`.
+  const OPEN_LABEL_WIDTH = 190
+  const OPEN_LABEL_OFFSET = 34
+  const OPEN_LABEL_GAP = 30
+  const OPEN_LABEL_FONT = 11
+
   const model = useMemo(() => {
     const frameRatio = viewport.w / Math.max(1, viewport.h)
 
@@ -528,7 +539,7 @@ export default function ExpertiseConstellation({
   }, [fitToken])
 
   const zoom = factor => {
-    setScale(current => clamp(current * factor, 0.72, 3))
+    setScale(current => clamp(current * factor, 0.72, MAX_SCALE))
   }
 
   const resetView = () => {
@@ -566,7 +577,22 @@ export default function ExpertiseConstellation({
     const centerX = (Math.min(...xs) + Math.max(...xs)) / 2
     const centerY = (Math.min(...ys) + Math.max(...ys)) / 2
 
-    const nextScale = clusterNodes.length >= 12 ? 1.55 : 1.85
+    // Le zoom n'est plus une valeur forfaitaire : il est calculé pour que la
+    // constellation ET ses étiquettes de nœuds remplissent réellement le cadre.
+    const spanX = Math.max(...xs) - Math.min(...xs)
+    const spanY = Math.max(...ys) - Math.min(...ys)
+
+    // Les étiquettes occupent une largeur FIXE en pixels de chaque côté ; on
+    // résout donc le zoom sur la place qui reste réellement au nuage de nœuds.
+    const freeW =
+      viewport.w * 0.94 - 2 * (OPEN_LABEL_OFFSET + OPEN_LABEL_WIDTH)
+    const freeH = viewport.h * 0.94 - 2 * OPEN_LABEL_GAP
+
+    const byWidth = (freeW * unit) / Math.max(1, spanX)
+    const byHeight = (freeH * unit) / Math.max(1, spanY)
+
+    const nextScale = clamp(Math.min(byWidth, byHeight), 1, MAX_SCALE)
+
     setScale(nextScale)
     setPan({
       x: nextScale * (viewCenter.x - centerX),
@@ -595,7 +621,9 @@ export default function ExpertiseConstellation({
     const distribute = (items, side) => {
       if (!items.length) return []
 
-      const gap = 45
+      // Divisé par le zoom : l'étiquetage garde la même taille apparente
+      // quel que soit le facteur d'agrandissement du cluster ouvert.
+      const gap = (OPEN_LABEL_GAP * unit) / scale
       const original = items.map(node => node.y)
       const placed = []
 
@@ -618,8 +646,8 @@ export default function ExpertiseConstellation({
       const shift = avgOriginal - avgPlaced
       const x =
         side === 'left'
-          ? cluster.minX - 58
-          : cluster.maxX + 58
+          ? cluster.minX - (OPEN_LABEL_OFFSET * unit) / scale
+          : cluster.maxX + (OPEN_LABEL_OFFSET * unit) / scale
 
       return placed.map(item => ({
         node: item.node,
@@ -633,7 +661,7 @@ export default function ExpertiseConstellation({
       ...distribute(left, 'left'),
       ...distribute(right, 'right'),
     ]
-  }, [activeCluster, clusterStats, positionedNodes])
+  }, [activeCluster, clusterStats, positionedNodes, unit, scale])
 
   const onPointerDown = event => {
     if (event.button !== 0) return
@@ -966,21 +994,44 @@ export default function ExpertiseConstellation({
               {clusterStats.map(cluster => {
                 // Titre permanent pour les grands clusters ; les autres
                 // n'apparaissent qu'au survol, au zoom ou à l'ouverture.
-                const revealed =
-                  cluster.showLabel ||
-                  activeCluster === cluster.id ||
-                  hoveredClusterId === cluster.id ||
-                  scale > 1.35
+                // Cluster ouvert : seul son titre reste. Les autres titres
+                // sont retirés, sans quoi ils écrasent la constellation.
+                if (activeCluster !== null) {
+                  if (activeCluster !== cluster.id) return null
+                } else {
+                  const revealed =
+                    cluster.showLabel ||
+                    hoveredClusterId === cluster.id ||
+                    scale > 1.35
+                  if (!revealed) return null
+                }
 
-                if (!revealed) return null
+                const isOpen = activeCluster === cluster.id
 
-                const dim =
-                  activeCluster !== null &&
-                  activeCluster !== cluster.id
+                // En vue ouverte le groupe entier est agrandi par le zoom :
+                // on divise donc la taille du titre par le facteur de zoom
+                // pour qu'il conserve la même taille apparente à l'écran,
+                // et on le repose juste au-dessus de la constellation.
+                const titleSize = isOpen
+                  ? cluster.titleSize / scale
+                  : cluster.titleSize
+                const lineHeight = isOpen
+                  ? cluster.lineHeight / scale
+                  : cluster.lineHeight
 
                 const lines = cluster.lines
-                const lineHeight = cluster.lineHeight
                 const totalHeight = (lines.length - 1) * lineHeight
+
+                const anchorX = isOpen ? cluster.centerX : cluster.labelX
+                const anchorY = isOpen
+                  ? cluster.minY - (lines.length + 1) * lineHeight
+                  : cluster.labelY
+
+                const halfW = isOpen
+                  ? cluster.halfW / scale
+                  : cluster.halfW
+
+                const dim = false
 
                 return (
                   <g
@@ -1004,24 +1055,27 @@ export default function ExpertiseConstellation({
                     }}
                   >
                     <rect
-                      x={cluster.labelX - cluster.labelWorldWidth / 2}
-                      y={cluster.labelY - totalHeight / 2 - lineHeight}
-                      width={cluster.labelWorldWidth}
-                      height={cluster.blockHeight + lineHeight}
+                      x={anchorX - halfW}
+                      y={anchorY - totalHeight / 2 - lineHeight}
+                      width={halfW * 2}
+                      height={
+                        (lines.length + (cluster.transdirectional ? 2 : 1)) *
+                        lineHeight
+                      }
                       fill="transparent"
                     />
 
                     <text
-                      x={cluster.labelX}
-                      y={cluster.labelY - totalHeight / 2}
+                      x={anchorX}
+                      y={anchorY - totalHeight / 2}
                       textAnchor="middle"
                       className="entry-cluster-title-svg"
-                      style={{ fontSize: `${cluster.titleSize}px` }}
+                      style={{ fontSize: `${titleSize}px` }}
                     >
                       {lines.map((line, index) => (
                         <tspan
                           key={`${cluster.id}-${index}`}
-                          x={cluster.labelX}
+                          x={anchorX}
                           dy={index === 0 ? 0 : lineHeight}
                         >
                           {line}
@@ -1031,11 +1085,11 @@ export default function ExpertiseConstellation({
 
                     {cluster.transdirectional && (
                       <text
-                        x={cluster.labelX}
-                        y={cluster.labelY + totalHeight / 2 + lineHeight}
+                        x={anchorX}
+                        y={anchorY + totalHeight / 2 + lineHeight}
                         textAnchor="middle"
                         className="entry-cluster-transdirectional-svg"
-                        style={{ fontSize: `${cluster.titleSize * 0.62}px` }}
+                        style={{ fontSize: `${titleSize * 0.62}px` }}
                       >
                         Cluster transdirectionnel
                       </text>
@@ -1049,9 +1103,14 @@ export default function ExpertiseConstellation({
           {activeCluster !== null && (
             <g className="entry-node-labels-open-cluster" pointerEvents="none">
               {activeNodeLabels.map(item => {
+                const openFont = (OPEN_LABEL_FONT * unit) / scale
+                const openLine = openFont * 1.25
                 const lines = wrapLabel(item.node.label, 28)
-                const boxWidth = 230
-                const boxHeight = Math.max(34, 14 + lines.length * 14)
+                const boxWidth = (OPEN_LABEL_WIDTH * unit) / scale
+                const boxHeight = Math.max(
+                  openLine * 2.2,
+                  openLine * lines.length + openLine
+                )
                 const boxX =
                   item.side === 'left'
                     ? item.x - boxWidth
@@ -1060,8 +1119,8 @@ export default function ExpertiseConstellation({
 
                 const textX =
                   item.side === 'left'
-                    ? item.x - 9
-                    : item.x + 9
+                    ? item.x - openFont * 0.7
+                    : item.x + openFont * 0.7
 
                 return (
                   <g key={`open-label-${item.node.id}`}>
@@ -1078,21 +1137,22 @@ export default function ExpertiseConstellation({
                       y={boxY}
                       width={boxWidth}
                       height={boxHeight}
-                      rx="8"
+                      rx={openFont * 0.6}
                       className="entry-open-label-bg"
                     />
 
                     <text
                       x={textX}
-                      y={item.y - ((lines.length - 1) * 14) / 2}
+                      y={item.y - ((lines.length - 1) * openLine) / 2}
                       textAnchor={item.side === 'left' ? 'end' : 'start'}
                       className="entry-open-node-label"
+                      style={{ fontSize: `${openFont}px` }}
                     >
                       {lines.map((line, index) => (
                         <tspan
                           key={`${item.node.id}-${index}`}
                           x={textX}
-                          dy={index === 0 ? 0 : 14}
+                          dy={index === 0 ? 0 : openLine}
                         >
                           {line}
                         </tspan>
