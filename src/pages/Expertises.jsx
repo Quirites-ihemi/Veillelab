@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
-import ExpertiseConstellation, {
-  selectOverviewExpertises,
-} from '../components/ExpertiseConstellation.jsx'
+import ExpertiseConstellation from '../components/ExpertiseConstellation.jsx'
 import { normalize, sentenceCase } from '../lib/text.js'
 import '../expertises-fenetres-originales.css'
 
@@ -134,10 +132,10 @@ export default function Expertises({ data }) {
   const [search, setSearch] = useState('')
   const [entity, setEntity] = useState('Toutes les entités')
   const [family, setFamily] = useState('Tous')
-  const [introExpanded, setIntroExpanded] = useState(false)
+  const [introExpanded, setIntroExpanded] = useState(true)
   const [readingOpen, setReadingOpen] = useState(false)
 
-  const [nodeSize, setNodeSize] = useState(1)
+  const [nodeSize, setNodeSize] = useState(1.15)
   const [linkDensity, setLinkDensity] = useState(1)
   const [resetToken, setResetToken] = useState(0)
   const [fitToken, setFitToken] = useState(0)
@@ -192,19 +190,6 @@ export default function Expertises({ data }) {
     )
   }, [filtered, data])
 
-  const overviewNodes = selectOverviewExpertises(filtered, 200)
-
-  const overviewIds = new Set(
-    overviewNodes.map(n => n.id)
-  )
-
-  const overviewLinks = visibleEdges
-    .filter(
-      e =>
-        overviewIds.has(e.source) &&
-        overviewIds.has(e.target)
-    )
-
   const clear = () => {
     setSelected(null)
     setSearch('')
@@ -226,6 +211,17 @@ export default function Expertises({ data }) {
 
         <section className="rail-section expertise-intro">
           <h3>Pourquoi cette carte ?</h3>
+
+          <img
+            className="sidebar-intro-visual"
+            src="./images/publications/expertises-intro-sobre.png"
+            alt=""
+            aria-hidden="true"
+          />
+
+          <h2 className="sidebar-intro-title">
+            Des publications aux savoir-faire du ministère
+          </h2>
 
           {!introExpanded ? (
             <p className="intro-summary">
@@ -373,8 +369,8 @@ export default function Expertises({ data }) {
 
             <input
               type="range"
-              min="0.8"
-              max="1.35"
+              min="0.85"
+              max="1.55"
               step="0.05"
               value={nodeSize}
               onChange={e =>
@@ -413,8 +409,6 @@ export default function Expertises({ data }) {
 
       <section className="graph-workspace">
 
-        <ExpertiseIntroBanner />
-
         <div className="workspace-toolbar">
 
           <div>
@@ -429,8 +423,7 @@ export default function Expertises({ data }) {
               <strong>{filtered.length}</strong>
 
               <span>
-                nœuds ({overviewNodes.length} affichés) ·{' '}
-                {visibleEdges.length} relations ({overviewLinks.length} affichées)
+                nœuds · {visibleEdges.length} relations
               </span>
 
               <Icon
@@ -467,6 +460,8 @@ export default function Expertises({ data }) {
                 setSelected(null)
                 setReadingOpen(true)
               }}
+              aria-expanded={readingOpen}
+              aria-controls="map-reading-drawer"
             >
               <Icon
                 name="info"
@@ -626,8 +621,12 @@ export default function Expertises({ data }) {
         </aside>
       )}
 
-      {readingOpen && (
-        <aside className="map-reading-drawer" aria-label="Lecture de la carte">
+      <aside
+        id="map-reading-drawer"
+        className={`map-reading-drawer ${readingOpen ? 'open' : ''}`}
+        aria-label="Lecture de la carte"
+        aria-hidden={!readingOpen}
+      >
           <button
             type="button"
             className="map-reading-close"
@@ -679,7 +678,6 @@ export default function Expertises({ data }) {
             bulletin de veille.
           </p>
         </aside>
-      )}
 
     </main>
   )
