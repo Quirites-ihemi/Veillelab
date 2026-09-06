@@ -135,7 +135,7 @@ export default function Expertises({ data }) {
   const [introExpanded, setIntroExpanded] = useState(true)
   const [readingOpen, setReadingOpen] = useState(false)
 
-  const [nodeSize, setNodeSize] = useState(1.15)
+  const [nodeSize, setNodeSize] = useState(2.0)
   const [linkDensity, setLinkDensity] = useState(1)
   const [resetToken, setResetToken] = useState(0)
   const [fitToken, setFitToken] = useState(0)
@@ -369,8 +369,8 @@ export default function Expertises({ data }) {
 
             <input
               type="range"
-              min="0.85"
-              max="1.55"
+              min="1.2"
+              max="2.7"
               step="0.05"
               value={nodeSize}
               onChange={e =>
@@ -455,20 +455,6 @@ export default function Expertises({ data }) {
               Ajuster à l’écran
             </button>
 
-            <button
-              onClick={() => {
-                setSelected(null)
-                setReadingOpen(true)
-              }}
-              aria-expanded={readingOpen}
-              aria-controls="map-reading-drawer"
-            >
-              <Icon
-                name="info"
-                size={17}
-              />
-              Lecture de la carte
-            </button>
 
           </div>
 
@@ -483,6 +469,12 @@ export default function Expertises({ data }) {
           linkDensity={linkDensity}
           resetToken={resetToken}
           fitToken={fitToken}
+          readingOpen={readingOpen}
+          onToggleReading={() => {
+            setSelected(null)
+            setReadingOpen(open => !open)
+          }}
+          onCloseReading={() => setReadingOpen(false)}
         />
 
       </section>
@@ -620,64 +612,6 @@ export default function Expertises({ data }) {
 
         </aside>
       )}
-
-      <aside
-        id="map-reading-drawer"
-        className={`map-reading-drawer ${readingOpen ? 'open' : ''}`}
-        aria-label="Lecture de la carte"
-        aria-hidden={!readingOpen}
-      >
-          <button
-            type="button"
-            className="map-reading-close"
-            onClick={() => setReadingOpen(false)}
-            aria-label="Fermer la lecture de la carte"
-          >
-            <Icon name="close" />
-          </button>
-
-          <h2>Lecture de la carte</h2>
-
-          <p>
-            Cette carte est un <strong>graphe en réseau réalisé avec Gephi</strong>.
-            Chaque point représente une <strong>micro-expertise</strong> identifiée
-            dans les publications du ministère. Les liens relient des expertises
-            qui sont <strong>associées dans une même publication</strong>. Le graphe
-            permet ainsi de visualiser non seulement des expertises prises
-            séparément, mais aussi la manière dont elles se combinent.
-          </p>
-
-          <p>
-            La disposition du réseau fait apparaître des ensembles plus densément
-            reliés. Un algorithme de <strong>clusterisation</strong> repère ces
-            communautés : un cluster rassemble des micro-expertises qui
-            entretiennent davantage de relations entre elles qu’avec le reste du
-            réseau. Les intitulés des clusters ont ensuite été construits à partir
-            de leur contenu afin d’en faciliter la lecture.
-            <strong> Ils ne correspondent donc ni à des catégories administratives
-            ni à un classement prédéfini.</strong>
-          </p>
-
-          <p>
-            Des expertises plus spécialisées ou isolées sont volontairement
-            conservées. <strong>L’absence de lien ne signifie pas qu’elles sont
-            moins importantes</strong>, mais seulement qu’aucune association
-            suffisante avec d’autres expertises n’apparaît dans le corpus étudié.
-          </p>
-
-          <p>
-            Certains clusters sont qualifiés de <strong>transdirectionnels</strong>
-            lorsqu’ils réunissent des expertises mobilisées dans les publications
-            de plusieurs entités du ministère. Ils font apparaître des domaines où
-            des savoir-faire, méthodes ou problèmes publics se croisent au-delà
-            des frontières organisationnelles.
-          </p>
-
-          <p className="map-reading-last">
-            Le graphe sera alimenté par les productions futures repérées par le
-            bulletin de veille.
-          </p>
-        </aside>
 
     </main>
   )
