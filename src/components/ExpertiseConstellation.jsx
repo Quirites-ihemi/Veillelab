@@ -94,11 +94,11 @@ export default function ExpertiseConstellation({
   const [mode, setMode] = useState('cluster')
   const [activeCluster, setActiveCluster] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)
-  const [scale, setScale] = useState(1.08)
+  const [scale, setScale] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
 
   const overviewNodes = useMemo(
-    () => selectOverviewExpertises(nodes, 200),
+    () => selectOverviewExpertises(nodes, 80),
     [nodes]
   )
 
@@ -248,13 +248,13 @@ export default function ExpertiseConstellation({
   useEffect(() => {
     setActiveCluster(null)
     setHoveredId(null)
-    setScale(1.08)
+    setScale(1)
     setPan({ x: 0, y: 0 })
     setMode('cluster')
   }, [resetToken])
 
   useEffect(() => {
-    setScale(1.08)
+    setScale(1)
     setPan({ x: 0, y: 0 })
   }, [fitToken])
 
@@ -263,14 +263,14 @@ export default function ExpertiseConstellation({
   }
 
   const resetView = () => {
-    setScale(1.08)
+    setScale(1)
     setPan({ x: 0, y: 0 })
   }
 
   const closeCluster = () => {
     setActiveCluster(null)
     onSelect?.(null)
-    setScale(1.08)
+    setScale(1)
     setPan({ x: 0, y: 0 })
   }
 
@@ -625,8 +625,8 @@ export default function ExpertiseConstellation({
                   }
                   opacity={
                     selectedActive && clusterActive
-                      ? (sameCluster ? 0.38 : 0.48) * linkDensity
-                      : activeCluster !== null ? 0.025 : (sameCluster ? 0.18 : 0.34)
+                      ? (sameCluster ? 0.31 : 0.045) * linkDensity
+                      : activeCluster !== null ? 0.012 : 0.028
                   }
                 />
               )
@@ -652,14 +652,9 @@ export default function ExpertiseConstellation({
                   ? familyColor(node.family)
                   : cluster?.color || DEFAULT_CLUSTER_COLOR
 
-              const isNamedCluster = expertiseClusters.some(
-                item => item.id === node.clusterId
-              )
-
               const radius =
-                Math.max(30, 20 + node.gephiSize * 2.15) *
-                nodeSize *
-                (isNamedCluster ? 1.12 : 0.62)
+                Math.max(15, 11.5 + node.gephiSize * 1.30) *
+                nodeSize
 
               return (
                 <g
@@ -712,7 +707,7 @@ export default function ExpertiseConstellation({
                   activeCluster !== cluster.id
 
                 const lines = wrapLabel(cluster.label, mode === 'category' ? 22 : 24)
-                const lineHeight = 30
+                const lineHeight = 22
                 const totalHeight = (lines.length - 1) * lineHeight
 
                 return (
@@ -987,12 +982,6 @@ export default function ExpertiseConstellation({
           background:#eef3fb;
         }
 
-        .entry-edge.inter-cluster{
-          stroke:#6f86a3;
-          stroke-width:2.4;
-          stroke-dasharray:none;
-        }
-
         .gephi-zoom-tools{
           position:absolute;
           z-index:8;
@@ -1053,7 +1042,7 @@ export default function ExpertiseConstellation({
           letter-spacing:-.2px;
           paint-order:stroke;
           stroke:#ffffff;
-          stroke-width:7px;
+          stroke-width:5px;
           stroke-linejoin:round;
           pointer-events:none;
         }
@@ -1076,7 +1065,7 @@ export default function ExpertiseConstellation({
 
         .entry-cluster-title-svg{
           fill:#142f55;
-          font-size:40px;
+          font-size:28px;
           font-weight:880;
           letter-spacing:-.15px;
           paint-order:stroke;
@@ -1088,9 +1077,9 @@ export default function ExpertiseConstellation({
 
         .entry-cluster-transdirectional-svg{
           fill:#61738c;
-          font-size:17px;
+          font-size:12px;
           font-style:italic;
-          font-weight:760;
+          font-weight:750;
           paint-order:stroke;
           stroke:#ffffff;
           stroke-width:4px;
@@ -1184,7 +1173,7 @@ export default function ExpertiseConstellation({
         }
 
         .entry-cluster-card strong{
-          font-size:40px;
+          font-size:28px;
           line-height:1.06;
           font-weight:860;
           letter-spacing:-.15px;
