@@ -62,63 +62,6 @@
 }
 
 
-/* ONGLET 1 — volet éditorial "Lecture de la carte" : superposition sans modifier le layout. */
-.expertise-screen .map-reading-drawer{
-  position:fixed!important;
-  top:70px!important;
-  right:0!important;
-  bottom:0!important;
-  width:min(390px,calc(100vw - 24px))!important;
-  z-index:30!important;
-  background:#fff!important;
-  border-left:1px solid #dbe3ee!important;
-  box-shadow:-14px 0 34px rgba(20,42,74,.13)!important;
-  padding:30px 30px 34px!important;
-  overflow:auto!important;
-  transform:translateX(102%)!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-  transition:transform .22s ease,visibility .22s ease!important;
-}
-.expertise-screen .map-reading-drawer.open{
-  transform:translateX(0)!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-}
-.expertise-screen .map-reading-close{
-  position:absolute;
-  top:18px;
-  right:18px;
-  border:0;
-  background:transparent;
-  color:#17345f;
-  cursor:pointer;
-  padding:5px;
-}
-.expertise-screen .map-reading-drawer h2{
-  margin:0 38px 22px 0;
-  color:#0b2751;
-  font-size:25px;
-  line-height:1.18;
-  letter-spacing:-.35px;
-}
-.expertise-screen .map-reading-drawer p{
-  margin:0 0 18px;
-  color:#425a78;
-  font-size:13px;
-  line-height:1.66;
-}
-.expertise-screen .map-reading-drawer strong{
-  color:#173b70;
-  font-weight:800;
-}
-.expertise-screen .map-reading-drawer .map-reading-last{
-  margin-bottom:0;
-  padding-top:3px;
-  color:#254e85;
-  font-weight:700;
-}
-
 /* Publications associées : le titre/la vignette ouvrent le contenu dans un nouvel onglet. */
 .expertise-screen .publication-mini-list .publication-mini-link{
   display:grid;
@@ -141,4 +84,25 @@
 .expertise-screen .publication-mini-list .publication-mini-link:focus-visible{
   outline:2px solid #4a7dff;
   outline-offset:2px;
+}
+
+
+/* ONGLET 1 — ajustements visuels validés 06/09/2026 */
+.expertise-screen .big-count strong{
+  font-size:32px!important;
+  line-height:1!important;
+  letter-spacing:-.8px!important;
+}
+.expertise-screen .big-count span{
+  font-size:14px!important;
+}
+.expertise-screen .map-reading-switch button{
+  padding:9px 14px!important;
+  color:#123567!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  background:#eef3fb!important;
+}
+.expertise-screen .map-reading-switch button:hover{
+  background:#e4edf9!important;
 }
