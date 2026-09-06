@@ -14,7 +14,7 @@
 .expertise-screen .constellation-shell.model-b{height:calc(100vh - 210px)!important;min-height:590px!important;position:relative!important;overflow:hidden!important;cursor:grab!important}
 .expertise-screen .rail-section{padding:0 0 21px!important;margin-bottom:19px!important;border-bottom:1px solid #e6ebf3!important;position:relative!important}
 .expertise-screen .rail-section:last-child{border-bottom:0!important}
-.expertise-screen .rail-section h3{font-size:14px!important;margin:0 0 13px!important;font-weight:760!important;display:flex!important;align-items:center!important;gap:8px!important;color:#12264d!important}
+.expertise-screen .rail-section h3{font-size:13px!important;margin:0 0 13px!important;font-weight:760!important;display:flex!important;align-items:center!important;gap:8px!important;color:#12264d!important}
 .expertise-screen .expertise-intro .sidebar-intro-title{margin:0 0 12px!important;color:#14345d!important;font-size:20px!important;line-height:1.14!important;font-weight:820!important;letter-spacing:-.2px!important}
 .expertise-screen .expertise-intro .intro-full{display:grid;gap:10px}
 .expertise-screen .expertise-intro .intro-full p{margin:0!important}
@@ -89,7 +89,7 @@
 
 /* ONGLET 1 — ajustements visuels validés 06/09/2026 */
 .expertise-screen .big-count strong{
-  font-size:32px!important;
+  font-size:26px!important;
   line-height:1!important;
   letter-spacing:-.8px!important;
 }
