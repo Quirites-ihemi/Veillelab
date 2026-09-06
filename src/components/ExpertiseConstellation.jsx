@@ -94,7 +94,7 @@ export default function ExpertiseConstellation({
   const [mode, setMode] = useState('cluster')
   const [activeCluster, setActiveCluster] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)
-  const [scale, setScale] = useState(1)
+  const [scale, setScale] = useState(1.08)
   const [pan, setPan] = useState({ x: 0, y: 0 })
 
   const overviewNodes = useMemo(
@@ -248,13 +248,13 @@ export default function ExpertiseConstellation({
   useEffect(() => {
     setActiveCluster(null)
     setHoveredId(null)
-    setScale(1)
+    setScale(1.08)
     setPan({ x: 0, y: 0 })
     setMode('cluster')
   }, [resetToken])
 
   useEffect(() => {
-    setScale(1)
+    setScale(1.08)
     setPan({ x: 0, y: 0 })
   }, [fitToken])
 
@@ -263,14 +263,14 @@ export default function ExpertiseConstellation({
   }
 
   const resetView = () => {
-    setScale(1)
+    setScale(1.08)
     setPan({ x: 0, y: 0 })
   }
 
   const closeCluster = () => {
     setActiveCluster(null)
     onSelect?.(null)
-    setScale(1)
+    setScale(1.08)
     setPan({ x: 0, y: 0 })
   }
 
@@ -625,8 +625,8 @@ export default function ExpertiseConstellation({
                   }
                   opacity={
                     selectedActive && clusterActive
-                      ? (sameCluster ? 0.31 : 0.16) * linkDensity
-                      : activeCluster !== null ? 0.018 : (sameCluster ? 0.04 : 0.09)
+                      ? (sameCluster ? 0.38 : 0.48) * linkDensity
+                      : activeCluster !== null ? 0.025 : (sameCluster ? 0.18 : 0.34)
                   }
                 />
               )
@@ -652,9 +652,14 @@ export default function ExpertiseConstellation({
                   ? familyColor(node.family)
                   : cluster?.color || DEFAULT_CLUSTER_COLOR
 
+              const isNamedCluster = expertiseClusters.some(
+                item => item.id === node.clusterId
+              )
+
               const radius =
-                Math.max(24, 16 + node.gephiSize * 1.85) *
-                nodeSize
+                Math.max(30, 20 + node.gephiSize * 2.15) *
+                nodeSize *
+                (isNamedCluster ? 1.12 : 0.62)
 
               return (
                 <g
@@ -707,7 +712,7 @@ export default function ExpertiseConstellation({
                   activeCluster !== cluster.id
 
                 const lines = wrapLabel(cluster.label, mode === 'category' ? 22 : 24)
-                const lineHeight = 22
+                const lineHeight = 30
                 const totalHeight = (lines.length - 1) * lineHeight
 
                 return (
@@ -928,7 +933,7 @@ export default function ExpertiseConstellation({
           z-index:7;
           left:14px;
           top:62px;
-          width:min(640px,calc(100% - 190px));
+          width:min(760px,calc(100% - 190px));
           max-height:min(58vh,560px);
           overflow:auto;
           padding:20px 22px 18px;
@@ -949,8 +954,8 @@ export default function ExpertiseConstellation({
 
         .map-reading-inline p{
           margin:0 0 12px;
-          font-size:12.5px;
-          line-height:1.58;
+          font-size:14px;
+          line-height:1.62;
         }
 
         .map-reading-inline strong{
@@ -983,9 +988,9 @@ export default function ExpertiseConstellation({
         }
 
         .entry-edge.inter-cluster{
-          stroke:#7d90aa;
-          stroke-width:1.75;
-          stroke-dasharray:3.5 3.5;
+          stroke:#6f86a3;
+          stroke-width:2.4;
+          stroke-dasharray:none;
         }
 
         .gephi-zoom-tools{
@@ -1048,7 +1053,7 @@ export default function ExpertiseConstellation({
           letter-spacing:-.2px;
           paint-order:stroke;
           stroke:#ffffff;
-          stroke-width:5px;
+          stroke-width:7px;
           stroke-linejoin:round;
           pointer-events:none;
         }
@@ -1071,7 +1076,7 @@ export default function ExpertiseConstellation({
 
         .entry-cluster-title-svg{
           fill:#142f55;
-          font-size:28px;
+          font-size:40px;
           font-weight:880;
           letter-spacing:-.15px;
           paint-order:stroke;
@@ -1083,9 +1088,9 @@ export default function ExpertiseConstellation({
 
         .entry-cluster-transdirectional-svg{
           fill:#61738c;
-          font-size:12px;
+          font-size:17px;
           font-style:italic;
-          font-weight:750;
+          font-weight:760;
           paint-order:stroke;
           stroke:#ffffff;
           stroke-width:4px;
@@ -1179,7 +1184,7 @@ export default function ExpertiseConstellation({
         }
 
         .entry-cluster-card strong{
-          font-size:28px;
+          font-size:40px;
           line-height:1.06;
           font-weight:860;
           letter-spacing:-.15px;
