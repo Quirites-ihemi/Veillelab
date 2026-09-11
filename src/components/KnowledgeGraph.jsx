@@ -63,27 +63,57 @@ function typeRank(type){
   return TYPE_ORDER.has(normalized)?TYPE_ORDER.get(normalized):99
 }
 
+function stableHash(value=''){
+  let h=2166136261
+  for(const ch of String(value)){
+    h^=ch.charCodeAt(0)
+    h=Math.imul(h,16777619)
+  }
+  return (h>>>0)/4294967295
+}
+
+function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
+
+/*
+ * Mise en page "réseau organique" :
+ * - le nœud actif reste le point d'ancrage ;
+ * - les voisins directs occupent une surface, pas une couronne ;
+ * - les nœuds de second niveau se placent près du voisin qui les relie au centre ;
+ * - une courte relaxation déterministe réduit les collisions et casse la symétrie.
+ *
+ * Contrairement à l'ancienne rosace, le rayon n'est donc jamais constant.
+ */
 function layoutGraph(nodes,relations,focusId){
   const adj=buildAdjacency(nodes,relations),out={}
   const focus=nodes.find(n=>n.node_id===focusId)||nodes[0]
   if(!focus)return out
 
+  const width=1170,height=770
   const cx=585,cy=380
-  const innerRx=285,innerRy=185
-  const outerRx=455,outerRy=285
-  out[focus.node_id]={x:cx,y:cy,focus:true,active:true}
+  const bounds={left:92,right:1078,top:92,bottom:675}
+  out[focus.node_id]={x:cx,y:cy,focus:true,active:true,fixed:true}
 
   const directIds=new Set((adj.get(focus.node_id)||[]).map(x=>x.id))
   const directNodes=nodes
     .filter(n=>directIds.has(n.node_id))
-    .sort((a,b)=>typeRank(a.type_noeud)-typeRank(b.type_noeud)||(adj.get(b.node_id)?.length||0)-(adj.get(a.node_id)?.length||0)||String(a.libelle).localeCompare(String(b.libelle),'fr'))
+    .sort((a,b)=>(adj.get(b.node_id)?.length||0)-(adj.get(a.node_id)?.length||0)||typeRank(a.type_noeud)-typeRank(b.type_noeud)||String(a.libelle).localeCompare(String(b.libelle),'fr'))
 
-  const directAngles=new Map()
-  const dCount=Math.max(1,directNodes.length)
+  // Répartition en disque irrégulier (spirale d'or) : aucune couronne régulière.
+  const golden=Math.PI*(3-Math.sqrt(5))
   directNodes.forEach((n,i)=>{
-    const angle=-Math.PI/2+(Math.PI*2*i/dCount)
-    directAngles.set(n.node_id,angle)
-    out[n.node_id]={x:cx+Math.cos(angle)*innerRx,y:cy+Math.sin(angle)*innerRy,hub:true,active:true,angle}
+    const count=Math.max(1,directNodes.length)
+    const t=(i+.72)/count
+    const jitter=(stableHash(n.node_id)-.5)*.42
+    const angle=i*golden-.92+jitter
+    const base=175+Math.sqrt(t)*245
+    const degreeBoost=Math.min(42,(adj.get(n.node_id)?.length||0)*3)
+    const rx=base+degreeBoost
+    const ry=(base*.72)+degreeBoost*.35
+    out[n.node_id]={
+      x:clamp(cx+Math.cos(angle)*rx,bounds.left,bounds.right),
+      y:clamp(cy+Math.sin(angle)*ry,bounds.top,bounds.bottom),
+      hub:true,active:true,angle
+    }
   })
 
   const remaining=nodes.filter(n=>n.node_id!==focus.node_id&&!directIds.has(n.node_id))
@@ -99,23 +129,87 @@ function layoutGraph(nodes,relations,focusId){
     else orphans.push(n)
   })
 
-  const sectorWidth=(Math.PI*2)/dCount
+  // Les nœuds secondaires forment de petites ramifications autour de leur hub.
   directNodes.forEach(parent=>{
     const list=(byParent.get(parent.node_id)||[]).sort((a,b)=>typeRank(a.type_noeud)-typeRank(b.type_noeud)||String(a.libelle).localeCompare(String(b.libelle),'fr'))
-    const base=directAngles.get(parent.node_id)||0
-    const count=list.length
-    const totalSpread=Math.min(sectorWidth*.58,.9)
+    const p=out[parent.node_id]
+    if(!p||!list.length)return
+    const dx=p.x-cx,dy=p.y-cy
+    const norm=Math.max(1,Math.hypot(dx,dy))
+    const ux=dx/norm,uy=dy/norm
+    const tx=-uy,ty=ux
     list.forEach((n,i)=>{
-      const offset=count<=1?0:(i-(count-1)/2)*(totalSpread/Math.max(1,count-1))
-      const angle=base+offset
-      out[n.node_id]={x:cx+Math.cos(angle)*outerRx,y:cy+Math.sin(angle)*outerRy,secondary:true,angle}
+      const center=(list.length-1)/2
+      const band=i-center
+      const tier=Math.floor(Math.abs(band)/3)
+      const fan=band*72
+      const outward=108+tier*45+(stableHash(n.node_id)-.5)*24
+      out[n.node_id]={
+        x:clamp(p.x+ux*outward+tx*fan,bounds.left,bounds.right),
+        y:clamp(p.y+uy*outward+ty*fan*.72,bounds.top,bounds.bottom),
+        secondary:true,parentId:parent.node_id
+      }
     })
   })
 
+  // Nœuds sans parent direct : périphérie répartie de façon asymétrique.
   orphans.forEach((n,i)=>{
-    const angle=-Math.PI/2+(Math.PI*2*(i+.5)/Math.max(1,orphans.length))
-    out[n.node_id]={x:cx+Math.cos(angle)*outerRx,y:cy+Math.sin(angle)*outerRy,secondary:true,angle}
+    const angle=i*golden+1.15+(stableHash(n.node_id)-.5)*.28
+    const radius=410+34*(i%3)
+    out[n.node_id]={
+      x:clamp(cx+Math.cos(angle)*radius,bounds.left,bounds.right),
+      y:clamp(cy+Math.sin(angle)*radius*.68,bounds.top,bounds.bottom),
+      secondary:true
+    }
   })
+
+  const movable=nodes.filter(n=>n.node_id!==focus.node_id&&out[n.node_id])
+  const all=nodes.filter(n=>out[n.node_id])
+  const edges=relations.filter(r=>out[r.source_id]&&out[r.cible_id])
+
+  // Relaxation légère et déterministe : répulsion + ressorts, centre fixé.
+  // Elle évite les superpositions sans transformer le graphe en simulation instable.
+  for(let iter=0;iter<62;iter++){
+    const delta=new Map(movable.map(n=>[n.node_id,{x:0,y:0}]))
+
+    for(let i=0;i<all.length;i++){
+      const a=all[i],pa=out[a.node_id]
+      for(let j=i+1;j<all.length;j++){
+        const b=all[j],pb=out[b.node_id]
+        let dx=pb.x-pa.x,dy=pb.y-pa.y
+        let dist=Math.hypot(dx,dy)
+        if(dist<.01){dx=.01;dy=.01;dist=.014}
+        const aMain=a.node_id===focus.node_id||directIds.has(a.node_id)
+        const bMain=b.node_id===focus.node_id||directIds.has(b.node_id)
+        const desired=aMain&&bMain?142:(aMain||bMain?112:88)
+        if(dist<desired){
+          const force=(desired-dist)*.055
+          const ux=dx/dist,uy=dy/dist
+          if(delta.has(a.node_id)){delta.get(a.node_id).x-=ux*force;delta.get(a.node_id).y-=uy*force}
+          if(delta.has(b.node_id)){delta.get(b.node_id).x+=ux*force;delta.get(b.node_id).y+=uy*force}
+        }
+      }
+    }
+
+    edges.forEach(r=>{
+      const a=out[r.source_id],b=out[r.cible_id]
+      let dx=b.x-a.x,dy=b.y-a.y,dist=Math.max(1,Math.hypot(dx,dy))
+      const touchesFocus=r.source_id===focus.node_id||r.cible_id===focus.node_id
+      const desired=touchesFocus?285:158
+      const force=(dist-desired)*(touchesFocus?.010:.016)
+      const ux=dx/dist,uy=dy/dist
+      if(delta.has(r.source_id)){delta.get(r.source_id).x+=ux*force;delta.get(r.source_id).y+=uy*force}
+      if(delta.has(r.cible_id)){delta.get(r.cible_id).x-=ux*force;delta.get(r.cible_id).y-=uy*force}
+    })
+
+    movable.forEach(n=>{
+      const p=out[n.node_id],d=delta.get(n.node_id)
+      // Très faible rappel vers la position initiale de branche pour conserver la stabilité.
+      p.x=clamp(p.x+d.x,bounds.left,bounds.right)
+      p.y=clamp(p.y+d.y,bounds.top,bounds.bottom)
+    })
+  }
+
   return out
 }
 

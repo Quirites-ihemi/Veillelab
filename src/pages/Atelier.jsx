@@ -110,18 +110,17 @@ function Regime({cls,title,children}){return <div className={`qvl-regime-info ${
 function Workspace({treatment,data,onBack,initialNeed=''}){
  if(treatment.traitement_id==='T03') return <ReflectionWorkspace treatment={treatment} data={data} onBack={onBack} initialNeed={initialNeed}/>
  if(treatment.traitement_id==='T04') return <RecommendationWorkspace treatment={treatment} data={data} onBack={onBack}/>
- const pubs=data.publications.filter(p=>p.has_graph)
+ const pubs=data.publications.filter(p=>p.chunk_count>0).slice(0,20)
  const isT01=treatment.traitement_id==='T01'
- const firstChunkPub=pubs.find(p=>(p.chunk_count||0)>0)
- const [selected,setSelected]=useState(firstChunkPub?[firstChunkPub.publication_id]:[])
+ const [selected,setSelected]=useState(pubs.length?[pubs[0].publication_id]:[])
  const [need,setNeed]=useState(initialNeed)
  const [generation,setGeneration]=useState(null)
  const [loading,setLoading]=useState(false)
  const [error,setError]=useState('')
  const selectedPubs=pubs.filter(p=>selected.includes(p.publication_id))
- const togglePublication=id=>{const pub=pubs.find(p=>p.publication_id===id);if(isT01&&!(pub?.chunk_count>0))return;setGeneration(null);setError('');if(isT01){setSelected([id]);return}setSelected(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id])}
- const runGeneration=async()=>{if(!isT01||!need.trim()||!selectedPubs.length||selectedPubs.some(p=>!(p.chunk_count>0))||loading)return;setLoading(true);setError('');try{const result=await generateTreatment({treatment,need:need.trim(),publications:selectedPubs,contents:data.contents,nodes:data.nodes,relations:data.relations});setGeneration(result)}catch(e){setError(e?.message||String(e));setGeneration(null)}finally{setLoading(false)}}
- return <main className="page workspace-page"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button><div className="workspace-head"><div><h1>{treatment.nom_traitement}</h1><p>{treatment.fonction}</p></div><span className={`regime ${regimeClass[treatment.regime_IA]||''}`}>{treatment.regime_IA}</span></div><div className="workspace-layout"><aside className="corpus-panel"><h3>Corpus sélectionné <span>{selected.length} source{selected.length>1?'s':''}</span></h3>{isT01&&<div className="corpus-scope-note"><Icon name="info" size={15}/><span>T01 est défini pour une publication : choisissez une source.</span></div>}{pubs.map(p=>{const unavailable=isT01&&!(p.chunk_count>0);return <label className={`corpus-item ${selected.includes(p.publication_id)?'selected':''}`} key={p.publication_id} style={unavailable?{opacity:.58}:undefined}><input type={isT01?'radio':'checkbox'} name={isT01?'t01-source':undefined} checked={selected.includes(p.publication_id)} disabled={unavailable} onChange={()=>togglePublication(p.publication_id)}/>{p.has_image?<img src={`.${p.image_path}`} alt=""/>:<div className="mini-placeholder">{p.publication_id}</div>}<div><strong>{p.titre}</strong><span>{p.organisme_producteur} · {p.année_publication}</span>{unavailable&&<small style={{display:'block',marginTop:3,color:'#8a5a16'}}>Contenu segmenté indisponible pour ce traitement</small>}</div></label>})}</aside><section className="production-panel"><div className="user-need"><label>Besoin utilisateur</label><textarea value={need} onChange={e=>{setNeed(e.target.value);setError('')}} placeholder="Décrivez le besoin, la question ou le livrable attendu…"/></div><div className="production-sheet"><h3>Cadre du traitement</h3><Row label="Objectif" value={treatment.objectif}/><Row label="Périmètre" value={treatment.perimetre}/><Row label="Documents compatibles" value={treatment.type_document_compatible}/><Row label="Données mobilisées" value={treatment.donnees_mobilisees}/><Row label="Format de sortie" value={treatment.format_sortie}/><Row label="Provenance exigée" value={treatment.provenance_exigee}/>{isT01?<GenerationT01 generation={generation} loading={loading} error={error} need={need} selectedCount={selectedPubs.length} onGenerate={runGeneration}/>:<div className="production-placeholder"><Icon name="spark" size={30}/><strong>Génération à connecter</strong><p>Le moteur commun sera branché progressivement.</p><button className="btn primary" disabled>Générer avec le corpus sélectionné</button></div>}</div></section><aside className="source-rules"><h3>Règles de production</h3><p><strong>Régime IA :</strong> {treatment.regime_IA}</p><p><strong>Interaction :</strong> {treatment.interaction_utilisateur}</p><p><strong>Mode :</strong> {treatment.mode_generation}</p><div className="source-rule"><Icon name="book"/><span>Les contenus produits doivent conserver leur provenance lorsque le traitement l’exige.</span></div>{isT01&&<div className="source-rule engine-rule"><Icon name="spark"/><span>Le moteur parcourt la matière documentaire nécessaire, puis vérifie chaque provenance avant d’afficher le résumé.</span></div>}</aside></div></main>
+ const togglePublication=id=>{setGeneration(null);setError('');if(isT01){setSelected([id]);return}setSelected(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id])}
+ const runGeneration=async()=>{if(!isT01||!need.trim()||!selectedPubs.length||loading)return;setLoading(true);setError('');try{const result=await generateTreatment({treatment,need:need.trim(),publications:selectedPubs,contents:data.contents,nodes:data.nodes,relations:data.relations});setGeneration(result)}catch(e){setError(e?.message||String(e));setGeneration(null)}finally{setLoading(false)}}
+ return <main className="page workspace-page"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button><div className="workspace-head"><div><h1>{treatment.nom_traitement}</h1><p>{treatment.fonction}</p></div><span className={`regime ${regimeClass[treatment.regime_IA]||''}`}>{treatment.regime_IA}</span></div><div className="workspace-layout"><aside className="corpus-panel"><h3>Corpus sélectionné <span>{selected.length} source{selected.length>1?'s':''}</span></h3>{isT01&&<div className="corpus-scope-note"><Icon name="info" size={15}/><span>T01 est défini pour une publication : choisissez une source.</span></div>}{pubs.map(p=><label className={`corpus-item ${selected.includes(p.publication_id)?'selected':''}`} key={p.publication_id}><input type={isT01?'radio':'checkbox'} name={isT01?'t01-source':undefined} checked={selected.includes(p.publication_id)} onChange={()=>togglePublication(p.publication_id)}/>{p.has_image?<img src={`.${p.image_path}`} alt=""/>:<div className="mini-placeholder">{p.publication_id}</div>}<div><strong>{p.titre}</strong><span>{p.organisme_producteur} · {p.année_publication}</span></div></label>)}</aside><section className="production-panel"><div className="user-need"><label>Besoin utilisateur</label><textarea value={need} onChange={e=>{setNeed(e.target.value);setError('')}} placeholder="Décrivez le besoin, la question ou le livrable attendu…"/></div><div className="production-sheet"><h3>Cadre du traitement</h3><Row label="Objectif" value={treatment.objectif}/><Row label="Périmètre" value={treatment.perimetre}/><Row label="Documents compatibles" value={treatment.type_document_compatible}/><Row label="Données mobilisées" value={treatment.donnees_mobilisees}/><Row label="Format de sortie" value={treatment.format_sortie}/><Row label="Provenance exigée" value={treatment.provenance_exigee}/>{isT01?<GenerationT01 generation={generation} loading={loading} error={error} need={need} selectedCount={selectedPubs.length} onGenerate={runGeneration}/>:<div className="production-placeholder"><Icon name="spark" size={30}/><strong>Génération à connecter</strong><p>Le moteur commun sera branché progressivement.</p><button className="btn primary" disabled>Générer avec le corpus sélectionné</button></div>}</div></section><aside className="source-rules"><h3>Règles de production</h3><p><strong>Régime IA :</strong> {treatment.regime_IA}</p><p><strong>Interaction :</strong> {treatment.interaction_utilisateur}</p><p><strong>Mode :</strong> {treatment.mode_generation}</p><div className="source-rule"><Icon name="book"/><span>Les contenus produits doivent conserver leur provenance lorsque le traitement l’exige.</span></div>{isT01&&<div className="source-rule engine-rule"><Icon name="spark"/><span>Le moteur parcourt la matière documentaire nécessaire, puis vérifie chaque provenance avant d’afficher le résumé.</span></div>}</aside></div></main>
 }
 
 
@@ -202,7 +201,7 @@ function groupRecommendationNodes(nodes,data,subject){
 }
 
 function RecommendationWorkspace({treatment,data,onBack}){
-  const pubs=useMemo(()=>data.publications.filter(p=>p.has_graph),[data])
+  const pubs=useMemo(()=>data.publications.filter(p=>p.chunk_count>0),[data])
   const domainOptions=useMemo(()=>[...new Set(pubs.flatMap(publicationDomains))].sort((a,b)=>a.localeCompare(b,'fr')),[pubs])
   const [domains,setDomains]=useState([])
   const [subject,setSubject]=useState('')
@@ -295,7 +294,7 @@ const REFLECTION_SCREEN_STYLES=`
 `
 
 function ReflectionWorkspace({treatment,data,onBack,initialNeed=''}){
-  const pubs=data.publications.filter(p=>p.has_graph)
+  const pubs=data.publications.filter(p=>p.chunk_count>0)
   const [selected,setSelected]=useState([])
   const [need,setNeed]=useState(initialNeed)
   const [generation,setGeneration]=useState(null)
@@ -303,14 +302,13 @@ function ReflectionWorkspace({treatment,data,onBack,initialNeed=''}){
   const [error,setError]=useState('')
   const [corpusOpen,setCorpusOpen]=useState(false)
   const selectedPubs=pubs.filter(p=>selected.includes(p.publication_id))
-  const chunkReadyCount=pubs.filter(p=>p.chunk_count>0).length
 
-  const toggle=id=>{const pub=pubs.find(p=>p.publication_id===id);if(!(pub?.chunk_count>0))return;setError('');setGeneration(null);setSelected(s=>s.includes(id)?s.filter(x=>x!==id):(s.length>=4?s:[...s,id]))}
+  const toggle=id=>{setError('');setGeneration(null);setSelected(s=>s.includes(id)?s.filter(x=>x!==id):(s.length>=4?s:[...s,id]))}
   const run=async()=>{
     if(!need.trim()||loading)return
     setLoading(true);setError('')
     try{
-      const publicationsForRag=selectedPubs.length?selectedPubs:pubs.filter(p=>p.chunk_count>0)
+      const publicationsForRag=selectedPubs.length?selectedPubs:pubs
       const result=await generateTreatment({treatment,need:need.trim(),publications:publicationsForRag,contents:data.contents,nodes:data.nodes,relations:data.relations})
       setGeneration(result);setCorpusOpen(false)
     }catch(e){setError(e?.message||String(e));setGeneration(null)}finally{setLoading(false)}
@@ -334,9 +332,9 @@ function ReflectionWorkspace({treatment,data,onBack,initialNeed=''}){
         <div className="qvl-corpus-rail-head">Corpus actif <button type="button" onClick={()=>setCorpusOpen(v=>!v)} style={{border:0,background:'transparent',cursor:'pointer',fontSize:18,color:'#1c4c9b'}}>»</button></div>
         <div className="qvl-corpus-stat"><b>{pubs.length}</b><span>publications</span></div>
         <div className="qvl-corpus-stat"><b>{generation?usedCount:(selected.length||'RAG')}</b><span>{generation?'mobilisées':selected.length?'sélectionnées':'recherche globale'}</span></div>
-        <div className="qvl-corpus-mode">{ragMode?`Le prompt suffit : le moteur cherche ses appuis dans le RAG (${chunkReadyCount} publications avec contenu segmenté).`:'Jusqu’à 4 publications peuvent être imposées.'}</div>
+        <div className="qvl-corpus-mode">{ragMode?'Le prompt suffit : le moteur cherche ses appuis dans le RAG.':'Jusqu’à 4 publications peuvent être imposées.'}</div>
         <button className="qvl-corpus-open" type="button" onClick={()=>setCorpusOpen(v=>!v)}>{corpusOpen?'Réduire':'Ouvrir'}</button>
-        {corpusOpen&&<div className="qvl-corpus-expanded"><div className="reflection-side-head"><div><strong>Publications</strong><span>{selected.length?`${selected.length} sélectionnée${selected.length>1?'s':''}`:'Aucune imposée'}</span></div><small>0 à 4 sources</small></div><div className="reflection-corpus-list">{pubs.map(p=>{const unavailable=!(p.chunk_count>0);return <label key={p.publication_id} className={`reflection-corpus-item ${selected.includes(p.publication_id)?'selected':''}`} style={unavailable?{opacity:.58}:undefined}><input type="checkbox" checked={selected.includes(p.publication_id)} disabled={unavailable} onChange={()=>toggle(p.publication_id)}/>{p.has_image?<img src={`.${p.image_path}`} alt=""/>:<div className="mini-placeholder">{p.publication_id}</div>}<div><b>{p.publication_id}</b><strong>{p.titre}</strong><span>{p.organisme_producteur} · {p.année_publication}</span>{unavailable&&<small style={{display:'block',marginTop:3,color:'#8a5a16'}}>Contenu segmenté indisponible pour ce traitement</small>}</div></label>})}</div></div>}
+        {corpusOpen&&<div className="qvl-corpus-expanded"><div className="reflection-side-head"><div><strong>Publications</strong><span>{selected.length?`${selected.length} sélectionnée${selected.length>1?'s':''}`:'Aucune imposée'}</span></div><small>0 à 4 sources</small></div><div className="reflection-corpus-list">{pubs.map(p=><label key={p.publication_id} className={`reflection-corpus-item ${selected.includes(p.publication_id)?'selected':''}`}><input type="checkbox" checked={selected.includes(p.publication_id)} onChange={()=>toggle(p.publication_id)}/>{p.has_image?<img src={`.${p.image_path}`} alt=""/>:<div className="mini-placeholder">{p.publication_id}</div>}<div><b>{p.publication_id}</b><strong>{p.titre}</strong><span>{p.organisme_producteur} · {p.année_publication}</span></div></label>)}</div></div>}
       </aside>
 
       <section className="qvl-map-stage">
