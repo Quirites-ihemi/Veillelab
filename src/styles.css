@@ -1203,3 +1203,48 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
     padding:14px !important;
   }
 }
+
+/* ==========================================================
+   LISIBILITÉ DES PUBLICATIONS — ONGLETS 2 ET 3
+   13/09/2026
+   Modification limitée aux listes de publications.
+   ========================================================== */
+
+/* ONGLET 3 — corpus du Résumé analytique */
+.corpus-item strong{
+  font-size:15px !important;
+  line-height:1.38 !important;
+  font-weight:750 !important;
+}
+.corpus-item span{
+  font-size:12.5px !important;
+  line-height:1.45 !important;
+}
+
+/* ONGLET 2 — sélecteur de publications actuel */
+.explorer-publication-item b{
+  font-size:11.5px !important;
+  line-height:1.3 !important;
+}
+.explorer-publication-item strong{
+  font-size:15px !important;
+  line-height:1.38 !important;
+  font-weight:750 !important;
+}
+.explorer-publication-item span{
+  font-size:12.5px !important;
+  line-height:1.45 !important;
+}
+
+/* ONGLET 2 — compatibilité avec les variantes de liste déjà présentes */
+.explorer-v6-pub-row strong,
+.explorer-v7-selection-list button>span>strong{
+  font-size:15px !important;
+  line-height:1.38 !important;
+}
+.explorer-v6-pub-row small,
+.explorer-v7-selection-list button>span>small{
+  font-size:12.5px !important;
+  line-height:1.4 !important;
+}
+
