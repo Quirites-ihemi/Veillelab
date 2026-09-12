@@ -597,3 +597,21 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
   .explorer-v02-graph .publication-workspace{padding:16px 16px 12px}
   .explorer-v02-graph .explorer-chat-top{margin:8px 0}
 }
+
+/* ===== ONGLET 2 — layout à branches orientées (12/09/2026) ===== */
+.explorer-v02-graph .knowledge-constellation{
+  background:linear-gradient(180deg,#fff 0%,#fff 78%,#fbfcfe 100%);
+}
+.explorer-v02-graph .knowledge-svg{
+  width:100%;
+  height:100%;
+  min-height:0;
+  display:block;
+}
+.explorer-v02-graph .kg-label{
+  paint-order:stroke;
+  stroke:#fff;
+  stroke-width:4px;
+  stroke-linejoin:round;
+}
+.explorer-v02-graph .kg-label.secondary-label{font-size:10.5px}

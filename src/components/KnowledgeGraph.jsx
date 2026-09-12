@@ -88,88 +88,179 @@ function layoutGraph(nodes,relations,focusId){
   const focus=nodes.find(n=>n.node_id===focusId)||nodes[0]
   if(!focus)return out
 
-  const width=1170,height=770
-  const cx=585,cy=380
-  const bounds={left:92,right:1078,top:92,bottom:675}
+  // Mise en page à branches orientées : on ne distribue plus les voisins
+  // autour d'un cercle. Les relations entrantes partent plutôt à gauche,
+  // les relations sortantes plutôt à droite, puis les descendants se
+  // ramifient vers l'extérieur. Les positions restent déterministes.
+  const width=1170,height=720
+  const cx=585,cy=350
+  const bounds={left:76,right:1094,top:78,bottom:640}
   out[focus.node_id]={x:cx,y:cy,focus:true,active:true,fixed:true}
 
-  const directIds=new Set((adj.get(focus.node_id)||[]).map(x=>x.id))
-  const directNodes=nodes
-    .filter(n=>directIds.has(n.node_id))
-    .sort((a,b)=>(adj.get(b.node_id)?.length||0)-(adj.get(a.node_id)?.length||0)||typeRank(a.type_noeud)-typeRank(b.type_noeud)||String(a.libelle).localeCompare(String(b.libelle),'fr'))
+  const nodeMap=new Map(nodes.map(n=>[n.node_id,n]))
+  const degree=id=>(adj.get(id)?.length||0)
 
-  // Répartition en disque irrégulier (spirale d'or) : aucune couronne régulière.
-  const golden=Math.PI*(3-Math.sqrt(5))
-  directNodes.forEach((n,i)=>{
-    const count=Math.max(1,directNodes.length)
-    const t=(i+.72)/count
-    const jitter=(stableHash(n.node_id)-.5)*.42
-    const angle=i*golden-.92+jitter
-    const base=175+Math.sqrt(t)*245
-    const degreeBoost=Math.min(42,(adj.get(n.node_id)?.length||0)*3)
-    const rx=base+degreeBoost
-    const ry=(base*.72)+degreeBoost*.35
-    out[n.node_id]={
-      x:clamp(cx+Math.cos(angle)*rx,bounds.left,bounds.right),
-      y:clamp(cy+Math.sin(angle)*ry,bounds.top,bounds.bottom),
-      hub:true,active:true,angle
-    }
-  })
-
-  const remaining=nodes.filter(n=>n.node_id!==focus.node_id&&!directIds.has(n.node_id))
-  const byParent=new Map(directNodes.map(n=>[n.node_id,[]]))
-  const orphans=[]
-
-  remaining.forEach(n=>{
-    const possible=(adj.get(n.node_id)||[])
-      .filter(x=>directIds.has(x.id))
-      .sort((a,b)=>(adj.get(b.id)?.length||0)-(adj.get(a.id)?.length||0))
-    const parentId=possible[0]?.id
-    if(parentId&&byParent.has(parentId))byParent.get(parentId).push(n)
-    else orphans.push(n)
-  })
-
-  // Les nœuds secondaires forment de petites ramifications autour de leur hub.
-  directNodes.forEach(parent=>{
-    const list=(byParent.get(parent.node_id)||[]).sort((a,b)=>typeRank(a.type_noeud)-typeRank(b.type_noeud)||String(a.libelle).localeCompare(String(b.libelle),'fr'))
-    const p=out[parent.node_id]
-    if(!p||!list.length)return
-    const dx=p.x-cx,dy=p.y-cy
-    const norm=Math.max(1,Math.hypot(dx,dy))
-    const ux=dx/norm,uy=dy/norm
-    const tx=-uy,ty=ux
-    list.forEach((n,i)=>{
-      const center=(list.length-1)/2
-      const band=i-center
-      const tier=Math.floor(Math.abs(band)/3)
-      const fan=band*72
-      const outward=108+tier*45+(stableHash(n.node_id)-.5)*24
-      out[n.node_id]={
-        x:clamp(p.x+ux*outward+tx*fan,bounds.left,bounds.right),
-        y:clamp(p.y+uy*outward+ty*fan*.72,bounds.top,bounds.bottom),
-        secondary:true,parentId:parent.node_id
+  // 1) Arbre de parcours depuis le nœud actif.
+  const level=new Map([[focus.node_id,0]])
+  const parent=new Map([[focus.node_id,null]])
+  const queue=[focus.node_id]
+  while(queue.length){
+    const id=queue.shift()
+    const neighbours=[...(adj.get(id)||[])].sort((a,b)=>degree(b.id)-degree(a.id)||String(a.id).localeCompare(String(b.id)))
+    neighbours.forEach(({id:nextId})=>{
+      if(!level.has(nextId)){
+        level.set(nextId,(level.get(id)||0)+1)
+        parent.set(nextId,id)
+        queue.push(nextId)
       }
     })
+  }
+
+  const children=new Map(nodes.map(n=>[n.node_id,[]]))
+  parent.forEach((p,id)=>{if(p&&children.has(p))children.get(p).push(id)})
+  const subtreeSize=new Map()
+  const calcSize=id=>{
+    let size=1
+    ;(children.get(id)||[]).forEach(child=>{size+=calcSize(child)})
+    subtreeSize.set(id,size)
+    return size
+  }
+  calcSize(focus.node_id)
+
+  const directRoots=(children.get(focus.node_id)||[]).sort((a,b)=>
+    (subtreeSize.get(b)||1)-(subtreeSize.get(a)||1)||degree(b)-degree(a)||String(nodeMap.get(a)?.libelle||a).localeCompare(String(nodeMap.get(b)?.libelle||b),'fr')
+  )
+
+  // 2) Le sens réel des relations aide à répartir les grandes branches.
+  //    Entrant vers le focus => gauche ; sortant depuis le focus => droite.
+  const sideByRoot=new Map()
+  let leftWeight=0,rightWeight=0
+  directRoots.forEach(rootId=>{
+    let incoming=0,outgoing=0
+    relations.forEach(r=>{
+      if(r.source_id===rootId&&r.cible_id===focus.node_id)incoming++
+      if(r.source_id===focus.node_id&&r.cible_id===rootId)outgoing++
+    })
+    let side
+    if(incoming>outgoing)side=-1
+    else if(outgoing>incoming)side=1
+    else side=leftWeight<=rightWeight?-1:1
+    sideByRoot.set(rootId,side)
+    const weight=Math.max(1,subtreeSize.get(rootId)||1)
+    if(side<0)leftWeight+=weight;else rightWeight+=weight
   })
 
-  // Nœuds sans parent direct : périphérie répartie de façon asymétrique.
-  orphans.forEach((n,i)=>{
-    const angle=i*golden+1.15+(stableHash(n.node_id)-.5)*.28
-    const radius=410+34*(i%3)
-    out[n.node_id]={
-      x:clamp(cx+Math.cos(angle)*radius,bounds.left,bounds.right),
-      y:clamp(cy+Math.sin(angle)*radius*.68,bounds.top,bounds.bottom),
-      secondary:true
-    }
+  // Si toutes les relations ont le même sens, on conserve malgré tout
+  // un graphe lisible sur les deux côtés, sans modifier les relations.
+  const leftRoots=directRoots.filter(id=>sideByRoot.get(id)<0)
+  const rightRoots=directRoots.filter(id=>sideByRoot.get(id)>0)
+  if(!leftRoots.length||!rightRoots.length){
+    leftRoots.length=0;rightRoots.length=0
+    let lw=0,rw=0
+    directRoots.forEach(rootId=>{
+      const weight=Math.max(1,subtreeSize.get(rootId)||1)
+      if(lw<=rw){leftRoots.push(rootId);sideByRoot.set(rootId,-1);lw+=weight}
+      else{rightRoots.push(rootId);sideByRoot.set(rootId,1);rw+=weight}
+    })
+  }
+
+  const anchors={}
+  const rootOf=id=>{
+    let current=id
+    let guard=0
+    while(parent.get(current)&&parent.get(current)!==focus.node_id&&guard<50){current=parent.get(current);guard++}
+    return parent.get(current)===focus.node_id?current:null
+  }
+
+  // 3) Plusieurs couloirs par côté. Les branches riches restent plutôt proches
+  //    du centre ; les branches sans descendants occupent le couloir externe.
+  function placeRootSide(rootIds,side){
+    if(!rootIds.length)return
+    // Trois couloirs sur les côtés très chargés, deux sur les côtés moyens.
+    // Cela évite d'empiler 8 à 12 voisins du focus dans une seule colonne.
+    const laneCount=rootIds.length>=9?3:rootIds.length>=5?2:1
+    const lanes=Array.from({length:laneCount},()=>[])
+    const laneLoad=Array(laneCount).fill(0)
+
+    rootIds.forEach(rootId=>{
+      const weight=Math.max(1,subtreeSize.get(rootId)||1)
+      const rich=weight>1
+      // Les vraies branches restent dans les couloirs intérieurs pour
+      // laisser de la place à leurs descendants ; les feuilles peuvent
+      // utiliser le couloir extérieur.
+      const candidates=rich&&laneCount>1
+        ? [...Array(laneCount-1).keys()]
+        : [...Array(laneCount).keys()]
+      let target=candidates[0]||0
+      candidates.forEach(index=>{if(laneLoad[index]<laneLoad[target])target=index})
+      lanes[target].push(rootId)
+      laneLoad[target]+=weight
+    })
+
+    const offsets=laneCount===1?[260]:laneCount===2?[205,405]:[175,320,465]
+    lanes.forEach((lane,laneIndex)=>{
+      if(!lane.length)return
+      const xBase=cx+side*offsets[laneIndex]
+      const usable=bounds.bottom-bounds.top
+      lane.forEach((rootId,index)=>{
+        const slot=(index+1)/(lane.length+1)
+        const jitterY=(stableHash(rootId)-.5)*30
+        const jitterX=(stableHash(rootId+'x')-.5)*18
+        const x=clamp(xBase+jitterX,bounds.left,bounds.right)
+        const y=clamp(bounds.top+usable*slot+jitterY,bounds.top,bounds.bottom)
+        out[rootId]={x,y,hub:true,active:true,branchRoot:true,side,lane:laneIndex}
+        anchors[rootId]={x,y}
+      })
+    })
+  }
+  placeRootSide(leftRoots,-1)
+  placeRootSide(rightRoots,1)
+
+  // 4) Les niveaux suivants restent près de leur branche et avancent vers
+  //    l'extérieur. On conserve donc la structure du graphe au lieu de
+  //    fabriquer des « secteurs » sémantiques artificiels.
+  const placed=new Set([focus.node_id,...directRoots])
+  const ordered=nodes
+    .filter(n=>n.node_id!==focus.node_id&&!directRoots.includes(n.node_id)&&level.has(n.node_id))
+    .sort((a,b)=>(level.get(a.node_id)||99)-(level.get(b.node_id)||99)||String(a.node_id).localeCompare(String(b.node_id)))
+
+  ordered.forEach(n=>{
+    const id=n.node_id,pid=parent.get(id),p=out[pid]
+    const rootId=rootOf(id)
+    if(!p||!rootId||!out[rootId])return
+    const side=sideByRoot.get(rootId)||1
+    const siblings=(children.get(pid)||[]).filter(s=>level.has(s))
+    const index=Math.max(0,siblings.indexOf(id))
+    const center=(siblings.length-1)/2
+    const depth=Math.max(2,level.get(id)||2)
+    const stepX=depth===2?145:118
+    const x=clamp(p.x+side*stepX+(stableHash(id+'x')-.5)*18,bounds.left,bounds.right)
+    const spread=Math.min(90,58+siblings.length*4)
+    const y=clamp(p.y+(index-center)*spread+(stableHash(id)-.5)*20,bounds.top,bounds.bottom)
+    out[id]={x,y,secondary:true,parentId:pid,branchRoot:rootId,side}
+    anchors[id]={x,y}
+    placed.add(id)
+  })
+
+  // Nœuds éventuellement déconnectés : petite réserve périphérique stable.
+  const disconnected=nodes.filter(n=>!placed.has(n.node_id)&&n.node_id!==focus.node_id)
+  disconnected.forEach((n,i)=>{
+    const side=i%2===0?-1:1
+    const row=Math.floor(i/2)
+    const x=side<0?bounds.left+55:bounds.right-55
+    const y=clamp(bounds.bottom-row*82,bounds.top,bounds.bottom)
+    out[n.node_id]={x,y,secondary:true,side}
+    anchors[n.node_id]={x,y}
   })
 
   const movable=nodes.filter(n=>n.node_id!==focus.node_id&&out[n.node_id])
   const all=nodes.filter(n=>out[n.node_id])
   const edges=relations.filter(r=>out[r.source_id]&&out[r.cible_id])
 
-  // Relaxation légère et déterministe : répulsion + ressorts, centre fixé.
-  // Elle évite les superpositions sans transformer le graphe en simulation instable.
-  for(let iter=0;iter<62;iter++){
+  // 5) Relaxation courte : collision, ressorts et rappel vers les branches.
+  //    Le rappel est volontairement plus fort qu'un force-layout classique :
+  //    le graphe ne saute pas de place lorsqu'on le rouvre.
+  for(let iter=0;iter<86;iter++){
     const delta=new Map(movable.map(n=>[n.node_id,{x:0,y:0}]))
 
     for(let i=0;i<all.length;i++){
@@ -179,11 +270,10 @@ function layoutGraph(nodes,relations,focusId){
         let dx=pb.x-pa.x,dy=pb.y-pa.y
         let dist=Math.hypot(dx,dy)
         if(dist<.01){dx=.01;dy=.01;dist=.014}
-        const aMain=a.node_id===focus.node_id||directIds.has(a.node_id)
-        const bMain=b.node_id===focus.node_id||directIds.has(b.node_id)
-        const desired=aMain&&bMain?142:(aMain||bMain?112:88)
+        const aRoot=directRoots.includes(a.node_id),bRoot=directRoots.includes(b.node_id)
+        const desired=a.node_id===focus.node_id||b.node_id===focus.node_id?128:(aRoot||bRoot?116:94)
         if(dist<desired){
-          const force=(desired-dist)*.055
+          const force=(desired-dist)*.06
           const ux=dx/dist,uy=dy/dist
           if(delta.has(a.node_id)){delta.get(a.node_id).x-=ux*force;delta.get(a.node_id).y-=uy*force}
           if(delta.has(b.node_id)){delta.get(b.node_id).x+=ux*force;delta.get(b.node_id).y+=uy*force}
@@ -194,17 +284,21 @@ function layoutGraph(nodes,relations,focusId){
     edges.forEach(r=>{
       const a=out[r.source_id],b=out[r.cible_id]
       let dx=b.x-a.x,dy=b.y-a.y,dist=Math.max(1,Math.hypot(dx,dy))
+      const parentChild=parent.get(r.source_id)===r.cible_id||parent.get(r.cible_id)===r.source_id
       const touchesFocus=r.source_id===focus.node_id||r.cible_id===focus.node_id
-      const desired=touchesFocus?285:158
-      const force=(dist-desired)*(touchesFocus?.010:.016)
+      const desired=touchesFocus?285:(parentChild?160:205)
+      const force=(dist-desired)*(touchesFocus?.0055:parentChild?.010:.004)
       const ux=dx/dist,uy=dy/dist
       if(delta.has(r.source_id)){delta.get(r.source_id).x+=ux*force;delta.get(r.source_id).y+=uy*force}
       if(delta.has(r.cible_id)){delta.get(r.cible_id).x-=ux*force;delta.get(r.cible_id).y-=uy*force}
     })
 
     movable.forEach(n=>{
-      const p=out[n.node_id],d=delta.get(n.node_id)
-      // Très faible rappel vers la position initiale de branche pour conserver la stabilité.
+      const p=out[n.node_id],d=delta.get(n.node_id),a=anchors[n.node_id]
+      if(a){
+        d.x+=(a.x-p.x)*.105
+        d.y+=(a.y-p.y)*.105
+      }
       p.x=clamp(p.x+d.x,bounds.left,bounds.right)
       p.y=clamp(p.y+d.y,bounds.top,bounds.bottom)
     })
@@ -284,7 +378,7 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
       <div className="kg-legend-items">{legendTypes.map(type=>{const visual=visualFor(type);return <span className="kg-legend-item" key={type}><LegendGlyph type={type}/><b>{visual.label}</b></span>})}</div>
       <span className="kg-drag-hint"><span className="kg-hand">↔</span> Cliquez-glissez pour déplacer le graphe</span>
     </div>
-    <svg viewBox="0 0 1170 770" className="knowledge-svg" onWheel={e=>{e.preventDefault();setScale(s=>Math.max(.58,Math.min(1.85,s+(e.deltaY < 0 ? .08 : -.08))))}} onPointerDownCapture={beginPan} onPointerMove={movePan} onPointerUp={endPan} onPointerCancel={cancelPan} onPointerLeave={cancelPan}>
+    <svg viewBox="0 0 1170 720" className="knowledge-svg" onWheel={e=>{e.preventDefault();setScale(s=>Math.max(.58,Math.min(1.85,s+(e.deltaY < 0 ? .08 : -.08))))}} onPointerDownCapture={beginPan} onPointerMove={movePan} onPointerUp={endPan} onPointerCancel={cancelPan} onPointerLeave={cancelPan}>
       <g transform={`translate(${pan.x} ${pan.y}) scale(${scale})`}>
         {visible.relations.map(r=>{
           const a=positions[r.source_id],b=positions[r.cible_id];if(!a||!b)return null
