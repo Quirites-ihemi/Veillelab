@@ -93,17 +93,19 @@ function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
    --------------------------------------------------------- */
 const CHAR_W=6.9, LINE_H=18
 
-function nodeBox(node,role,nodeScale=1){
+function nodeBox(node,role,nodeScale=1,textUnit=1){
   const r=(role==='focus'?46:role==='direct'?31:20)*nodeScale
   const lines=wrap(node.libelle,role==='focus'?27:role==='direct'?24:22)
   const halo=role==='focus'?38:role==='direct'?13:8
-  const labelW=Math.max(...lines.map(l=>l.length))*CHAR_W
+  const labelW=Math.max(...lines.map(l=>l.length))*CHAR_W*textUnit
+  const labelGap=22*textUnit
+  const lineH=LINE_H*textUnit
   return {
     r,
     lines:lines.length,
     up:r+halo,
-    down:r+25+(lines.length-1)*LINE_H+8,
-    half:Math.max(r+halo,labelW/2+9)
+    down:r+labelGap+(lines.length-1)*lineH+10*textUnit,
+    half:Math.max(r+halo,labelW/2+10*textUnit)
   }
 }
 
@@ -147,6 +149,23 @@ function layoutGraph(nodes,relations,focusId,opts={}){
   })
   const degree=nb.map(l=>l.length)
 
+  // composantes connexes : les groupes sans relation entre eux ne doivent
+  // pas s'expulser à travers tout le canevas, ce qui réduirait le graphe principal.
+  const componentId=Array(n).fill(-1)
+  let componentCount=0
+  for(let start=0;start<n;start++){
+    if(componentId[start]!==-1)continue
+    const q=[start]
+    componentId[start]=componentCount
+    while(q.length){
+      const u=q.shift()
+      nb[u].forEach(v=>{
+        if(componentId[v]===-1){componentId[v]=componentCount;q.push(v)}
+      })
+    }
+    componentCount++
+  }
+
   const p=nodes.map(nd=>({
     x:W*(0.12+0.76*stableHash(nd.node_id)),
     y:H*(0.12+0.76*stableHash(nd.node_id+'#y'))
@@ -166,7 +185,8 @@ function layoutGraph(nodes,relations,focusId,opts={}){
         const dist=Math.sqrt(dx*dx+dy*dy)||0.01
         // 1. les entités très reliées se dégagent davantage de place
         const scale=1+0.18*Math.min(6,Math.max(degree[i],degree[j]))
-        const f=(k*k*scale)/dist
+        const crossComponent=componentId[i]!==componentId[j]
+        const f=(k*k*scale*(crossComponent?0.22:1))/dist
         d[i].x+=dx/dist*f; d[i].y+=dy/dist*f
         d[j].x-=dx/dist*f; d[j].y-=dy/dist*f
         if(dist<k*1.35){near[i]++;near[j]++}
@@ -257,13 +277,13 @@ function layoutGraph(nodes,relations,focusId,opts={}){
 /* ---------------------------------------------------------
    Bornes réelles du dessin, halos et libellés compris.
    --------------------------------------------------------- */
-function graphBounds(nodes,positions,focusId,directSet,nodeScale=1){
+function graphBounds(nodes,positions,focusId,directSet,nodeScale=1,textUnit=1){
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity
   nodes.forEach(n=>{
     const p=positions[n.node_id]
     if(!p)return
     const role=n.node_id===focusId?'focus':directSet.has(n.node_id)?'direct':'secondary'
-    const b=nodeBox(n,role,nodeScale)
+    const b=nodeBox(n,role,nodeScale,textUnit)
     minX=Math.min(minX,p.x-b.half)
     maxX=Math.max(maxX,p.x+b.half)
     minY=Math.min(minY,p.y-b.up)
@@ -312,7 +332,7 @@ function LegendGlyph({type}){
 
 const LEGEND_INSET=58
 
-export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,linkDensity=1,showWeak=true,maxNodes=38,resetToken=0,fitToken=0}){
+export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,linkDensity=1,showWeak=true,showRelationLabels=false,maxNodes=38,resetToken=0,fitToken=0}){
   const [scale,setScale]=useState(1),[pan,setPan]=useState({x:0,y:0})
   const [frame,setFrame]=useState({w:0,h:0})
   const shell=useRef(null)
@@ -362,8 +382,14 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   const direct=new Set((adj.get(focusId)||[]).map(x=>x.id))
   const legendTypes=LEGEND_ORDER.filter(type=>visible.nodes.some(n=>(n.type_noeud==='Problème'?'probleme':n.type_noeud)===type))
 
-  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale),[visible.nodes,positions,focusId,nodeScale])
+  // Premier cadrage géométrique, puis second passage qui réserve la vraie
+  // place des libellés en fonction de leur taille perceptuelle à l'écran.
+  const baseBounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale,1),[visible.nodes,positions,focusId,nodeScale])
+  const baseViewBox=useMemo(()=>computeViewBox(baseBounds,frame.w,frame.h,LEGEND_INSET),[baseBounds,frame.w,frame.h])
+  const baseScreenUnit=frame.w>0?Math.max(.7,baseViewBox.w/frame.w):1
+  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale,baseScreenUnit),[visible.nodes,positions,focusId,nodeScale,baseScreenUnit])
   const viewBox=useMemo(()=>computeViewBox(bounds,frame.w,frame.h,LEGEND_INSET),[bounds,frame.w,frame.h])
+  const screenUnit=frame.w>0?Math.max(.7,viewBox.w/frame.w):1
 
   const nodeById=useMemo(()=>Object.fromEntries(visible.nodes.map(n=>[n.node_id,n])),[visible.nodes])
   const relationById=useMemo(()=>Object.fromEntries(visible.relations.map(r=>[r.relation_id,r])),[visible.relations])
@@ -425,20 +451,22 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const strong=selected||r.source_id===focusId||r.cible_id===focusId||highlighted.has(r.source_id)||highlighted.has(r.cible_id)
           if(!showWeak&&!strong)return null
           const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,label=relationLabel(r.type_relation)
-          const labelWidth=Math.max(80,Math.min(196,label.length*7.9+26))
+          const labelWidthPx=Math.max(86,Math.min(210,label.length*8.1+28))
           return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''}`}>
             <line className={`kg-edge ${strong?'strong':'weak'}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+              vectorEffect="non-scaling-stroke"
               style={{
-                stroke:strong?EDGE_STRONG:EDGE_WEAK,
-                opacity:strong?.92:Math.min(.6,.42*linkDensity),
-                strokeWidth:selected?3.6:strong?2.5:1.6
+                stroke:strong?EDGE_STRONG:'#8293AA',
+                opacity:strong?.96:Math.min(.82,.58*linkDensity),
+                strokeWidth:selected?3.4:strong?2.35:1.35
               }}/>
-            {/* B. libellés de relations : pastille blanche discrète,
-                texte plus grand et plus contrasté */}
-            {strong&&<g className="kg-relation-label" transform={`translate(${mx},${my})`} pointerEvents="none">
-              <rect x={-labelWidth/2} y="-15" width={labelWidth} height="30" rx="15"
-                style={{fill:'#FFFFFF',stroke:selected?'#C36B48':'#C9D4E2',strokeWidth:selected?1.8:1.2,opacity:.97}}/>
-              <text y="5" textAnchor="middle" style={{fill:INK_RELATION,fontSize:'13px',fontWeight:700,letterSpacing:'.1px'}}>{label}</text>
+            {/* Les libellés sont masqués au démarrage et affichés à la demande.
+                Leur taille reste stable à l'écran quel que soit le viewBox. */}
+            {(showRelationLabels||selected)&&<g className="kg-relation-label" transform={`translate(${mx},${my}) scale(${screenUnit})`} pointerEvents="none">
+              <rect x={-labelWidthPx/2} y="-16" width={labelWidthPx} height="32" rx="16"
+                vectorEffect="non-scaling-stroke"
+                style={{fill:'#FFFFFF',stroke:selected?'#C36B48':'#C9D4E2',strokeWidth:selected?1.8:1.1,opacity:.98}}/>
+              <text y="5" textAnchor="middle" style={{fill:INK_RELATION,fontSize:'13.5px',fontWeight:720,letterSpacing:'.1px'}}>{label}</text>
             </g>}
           </g>
         })}
@@ -467,7 +495,17 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
             {isDirect&&!focus&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+11} fill={lighten(visual.color,.5)} opacity=".5"/>}
             <circle pointerEvents="none" cx={p.x} cy={p.y} r={r} fill={fill} stroke={stroke} strokeWidth={focus?3.2:isDirect?2.4:2}/>
             <Glyph type={n.type_noeud} x={p.x} y={p.y} color={glyphColor} size={focus?20:isDirect?16:13}/>
-            <text x={p.x} y={p.y+r+25} textAnchor="middle" className={`kg-label ${focus?'focus-label':''} ${p.secondary?'secondary-label':''}`} style={{fill:INK_NODE}}>{lines.map((line,i)=><tspan key={i} x={p.x} dy={i?18:0}>{line}</tspan>)}</text>
+            {(()=>{
+              const labelPx=focus?17.5:isDirect?14.8:13.4
+              const weight=focus?850:isDirect?780:730
+              const y=p.y+r+23*screenUnit
+              return <g transform={`translate(${p.x},${y}) scale(${screenUnit})`} pointerEvents="none">
+                <text x="0" y="0" textAnchor="middle" className={`kg-label ${focus?'focus-label':''} ${p.secondary?'secondary-label':''}`}
+                  style={{fill:INK_NODE,fontSize:`${labelPx}px`,fontWeight:weight,stroke:'#fff',strokeWidth:4.5,paintOrder:'stroke',strokeLinejoin:'round'}}>
+                  {lines.map((line,i)=><tspan key={i} x="0" dy={i?18:0}>{line}</tspan>)}
+                </text>
+              </g>
+            })()}
           </g>
         })}
       </g>
