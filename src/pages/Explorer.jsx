@@ -85,16 +85,11 @@ function ExplorerIntro({onChoose}){
         <p><strong>À la différence d’un graphe de réseaux</strong>, qui met principalement en évidence des connexions entre acteurs ou objets, le graphe de connaissances organise l’information sous la forme d’entités — idées, personnes, lieux, événements, dispositifs, etc. — reliées entre elles par des relations sémantiques explicites, souvent formulées à l’aide de verbes d’action.</p>
         <p>Il permet ainsi de <strong>naviguer à l’intérieur d’un texte et des connaissances qu’il mobilise</strong>, en passant d’une entité à une autre et en suivant les relations qui les relient.</p>
         <p>Le <strong>GraphRAG</strong> prolonge cette logique en permettant d’interroger les contenus documentaires et d’en extraire des objets spécifiques : <strong>acteurs, recommandations, localisations, actions, enjeux, concepts</strong>, etc.</p>
+        <div className="explorer-hero-action">
+          <button className="btn explorer-primary" onClick={onChoose}><Icon name="file" size={17}/>Choisir une publication</button>
+        </div>
       </div>
       <KnowledgeIllustration/>
-    </section>
-
-    <section className="explorer-v02-empty">
-      <div className="explorer-empty-icon"><Icon name="graph" size={30}/></div>
-      <span className="explorer-kicker">ESPACE D’EXPLORATION</span>
-      <h2>Aucun graphe affiché pour le moment</h2>
-      <p>Sélectionnez une publication pour explorer son graphe de connaissances, suivre les relations entre les entités et revenir aux preuves documentaires.</p>
-      <button className="btn explorer-primary" onClick={onChoose}><Icon name="file" size={17}/>Choisir une publication</button>
     </section>
 
     <aside className="explorer-howto">
