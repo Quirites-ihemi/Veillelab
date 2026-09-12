@@ -91,19 +91,28 @@ function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
    pour que le cadrage tienne compte du texte et pas seulement
    des cercles.
    --------------------------------------------------------- */
-const NODE_LABEL_STYLE={
+// Hiérarchie des libellés :
+// - à l'entrée dans une publication : 28 / 23 / 18
+// - après sélection d'un nœud : 26 / 20 / 16
+const NODE_LABEL_STYLE_SELECTED={
   focus:{fontSize:26,lineH:30,charW:13.8,maxChars:29},
   direct:{fontSize:20,lineH:24,charW:10.6,maxChars:27},
   secondary:{fontSize:16,lineH:20,charW:8.5,maxChars:24},
 }
-
-function labelStyleForRole(role){
-  return NODE_LABEL_STYLE[role] || NODE_LABEL_STYLE.secondary
+const NODE_LABEL_STYLE_ENTRY={
+  focus:{fontSize:28,lineH:32,charW:14.8,maxChars:30},
+  direct:{fontSize:23,lineH:27,charW:12.2,maxChars:28},
+  secondary:{fontSize:18,lineH:22,charW:9.6,maxChars:25},
 }
 
-function nodeBox(node,role,nodeScale=1){
+function labelStyleForRole(role,entryMode=false){
+  const set=entryMode?NODE_LABEL_STYLE_ENTRY:NODE_LABEL_STYLE_SELECTED
+  return set[role] || set.secondary
+}
+
+function nodeBox(node,role,nodeScale=1,entryMode=false){
   const r=(role==='focus'?46:role==='direct'?31:20)*nodeScale
-  const style=labelStyleForRole(role)
+  const style=labelStyleForRole(role,entryMode)
   const lines=wrap(node.libelle,style.maxChars)
   const halo=role==='focus'?38:role==='direct'?13:8
   const labelW=Math.max(...lines.map(l=>l.length))*style.charW
@@ -138,6 +147,7 @@ function layoutGraph(nodes,relations,focusId,opts={}){
   const out={}
   if(!nodes.length)return out
   const nodeScale=opts.nodeScale||1
+  const entryMode=!!opts.entryMode
   const ratio=clamp(opts.containerRatio||1.5,0.85,3.4)
 
   // le cadre de calcul épouse le format du conteneur : le réseau
@@ -235,7 +245,7 @@ function layoutGraph(nodes,relations,focusId,opts={}){
   // rôles : ils ne servent qu'à dimensionner les gabarits
   const fi=index.has(focusId)?index.get(focusId):0
   const directSet=new Set(nb[fi])
-  const boxes=nodes.map((nd,i)=>nodeBox(nd,i===fi?'focus':directSet.has(i)?'direct':'secondary',nodeScale))
+  const boxes=nodes.map((nd,i)=>nodeBox(nd,i===fi?'focus':directSet.has(i)?'direct':'secondary',nodeScale,entryMode))
 
   // desserrage tenant compte des libellés : il n'écarte que des
   // gabarits qui se touchent, sans rappel vers une ancre
@@ -285,13 +295,13 @@ function layoutGraph(nodes,relations,focusId,opts={}){
 /* ---------------------------------------------------------
    Bornes réelles du dessin, halos et libellés compris.
    --------------------------------------------------------- */
-function graphBounds(nodes,positions,focusId,directSet,nodeScale=1){
+function graphBounds(nodes,positions,focusId,directSet,nodeScale=1,entryMode=false){
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity
   nodes.forEach(n=>{
     const p=positions[n.node_id]
     if(!p)return
     const role=n.node_id===focusId?'focus':directSet.has(n.node_id)?'direct':'secondary'
-    const b=nodeBox(n,role,nodeScale)
+    const b=nodeBox(n,role,nodeScale,entryMode)
     minX=Math.min(minX,p.x-b.half)
     maxX=Math.max(maxX,p.x+b.half)
     minY=Math.min(minY,p.y-b.up)
@@ -369,6 +379,7 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   },[])
 
   const visible=useMemo(()=>selectVisibleGraph(nodes,relations,selectedId,false,maxNodes),[nodes,relations,selectedId,maxNodes])
+  const entryMode=!selectedId
 
   // rapport du conteneur arrondi au vingtième : la forme reste
   // identique d'une ouverture à l'autre et ne tremble pas au
@@ -380,8 +391,8 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   },[frame.w,frame.h])
 
   const positions=useMemo(
-    ()=>layoutGraph(visible.nodes,visible.relations,visible.focus,{nodeScale,containerRatio}),
-    [visible,nodeScale,containerRatio]
+    ()=>layoutGraph(visible.nodes,visible.relations,visible.focus,{nodeScale,containerRatio,entryMode}),
+    [visible,nodeScale,containerRatio,entryMode]
   )
 
   const focusId=selectedId||visible.focus
@@ -393,7 +404,7 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   // Un seul cadrage stable : les libellés sont dimensionnés dans le même
   // repère que le layout. On évite ainsi la boucle d'amplification qui
   // grossissait le texte après le calcul des collisions.
-  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale),[visible.nodes,positions,focusId,nodeScale])
+  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale,entryMode),[visible.nodes,positions,focusId,nodeScale,entryMode])
   const viewBox=useMemo(()=>computeViewBox(bounds,frame.w,frame.h,LEGEND_INSET),[bounds,frame.w,frame.h])
 
   const nodeById=useMemo(()=>Object.fromEntries(visible.nodes.map(n=>[n.node_id,n])),[visible.nodes])
@@ -490,7 +501,7 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const stroke=active?visual.color:lighten(visual.color,.10)
           const glyphColor=active?'#fff':visual.color
           const role=focus?'focus':isDirect?'direct':'secondary'
-          const labelStyle=labelStyleForRole(role)
+          const labelStyle=labelStyleForRole(role,entryMode)
           const lines=wrap(n.libelle,labelStyle.maxChars)
           return <g key={n.node_id} data-node-id={n.node_id} className={`kg-node ${focus?'focus':''} ${p.secondary?'secondary':''}`} role="button" tabIndex="0" aria-label={n.libelle} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectNode(n)}}}>
             <circle className="node-hit-target" cx={p.x} cy={p.y} r={Math.max(r+13,30)} fill="transparent"/>
