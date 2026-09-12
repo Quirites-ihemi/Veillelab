@@ -360,6 +360,7 @@ const LEGEND_INSET=58
 export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,labelScale=1,linkDensity=1,showWeak=true,showRelationLabels=false,maxNodes=38,resetToken=0,fitToken=0}){
   const [scale,setScale]=useState(1),[pan,setPan]=useState({x:0,y:0})
   const [frame,setFrame]=useState({w:0,h:0})
+  const [hoveredRelationId,setHoveredRelationId]=useState(null)
   const shell=useRef(null)
   const drag=useRef(null)
   const moved=useRef(false)
@@ -471,11 +472,18 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
         {visible.relations.map(r=>{
           const a=positions[r.source_id],b=positions[r.cible_id];if(!a||!b)return null
           const selected=r.relation_id===selectedRelationId
-          const strong=selected||r.source_id===focusId||r.cible_id===focusId||highlighted.has(r.source_id)||highlighted.has(r.cible_id)
+          const hovered=r.relation_id===hoveredRelationId
+          const linkedToSelected=Boolean(selectedId)&&(r.source_id===selectedId||r.cible_id===selectedId)
+          const strong=selected||linkedToSelected||r.source_id===focusId||r.cible_id===focusId||highlighted.has(r.source_id)||highlighted.has(r.cible_id)
           if(!showWeak&&!strong)return null
           const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,label=relationLabel(r.type_relation)
           const labelWidthPx=Math.max(84,Math.min(190,label.length*7.6+24))
-          return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''}`}>
+          const showThisLabel=showRelationLabels||selected||hovered||linkedToSelected
+          return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''}`}
+            onPointerEnter={()=>setHoveredRelationId(r.relation_id)}
+            onPointerLeave={()=>setHoveredRelationId(current=>current===r.relation_id?null:current)}>
+            {/* Ligne de capture invisible : facilite le survol et le clic sur une arête fine. */}
+            <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="transparent" strokeWidth="14" vectorEffect="non-scaling-stroke" pointerEvents="stroke"/>
             <line className={`kg-edge ${strong?'strong':'weak'}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
               vectorEffect="non-scaling-stroke"
               style={{
@@ -483,9 +491,9 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
                 opacity:strong?.96:Math.min(.72,.56*linkDensity),
                 strokeWidth:selected?3.2:strong?2.25:1.25
               }}/>
-            {/* Les libellés sont masqués au démarrage et affichés à la demande.
-                Leur taille reste stable à l'écran quel que soit le viewBox. */}
-            {(showRelationLabels||selected)&&<g className="kg-relation-label" transform={`translate(${mx},${my})`} pointerEvents="none">
+            {/* Doctrine des verbes : masqués à l'entrée, visibles pour les relations
+                du nœud sélectionné, au survol / clic d'une arête, ou globalement à la demande. */}
+            {showThisLabel&&<g className="kg-relation-label" transform={`translate(${mx},${my})`} pointerEvents="none">
               <rect x={-labelWidthPx/2} y="-16" width={labelWidthPx} height="32" rx="16"
                 vectorEffect="non-scaling-stroke"
                 style={{fill:'#FFFFFF',stroke:selected?'#C36B48':'#C9D4E2',strokeWidth:selected?1.8:1.1,opacity:.98}}/>
