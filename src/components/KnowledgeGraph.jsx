@@ -92,9 +92,9 @@ function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
    des cercles.
    --------------------------------------------------------- */
 const NODE_LABEL_STYLE={
-  focus:{fontSize:20,lineH:23,charW:10.4,maxChars:27},
-  direct:{fontSize:17,lineH:21,charW:8.9,maxChars:24},
-  secondary:{fontSize:14,lineH:19,charW:7.4,maxChars:22},
+  focus:{fontSize:26,lineH:30,charW:13.8,maxChars:29},
+  direct:{fontSize:20,lineH:24,charW:10.6,maxChars:27},
+  secondary:{fontSize:16,lineH:20,charW:8.5,maxChars:24},
 }
 
 function labelStyleForRole(role){
