@@ -785,3 +785,63 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
   .explorer-v02-graph.has-drawer .graph-tools.vertical{right:299px !important}
 }
 
+
+/* ==========================================================
+   ONGLET 2 — correction définitive de la bande blanche basse
+   (12/09/2026)
+   Le viewport entier appartient à l'écran Explorer. Le rail gauche
+   défile indépendamment et ne peut plus allonger le document.
+   ========================================================== */
+.explorer-v02-graph.screen.publication-screen,
+.explorer-v02-graph.screen.publication-screen.has-drawer{
+  height:calc(100dvh - 70px) !important;
+  min-height:0 !important;
+  max-height:calc(100dvh - 70px) !important;
+  overflow:hidden !important;
+  align-items:stretch !important;
+}
+
+.explorer-v02-graph .left-rail{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+
+.explorer-v02-graph .publication-workspace{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+  display:grid !important;
+  grid-template-rows:auto minmax(0,1fr) !important;
+}
+
+.explorer-v02-graph .workspace-toolbar{
+  min-height:0 !important;
+  overflow:visible !important;
+}
+
+.explorer-v02-graph .graph-stage{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+
+.explorer-v02-graph .graph-stage > .knowledge-constellation,
+.explorer-v02-graph .graph-stage > .knowledge-constellation > .knowledge-svg{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+}
+
+.explorer-v02-graph .detail-drawer.publication-drawer{
+  height:100% !important;
+  max-height:100% !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain;
+}
