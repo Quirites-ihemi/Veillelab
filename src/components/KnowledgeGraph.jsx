@@ -91,21 +91,29 @@ function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
    pour que le cadrage tienne compte du texte et pas seulement
    des cercles.
    --------------------------------------------------------- */
-const CHAR_W=8.0, LINE_H=20
+const NODE_LABEL_STYLE={
+  focus:{fontSize:20,lineH:23,charW:10.4,maxChars:27},
+  direct:{fontSize:17,lineH:21,charW:8.9,maxChars:24},
+  secondary:{fontSize:14,lineH:19,charW:7.4,maxChars:22},
+}
+
+function labelStyleForRole(role){
+  return NODE_LABEL_STYLE[role] || NODE_LABEL_STYLE.secondary
+}
 
 function nodeBox(node,role,nodeScale=1){
   const r=(role==='focus'?46:role==='direct'?31:20)*nodeScale
-  const lines=wrap(node.libelle,role==='focus'?27:role==='direct'?24:22)
+  const style=labelStyleForRole(role)
+  const lines=wrap(node.libelle,style.maxChars)
   const halo=role==='focus'?38:role==='direct'?13:8
-  const labelW=Math.max(...lines.map(l=>l.length))*CHAR_W
-  const labelGap=24
-  const lineH=LINE_H
+  const labelW=Math.max(...lines.map(l=>l.length))*style.charW
+  const labelGap=26
   return {
     r,
     lines:lines.length,
     up:r+halo,
-    down:r+labelGap+(lines.length-1)*lineH+10,
-    half:Math.max(r+halo,labelW/2+10)
+    down:r+labelGap+(lines.length-1)*style.lineH+12,
+    half:Math.max(r+halo,labelW/2+12)
   }
 }
 
@@ -481,7 +489,9 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const fill=active?visual.color:lighten(visual.color,.80)
           const stroke=active?visual.color:lighten(visual.color,.10)
           const glyphColor=active?'#fff':visual.color
-          const lines=wrap(n.libelle,focus?27:isDirect?24:22)
+          const role=focus?'focus':isDirect?'direct':'secondary'
+          const labelStyle=labelStyleForRole(role)
+          const lines=wrap(n.libelle,labelStyle.maxChars)
           return <g key={n.node_id} data-node-id={n.node_id} className={`kg-node ${focus?'focus':''} ${p.secondary?'secondary':''}`} role="button" tabIndex="0" aria-label={n.libelle} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectNode(n)}}}>
             <circle className="node-hit-target" cx={p.x} cy={p.y} r={Math.max(r+13,30)} fill="transparent"/>
             {/* C. nœud sélectionné : trois couches de halo clair plutôt
@@ -493,13 +503,13 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
             <circle pointerEvents="none" cx={p.x} cy={p.y} r={r} fill={fill} stroke={stroke} strokeWidth={focus?3.2:isDirect?2.4:2}/>
             <Glyph type={n.type_noeud} x={p.x} y={p.y} color={glyphColor} size={focus?20:isDirect?16:13}/>
             {(()=>{
-              const labelPx=focus?18:isDirect?15:13.2
-              const weight=focus?850:isDirect?780:720
-              const y=p.y+r+25
+              const labelPx=labelStyle.fontSize
+              const weight=focus?850:isDirect?790:730
+              const y=p.y+r+26
               return <text x={p.x} y={y} textAnchor="middle" pointerEvents="none"
                 className={`kg-label ${focus?'focus-label':''} ${p.secondary?'secondary-label':''}`}
-                style={{fill:INK_NODE,fontSize:`${labelPx}px`,fontWeight:weight,stroke:'#fff',strokeWidth:3.2,paintOrder:'stroke',strokeLinejoin:'round'}}>
-                {lines.map((line,i)=><tspan key={i} x={p.x} dy={i?20:0}>{line}</tspan>)}
+                style={{fill:INK_NODE,fontSize:`${labelPx}px`,fontWeight:weight,stroke:'#fff',strokeWidth:3.4,paintOrder:'stroke',strokeLinejoin:'round'}}>
+                {lines.map((line,i)=><tspan key={i} x={p.x} dy={i?labelStyle.lineH:0}>{line}</tspan>)}
               </text>
             })()}
           </g>
