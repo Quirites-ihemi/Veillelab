@@ -845,3 +845,142 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
   overflow-y:auto !important;
   overscroll-behavior:contain;
 }
+
+/* ==========================================================
+   ONGLET 2 — accueil compact + preuves plus lisibles
+   (12/09/2026)
+   ========================================================== */
+
+/* À l'entrée, le bouton de choix appartient directement au texte
+   d'introduction : plus de second grand panneau vide sous le hero. */
+.explorer-v02-home{
+  grid-template-columns:minmax(0,1fr) 330px !important;
+  grid-template-areas:'hero howto' !important;
+  align-items:start !important;
+  gap:20px 24px !important;
+  padding-top:20px !important;
+  padding-bottom:24px !important;
+}
+.explorer-v02-hero{
+  align-self:start;
+  padding:28px 34px 26px !important;
+}
+.explorer-hero-action{
+  display:flex;
+  justify-content:flex-start;
+  margin-top:18px;
+}
+.explorer-hero-action .explorer-primary{
+  min-width:190px;
+  height:44px;
+  font-size:14px;
+}
+.explorer-v02-home .explorer-howto{
+  grid-area:howto;
+  align-self:start;
+}
+
+/* Preuve courte dans le tiroir contextuel */
+.explorer-v02-graph .detail-drawer h4{
+  font-size:16px !important;
+  line-height:1.35;
+  font-weight:800 !important;
+  color:#173d69;
+}
+.explorer-v02-graph .proof-source-card strong{
+  font-size:14px !important;
+  line-height:1.45 !important;
+  font-weight:800 !important;
+}
+.explorer-v02-graph .proof-source-card small{
+  font-size:12.5px !important;
+  line-height:1.5 !important;
+}
+.explorer-v02-graph .inline-proof>strong{
+  font-size:14.5px !important;
+  line-height:1.4;
+  font-weight:800 !important;
+}
+.explorer-v02-graph .inline-proof>p{
+  font-size:15.5px !important;
+  line-height:1.7 !important;
+  color:#24455f !important;
+}
+.explorer-v02-graph .inline-proof button{
+  font-size:13.5px !important;
+  font-weight:800 !important;
+}
+
+/* Fenêtre « Preuve complète » : lecture documentaire, pas micro-interface. */
+.explorer-v7-proof-modal .explorer-v7-proof-kicker{
+  font-size:12px !important;
+  font-weight:850;
+  letter-spacing:.11em;
+}
+.explorer-v7-proof-modal h2{
+  font-size:28px !important;
+  line-height:1.25 !important;
+  font-weight:850 !important;
+}
+.explorer-v7-proof-summary{
+  font-size:16px !important;
+  line-height:1.55 !important;
+}
+.explorer-v7-proof-summary strong{
+  font-weight:800 !important;
+}
+.explorer-v7-relation-pill{
+  font-size:12px !important;
+  font-weight:800 !important;
+  padding:5px 8px !important;
+}
+.explorer-v7-proof-meta{
+  font-size:13.5px !important;
+  line-height:1.45;
+}
+.explorer-v7-proof-meta strong{
+  font-weight:800 !important;
+}
+.explorer-v7-proof-scroll{
+  padding:24px 30px !important;
+}
+.explorer-v7-chunk{
+  padding-bottom:24px !important;
+  margin-bottom:24px !important;
+}
+.explorer-v7-chunk .chunk-head{
+  font-size:13.5px !important;
+  line-height:1.4;
+  margin-bottom:12px !important;
+  gap:18px;
+}
+.explorer-v7-chunk .chunk-head span:first-child{
+  color:#294f79;
+  font-weight:850 !important;
+}
+.explorer-v7-chunk .chunk-head span:last-child{
+  font-weight:750 !important;
+  color:#607692;
+}
+.explorer-v7-chunk p{
+  font-size:16.5px !important;
+  line-height:1.78 !important;
+  color:#1f3c5b !important;
+}
+.explorer-v7-proof-footer>div{
+  font-size:13.5px !important;
+  line-height:1.45;
+}
+.explorer-v7-proof-footer .source-label{
+  font-size:11.5px !important;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+
+@media(max-width:1100px){
+  .explorer-v02-home{
+    grid-template-columns:1fr !important;
+    grid-template-areas:'hero' 'howto' !important;
+  }
+}
