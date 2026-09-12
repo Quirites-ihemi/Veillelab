@@ -130,7 +130,7 @@ function layoutGraph(nodes,relations,focusId,opts={}){
   const out={}
   if(!nodes.length)return out
   const nodeScale=opts.nodeScale||1
-  const ratio=clamp(opts.containerRatio||1.5,0.85,2.6)
+  const ratio=clamp(opts.containerRatio||1.5,0.85,3.4)
 
   // le cadre de calcul épouse le format du conteneur : le réseau
   // se déploie directement à la bonne forme, sans étirement
@@ -368,7 +368,7 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   const containerRatio=useMemo(()=>{
     const usable=frame.h-LEGEND_INSET
     if(!(frame.w>0&&usable>0))return 1.5
-    return clamp(Math.round((frame.w/usable)*20)/20,0.85,2.6)
+    return clamp(Math.round((frame.w/usable)*20)/20,0.85,3.4)
   },[frame.w,frame.h])
 
   const positions=useMemo(
