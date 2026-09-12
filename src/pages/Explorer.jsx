@@ -7,7 +7,18 @@ import { buildAdjacency, nodeMeta } from '../lib/graph.js'
 import { normalize, sentenceCase } from '../lib/text.js'
 
 const legendTypes=['acteur','expert_public','action','notion_idee','probleme','localisation','signal_faible','recommandation']
-const typeColor={actor:'#3F5275',action:'#d97745',concept:'#8265a9',location:'#3f8d89',signal:'#9b8d3d',recommendation:'#b95f86'}
+const TYPE_COLOR={
+  acteur:'#3C6193',
+  expert_public:'#5691C0',
+  action:'#C36B48',
+  notion_idee:'#6D5DA6',
+  probleme:'#A8423E',
+  'Problème':'#A8423E',
+  localisation:'#2E8C80',
+  signal_faible:'#C08A33',
+  recommandation:'#9C4B86'
+}
+const colorForType=type=>TYPE_COLOR[type]||'#6D5DA6'
 
 function chunkFor(proof,contents){
   const ids=String(proof?.chunk_id_source||'').split(';').map(x=>x.trim()).filter(Boolean)
@@ -100,11 +111,11 @@ export default function Explorer({data}){
   const graphPubs=useMemo(()=>data.publications.filter(p=>p.has_graph),[data])
   const [selectedPub,setSelectedPub]=useState(null),[search,setSearch]=useState(''),[nodeSearch,setNodeSearch]=useState('')
   const [drawerOpen,setDrawerOpen]=useState(false)
-  const [selectedNode,setSelectedNode]=useState(null),[proof,setProof]=useState(null),[showWeak,setShowWeak]=useState(true)
+  const [selectedNode,setSelectedNode]=useState(null),[proof,setProof]=useState(null),[showWeak,setShowWeak]=useState(true),[showRelationLabels,setShowRelationLabels]=useState(false)
   const [enabledTypes,setEnabledTypes]=useState(legendTypes),[nodeScale,setNodeScale]=useState(1),[linkDensity,setLinkDensity]=useState(1),[resetToken,setResetToken]=useState(0),[fitToken,setFitToken]=useState(0)
   const [question,setQuestion]=useState(''),[chat,setChat]=useState(null),[loading,setLoading]=useState(false),[chatOpen,setChatOpen]=useState(false)
 
-  const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false)}
+  const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false);setShowRelationLabels(false)}
 
   if(!selectedPub)return <div className="explorer-v02-shell"><ExplorerIntro onChoose={()=>setDrawerOpen(true)}/><PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication}/></div>
 
@@ -124,37 +135,37 @@ export default function Explorer({data}){
   const visibleRelationCount=showWeak?typedRelations.length:typedRelations.filter(r=>r.source_id===currentNode?.node_id||r.cible_id===currentNode?.node_id).length
 
   const toggleType=t=>{if(selectedNode?.type_noeud===t&&enabledTypes.includes(t))setSelectedNode(null);setEnabledTypes(s=>s.includes(t)?s.filter(x=>x!==t):[...s,t])}
-  const reset=()=>{setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setEnabledTypes(legendTypes);setShowWeak(true);setResetToken(x=>x+1)}
+  const reset=()=>{setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setEnabledTypes(legendTypes);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1)}
   async function submit(e){e.preventDefault();if(!question.trim()||loading)return;setLoading(true);setChatOpen(true);try{setChat(await askGraph(question,selectedPub,nodes,relations))}catch(err){setChat({error:err.message,reponse:'Le service de dialogue n’est pas disponible.',noeuds_selectionnes:[]})}finally{setLoading(false)}}
 
-  return <div className="explorer-v02-shell"><main className="screen graph-screen publication-screen explorer-v02-graph">
+  return <div className="explorer-v02-shell"><main className={`screen graph-screen publication-screen explorer-v02-graph ${selectedNode?'has-drawer':''}`}>
     <aside className="left-rail explorer-rail">
       <button className="explorer-change-publication" onClick={()=>setDrawerOpen(true)}><Icon name="file" size={17}/><span><small>Publication</small><strong>Changer de publication</strong></span><Icon name="chevron" size={17}/></button>
       <section className="rail-section"><h4>Publication sélectionnée</h4><article className="selected-publication-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article></section>
       <section className="rail-section"><h4>Rechercher dans la publication</h4><div className="rail-search"><input value={nodeSearch} onChange={e=>setNodeSearch(e.target.value)} placeholder="Rechercher un terme, une entité…"/><Icon name="search" size={18}/></div>{nodeMatches.length>0&&<div className="rail-results">{nodeMatches.map(n=><button key={n.node_id} onClick={()=>{setSelectedNode(n);setNodeSearch('')}}>{n.libelle}<small>{nodeMeta(n.type_noeud).label}</small></button>)}</div>}</section>
-      <section className="rail-section"><h4>Type de nœud</h4><div className="type-filter-list">{legendTypes.map(t=>{const m=nodeMeta(t),count=nodes.filter(n=>n.type_noeud===t).length;return <label key={t}><input type="checkbox" checked={enabledTypes.includes(t)} onChange={()=>toggleType(t)}/><i style={{background:typeColor[m.className]||'#8265a9'}}></i><span>{m.label}</span><b>{count}</b></label>})}</div></section>
+      <section className="rail-section"><h4>Type de nœud</h4><div className="type-filter-list">{legendTypes.map(t=>{const m=nodeMeta(t),count=nodes.filter(n=>n.type_noeud===t).length;return <label key={t}><input type="checkbox" checked={enabledTypes.includes(t)} onChange={()=>toggleType(t)}/><i style={{background:colorForType(t)}}></i><span>{m.label}</span><b>{count}</b></label>})}</div></section>
       <section className="rail-section weak-row"><label><span>Afficher les liens faibles <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showWeak} onChange={e=>setShowWeak(e.target.checked)}/></label></section>
+      <section className="rail-section weak-row relation-label-row"><label><span>Libellés des relations <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showRelationLabels} onChange={e=>setShowRelationLabels(e.target.checked)}/></label></section>
       <section className="rail-section display-section"><h4>Affichage</h4><label>Taille des nœuds<input type="range" min="0.8" max="1.35" step="0.05" value={nodeScale} onChange={e=>setNodeScale(Number(e.target.value))}/><span><small>Petite</small><small>Grande</small></span></label><label>Densité des liens<input type="range" min="0.6" max="1.8" step="0.1" value={linkDensity} onChange={e=>setLinkDensity(Number(e.target.value))}/><span><small>Faible</small><small>Élevée</small></span></label></section>
     </aside>
 
     <section className="graph-workspace publication-workspace">
       <div className="workspace-toolbar"><div><span className="explorer-kicker">EXPLORER</span><h1>Explorateur de publication</h1><p className="workspace-subtitle">{sentenceCase(selectedPub.titre)}</p><div className="big-count"><strong>{visibleTypeIds.size}</strong><span>nœuds · {visibleRelationCount} liens visibles</span><Icon name="info" size={17}/></div></div><div className="toolbar-actions"><button onClick={reset}><Icon name="reset" size={17}/>Réinitialiser</button><button onClick={()=>setFitToken(x=>x+1)}><Icon name="target" size={17}/>Ajuster à l’écran</button></div></div>
-      <KnowledgeGraph nodes={nodes} relations={relations} selectedId={currentNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} enabledTypes={enabledTypes} showWeak={showWeak} nodeScale={nodeScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
-      <div className={`chat-dock explorer-chat ${chatOpen?'open':''}`}>
+      <div className={`chat-dock explorer-chat explorer-chat-top ${chatOpen?'open':''}`}>
         <button className="chat-dock-title" onClick={()=>setChatOpen(v=>!v)}><span>✦</span><strong>Interroger le graphe</strong><small>{chatOpen?'Réduire':'Ouvrir'}</small></button>
         {chatOpen&&<div className="chat-dock-body">{chat&&<div className="chat-response"><p>{chat.reponse}</p>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>setSelectedNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}<form onSubmit={submit}><input value={question} onChange={e=>setQuestion(e.target.value)} placeholder="Posez une question sur cette publication…"/><button disabled={loading||!question.trim()}><Icon name="send" size={18}/></button></form></div>}
       </div>
+      <KnowledgeGraph nodes={nodes} relations={relations} selectedId={currentNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} enabledTypes={enabledTypes} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
     </section>
 
-    <aside className="detail-drawer publication-drawer">
-      <div className="drawer-type node-type"><i style={{background:typeColor[nodeMeta(currentNode?.type_noeud).className]||'#8265a9'}}></i>{nodeMeta(currentNode?.type_noeud).label}</div>
-      {selectedNode&&<button className="drawer-close" onClick={()=>setSelectedNode(null)}><Icon name="close"/></button>}
-      {currentNode?<><h2>{currentNode.libelle}</h2><p className="drawer-definition">Élément documenté dans la publication. Consultez les relations et la preuve ci-dessous pour vérifier son contexte source.</p>
-        <h4>Nœuds liés ({currentLinked.length})</h4><div className="linked-node-list">{currentLinked.map(n=>{const m=nodeMeta(n.type_noeud);return <button key={n.node_id} onClick={()=>setSelectedNode(n)}><i style={{background:typeColor[m.className]||'#8265a9'}}></i><span>{n.libelle}</span><b style={{color:typeColor[m.className]||'#8265a9'}}>{m.label}</b></button>})}</div>
-        <h4>Preuve documentaire</h4><article className="proof-source-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article>
-        <div className="inline-proof"><strong>{currentNode.page_source?`Page / timecode ${currentNode.page_source}`:'Page / timecode non renseigné'}</strong>{evidence?<p>{evidence.texte.slice(0,420)}{evidence.texte.length>420?'…':''}</p>:<p>Aucun extrait associé n’est disponible pour cet élément.</p>}<button onClick={()=>setProof(currentNode)}><Icon name="eye" size={16}/>Voir la preuve complète</button></div>
-      </>:<div className="drawer-empty">Sélectionnez un nœud pour afficher ses relations et sa preuve.</div>}
-    </aside>
+    {selectedNode&&<aside className="detail-drawer publication-drawer">
+      <div className="drawer-type node-type"><i style={{background:colorForType(selectedNode.type_noeud)}}></i>{nodeMeta(selectedNode.type_noeud).label}</div>
+      <button className="drawer-close" onClick={()=>setSelectedNode(null)}><Icon name="close"/></button>
+      <h2>{selectedNode.libelle}</h2><p className="drawer-definition">Élément documenté dans la publication. Consultez les relations et la preuve ci-dessous pour vérifier son contexte source.</p>
+      <h4>Nœuds liés ({currentLinked.length})</h4><div className="linked-node-list">{currentLinked.map(n=>{const m=nodeMeta(n.type_noeud);const c=colorForType(n.type_noeud);return <button key={n.node_id} onClick={()=>setSelectedNode(n)}><i style={{background:c}}></i><span>{n.libelle}</span><b style={{color:c}}>{m.label}</b></button>})}</div>
+      <h4>Preuve documentaire</h4><article className="proof-source-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article>
+      <div className="inline-proof"><strong>{selectedNode.page_source?`Page / timecode ${selectedNode.page_source}`:'Page / timecode non renseigné'}</strong>{evidence?<p>{evidence.texte.slice(0,420)}{evidence.texte.length>420?'…':''}</p>:<p>Aucun extrait associé n’est disponible pour cet élément.</p>}<button onClick={()=>setProof(selectedNode)}><Icon name="eye" size={16}/>Voir la preuve complète</button></div>
+    </aside>}
     <ProofModal proof={proof} publication={selectedPub} contents={data.contents} nodeMap={nodeMap} onClose={()=>setProof(null)}/>
   </main>
   <PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} selectedId={selectedPub.publication_id}/>
