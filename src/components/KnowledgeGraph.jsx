@@ -407,6 +407,25 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   const highlighted=new Set(highlightIds)
   const adj=useMemo(()=>buildAdjacency(visible.nodes,visible.relations),[visible])
   const direct=new Set((adj.get(focusId)||[]).map(x=>x.id))
+
+  // À l'entrée, quelques verbes doivent déjà signaler que les arêtes portent
+  // une sémantique. On affiche au maximum 4 relations incidentes au nœud de
+  // référence, en privilégiant les voisins les plus connectés. La règle est
+  // purement structurelle et déterministe.
+  const entryRelationIds=useMemo(()=>{
+    if(selectedId)return new Set()
+    const degree=new Map(visible.nodes.map(n=>[n.node_id,(adj.get(n.node_id)||[]).length]))
+    const candidates=visible.relations
+      .filter(r=>r.source_id===visible.focus||r.cible_id===visible.focus)
+      .slice()
+      .sort((a,b)=>{
+        const ao=a.source_id===visible.focus?a.cible_id:a.source_id
+        const bo=b.source_id===visible.focus?b.cible_id:b.source_id
+        return (degree.get(bo)||0)-(degree.get(ao)||0)||String(a.relation_id).localeCompare(String(b.relation_id))
+      })
+    return new Set(candidates.slice(0,4).map(r=>r.relation_id))
+  },[selectedId,visible,adj])
+
   const legendTypes=LEGEND_ORDER.filter(type=>visible.nodes.some(n=>(n.type_noeud==='Problème'?'probleme':n.type_noeud)===type))
 
   // Un seul cadrage stable : les libellés sont dimensionnés dans le même
@@ -477,8 +496,14 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const strong=selected||linkedToSelected||r.source_id===focusId||r.cible_id===focusId||highlighted.has(r.source_id)||highlighted.has(r.cible_id)
           if(!showWeak&&!strong)return null
           const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,label=relationLabel(r.type_relation)
-          const labelWidthPx=Math.max(84,Math.min(190,label.length*7.6+24))
-          const showThisLabel=showRelationLabels||selected||hovered||linkedToSelected
+          const entryLabel=entryRelationIds.has(r.relation_id)
+          // Doctrine des verbes : 18 px à l'entrée / affichage global,
+          // 20 px dès qu'une relation est liée au nœud sélectionné, survolée
+          // ou explicitement sélectionnée.
+          const relationFontPx=(selected||hovered||linkedToSelected)?20:18
+          const labelWidthPx=Math.max(104,Math.min(260,label.length*relationFontPx*.58+30))
+          const labelHeightPx=relationFontPx+20
+          const showThisLabel=showRelationLabels||selected||hovered||linkedToSelected||entryLabel
           return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''}`}
             onPointerEnter={()=>setHoveredRelationId(r.relation_id)}
             onPointerLeave={()=>setHoveredRelationId(current=>current===r.relation_id?null:current)}>
@@ -491,13 +516,14 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
                 opacity:strong?.96:Math.min(.72,.56*linkDensity),
                 strokeWidth:selected?3.2:strong?2.25:1.25
               }}/>
-            {/* Doctrine des verbes : masqués à l'entrée, visibles pour les relations
-                du nœud sélectionné, au survol / clic d'une arête, ou globalement à la demande. */}
+            {/* Doctrine des verbes : quelques relations structurantes sont visibles
+                dès l'entrée (18 px), puis toutes les relations directes du nœud
+                sélectionné deviennent franchement lisibles (20 px). */}
             {showThisLabel&&<g className="kg-relation-label" transform={`translate(${mx},${my})`} pointerEvents="none">
-              <rect x={-labelWidthPx/2} y="-16" width={labelWidthPx} height="32" rx="16"
+              <rect x={-labelWidthPx/2} y={-labelHeightPx/2} width={labelWidthPx} height={labelHeightPx} rx={labelHeightPx/2}
                 vectorEffect="non-scaling-stroke"
-                style={{fill:'#FFFFFF',stroke:selected?'#C36B48':'#C9D4E2',strokeWidth:selected?1.8:1.1,opacity:.98}}/>
-              <text y="5" textAnchor="middle" style={{fill:INK_RELATION,fontSize:'13px',fontWeight:720,letterSpacing:'.1px'}}>{label}</text>
+                style={{fill:'#FFFFFF',stroke:selected?'#C36B48':'#C9D4E2',strokeWidth:selected?2:1.2,opacity:.98}}/>
+              <text y={relationFontPx*.34} textAnchor="middle" style={{fill:INK_RELATION,fontSize:`${relationFontPx}px`,fontWeight:760,letterSpacing:'.1px'}}>{label}</text>
             </g>}
           </g>
         })}
