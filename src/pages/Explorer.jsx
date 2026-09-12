@@ -139,11 +139,11 @@ export default function Explorer({data}){
 
     <section className="graph-workspace publication-workspace">
       <div className="workspace-toolbar"><div><span className="explorer-kicker">EXPLORER</span><h1>Explorateur de publication</h1><p className="workspace-subtitle">{sentenceCase(selectedPub.titre)}</p><div className="big-count"><strong>{visibleTypeIds.size}</strong><span>nœuds · {visibleRelationCount} liens visibles</span><Icon name="info" size={17}/></div></div><div className="toolbar-actions"><button onClick={reset}><Icon name="reset" size={17}/>Réinitialiser</button><button onClick={()=>setFitToken(x=>x+1)}><Icon name="target" size={17}/>Ajuster à l’écran</button></div></div>
-      <div className={`chat-dock explorer-chat explorer-chat-top ${chatOpen?'open':''}`}>
+      <KnowledgeGraph nodes={nodes} relations={relations} selectedId={currentNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} enabledTypes={enabledTypes} showWeak={showWeak} nodeScale={nodeScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
+      <div className={`chat-dock explorer-chat ${chatOpen?'open':''}`}>
         <button className="chat-dock-title" onClick={()=>setChatOpen(v=>!v)}><span>✦</span><strong>Interroger le graphe</strong><small>{chatOpen?'Réduire':'Ouvrir'}</small></button>
         {chatOpen&&<div className="chat-dock-body">{chat&&<div className="chat-response"><p>{chat.reponse}</p>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>setSelectedNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}<form onSubmit={submit}><input value={question} onChange={e=>setQuestion(e.target.value)} placeholder="Posez une question sur cette publication…"/><button disabled={loading||!question.trim()}><Icon name="send" size={18}/></button></form></div>}
       </div>
-      <KnowledgeGraph nodes={nodes} relations={relations} selectedId={currentNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} enabledTypes={enabledTypes} showWeak={showWeak} nodeScale={nodeScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
     </section>
 
     <aside className="detail-drawer publication-drawer">

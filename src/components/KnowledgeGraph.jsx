@@ -2,19 +2,35 @@ import React, { useMemo, useRef, useState, useEffect } from 'react'
 import Icon from './Icon.jsx'
 import { buildAdjacency, selectVisibleGraph } from '../lib/graph.js'
 
+/* =========================================================
+   PALETTE « Encre et terre cuite »
+   Le type de nœud ne sert qu'à la couleur et à l'icône.
+   Il n'intervient à aucun moment dans le calcul des positions.
+   ========================================================= */
 const TYPE_VISUAL={
-  acteur:{label:'Acteur',color:'#2d8fe8',soft:'#eaf5ff'},
-  expert_public:{label:'Expert public',color:'#0e66c6',soft:'#e8f2ff'},
-  action:{label:'Action',color:'#f05a36',soft:'#fff0eb'},
-  notion_idee:{label:'Notion / idée',color:'#7557d9',soft:'#f1edff'},
-  probleme:{label:'Problème',color:'#e13b34',soft:'#fff0ee'},
-  'Problème':{label:'Problème',color:'#e13b34',soft:'#fff0ee'},
-  localisation:{label:'Localisation',color:'#13aaa8',soft:'#e7f8f7'},
-  signal_faible:{label:'Signal faible',color:'#ffad19',soft:'#fff6dc'},
-  recommandation:{label:'Recommandation',color:'#df46c8',soft:'#fff0fb'},
+  acteur:{label:'Acteur',color:'#3C6193'},
+  expert_public:{label:'Expert public',color:'#5691C0'},
+  action:{label:'Action',color:'#C36B48'},
+  notion_idee:{label:'Notion / idée',color:'#6D5DA6'},
+  probleme:{label:'Problème',color:'#A8423E'},
+  'Problème':{label:'Problème',color:'#A8423E'},
+  localisation:{label:'Localisation',color:'#2E8C80'},
+  signal_faible:{label:'Signal faible',color:'#C08A33'},
+  recommandation:{label:'Recommandation',color:'#9C4B86'},
 }
 const LEGEND_ORDER=['acteur','expert_public','action','notion_idee','probleme','localisation','signal_faible','recommandation']
-const TYPE_ORDER=new Map(LEGEND_ORDER.map((t,i)=>[t,i]))
+
+const INK_NODE='#16233C'      // libellés de nœuds
+const INK_RELATION='#4A5B76'  // libellés de relations
+const EDGE_WEAK='#B2BECE'
+const EDGE_STRONG='#3A5273'
+
+// éclaircissement d'une teinte vers le blanc : halos et aplats secondaires
+function lighten(hex,amount){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16)
+  const mix=v=>Math.round(v+(255-v)*amount)
+  return '#'+[mix(r),mix(g),mix(b)].map(v=>('0'+v.toString(16)).slice(-2)).join('')
+}
 
 const RELATION_LABELS={
   REPOND_A:'Répond à', REPOSE_SUR:'Repose sur', SE_DECLINE_EN:'Se décline en', PERMET_DE:'Permet de',
@@ -25,7 +41,7 @@ const RELATION_LABELS={
   A_POUR_OBJECTIF:'A pour objectif', ASSOCIE_A:'Associé à', COLLABORE_AVEC:'Collabore avec', PARTICIPE_A:'Participe à',
   PRECONISE:'Préconise', PORTE:'Porte', DEVELOPPE:'Développe', ENCADRE:'Encadre', FINANCE:'Finance', UTILISE_POUR:'Utilise pour',
   INTERVIENT_SUR:'Intervient sur', SPECIALISE_DANS:'Spécialisé dans', EXPERTISE_SUR:'Expertise sur', FAIT_SUITE_A:'Fait suite à',
-  COMPREND:'Comprend', OBSERVEE_DANS:'Observée dans', RENFORCE:'Renforce', INFLUENCE:'Influence'
+  COMPREND:'Comprend', OBSERVEE_DANS:'Observée dans', RENFORCE:'Renforce', INFLUENCE:'Influence',
 }
 
 function visualFor(type='notion_idee'){
@@ -58,11 +74,6 @@ function Glyph({type,x,y,color,size=17}){
   return <g transform={`translate(${x-size},${y-size}) scale(${size/12})`} fill="none" stroke={color} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6M10 22h4M8 14c-1.6-1.3-2.5-3-2.5-5A6.5 6.5 0 0 1 18 6.8c.6 2.6-.2 5-2.4 7.1-.8.8-1.3 1.5-1.5 2.1h-4.2c-.2-.6-.8-1.3-1.9-2Z"/></g>
 }
 
-function typeRank(type){
-  const normalized=type==='Problème'?'probleme':type
-  return TYPE_ORDER.has(normalized)?TYPE_ORDER.get(normalized):99
-}
-
 function stableHash(value=''){
   let h=2166136261
   for(const ch of String(value)){
@@ -74,237 +85,224 @@ function stableHash(value=''){
 
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
 
-/*
- * Mise en page "réseau organique" :
- * - le nœud actif reste le point d'ancrage ;
- * - les voisins directs occupent une surface, pas une couronne ;
- * - les nœuds de second niveau se placent près du voisin qui les relie au centre ;
- * - une courte relaxation déterministe réduit les collisions et casse la symétrie.
- *
- * Contrairement à l'ancienne rosace, le rayon n'est donc jamais constant.
- */
-function layoutGraph(nodes,relations,focusId){
-  const adj=buildAdjacency(nodes,relations),out={}
-  const focus=nodes.find(n=>n.node_id===focusId)||nodes[0]
-  if(!focus)return out
+/* ---------------------------------------------------------
+   Gabarit d'un nœud : rayon, halo et place réellement occupée
+   par son libellé. Sert au desserrage et au calcul des bornes,
+   pour que le cadrage tienne compte du texte et pas seulement
+   des cercles.
+   --------------------------------------------------------- */
+const CHAR_W=6.9, LINE_H=18
 
-  // Mise en page à branches orientées : on ne distribue plus les voisins
-  // autour d'un cercle. Les relations entrantes partent plutôt à gauche,
-  // les relations sortantes plutôt à droite, puis les descendants se
-  // ramifient vers l'extérieur. Les positions restent déterministes.
-  const width=1170,height=720
-  const cx=585,cy=350
-  const bounds={left:76,right:1094,top:78,bottom:640}
-  out[focus.node_id]={x:cx,y:cy,focus:true,active:true,fixed:true}
-
-  const nodeMap=new Map(nodes.map(n=>[n.node_id,n]))
-  const degree=id=>(adj.get(id)?.length||0)
-
-  // 1) Arbre de parcours depuis le nœud actif.
-  const level=new Map([[focus.node_id,0]])
-  const parent=new Map([[focus.node_id,null]])
-  const queue=[focus.node_id]
-  while(queue.length){
-    const id=queue.shift()
-    const neighbours=[...(adj.get(id)||[])].sort((a,b)=>degree(b.id)-degree(a.id)||String(a.id).localeCompare(String(b.id)))
-    neighbours.forEach(({id:nextId})=>{
-      if(!level.has(nextId)){
-        level.set(nextId,(level.get(id)||0)+1)
-        parent.set(nextId,id)
-        queue.push(nextId)
-      }
-    })
+function nodeBox(node,role,nodeScale=1){
+  const r=(role==='focus'?46:role==='direct'?31:20)*nodeScale
+  const lines=wrap(node.libelle,role==='focus'?27:role==='direct'?24:22)
+  const halo=role==='focus'?38:role==='direct'?13:8
+  const labelW=Math.max(...lines.map(l=>l.length))*CHAR_W
+  return {
+    r,
+    lines:lines.length,
+    up:r+halo,
+    down:r+25+(lines.length-1)*LINE_H+8,
+    half:Math.max(r+halo,labelW/2+9)
   }
+}
 
-  const children=new Map(nodes.map(n=>[n.node_id,[]]))
-  parent.forEach((p,id)=>{if(p&&children.has(p))children.get(p).push(id)})
-  const subtreeSize=new Map()
-  const calcSize=id=>{
-    let size=1
-    ;(children.get(id)||[]).forEach(child=>{size+=calcSize(child)})
-    subtreeSize.set(id,size)
-    return size
-  }
-  calcSize(focus.node_id)
+/* =========================================================
+   PLACEMENT B — RÉSEAU ASYMÉTRIQUE ÉQUILIBRÉ
+   Moteur force-directed : chaque entité repousse toutes les
+   autres, chaque relation rapproche les deux entités qu'elle
+   relie. Trois contraintes légères s'y ajoutent :
+     1. les entités très reliées repoussent plus fort et se
+        dégagent de la place ;
+     2. un terme d'égalisation détend les zones tassées vers
+        les zones vides ;
+     3. une poussée faible dans le sens source → cible donne
+        une tendance de lecture, sans imposer d'axe.
+   Aucun angle, aucun rayon, aucun anneau, aucune racine :
+   la position ne dépend que des relations. Le type de nœud
+   n'entre jamais dans le calcul. Positions initiales tirées
+   d'un hachage stable du node_id et nombre d'itérations fixe :
+   la même publication redonne toujours la même image.
+   ========================================================= */
+function layoutGraph(nodes,relations,focusId,opts={}){
+  const out={}
+  if(!nodes.length)return out
+  const nodeScale=opts.nodeScale||1
+  const ratio=clamp(opts.containerRatio||1.5,0.85,2.6)
 
-  const directRoots=(children.get(focus.node_id)||[]).sort((a,b)=>
-    (subtreeSize.get(b)||1)-(subtreeSize.get(a)||1)||degree(b)-degree(a)||String(nodeMap.get(a)?.libelle||a).localeCompare(String(nodeMap.get(b)?.libelle||b),'fr')
-  )
+  // le cadre de calcul épouse le format du conteneur : le réseau
+  // se déploie directement à la bonne forme, sans étirement
+  const H=760, W=Math.round(H*ratio)
 
-  // 2) Le sens réel des relations aide à répartir les grandes branches.
-  //    Entrant vers le focus => gauche ; sortant depuis le focus => droite.
-  const sideByRoot=new Map()
-  let leftWeight=0,rightWeight=0
-  directRoots.forEach(rootId=>{
-    let incoming=0,outgoing=0
-    relations.forEach(r=>{
-      if(r.source_id===rootId&&r.cible_id===focus.node_id)incoming++
-      if(r.source_id===focus.node_id&&r.cible_id===rootId)outgoing++
-    })
-    let side
-    if(incoming>outgoing)side=-1
-    else if(outgoing>incoming)side=1
-    else side=leftWeight<=rightWeight?-1:1
-    sideByRoot.set(rootId,side)
-    const weight=Math.max(1,subtreeSize.get(rootId)||1)
-    if(side<0)leftWeight+=weight;else rightWeight+=weight
+  const index=new Map(nodes.map((n,i)=>[n.node_id,i]))
+  const n=nodes.length
+  const edges=relations
+    .filter(r=>index.has(r.source_id)&&index.has(r.cible_id)&&r.source_id!==r.cible_id)
+    .map(r=>[index.get(r.source_id),index.get(r.cible_id)])
+
+  const nb=nodes.map(()=>[])
+  edges.forEach(([a,b])=>{
+    if(nb[a].indexOf(b)<0)nb[a].push(b)
+    if(nb[b].indexOf(a)<0)nb[b].push(a)
   })
+  const degree=nb.map(l=>l.length)
 
-  // Si toutes les relations ont le même sens, on conserve malgré tout
-  // un graphe lisible sur les deux côtés, sans modifier les relations.
-  const leftRoots=directRoots.filter(id=>sideByRoot.get(id)<0)
-  const rightRoots=directRoots.filter(id=>sideByRoot.get(id)>0)
-  if(!leftRoots.length||!rightRoots.length){
-    leftRoots.length=0;rightRoots.length=0
-    let lw=0,rw=0
-    directRoots.forEach(rootId=>{
-      const weight=Math.max(1,subtreeSize.get(rootId)||1)
-      if(lw<=rw){leftRoots.push(rootId);sideByRoot.set(rootId,-1);lw+=weight}
-      else{rightRoots.push(rootId);sideByRoot.set(rootId,1);rw+=weight}
-    })
-  }
+  const p=nodes.map(nd=>({
+    x:W*(0.12+0.76*stableHash(nd.node_id)),
+    y:H*(0.12+0.76*stableHash(nd.node_id+'#y'))
+  }))
 
-  const anchors={}
-  const rootOf=id=>{
-    let current=id
-    let guard=0
-    while(parent.get(current)&&parent.get(current)!==focus.node_id&&guard<50){current=parent.get(current);guard++}
-    return parent.get(current)===focus.node_id?current:null
-  }
+  const k=Math.sqrt(W*H/n)*0.86
+  const t0=W*0.09, IT=520
 
-  // 3) Plusieurs couloirs par côté. Les branches riches restent plutôt proches
-  //    du centre ; les branches sans descendants occupent le couloir externe.
-  function placeRootSide(rootIds,side){
-    if(!rootIds.length)return
-    // Trois couloirs sur les côtés très chargés, deux sur les côtés moyens.
-    // Cela évite d'empiler 8 à 12 voisins du focus dans une seule colonne.
-    const laneCount=rootIds.length>=9?3:rootIds.length>=5?2:1
-    const lanes=Array.from({length:laneCount},()=>[])
-    const laneLoad=Array(laneCount).fill(0)
+  for(let it=0;it<IT;it++){
+    const t=t0*Math.pow(1-it/IT,1.6)+0.4
+    const d=p.map(()=>({x:0,y:0}))
+    const near=p.map(()=>0)
 
-    rootIds.forEach(rootId=>{
-      const weight=Math.max(1,subtreeSize.get(rootId)||1)
-      const rich=weight>1
-      // Les vraies branches restent dans les couloirs intérieurs pour
-      // laisser de la place à leurs descendants ; les feuilles peuvent
-      // utiliser le couloir extérieur.
-      const candidates=rich&&laneCount>1
-        ? [...Array(laneCount-1).keys()]
-        : [...Array(laneCount).keys()]
-      let target=candidates[0]||0
-      candidates.forEach(index=>{if(laneLoad[index]<laneLoad[target])target=index})
-      lanes[target].push(rootId)
-      laneLoad[target]+=weight
-    })
-
-    const offsets=laneCount===1?[260]:laneCount===2?[205,405]:[175,320,465]
-    lanes.forEach((lane,laneIndex)=>{
-      if(!lane.length)return
-      const xBase=cx+side*offsets[laneIndex]
-      const usable=bounds.bottom-bounds.top
-      lane.forEach((rootId,index)=>{
-        const slot=(index+1)/(lane.length+1)
-        const jitterY=(stableHash(rootId)-.5)*30
-        const jitterX=(stableHash(rootId+'x')-.5)*18
-        const x=clamp(xBase+jitterX,bounds.left,bounds.right)
-        const y=clamp(bounds.top+usable*slot+jitterY,bounds.top,bounds.bottom)
-        out[rootId]={x,y,hub:true,active:true,branchRoot:true,side,lane:laneIndex}
-        anchors[rootId]={x,y}
-      })
-    })
-  }
-  placeRootSide(leftRoots,-1)
-  placeRootSide(rightRoots,1)
-
-  // 4) Les niveaux suivants restent près de leur branche et avancent vers
-  //    l'extérieur. On conserve donc la structure du graphe au lieu de
-  //    fabriquer des « secteurs » sémantiques artificiels.
-  const placed=new Set([focus.node_id,...directRoots])
-  const ordered=nodes
-    .filter(n=>n.node_id!==focus.node_id&&!directRoots.includes(n.node_id)&&level.has(n.node_id))
-    .sort((a,b)=>(level.get(a.node_id)||99)-(level.get(b.node_id)||99)||String(a.node_id).localeCompare(String(b.node_id)))
-
-  ordered.forEach(n=>{
-    const id=n.node_id,pid=parent.get(id),p=out[pid]
-    const rootId=rootOf(id)
-    if(!p||!rootId||!out[rootId])return
-    const side=sideByRoot.get(rootId)||1
-    const siblings=(children.get(pid)||[]).filter(s=>level.has(s))
-    const index=Math.max(0,siblings.indexOf(id))
-    const center=(siblings.length-1)/2
-    const depth=Math.max(2,level.get(id)||2)
-    const stepX=depth===2?145:118
-    const x=clamp(p.x+side*stepX+(stableHash(id+'x')-.5)*18,bounds.left,bounds.right)
-    const spread=Math.min(90,58+siblings.length*4)
-    const y=clamp(p.y+(index-center)*spread+(stableHash(id)-.5)*20,bounds.top,bounds.bottom)
-    out[id]={x,y,secondary:true,parentId:pid,branchRoot:rootId,side}
-    anchors[id]={x,y}
-    placed.add(id)
-  })
-
-  // Nœuds éventuellement déconnectés : petite réserve périphérique stable.
-  const disconnected=nodes.filter(n=>!placed.has(n.node_id)&&n.node_id!==focus.node_id)
-  disconnected.forEach((n,i)=>{
-    const side=i%2===0?-1:1
-    const row=Math.floor(i/2)
-    const x=side<0?bounds.left+55:bounds.right-55
-    const y=clamp(bounds.bottom-row*82,bounds.top,bounds.bottom)
-    out[n.node_id]={x,y,secondary:true,side}
-    anchors[n.node_id]={x,y}
-  })
-
-  const movable=nodes.filter(n=>n.node_id!==focus.node_id&&out[n.node_id])
-  const all=nodes.filter(n=>out[n.node_id])
-  const edges=relations.filter(r=>out[r.source_id]&&out[r.cible_id])
-
-  // 5) Relaxation courte : collision, ressorts et rappel vers les branches.
-  //    Le rappel est volontairement plus fort qu'un force-layout classique :
-  //    le graphe ne saute pas de place lorsqu'on le rouvre.
-  for(let iter=0;iter<86;iter++){
-    const delta=new Map(movable.map(n=>[n.node_id,{x:0,y:0}]))
-
-    for(let i=0;i<all.length;i++){
-      const a=all[i],pa=out[a.node_id]
-      for(let j=i+1;j<all.length;j++){
-        const b=all[j],pb=out[b.node_id]
-        let dx=pb.x-pa.x,dy=pb.y-pa.y
-        let dist=Math.hypot(dx,dy)
-        if(dist<.01){dx=.01;dy=.01;dist=.014}
-        const aRoot=directRoots.includes(a.node_id),bRoot=directRoots.includes(b.node_id)
-        const desired=a.node_id===focus.node_id||b.node_id===focus.node_id?128:(aRoot||bRoot?116:94)
-        if(dist<desired){
-          const force=(desired-dist)*.06
-          const ux=dx/dist,uy=dy/dist
-          if(delta.has(a.node_id)){delta.get(a.node_id).x-=ux*force;delta.get(a.node_id).y-=uy*force}
-          if(delta.has(b.node_id)){delta.get(b.node_id).x+=ux*force;delta.get(b.node_id).y+=uy*force}
-        }
+    for(let i=0;i<n;i++){
+      for(let j=i+1;j<n;j++){
+        const dx=p[i].x-p[j].x, dy=p[i].y-p[j].y
+        const dist=Math.sqrt(dx*dx+dy*dy)||0.01
+        // 1. les entités très reliées se dégagent davantage de place
+        const scale=1+0.18*Math.min(6,Math.max(degree[i],degree[j]))
+        const f=(k*k*scale)/dist
+        d[i].x+=dx/dist*f; d[i].y+=dy/dist*f
+        d[j].x-=dx/dist*f; d[j].y-=dy/dist*f
+        if(dist<k*1.35){near[i]++;near[j]++}
       }
     }
 
-    edges.forEach(r=>{
-      const a=out[r.source_id],b=out[r.cible_id]
-      let dx=b.x-a.x,dy=b.y-a.y,dist=Math.max(1,Math.hypot(dx,dy))
-      const parentChild=parent.get(r.source_id)===r.cible_id||parent.get(r.cible_id)===r.source_id
-      const touchesFocus=r.source_id===focus.node_id||r.cible_id===focus.node_id
-      const desired=touchesFocus?285:(parentChild?160:205)
-      const force=(dist-desired)*(touchesFocus?.0055:parentChild?.010:.004)
-      const ux=dx/dist,uy=dy/dist
-      if(delta.has(r.source_id)){delta.get(r.source_id).x+=ux*force;delta.get(r.source_id).y+=uy*force}
-      if(delta.has(r.cible_id)){delta.get(r.cible_id).x-=ux*force;delta.get(r.cible_id).y-=uy*force}
+    edges.forEach(([a,b])=>{
+      const dx=p[a].x-p[b].x, dy=p[a].y-p[b].y
+      const dist=Math.sqrt(dx*dx+dy*dy)||0.01
+      const f=(dist*dist)/(k*1.15)
+      d[a].x-=dx/dist*f; d[a].y-=dy/dist*f
+      d[b].x+=dx/dist*f; d[b].y+=dy/dist*f
+      // 3. tendance de lecture : la cible dérive légèrement vers la droite
+      const bias=k*0.055
+      d[a].x-=bias; d[b].x+=bias
     })
 
-    movable.forEach(n=>{
-      const p=out[n.node_id],d=delta.get(n.node_id),a=anchors[n.node_id]
-      if(a){
-        d.x+=(a.x-p.x)*.105
-        d.y+=(a.y-p.y)*.105
+    // 2. égalisation des densités
+    const mean=near.reduce((s,v)=>s+v,0)/n
+    for(let q=0;q<n;q++){
+      const excess=near[q]-mean
+      if(excess>0){
+        const cx=p[q].x-W/2, cy=p[q].y-H/2
+        const m=Math.sqrt(cx*cx+cy*cy)||1
+        d[q].x+=cx/m*excess*k*0.035
+        d[q].y+=cy/m*excess*k*0.035
       }
-      p.x=clamp(p.x+d.x,bounds.left,bounds.right)
-      p.y=clamp(p.y+d.y,bounds.top,bounds.bottom)
-    })
+      const pull=0.030+0.10/(1+degree[q])
+      d[q].x+=(W/2-p[q].x)*pull*0.85
+      d[q].y+=(H/2-p[q].y)*pull*1.25
+      const m2=Math.sqrt(d[q].x*d[q].x+d[q].y*d[q].y)||0.01
+      const step=Math.min(m2,t)/m2
+      p[q].x=clamp(p[q].x+d[q].x*step,10,W-10)
+      p[q].y=clamp(p[q].y+d[q].y*step,10,H-10)
+    }
   }
 
+  // rôles : ils ne servent qu'à dimensionner les gabarits
+  const fi=index.has(focusId)?index.get(focusId):0
+  const directSet=new Set(nb[fi])
+  const boxes=nodes.map((nd,i)=>nodeBox(nd,i===fi?'focus':directSet.has(i)?'direct':'secondary',nodeScale))
+
+  // desserrage tenant compte des libellés : il n'écarte que des
+  // gabarits qui se touchent, sans rappel vers une ancre
+  for(let it=0;it<70;it++){
+    const d=p.map(()=>({x:0,y:0}))
+    for(let i=0;i<n;i++){
+      for(let j=i+1;j<n;j++){
+        const needX=(boxes[i].half+boxes[j].half)*0.92
+        const needY=(boxes[i].down+boxes[j].up)*0.88
+        const dx=p[j].x-p[i].x, dy=p[j].y-p[i].y
+        if(Math.abs(dx)>=needX||Math.abs(dy)>=needY)continue
+        const px=(needX-Math.abs(dx))*0.055*(dx<0?-1:1)
+        const py=(needY-Math.abs(dy))*0.085*(dy<0?-1:1)
+        d[i].x-=px; d[i].y-=py
+        d[j].x+=px; d[j].y+=py
+      }
+    }
+    for(let q=0;q<n;q++){p[q].x+=d[q].x;p[q].y+=d[q].y}
+  }
+
+  // mise au format du conteneur : on n'écarte qu'un seul axe, celui
+  // qui manque. Les nœuds gardent leur taille, seules les distances
+  // augmentent, donc aucune déformation.
+  const xs=p.map(q=>q.x), ys=p.map(q=>q.y)
+  const spanX=Math.max(1,Math.max(...xs)-Math.min(...xs))
+  const spanY=Math.max(1,Math.max(...ys)-Math.min(...ys))
+  const current=spanX/spanY
+  if(current<ratio){
+    const f=Math.min(ratio/current,1.9), mid=(Math.max(...xs)+Math.min(...xs))/2
+    p.forEach(q=>{q.x=mid+(q.x-mid)*f})
+  }else if(current>ratio){
+    const f=Math.min(current/ratio,1.9), mid=(Math.max(...ys)+Math.min(...ys))/2
+    p.forEach(q=>{q.y=mid+(q.y-mid)*f})
+  }
+
+  nodes.forEach((nd,i)=>{
+    out[nd.node_id]={
+      x:p[i].x,
+      y:p[i].y,
+      focus:i===fi,
+      secondary:i!==fi&&!directSet.has(i)
+    }
+  })
   return out
+}
+
+/* ---------------------------------------------------------
+   Bornes réelles du dessin, halos et libellés compris.
+   --------------------------------------------------------- */
+function graphBounds(nodes,positions,focusId,directSet,nodeScale=1){
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity
+  nodes.forEach(n=>{
+    const p=positions[n.node_id]
+    if(!p)return
+    const role=n.node_id===focusId?'focus':directSet.has(n.node_id)?'direct':'secondary'
+    const b=nodeBox(n,role,nodeScale)
+    minX=Math.min(minX,p.x-b.half)
+    maxX=Math.max(maxX,p.x+b.half)
+    minY=Math.min(minY,p.y-b.up)
+    maxY=Math.max(maxY,p.y+b.down)
+  })
+  if(!isFinite(minX))return {minX:0,minY:0,maxX:100,maxY:100}
+  return {minX,minY,maxX,maxY}
+}
+
+/* ---------------------------------------------------------
+   viewBox : bornes réelles, élargies sur le seul axe manquant
+   pour épouser le format du conteneur. Aucune déformation,
+   preserveAspectRatio reste à sa valeur par défaut.
+   --------------------------------------------------------- */
+function computeViewBox(bounds,containerW,containerH,topInset=0){
+  const pad=30
+  let x=bounds.minX-pad,y=bounds.minY-pad
+  let w=Math.max(1,bounds.maxX-bounds.minX)+pad*2
+  let h=Math.max(1,bounds.maxY-bounds.minY)+pad*2
+  if(!(containerW>0&&containerH>0))return {x,y,w,h}
+
+  // la légende flottante occupe le haut du cadre : on lui réserve sa place
+  const usableH=Math.max(40,containerH-topInset)
+
+  // un petit graphe est agrandi, mais pas au point de devenir grotesque
+  const minW=containerW/1.5,minH=usableH/1.5
+  if(w<minW){x-=(minW-w)/2;w=minW}
+  if(h<minH){y-=(minH-h)/2;h=minH}
+
+  const ratio=containerW/usableH
+  if(w/h<ratio){const nw=h*ratio;x-=(nw-w)/2;w=nw}
+  else if(w/h>ratio){const nh=w/ratio;y-=(nh-h)/2;h=nh}
+
+  // bande vide réservée au-dessus, sans déformation : le rapport
+  // final vaut exactement containerW / containerH
+  const extra=(w/containerW)*topInset
+  y-=extra
+  h+=extra
+  return {x,y,w,h}
 }
 
 function LegendGlyph({type}){
@@ -312,19 +310,60 @@ function LegendGlyph({type}){
   return <span className="kg-legend-icon" style={{background:visual.color}}><svg viewBox="0 0 24 24" aria-hidden="true"><Glyph type={type} x={12} y={12} color="#fff" size={7.4}/></svg></span>
 }
 
+const LEGEND_INSET=58
+
 export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,linkDensity=1,showWeak=true,maxNodes=38,resetToken=0,fitToken=0}){
   const [scale,setScale]=useState(1),[pan,setPan]=useState({x:0,y:0})
+  const [frame,setFrame]=useState({w:0,h:0})
+  const shell=useRef(null)
   const drag=useRef(null)
   const moved=useRef(false)
 
   useEffect(()=>{setScale(1);setPan({x:0,y:0})},[resetToken,fitToken])
+
+  // Le cadre se mesure lui-même : c'est lui qui donne le format
+  // auquel le réseau est ajusté, sans hauteur codée en dur.
+  useEffect(()=>{
+    const el=shell.current
+    if(!el)return
+    const read=()=>{
+      const r=el.getBoundingClientRect()
+      setFrame(prev=>Math.abs(prev.w-r.width)<2&&Math.abs(prev.h-r.height)<2?prev:{w:r.width,h:r.height})
+    }
+    read()
+    if(typeof ResizeObserver==='undefined'){
+      window.addEventListener('resize',read)
+      return ()=>window.removeEventListener('resize',read)
+    }
+    const observer=new ResizeObserver(read)
+    observer.observe(el)
+    return ()=>observer.disconnect()
+  },[])
+
   const visible=useMemo(()=>selectVisibleGraph(nodes,relations,selectedId,false,maxNodes),[nodes,relations,selectedId,maxNodes])
-  const positions=useMemo(()=>layoutGraph(visible.nodes,visible.relations,visible.focus),[visible])
+
+  // rapport du conteneur arrondi au vingtième : la forme reste
+  // identique d'une ouverture à l'autre et ne tremble pas au
+  // redimensionnement
+  const containerRatio=useMemo(()=>{
+    const usable=frame.h-LEGEND_INSET
+    if(!(frame.w>0&&usable>0))return 1.5
+    return clamp(Math.round((frame.w/usable)*20)/20,0.85,2.6)
+  },[frame.w,frame.h])
+
+  const positions=useMemo(
+    ()=>layoutGraph(visible.nodes,visible.relations,visible.focus,{nodeScale,containerRatio}),
+    [visible,nodeScale,containerRatio]
+  )
+
   const focusId=selectedId||visible.focus
   const highlighted=new Set(highlightIds)
   const adj=useMemo(()=>buildAdjacency(visible.nodes,visible.relations),[visible])
   const direct=new Set((adj.get(focusId)||[]).map(x=>x.id))
   const legendTypes=LEGEND_ORDER.filter(type=>visible.nodes.some(n=>(n.type_noeud==='Problème'?'probleme':n.type_noeud)===type))
+
+  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale),[visible.nodes,positions,focusId,nodeScale])
+  const viewBox=useMemo(()=>computeViewBox(bounds,frame.w,frame.h,LEGEND_INSET),[bounds,frame.w,frame.h])
 
   const nodeById=useMemo(()=>Object.fromEntries(visible.nodes.map(n=>[n.node_id,n])),[visible.nodes])
   const relationById=useMemo(()=>Object.fromEntries(visible.relations.map(r=>[r.relation_id,r])),[visible.relations])
@@ -373,23 +412,34 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
     moved.current=false
   }
 
-  return <div className="knowledge-constellation explorer-v6-knowledge explorer-v9-knowledge">
+  return <div ref={shell} className="knowledge-constellation explorer-v6-knowledge explorer-v9-knowledge">
     <div className="kg-icon-legend">
       <div className="kg-legend-items">{legendTypes.map(type=>{const visual=visualFor(type);return <span className="kg-legend-item" key={type}><LegendGlyph type={type}/><b>{visual.label}</b></span>})}</div>
       <span className="kg-drag-hint"><span className="kg-hand">↔</span> Cliquez-glissez pour déplacer le graphe</span>
     </div>
-    <svg viewBox="0 0 1170 720" className="knowledge-svg" onWheel={e=>{e.preventDefault();setScale(s=>Math.max(.58,Math.min(1.85,s+(e.deltaY < 0 ? .08 : -.08))))}} onPointerDownCapture={beginPan} onPointerMove={movePan} onPointerUp={endPan} onPointerCancel={cancelPan} onPointerLeave={cancelPan}>
-      <g transform={`translate(${pan.x} ${pan.y}) scale(${scale})`}>
+    <svg viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`} className="knowledge-svg" onWheel={e=>{e.preventDefault();setScale(s=>Math.max(.58,Math.min(1.85,s+(e.deltaY < 0 ? .08 : -.08))))}} onPointerDownCapture={beginPan} onPointerMove={movePan} onPointerUp={endPan} onPointerCancel={cancelPan} onPointerLeave={cancelPan}>
+      <g transform={`translate(${pan.x} ${pan.y}) scale(${scale})`} style={{transformOrigin:`${viewBox.x+viewBox.w/2}px ${viewBox.y+viewBox.h/2}px`}}>
         {visible.relations.map(r=>{
           const a=positions[r.source_id],b=positions[r.cible_id];if(!a||!b)return null
           const selected=r.relation_id===selectedRelationId
           const strong=selected||r.source_id===focusId||r.cible_id===focusId||highlighted.has(r.source_id)||highlighted.has(r.cible_id)
           if(!showWeak&&!strong)return null
           const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,label=relationLabel(r.type_relation)
-          const labelWidth=Math.max(74,Math.min(170,label.length*7.2+22))
+          const labelWidth=Math.max(80,Math.min(196,label.length*7.9+26))
           return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''}`}>
-            <line className={`kg-edge ${strong?'strong':'weak'}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} style={{opacity:strong ? .96 : Math.min(.52,.34*linkDensity),strokeWidth:selected?3.8:strong?2.6:1.5}}/>
-            {strong&&<g className="kg-relation-label" transform={`translate(${mx},${my})`} pointerEvents="none"><rect x={-labelWidth/2} y="-14" width={labelWidth} height="28" rx="14"/><text y="5" textAnchor="middle">{label}</text></g>}
+            <line className={`kg-edge ${strong?'strong':'weak'}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+              style={{
+                stroke:strong?EDGE_STRONG:EDGE_WEAK,
+                opacity:strong?.92:Math.min(.6,.42*linkDensity),
+                strokeWidth:selected?3.6:strong?2.5:1.6
+              }}/>
+            {/* B. libellés de relations : pastille blanche discrète,
+                texte plus grand et plus contrasté */}
+            {strong&&<g className="kg-relation-label" transform={`translate(${mx},${my})`} pointerEvents="none">
+              <rect x={-labelWidth/2} y="-15" width={labelWidth} height="30" rx="15"
+                style={{fill:'#FFFFFF',stroke:selected?'#C36B48':'#C9D4E2',strokeWidth:selected?1.8:1.2,opacity:.97}}/>
+              <text y="5" textAnchor="middle" style={{fill:INK_RELATION,fontSize:'13px',fontWeight:700,letterSpacing:'.1px'}}>{label}</text>
+            </g>}
           </g>
         })}
         {visible.nodes.map(n=>{
@@ -400,16 +450,24 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const highlightedNode=highlighted.has(n.node_id)
           const active=focus||isDirect||highlightedNode
           const r=(focus?46:isDirect?31:20)*nodeScale
-          const fill=active?visual.color:visual.soft
+          // A. nœuds secondaires : aplat plus tenu et contour affirmé,
+          //    pour que le type reste identifiable sans concurrencer
+          //    la sélection
+          const fill=active?visual.color:lighten(visual.color,.80)
+          const stroke=active?visual.color:lighten(visual.color,.10)
           const glyphColor=active?'#fff':visual.color
           const lines=wrap(n.libelle,focus?27:isDirect?24:22)
           return <g key={n.node_id} data-node-id={n.node_id} className={`kg-node ${focus?'focus':''} ${p.secondary?'secondary':''}`} role="button" tabIndex="0" aria-label={n.libelle} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectNode(n)}}}>
             <circle className="node-hit-target" cx={p.x} cy={p.y} r={Math.max(r+13,30)} fill="transparent"/>
-            {(focus||isDirect)&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+27} fill={visual.color} opacity={focus ? .16 : .09}/>}            
-            {(focus||isDirect)&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+15} fill={visual.color} opacity={focus ? .13 : .08}/>}            
-            <circle pointerEvents="none" cx={p.x} cy={p.y} r={r} fill={fill} stroke={visual.color} strokeWidth={focus?3.2:isDirect?2.4:1.8}/>
+            {/* C. nœud sélectionné : trois couches de halo clair plutôt
+                qu'une saturation ou une taille supplémentaire */}
+            {focus&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+36} fill={lighten(visual.color,.68)} opacity=".5"/>}
+            {focus&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+21} fill={lighten(visual.color,.52)} opacity=".62"/>}
+            {focus&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+8} fill="none" stroke={lighten(visual.color,.35)} strokeWidth="2.4" opacity=".9"/>}
+            {isDirect&&!focus&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+11} fill={lighten(visual.color,.5)} opacity=".5"/>}
+            <circle pointerEvents="none" cx={p.x} cy={p.y} r={r} fill={fill} stroke={stroke} strokeWidth={focus?3.2:isDirect?2.4:2}/>
             <Glyph type={n.type_noeud} x={p.x} y={p.y} color={glyphColor} size={focus?20:isDirect?16:13}/>
-            <text x={p.x} y={p.y+r+25} textAnchor="middle" className={`kg-label ${focus?'focus-label':''} ${p.secondary?'secondary-label':''}`}>{lines.map((line,i)=><tspan key={i} x={p.x} dy={i?18:0}>{line}</tspan>)}</text>
+            <text x={p.x} y={p.y+r+25} textAnchor="middle" className={`kg-label ${focus?'focus-label':''} ${p.secondary?'secondary-label':''}`} style={{fill:INK_NODE}}>{lines.map((line,i)=><tspan key={i} x={p.x} dy={i?18:0}>{line}</tspan>)}</text>
           </g>
         })}
       </g>
