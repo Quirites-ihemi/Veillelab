@@ -19,6 +19,7 @@ const TYPE_COLOR={
   recommandation:'#9C4B86'
 }
 const colorForType=type=>TYPE_COLOR[type]||'#6D5DA6'
+const normalizeGraphType=type=>type==='Problème'?'probleme':type
 
 function chunkFor(proof,contents){
   const ids=String(proof?.chunk_id_source||'').split(';').map(x=>x.trim()).filter(Boolean)
@@ -107,7 +108,7 @@ export default function Explorer({data}){
   const [selectedPub,setSelectedPub]=useState(null),[search,setSearch]=useState(''),[nodeSearch,setNodeSearch]=useState('')
   const [drawerOpen,setDrawerOpen]=useState(false)
   const [selectedNode,setSelectedNode]=useState(null),[proof,setProof]=useState(null),[showWeak,setShowWeak]=useState(true),[showRelationLabels,setShowRelationLabels]=useState(false)
-  const [enabledTypes,setEnabledTypes]=useState(legendTypes),[nodeScale,setNodeScale]=useState(1),[linkDensity,setLinkDensity]=useState(1),[resetToken,setResetToken]=useState(0),[fitToken,setFitToken]=useState(0)
+  const [enabledTypes,setEnabledTypes]=useState(legendTypes),[nodeScale,setNodeScale]=useState(1),[labelScale,setLabelScale]=useState(1),[linkDensity,setLinkDensity]=useState(1),[resetToken,setResetToken]=useState(0),[fitToken,setFitToken]=useState(0)
   const [question,setQuestion]=useState(''),[chat,setChat]=useState(null),[loading,setLoading]=useState(false),[chatOpen,setChatOpen]=useState(false)
 
   // En mode publication, l'écran Explorer doit rester calé sur le viewport.
@@ -141,23 +142,30 @@ export default function Explorer({data}){
   const currentNode=selectedNode||defaultFocus
   const evidence=currentNode?chunkFor(currentNode,data.contents):null
   const currentLinked=currentNode?(selectedNode?linkedNodes:(adj.get(currentNode.node_id)||[]).map(x=>nodeMap[x.id]).filter(Boolean).slice(0,6)):[]
-  const visibleTypeIds=new Set(nodes.filter(n=>enabledTypes.includes(n.type_noeud)).map(n=>n.node_id))
-  const typedRelations=relations.filter(r=>visibleTypeIds.has(r.source_id)&&visibleTypeIds.has(r.cible_id))
-  const visibleRelationCount=showWeak?typedRelations.length:typedRelations.filter(r=>r.source_id===currentNode?.node_id||r.cible_id===currentNode?.node_id).length
+  const graphNodes=nodes.filter(n=>enabledTypes.includes(normalizeGraphType(n.type_noeud)))
+  const visibleTypeIds=new Set(graphNodes.map(n=>n.node_id))
+  const graphRelations=relations.filter(r=>visibleTypeIds.has(r.source_id)&&visibleTypeIds.has(r.cible_id))
+  const graphAdj=buildAdjacency(graphNodes,graphRelations)
+  const graphDefaultFocus=[...graphNodes].sort((a,b)=>(graphAdj.get(b.node_id)?.length||0)-(graphAdj.get(a.node_id)?.length||0))[0]
+  const graphSelectedNode=selectedNode&&visibleTypeIds.has(selectedNode.node_id)?selectedNode:null
+  const graphCurrentNode=graphSelectedNode||graphDefaultFocus
+  const visibleRelationCount=showWeak?graphRelations.length:graphRelations.filter(r=>r.source_id===graphCurrentNode?.node_id||r.cible_id===graphCurrentNode?.node_id).length
 
-  const toggleType=t=>{if(selectedNode?.type_noeud===t&&enabledTypes.includes(t))setSelectedNode(null);setEnabledTypes(s=>s.includes(t)?s.filter(x=>x!==t):[...s,t])}
-  const reset=()=>{setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setEnabledTypes(legendTypes);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1)}
+  const toggleType=t=>{if(normalizeGraphType(selectedNode?.type_noeud)===t&&enabledTypes.includes(t))setSelectedNode(null);setEnabledTypes(s=>s.includes(t)?s.filter(x=>x!==t):[...s,t])}
+  const selectAllTypes=()=>setEnabledTypes([...legendTypes])
+  const deselectAllTypes=()=>{setSelectedNode(null);setProof(null);setEnabledTypes([])}
+  const reset=()=>{setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setEnabledTypes(legendTypes);setNodeScale(1);setLabelScale(1);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1)}
   async function submit(e){e.preventDefault();if(!question.trim()||loading)return;setLoading(true);setChatOpen(true);try{setChat(await askGraph(question,selectedPub,nodes,relations))}catch(err){setChat({error:err.message,reponse:'Le service de dialogue n’est pas disponible.',noeuds_selectionnes:[]})}finally{setLoading(false)}}
 
   return <div className="explorer-v02-shell"><main className={`screen graph-screen publication-screen explorer-v02-graph ${selectedNode?'has-drawer':''}`}>
     <aside className="left-rail explorer-rail">
       <button className="explorer-change-publication" onClick={()=>setDrawerOpen(true)}><Icon name="file" size={17}/><span><small>Publication</small><strong>Changer de publication</strong></span><Icon name="chevron" size={17}/></button>
       <section className="rail-section"><h4>Publication sélectionnée</h4><article className="selected-publication-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article></section>
-      <section className="rail-section"><h4>Rechercher dans la publication</h4><div className="rail-search"><input value={nodeSearch} onChange={e=>setNodeSearch(e.target.value)} placeholder="Rechercher un terme, une entité…"/><Icon name="search" size={18}/></div>{nodeMatches.length>0&&<div className="rail-results">{nodeMatches.map(n=><button key={n.node_id} onClick={()=>{setSelectedNode(n);setNodeSearch('')}}>{n.libelle}<small>{nodeMeta(n.type_noeud).label}</small></button>)}</div>}</section>
-      <section className="rail-section"><h4>Type de nœud</h4><div className="type-filter-list">{legendTypes.map(t=>{const m=nodeMeta(t),count=nodes.filter(n=>n.type_noeud===t).length;return <label key={t}><input type="checkbox" checked={enabledTypes.includes(t)} onChange={()=>toggleType(t)}/><i style={{background:colorForType(t)}}></i><span>{m.label}</span><b>{count}</b></label>})}</div></section>
+      <section className="rail-section"><h4>Rechercher dans la publication</h4><div className="rail-search"><input value={nodeSearch} onChange={e=>setNodeSearch(e.target.value)} placeholder="Rechercher un terme, une entité…"/><Icon name="search" size={18}/></div>{nodeMatches.length>0&&<div className="rail-results">{nodeMatches.map(n=><button key={n.node_id} onClick={()=>{const t=normalizeGraphType(n.type_noeud);setEnabledTypes(v=>v.includes(t)?v:[...v,t]);setSelectedNode(n);setNodeSearch('')}}>{n.libelle}<small>{nodeMeta(n.type_noeud).label}</small></button>)}</div>}</section>
+      <section className="rail-section"><div className="type-filter-heading"><h4>Type de nœud</h4><div className="type-filter-actions"><button type="button" onClick={selectAllTypes} disabled={enabledTypes.length===legendTypes.length}>Tout sélectionner</button><button type="button" onClick={deselectAllTypes} disabled={enabledTypes.length===0}>Tout désélectionner</button></div></div><div className="type-filter-list">{legendTypes.map(t=>{const m=nodeMeta(t),count=nodes.filter(n=>normalizeGraphType(n.type_noeud)===t).length;return <label key={t}><input type="checkbox" checked={enabledTypes.includes(t)} onChange={()=>toggleType(t)}/><i style={{background:colorForType(t)}}></i><span>{m.label}</span><b>{count}</b></label>})}</div></section>
       <section className="rail-section weak-row"><label><span>Afficher les liens faibles <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showWeak} onChange={e=>setShowWeak(e.target.checked)}/></label></section>
       <section className="rail-section weak-row relation-label-row"><label><span>Libellés des relations <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showRelationLabels} onChange={e=>setShowRelationLabels(e.target.checked)}/></label></section>
-      <section className="rail-section display-section"><h4>Affichage</h4><label>Taille des nœuds<input type="range" min="0.8" max="1.35" step="0.05" value={nodeScale} onChange={e=>setNodeScale(Number(e.target.value))}/><span><small>Petite</small><small>Grande</small></span></label><label>Densité des liens<input type="range" min="0.6" max="1.8" step="0.1" value={linkDensity} onChange={e=>setLinkDensity(Number(e.target.value))}/><span><small>Faible</small><small>Élevée</small></span></label></section>
+      <section className="rail-section display-section"><h4>Affichage</h4><label>Taille des nœuds<input type="range" min="0.8" max="1.35" step="0.05" value={nodeScale} onChange={e=>setNodeScale(Number(e.target.value))}/><span><small>Petite</small><small>Grande</small></span></label><label>Taille des libellés<input type="range" min="0.85" max="1.8" step="0.05" value={labelScale} onChange={e=>setLabelScale(Number(e.target.value))}/><span><small>Normale</small><small>Très grande</small></span></label><label>Densité des liens<input type="range" min="0.6" max="1.8" step="0.1" value={linkDensity} onChange={e=>setLinkDensity(Number(e.target.value))}/><span><small>Faible</small><small>Élevée</small></span></label></section>
     </aside>
 
     <section className="graph-workspace publication-workspace">
@@ -167,7 +175,7 @@ export default function Explorer({data}){
           <button className="chat-dock-title" onClick={()=>setChatOpen(v=>!v)}><span>✦</span><strong>Interroger le graphe</strong><small>{chatOpen?'Réduire':'Ouvrir'}</small></button>
           {chatOpen&&<div className="chat-dock-body">{chat&&<div className="chat-response"><p>{chat.reponse}</p>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>setSelectedNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}<form onSubmit={submit}><input value={question} onChange={e=>setQuestion(e.target.value)} placeholder="Posez une question sur cette publication…"/><button disabled={loading||!question.trim()}><Icon name="send" size={18}/></button></form></div>}
         </div>
-        <KnowledgeGraph nodes={nodes} relations={relations} selectedId={currentNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} enabledTypes={enabledTypes} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
+        <KnowledgeGraph nodes={graphNodes} relations={graphRelations} selectedId={graphSelectedNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} labelScale={labelScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
       </div>
     </section>
 
