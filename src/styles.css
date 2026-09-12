@@ -547,3 +547,116 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
   padding-top: 18px !important;
   padding-bottom: 18px !important;
 }
+
+/* ==========================================================
+   ONGLET 2 — réseau organique + chatbot en haut (11/09/2026)
+   ========================================================== */
+.explorer-v02-graph .publication-workspace{
+  height:calc(100vh - 70px);
+  min-height:calc(100vh - 70px);
+  padding:20px 22px 14px;
+  padding-bottom:14px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.explorer-v02-graph .workspace-toolbar{flex:0 0 auto}
+.explorer-v02-graph .explorer-chat-top{
+  position:relative;
+  left:auto;
+  right:auto;
+  bottom:auto;
+  top:auto;
+  width:100%;
+  max-width:none;
+  flex:0 0 auto;
+  margin:10px 0 10px;
+  border-radius:12px;
+  box-shadow:0 7px 20px rgba(28,43,68,.08);
+}
+.explorer-v02-graph .explorer-chat-top.open{width:100%;max-width:none}
+.explorer-v02-graph .explorer-chat-top .chat-dock-title{height:46px}
+.explorer-v02-graph .knowledge-constellation{
+  flex:1 1 auto;
+  height:auto;
+  min-height:0;
+  border:1px solid #e1e7ef;
+  border-radius:14px;
+  background:radial-gradient(circle at 50% 46%,#fff 0,#fff 64%,#f8fafd 100%);
+  overflow:hidden;
+}
+.explorer-v02-graph .kg-icon-legend{background:rgba(255,255,255,.94)}
+.explorer-v02-graph .knowledge-svg{min-height:0}
+.explorer-v02-graph .graph-tools.vertical{
+  left:auto;
+  right:14px;
+  top:auto;
+  bottom:14px;
+}
+@media(max-width:1380px){
+  .explorer-v02-graph .publication-workspace{padding:16px 16px 12px}
+  .explorer-v02-graph .explorer-chat-top{margin:8px 0}
+}
+
+/* ==========================================================
+   ONGLET 2 — grand graphe + panneau contextuel à la demande
+   (12/09/2026)
+   ========================================================== */
+/* À l'entrée dans une publication : rail gauche + grand graphe. */
+.explorer-v02-graph.screen.publication-screen{
+  grid-template-columns:235px minmax(0,1fr) !important;
+}
+/* Le panneau droit n'existe que lorsqu'un nœud a été choisi. */
+.explorer-v02-graph.screen.publication-screen.has-drawer{
+  grid-template-columns:235px minmax(0,1fr) 315px !important;
+}
+.explorer-v02-graph .publication-workspace{
+  padding:14px 16px 10px;
+  height:calc(100vh - 70px);
+  min-height:calc(100vh - 70px);
+}
+.explorer-v02-graph .workspace-toolbar{
+  gap:12px;
+  margin:0;
+}
+.explorer-v02-graph .workspace-toolbar h1{
+  font-size:27px;
+  margin-bottom:4px;
+}
+.explorer-v02-graph .workspace-subtitle{
+  margin-bottom:3px;
+  font-size:14px;
+  line-height:1.25;
+}
+.explorer-v02-graph .big-count strong{font-size:38px}
+.explorer-v02-graph .explorer-chat-top{
+  margin:6px 0 7px;
+}
+.explorer-v02-graph .explorer-chat-top .chat-dock-title{
+  height:43px;
+}
+.explorer-v02-graph .knowledge-constellation{
+  flex:1 1 auto;
+  min-height:0;
+  height:auto;
+}
+.explorer-v02-graph .detail-drawer{
+  min-height:calc(100vh - 70px);
+  max-height:calc(100vh - 70px);
+}
+.explorer-v02-graph .relation-label-row{
+  border-top:0;
+  padding-top:4px;
+}
+/* Les styles inline du composant pilotent désormais les tailles réelles.
+   On évite ici que d'anciens sélecteurs CSS ne les réduisent. */
+.explorer-v02-graph .explorer-v9-knowledge .kg-label,
+.explorer-v02-graph .explorer-v9-knowledge .kg-label.focus-label,
+.explorer-v02-graph .explorer-v9-knowledge .kg-node.secondary .kg-label{
+  font-size:inherit;
+}
+@media(max-width:1380px){
+  .explorer-v02-graph.screen.publication-screen{grid-template-columns:225px minmax(0,1fr) !important}
+  .explorer-v02-graph.screen.publication-screen.has-drawer{grid-template-columns:225px minmax(0,1fr) 295px !important}
+  .explorer-v02-graph .publication-workspace{padding:12px 12px 8px}
+}
