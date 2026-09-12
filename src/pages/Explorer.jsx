@@ -51,6 +51,52 @@ function KnowledgeIllustration(){
   </div>
 }
 
+const CHAT_SUGGESTIONS=[
+  'Quels sont les principaux problèmes identifiés ?',
+  'Quelles recommandations sont formulées ?',
+  'Quels acteurs sont mentionnés ?',
+  'Quelles relations relient les éléments importants ?'
+]
+
+function cleanChatText(value=''){
+  return String(value||'')
+    .replace(/\\?\*\*/g,'')
+    .replace(/`+/g,'')
+    .replace(/\b[NR]\d{3,}(?:_\d+)?\b/gi,'')
+    .replace(/\(\s*[,;:]?\s*\)/g,'')
+    .replace(/\s+([,;:.!?])/g,'$1')
+    .replace(/\s{2,}/g,' ')
+    .trim()
+}
+
+function legacyChatItems(text=''){
+  const cleaned=cleanChatText(text)
+  if(!cleaned)return {intro:'',items:[]}
+  const parts=cleaned.split(/\s+(?=\d+\.\s+)/g)
+  if(parts.length<2)return {intro:cleaned,items:[]}
+  const intro=parts.shift().replace(/[:\s]+$/,'').trim()
+  const items=parts.map(x=>x.replace(/^\d+\.\s*/,'').trim()).filter(Boolean)
+  return {intro,items}
+}
+
+function ChatAnswer({chat}){
+  if(!chat)return null
+  if(chat.error)return <div className="chat-answer chat-answer-error"><p>{chat.reponse||chat.error}</p></div>
+
+  const sections=Array.isArray(chat.sections)?chat.sections.filter(s=>s&&Array.isArray(s.items)&&s.items.length):[]
+  const intro=cleanChatText(chat.reponse||'')
+  const legacy=sections.length?null:legacyChatItems(chat.reponse||'')
+
+  return <div className="chat-answer">
+    {(sections.length?intro:legacy?.intro)&&<p className="chat-answer-intro">{sections.length?intro:legacy.intro}</p>}
+    {sections.map((section,index)=><section className="chat-answer-section" key={`${section.titre}-${index}`}>
+      <h4>{cleanChatText(section.titre)}</h4>
+      <ul>{section.items.map((item,i)=><li key={i}>{cleanChatText(item)}</li>)}</ul>
+    </section>)}
+    {!sections.length&&legacy?.items?.length>0&&<section className="chat-answer-section"><ul>{legacy.items.map((item,i)=><li key={i}>{item}</li>)}</ul></section>}
+  </div>
+}
+
 function PublicationDrawer({open,onClose,publications,search,setSearch,onSelect,selectedId}){
   const matches=useMemo(()=>{
     const q=normalize(search)
@@ -155,7 +201,17 @@ export default function Explorer({data}){
   const selectAllTypes=()=>setEnabledTypes([...legendTypes])
   const deselectAllTypes=()=>{setSelectedNode(null);setProof(null);setEnabledTypes([])}
   const reset=()=>{setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setEnabledTypes(legendTypes);setNodeScale(1);setLabelScale(1);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1)}
-  async function submit(e){e.preventDefault();if(!question.trim()||loading)return;setLoading(true);setChatOpen(true);try{setChat(await askGraph(question,selectedPub,nodes,relations))}catch(err){setChat({error:err.message,reponse:'Le service de dialogue n’est pas disponible.',noeuds_selectionnes:[]})}finally{setLoading(false)}}
+  async function runQuestion(value){
+    const q=String(value||'').trim()
+    if(!q||loading)return
+    setQuestion(q)
+    setLoading(true)
+    setChatOpen(true)
+    try{setChat(await askGraph(q,selectedPub,nodes,relations))}
+    catch(err){setChat({error:err.message,reponse:err.message||'Le service de dialogue n’est pas disponible.',noeuds_selectionnes:[]})}
+    finally{setLoading(false)}
+  }
+  async function submit(e){e.preventDefault();await runQuestion(question)}
 
   return <div className="explorer-v02-shell"><main className={`screen graph-screen publication-screen explorer-v02-graph ${selectedNode?'has-drawer':''}`}>
     <aside className="left-rail explorer-rail">
@@ -173,7 +229,15 @@ export default function Explorer({data}){
       <div className="graph-stage">
         <div className={`chat-dock explorer-chat explorer-chat-top ${chatOpen?'open':''}`}>
           <button className="chat-dock-title" onClick={()=>setChatOpen(v=>!v)}><span>✦</span><strong>Interroger le graphe</strong><small>{chatOpen?'Réduire':'Ouvrir'}</small></button>
-          {chatOpen&&<div className="chat-dock-body">{chat&&<div className="chat-response"><p>{chat.reponse}</p>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>setSelectedNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}<form onSubmit={submit}><input value={question} onChange={e=>setQuestion(e.target.value)} placeholder="Posez une question sur cette publication…"/><button disabled={loading||!question.trim()}><Icon name="send" size={18}/></button></form></div>}
+          {chatOpen&&<div className="chat-dock-body">
+            <div className="chat-scroll-area">
+              {!chat&&!loading&&<div className="chat-welcome"><strong>Que voulez-vous explorer ?</strong><p>Posez une question sur les connaissances et les relations présentes dans cette publication.</p></div>}
+              {loading&&<div className="chat-loading"><span></span><p>Recherche dans le graphe documentaire…</p></div>}
+              {chat&&<div className="chat-response"><ChatAnswer chat={chat}/>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>setSelectedNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}
+              <div className="chat-suggestions">{CHAT_SUGGESTIONS.map(suggestion=><button type="button" key={suggestion} disabled={loading} onClick={()=>runQuestion(suggestion)}>{suggestion}</button>)}</div>
+            </div>
+            <form onSubmit={submit} className="chat-question-form"><textarea rows="2" value={question} onChange={e=>setQuestion(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();e.currentTarget.form?.requestSubmit()}}} placeholder="Posez une question sur cette publication…"/><button disabled={loading||!question.trim()} title="Envoyer"><Icon name="send" size={20}/></button></form>
+          </div>}
         </div>
         <KnowledgeGraph nodes={graphNodes} relations={graphRelations} selectedId={graphSelectedNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} labelScale={labelScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
       </div>
