@@ -91,21 +91,21 @@ function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
    pour que le cadrage tienne compte du texte et pas seulement
    des cercles.
    --------------------------------------------------------- */
-const CHAR_W=6.9, LINE_H=18
+const CHAR_W=8.0, LINE_H=20
 
-function nodeBox(node,role,nodeScale=1,textUnit=1){
+function nodeBox(node,role,nodeScale=1){
   const r=(role==='focus'?46:role==='direct'?31:20)*nodeScale
   const lines=wrap(node.libelle,role==='focus'?27:role==='direct'?24:22)
   const halo=role==='focus'?38:role==='direct'?13:8
-  const labelW=Math.max(...lines.map(l=>l.length))*CHAR_W*textUnit
-  const labelGap=22*textUnit
-  const lineH=LINE_H*textUnit
+  const labelW=Math.max(...lines.map(l=>l.length))*CHAR_W
+  const labelGap=24
+  const lineH=LINE_H
   return {
     r,
     lines:lines.length,
     up:r+halo,
-    down:r+labelGap+(lines.length-1)*lineH+10*textUnit,
-    half:Math.max(r+halo,labelW/2+10*textUnit)
+    down:r+labelGap+(lines.length-1)*lineH+10,
+    half:Math.max(r+halo,labelW/2+10)
   }
 }
 
@@ -277,13 +277,13 @@ function layoutGraph(nodes,relations,focusId,opts={}){
 /* ---------------------------------------------------------
    Bornes réelles du dessin, halos et libellés compris.
    --------------------------------------------------------- */
-function graphBounds(nodes,positions,focusId,directSet,nodeScale=1,textUnit=1){
+function graphBounds(nodes,positions,focusId,directSet,nodeScale=1){
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity
   nodes.forEach(n=>{
     const p=positions[n.node_id]
     if(!p)return
     const role=n.node_id===focusId?'focus':directSet.has(n.node_id)?'direct':'secondary'
-    const b=nodeBox(n,role,nodeScale,textUnit)
+    const b=nodeBox(n,role,nodeScale)
     minX=Math.min(minX,p.x-b.half)
     maxX=Math.max(maxX,p.x+b.half)
     minY=Math.min(minY,p.y-b.up)
@@ -382,14 +382,11 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   const direct=new Set((adj.get(focusId)||[]).map(x=>x.id))
   const legendTypes=LEGEND_ORDER.filter(type=>visible.nodes.some(n=>(n.type_noeud==='Problème'?'probleme':n.type_noeud)===type))
 
-  // Premier cadrage géométrique, puis second passage qui réserve la vraie
-  // place des libellés en fonction de leur taille perceptuelle à l'écran.
-  const baseBounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale,1),[visible.nodes,positions,focusId,nodeScale])
-  const baseViewBox=useMemo(()=>computeViewBox(baseBounds,frame.w,frame.h,LEGEND_INSET),[baseBounds,frame.w,frame.h])
-  const baseScreenUnit=frame.w>0?Math.max(.7,baseViewBox.w/frame.w):1
-  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale,baseScreenUnit),[visible.nodes,positions,focusId,nodeScale,baseScreenUnit])
+  // Un seul cadrage stable : les libellés sont dimensionnés dans le même
+  // repère que le layout. On évite ainsi la boucle d'amplification qui
+  // grossissait le texte après le calcul des collisions.
+  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale),[visible.nodes,positions,focusId,nodeScale])
   const viewBox=useMemo(()=>computeViewBox(bounds,frame.w,frame.h,LEGEND_INSET),[bounds,frame.w,frame.h])
-  const screenUnit=frame.w>0?Math.max(.7,viewBox.w/frame.w):1
 
   const nodeById=useMemo(()=>Object.fromEntries(visible.nodes.map(n=>[n.node_id,n])),[visible.nodes])
   const relationById=useMemo(()=>Object.fromEntries(visible.relations.map(r=>[r.relation_id,r])),[visible.relations])
@@ -451,22 +448,22 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const strong=selected||r.source_id===focusId||r.cible_id===focusId||highlighted.has(r.source_id)||highlighted.has(r.cible_id)
           if(!showWeak&&!strong)return null
           const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,label=relationLabel(r.type_relation)
-          const labelWidthPx=Math.max(86,Math.min(210,label.length*8.1+28))
+          const labelWidthPx=Math.max(84,Math.min(190,label.length*7.6+24))
           return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''}`}>
             <line className={`kg-edge ${strong?'strong':'weak'}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
               vectorEffect="non-scaling-stroke"
               style={{
-                stroke:strong?EDGE_STRONG:'#8293AA',
-                opacity:strong?.96:Math.min(.82,.58*linkDensity),
-                strokeWidth:selected?3.4:strong?2.35:1.35
+                stroke:strong?EDGE_STRONG:'#71839C',
+                opacity:strong?.96:Math.min(.72,.56*linkDensity),
+                strokeWidth:selected?3.2:strong?2.25:1.25
               }}/>
             {/* Les libellés sont masqués au démarrage et affichés à la demande.
                 Leur taille reste stable à l'écran quel que soit le viewBox. */}
-            {(showRelationLabels||selected)&&<g className="kg-relation-label" transform={`translate(${mx},${my}) scale(${screenUnit})`} pointerEvents="none">
+            {(showRelationLabels||selected)&&<g className="kg-relation-label" transform={`translate(${mx},${my})`} pointerEvents="none">
               <rect x={-labelWidthPx/2} y="-16" width={labelWidthPx} height="32" rx="16"
                 vectorEffect="non-scaling-stroke"
                 style={{fill:'#FFFFFF',stroke:selected?'#C36B48':'#C9D4E2',strokeWidth:selected?1.8:1.1,opacity:.98}}/>
-              <text y="5" textAnchor="middle" style={{fill:INK_RELATION,fontSize:'13.5px',fontWeight:720,letterSpacing:'.1px'}}>{label}</text>
+              <text y="5" textAnchor="middle" style={{fill:INK_RELATION,fontSize:'13px',fontWeight:720,letterSpacing:'.1px'}}>{label}</text>
             </g>}
           </g>
         })}
@@ -496,15 +493,14 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
             <circle pointerEvents="none" cx={p.x} cy={p.y} r={r} fill={fill} stroke={stroke} strokeWidth={focus?3.2:isDirect?2.4:2}/>
             <Glyph type={n.type_noeud} x={p.x} y={p.y} color={glyphColor} size={focus?20:isDirect?16:13}/>
             {(()=>{
-              const labelPx=focus?17.5:isDirect?14.8:13.4
-              const weight=focus?850:isDirect?780:730
-              const y=p.y+r+23*screenUnit
-              return <g transform={`translate(${p.x},${y}) scale(${screenUnit})`} pointerEvents="none">
-                <text x="0" y="0" textAnchor="middle" className={`kg-label ${focus?'focus-label':''} ${p.secondary?'secondary-label':''}`}
-                  style={{fill:INK_NODE,fontSize:`${labelPx}px`,fontWeight:weight,stroke:'#fff',strokeWidth:4.5,paintOrder:'stroke',strokeLinejoin:'round'}}>
-                  {lines.map((line,i)=><tspan key={i} x="0" dy={i?18:0}>{line}</tspan>)}
-                </text>
-              </g>
+              const labelPx=focus?18:isDirect?15:13.2
+              const weight=focus?850:isDirect?780:720
+              const y=p.y+r+25
+              return <text x={p.x} y={y} textAnchor="middle" pointerEvents="none"
+                className={`kg-label ${focus?'focus-label':''} ${p.secondary?'secondary-label':''}`}
+                style={{fill:INK_NODE,fontSize:`${labelPx}px`,fontWeight:weight,stroke:'#fff',strokeWidth:3.2,paintOrder:'stroke',strokeLinejoin:'round'}}>
+                {lines.map((line,i)=><tspan key={i} x={p.x} dy={i?20:0}>{line}</tspan>)}
+              </text>
             })()}
           </g>
         })}
