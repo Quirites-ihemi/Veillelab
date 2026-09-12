@@ -1248,3 +1248,83 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
   line-height:1.4 !important;
 }
 
+/* ==========================================================
+   ONGLET 3 — LISIBILITÉ RENFORCÉE
+   13/09/2026
+   Titres de publications en majuscules + cadre de traitement agrandi.
+   ========================================================== */
+
+/* Colonne corpus */
+.workspace-page .corpus-panel h3{
+  font-size:16px !important;
+  line-height:1.35 !important;
+  font-weight:800 !important;
+}
+.workspace-page .corpus-scope-note{
+  font-size:12.5px !important;
+  line-height:1.5 !important;
+}
+.workspace-page .corpus-item strong{
+  font-size:17px !important;
+  line-height:1.42 !important;
+  font-weight:800 !important;
+  text-transform:uppercase;
+  letter-spacing:.01em;
+}
+.workspace-page .corpus-item span{
+  font-size:13.5px !important;
+  line-height:1.5 !important;
+}
+
+/* Besoin utilisateur */
+.workspace-page .user-need label{
+  font-size:14px !important;
+  line-height:1.35 !important;
+  font-weight:800 !important;
+}
+.workspace-page .user-need textarea{
+  font-size:15px !important;
+  line-height:1.5 !important;
+}
+
+/* Cadre du traitement */
+.workspace-page .production-sheet>h3{
+  font-size:18px !important;
+  line-height:1.35 !important;
+  font-weight:800 !important;
+}
+.workspace-page .sheet-row{
+  grid-template-columns:185px minmax(0,1fr);
+  gap:18px;
+  padding:15px 6px !important;
+  font-size:14.5px !important;
+  line-height:1.55 !important;
+}
+.workspace-page .sheet-row strong{
+  font-size:13.5px !important;
+  line-height:1.45 !important;
+  font-weight:800 !important;
+}
+
+/* Zone de lancement / attente du résumé */
+.workspace-page .production-placeholder>strong{
+  font-size:15px !important;
+  line-height:1.4 !important;
+}
+.workspace-page .production-placeholder p{
+  font-size:13.5px !important;
+  line-height:1.55 !important;
+}
+
+/* Colonne règles / provenance */
+.workspace-page .source-rules h3{
+  font-size:15px !important;
+  line-height:1.35 !important;
+  font-weight:800 !important;
+}
+.workspace-page .source-rules p,
+.workspace-page .source-rule{
+  font-size:12.5px !important;
+  line-height:1.55 !important;
+}
+
