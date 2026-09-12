@@ -105,14 +105,20 @@ const NODE_LABEL_STYLE_ENTRY={
   secondary:{fontSize:18,lineH:22,charW:9.6,maxChars:25},
 }
 
-function labelStyleForRole(role,entryMode=false){
+function labelStyleForRole(role,entryMode=false,labelScale=1){
   const set=entryMode?NODE_LABEL_STYLE_ENTRY:NODE_LABEL_STYLE_SELECTED
-  return set[role] || set.secondary
+  const base=set[role] || set.secondary
+  return {
+    ...base,
+    fontSize:base.fontSize*labelScale,
+    lineH:base.lineH*labelScale,
+    charW:base.charW*labelScale,
+  }
 }
 
-function nodeBox(node,role,nodeScale=1,entryMode=false){
+function nodeBox(node,role,nodeScale=1,entryMode=false,labelScale=1){
   const r=(role==='focus'?46:role==='direct'?31:20)*nodeScale
-  const style=labelStyleForRole(role,entryMode)
+  const style=labelStyleForRole(role,entryMode,labelScale)
   const lines=wrap(node.libelle,style.maxChars)
   const halo=role==='focus'?38:role==='direct'?13:8
   const labelW=Math.max(...lines.map(l=>l.length))*style.charW
@@ -147,6 +153,7 @@ function layoutGraph(nodes,relations,focusId,opts={}){
   const out={}
   if(!nodes.length)return out
   const nodeScale=opts.nodeScale||1
+  const labelScale=opts.labelScale||1
   const entryMode=!!opts.entryMode
   const ratio=clamp(opts.containerRatio||1.5,0.85,3.4)
 
@@ -245,7 +252,7 @@ function layoutGraph(nodes,relations,focusId,opts={}){
   // rôles : ils ne servent qu'à dimensionner les gabarits
   const fi=index.has(focusId)?index.get(focusId):0
   const directSet=new Set(nb[fi])
-  const boxes=nodes.map((nd,i)=>nodeBox(nd,i===fi?'focus':directSet.has(i)?'direct':'secondary',nodeScale,entryMode))
+  const boxes=nodes.map((nd,i)=>nodeBox(nd,i===fi?'focus':directSet.has(i)?'direct':'secondary',nodeScale,entryMode,labelScale))
 
   // desserrage tenant compte des libellés : il n'écarte que des
   // gabarits qui se touchent, sans rappel vers une ancre
@@ -295,13 +302,13 @@ function layoutGraph(nodes,relations,focusId,opts={}){
 /* ---------------------------------------------------------
    Bornes réelles du dessin, halos et libellés compris.
    --------------------------------------------------------- */
-function graphBounds(nodes,positions,focusId,directSet,nodeScale=1,entryMode=false){
+function graphBounds(nodes,positions,focusId,directSet,nodeScale=1,entryMode=false,labelScale=1){
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity
   nodes.forEach(n=>{
     const p=positions[n.node_id]
     if(!p)return
     const role=n.node_id===focusId?'focus':directSet.has(n.node_id)?'direct':'secondary'
-    const b=nodeBox(n,role,nodeScale,entryMode)
+    const b=nodeBox(n,role,nodeScale,entryMode,labelScale)
     minX=Math.min(minX,p.x-b.half)
     maxX=Math.max(maxX,p.x+b.half)
     minY=Math.min(minY,p.y-b.up)
@@ -350,7 +357,7 @@ function LegendGlyph({type}){
 
 const LEGEND_INSET=58
 
-export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,linkDensity=1,showWeak=true,showRelationLabels=false,maxNodes=38,resetToken=0,fitToken=0}){
+export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,labelScale=1,linkDensity=1,showWeak=true,showRelationLabels=false,maxNodes=38,resetToken=0,fitToken=0}){
   const [scale,setScale]=useState(1),[pan,setPan]=useState({x:0,y:0})
   const [frame,setFrame]=useState({w:0,h:0})
   const shell=useRef(null)
@@ -391,8 +398,8 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   },[frame.w,frame.h])
 
   const positions=useMemo(
-    ()=>layoutGraph(visible.nodes,visible.relations,visible.focus,{nodeScale,containerRatio,entryMode}),
-    [visible,nodeScale,containerRatio,entryMode]
+    ()=>layoutGraph(visible.nodes,visible.relations,visible.focus,{nodeScale,labelScale,containerRatio,entryMode}),
+    [visible,nodeScale,labelScale,containerRatio,entryMode]
   )
 
   const focusId=selectedId||visible.focus
@@ -404,7 +411,7 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
   // Un seul cadrage stable : les libellés sont dimensionnés dans le même
   // repère que le layout. On évite ainsi la boucle d'amplification qui
   // grossissait le texte après le calcul des collisions.
-  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale,entryMode),[visible.nodes,positions,focusId,nodeScale,entryMode])
+  const bounds=useMemo(()=>graphBounds(visible.nodes,positions,focusId,direct,nodeScale,entryMode,labelScale),[visible.nodes,positions,focusId,nodeScale,entryMode,labelScale])
   const viewBox=useMemo(()=>computeViewBox(bounds,frame.w,frame.h,LEGEND_INSET),[bounds,frame.w,frame.h])
 
   const nodeById=useMemo(()=>Object.fromEntries(visible.nodes.map(n=>[n.node_id,n])),[visible.nodes])
@@ -501,7 +508,7 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const stroke=active?visual.color:lighten(visual.color,.10)
           const glyphColor=active?'#fff':visual.color
           const role=focus?'focus':isDirect?'direct':'secondary'
-          const labelStyle=labelStyleForRole(role,entryMode)
+          const labelStyle=labelStyleForRole(role,entryMode,labelScale)
           const lines=wrap(n.libelle,labelStyle.maxChars)
           return <g key={n.node_id} data-node-id={n.node_id} className={`kg-node ${focus?'focus':''} ${p.secondary?'secondary':''}`} role="button" tabIndex="0" aria-label={n.libelle} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectNode(n)}}}>
             <circle className="node-hit-target" cx={p.x} cy={p.y} r={Math.max(r+13,30)} fill="transparent"/>
