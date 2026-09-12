@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import KnowledgeGraph from '../components/KnowledgeGraph.jsx'
 import ProofModal from '../components/ProofModal.jsx'
@@ -114,6 +114,22 @@ export default function Explorer({data}){
   const [selectedNode,setSelectedNode]=useState(null),[proof,setProof]=useState(null),[showWeak,setShowWeak]=useState(true),[showRelationLabels,setShowRelationLabels]=useState(false)
   const [enabledTypes,setEnabledTypes]=useState(legendTypes),[nodeScale,setNodeScale]=useState(1),[linkDensity,setLinkDensity]=useState(1),[resetToken,setResetToken]=useState(0),[fitToken,setFitToken]=useState(0)
   const [question,setQuestion]=useState(''),[chat,setChat]=useState(null),[loading,setLoading]=useState(false),[chatOpen,setChatOpen]=useState(false)
+
+  // En mode publication, l'écran Explorer doit rester calé sur le viewport.
+  // Le rail gauche et le tiroir droit défilent chacun de leur côté : ils ne
+  // doivent plus allonger la page et créer une grande zone blanche sous le graphe.
+  useEffect(()=>{
+    if(!selectedPub)return
+    const previousOverflow=document.body.style.overflow
+    const previousOverscroll=document.body.style.overscrollBehavior
+    window.scrollTo({top:0,left:0,behavior:'auto'})
+    document.body.style.overflow='hidden'
+    document.body.style.overscrollBehavior='none'
+    return ()=>{
+      document.body.style.overflow=previousOverflow
+      document.body.style.overscrollBehavior=previousOverscroll
+    }
+  },[selectedPub?.publication_id])
 
   const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false);setShowRelationLabels(false)}
 
