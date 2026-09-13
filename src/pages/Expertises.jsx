@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ExpertiseConstellation from '../components/ExpertiseConstellation.jsx'
 import Eclaireur from '../components/Eclaireur.jsx'
 import {
+  ECLAIREUR_OVERVIEW_LAST_STEP,
   ECLAIREUR_SESSION_KEYS,
   ECLAIREUR_STATES,
   getEclaireurContent,
@@ -144,7 +145,6 @@ export default function Expertises({ data }) {
   const [entity, setEntity] = useState('Toutes les entités')
   const [family, setFamily] = useState('Tous')
   const [introExpanded, setIntroExpanded] = useState(true)
-  const [readingOpen, setReadingOpen] = useState(false)
 
   const [nodeSize, setNodeSize] = useState(2.45)
   const [linkDensity, setLinkDensity] = useState(1)
@@ -162,6 +162,7 @@ export default function Expertises({ data }) {
   }
 
   const [activeClusterMeta, setActiveClusterMeta] = useState(null)
+  const [overviewGuideStep, setOverviewGuideStep] = useState(0)
   const [eclaireurState, setEclaireurState] = useState(() =>
     sessionHas(ECLAIREUR_SESSION_KEYS.welcome) ? null : getEntryState()
   )
@@ -169,6 +170,7 @@ export default function Expertises({ data }) {
   const eclaireurContent = getEclaireurContent(eclaireurState, {
     selectedLabel: selected?.label || null,
     clusterLabel: activeClusterMeta?.label || null,
+    overviewStep: overviewGuideStep,
   })
 
   const markCurrentEclaireurSeen = state => {
@@ -184,9 +186,6 @@ export default function Expertises({ data }) {
     if (state === ECLAIREUR_STATES.EXPERTISE) {
       sessionMark(ECLAIREUR_SESSION_KEYS.expertise)
     }
-    if (state === ECLAIREUR_STATES.TRANSDIRECTIONAL) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.transdirectional)
-    }
   }
 
   const dismissEclaireur = () => {
@@ -200,15 +199,14 @@ export default function Expertises({ data }) {
       eclaireurState === ECLAIREUR_STATES.DIRECT
     ) {
       sessionMark(ECLAIREUR_SESSION_KEYS.welcome)
-      sessionMark(ECLAIREUR_SESSION_KEYS.overview)
+      setOverviewGuideStep(0)
       setEclaireurState(ECLAIREUR_STATES.OVERVIEW)
       return
     }
 
-    if (eclaireurState === ECLAIREUR_STATES.TRANSDIRECTIONAL) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.transdirectional)
-      sessionMark(ECLAIREUR_SESSION_KEYS.cluster)
-      setEclaireurState(ECLAIREUR_STATES.CLUSTER)
+    if (eclaireurState === ECLAIREUR_STATES.OVERVIEW) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.overview)
+      setEclaireurState(null)
       return
     }
 
@@ -216,6 +214,19 @@ export default function Expertises({ data }) {
   }
 
   const showHelp = () => setEclaireurState(ECLAIREUR_STATES.HELP)
+
+  useEffect(() => {
+    if (eclaireurState !== ECLAIREUR_STATES.OVERVIEW) return undefined
+    if (overviewGuideStep >= ECLAIREUR_OVERVIEW_LAST_STEP) return undefined
+
+    const timer = window.setTimeout(() => {
+      setOverviewGuideStep(step =>
+        Math.min(step + 1, ECLAIREUR_OVERVIEW_LAST_STEP)
+      )
+    }, 5200)
+
+    return () => window.clearTimeout(timer)
+  }, [eclaireurState, overviewGuideStep])
 
   const handleClusterChange = cluster => {
     setActiveClusterMeta(cluster)
@@ -226,15 +237,6 @@ export default function Expertises({ data }) {
     }
 
     sessionMark(ECLAIREUR_SESSION_KEYS.overview)
-
-    if (
-      cluster.transdirectional &&
-      !sessionHas(ECLAIREUR_SESSION_KEYS.transdirectional)
-    ) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.transdirectional)
-      setEclaireurState(ECLAIREUR_STATES.TRANSDIRECTIONAL)
-      return
-    }
 
     if (!sessionHas(ECLAIREUR_SESSION_KEYS.cluster)) {
       setEclaireurState(ECLAIREUR_STATES.CLUSTER)
@@ -317,7 +319,6 @@ export default function Expertises({ data }) {
     setSearch('')
     setEntity('Toutes les entités')
     setFamily('Tous')
-    setReadingOpen(false)
     setActiveClusterMeta(null)
     setEclaireurState(null)
     setResetToken(x => x + 1)
@@ -594,22 +595,16 @@ export default function Expertises({ data }) {
           selected={selected}
           onSelect={selectExpertise}
           onClusterChange={handleClusterChange}
-          guidePulseCluster={eclaireurState === ECLAIREUR_STATES.OVERVIEW}
-          guidePulseNode={eclaireurState === ECLAIREUR_STATES.CLUSTER}
-          guideHighlightTransdirectional={
-            eclaireurState === ECLAIREUR_STATES.TRANSDIRECTIONAL
+          guideOverviewStep={
+            eclaireurState === ECLAIREUR_STATES.OVERVIEW
+              ? overviewGuideStep
+              : null
           }
+          guidePulseNode={eclaireurState === ECLAIREUR_STATES.CLUSTER}
           nodeSize={nodeSize}
           linkDensity={linkDensity}
           resetToken={resetToken}
           fitToken={fitToken}
-          readingOpen={readingOpen}
-          onToggleReading={() => {
-            setSelected(null)
-            setEclaireurState(null)
-            setReadingOpen(open => !open)
-          }}
-          onCloseReading={() => setReadingOpen(false)}
         />
 
       </section>
@@ -617,6 +612,11 @@ export default function Expertises({ data }) {
       <Eclaireur
         state={eclaireurState}
         content={eclaireurContent}
+        contentKey={
+          eclaireurState === ECLAIREUR_STATES.OVERVIEW
+            ? `overview-${overviewGuideStep}`
+            : eclaireurState
+        }
         onAction={handleEclaireurAction}
         onDismiss={dismissEclaireur}
         onHelp={showHelp}
