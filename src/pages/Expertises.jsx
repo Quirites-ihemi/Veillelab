@@ -18,20 +18,6 @@ const familyColor = {
   'Problème public': '#14af75',
 }
 
-
-// Temps de lecture de la séquence « comment lire la carte ».
-// Les étapes les plus conceptuelles (clusterisation, transversalité) restent
-// volontairement plus longtemps à l’écran. L’utilisateur peut interrompre
-// la séquence à tout moment en interagissant avec la carte.
-const ECLAIREUR_OVERVIEW_DURATIONS = [
-  15000, // micro-expertises + 3 catégories
-  15000, // liens
-  15000, // clusterisation
-  15000, // intitulés des grands ensembles
-  15000, // cluster transdirectionnel
-  15000, // expertise isolée
-]
-
 const MINISTRY_ENTITIES = new Set([
   'Centre de recherche de la Gendarmerie nationale',
   'Service statistique ministériel de la sécurité intérieure',
@@ -177,6 +163,7 @@ export default function Expertises({ data }) {
 
   const [activeClusterMeta, setActiveClusterMeta] = useState(null)
   const [overviewGuideStep, setOverviewGuideStep] = useState(0)
+  const [overviewGuidePaused, setOverviewGuidePaused] = useState(false)
   const [eclaireurState, setEclaireurState] = useState(() =>
     sessionHas(ECLAIREUR_SESSION_KEYS.welcome) ? null : getEntryState()
   )
@@ -214,6 +201,7 @@ export default function Expertises({ data }) {
     ) {
       sessionMark(ECLAIREUR_SESSION_KEYS.welcome)
       setOverviewGuideStep(0)
+      setOverviewGuidePaused(false)
       setEclaireurState(ECLAIREUR_STATES.OVERVIEW)
       return
     }
@@ -231,19 +219,17 @@ export default function Expertises({ data }) {
 
   useEffect(() => {
     if (eclaireurState !== ECLAIREUR_STATES.OVERVIEW) return undefined
+    if (overviewGuidePaused) return undefined
     if (overviewGuideStep >= ECLAIREUR_OVERVIEW_LAST_STEP) return undefined
-
-    const duration =
-      ECLAIREUR_OVERVIEW_DURATIONS[overviewGuideStep] ?? 15000
 
     const timer = window.setTimeout(() => {
       setOverviewGuideStep(step =>
         Math.min(step + 1, ECLAIREUR_OVERVIEW_LAST_STEP)
       )
-    }, duration)
+    }, 15000)
 
     return () => window.clearTimeout(timer)
-  }, [eclaireurState, overviewGuideStep])
+  }, [eclaireurState, overviewGuideStep, overviewGuidePaused])
 
   const handleClusterChange = cluster => {
     setActiveClusterMeta(cluster)
@@ -345,6 +331,10 @@ export default function Expertises({ data }) {
     <main
       className={`screen graph-screen expertise-screen ${
         selected ? 'has-drawer' : ''
+      } ${
+        eclaireurState === ECLAIREUR_STATES.OVERVIEW && overviewGuidePaused
+          ? 'eclaireur-sequence-paused'
+          : ''
       }`}
     >
       <style>{EXPERTISE_INTRO_STYLES}</style>
@@ -637,6 +627,10 @@ export default function Expertises({ data }) {
         onAction={handleEclaireurAction}
         onDismiss={dismissEclaireur}
         onHelp={showHelp}
+        paused={
+          eclaireurState === ECLAIREUR_STATES.OVERVIEW && overviewGuidePaused
+        }
+        onTogglePause={() => setOverviewGuidePaused(value => !value)}
       />
 
       {selected && (
