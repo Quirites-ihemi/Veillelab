@@ -418,3 +418,112 @@
     text-decoration:underline;
   }
 }
+
+/* -------------------------------------------------------------------------
+   Lecture animée du graphe — séquence de l’état « vue globale ».
+   ------------------------------------------------------------------------- */
+
+.eclaireur-content{
+  animation:eclaireur-content-in .34s ease-out both;
+}
+
+.eclaireur-categories{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px 8px;
+  margin:11px 0 3px;
+}
+
+.eclaireur-categories span{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 9px;
+  border:1px solid #dbe4ef;
+  border-radius:999px;
+  background:#f8fafd;
+  color:#294766;
+  font-size:13.4px;
+  line-height:1.2;
+  font-weight:800;
+}
+
+.eclaireur-categories i{
+  width:10px;
+  height:10px;
+  flex:0 0 10px;
+  border-radius:50%;
+  box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 0 3px rgba(88,107,135,.16);
+}
+
+.eclaireur-category-node-ring,
+.eclaireur-isolated-node-ring{
+  fill:none;
+  stroke-width:4;
+  vector-effect:non-scaling-stroke;
+  transform-box:fill-box;
+  transform-origin:center;
+  pointer-events:none;
+}
+
+.eclaireur-category-node-ring{
+  animation:eclaireur-category-ring 1.3s ease-in-out 4;
+}
+
+.eclaireur-isolated-node-ring{
+  stroke:#315d95;
+  animation:eclaireur-isolated-ring 1.3s ease-in-out 4;
+}
+
+.entry-edge.eclaireur-link-pulse{
+  stroke:#315d95!important;
+  stroke-width:4.2!important;
+  opacity:1!important;
+  filter:drop-shadow(0 0 5px rgba(49,93,149,.48));
+  animation:eclaireur-link-breathe 1.3s ease-in-out 4;
+}
+
+@keyframes eclaireur-content-in{
+  from{opacity:.28;transform:translateY(5px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes eclaireur-category-ring{
+  0%,100%{opacity:.45;transform:scale(.88)}
+  50%{opacity:1;transform:scale(1.18);filter:drop-shadow(0 0 8px currentColor)}
+}
+
+@keyframes eclaireur-isolated-ring{
+  0%,100%{opacity:.42;transform:scale(.82)}
+  50%{opacity:1;transform:scale(1.25);filter:drop-shadow(0 0 9px rgba(49,93,149,.55))}
+}
+
+@keyframes eclaireur-link-breathe{
+  0%,100%{opacity:.55}
+  50%{opacity:1;stroke-width:5.2}
+}
+
+/* Le texte des clusters de l’onglet 1 doit rester lisible pendant le guidage. */
+.entry-cluster-transdirectional-svg.eclaireur-transdirectional-pulse{
+  font-weight:900;
+  animation:eclaireur-trans-text 1.05s ease-in-out 5;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .eclaireur-content,
+  .eclaireur-category-node-ring,
+  .eclaireur-isolated-node-ring,
+  .entry-edge.eclaireur-link-pulse{
+    animation:none!important;
+    transition:none!important;
+  }
+
+  .eclaireur-category-node-ring,
+  .eclaireur-isolated-node-ring{
+    opacity:.9!important;
+  }
+
+  .entry-edge.eclaireur-link-pulse{
+    opacity:1!important;
+  }
+}
