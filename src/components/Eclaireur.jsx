@@ -37,8 +37,19 @@ export default function Eclaireur({
       <div className="eclaireur-accent" aria-hidden="true" />
 
       <div className="eclaireur-heading">
-        <span className="eclaireur-mark" aria-hidden="true">✦</span>
-        <span>L’Éclaireur</span>
+        <span
+          className={`eclaireur-radar${placement === 'welcome' ? ' is-intro' : ''}`}
+          aria-hidden="true"
+        >
+          <span className="eclaireur-radar-ring eclaireur-radar-ring-1" />
+          <span className="eclaireur-radar-ring eclaireur-radar-ring-2" />
+          <span className="eclaireur-radar-sweep" />
+          <span className="eclaireur-radar-dot" />
+        </span>
+        <span className="eclaireur-heading-copy">
+          <strong>L’Éclaireur</strong>
+          <small>Je vous guide dans la carte</small>
+        </span>
       </div>
 
       <button
