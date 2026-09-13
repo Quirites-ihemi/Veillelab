@@ -5,16 +5,16 @@ export const ECLAIREUR_STATES = {
   CLUSTER: 'cluster',
   EXPERTISE: 'expertise',
   HELP: 'help',
-  TRANSDIRECTIONAL: 'transdirectional',
 }
 
 export const ECLAIREUR_SESSION_KEYS = {
-  welcome: 'quirites:eclaireur:v0:welcome',
-  overview: 'quirites:eclaireur:v0:overview',
-  cluster: 'quirites:eclaireur:v0:cluster',
-  expertise: 'quirites:eclaireur:v0:expertise',
-  transdirectional: 'quirites:eclaireur:v0:transdirectional',
+  welcome: 'quirites:eclaireur:v1:welcome',
+  overview: 'quirites:eclaireur:v1:overview',
+  cluster: 'quirites:eclaireur:v1:cluster',
+  expertise: 'quirites:eclaireur:v1:expertise',
 }
+
+export const ECLAIREUR_OVERVIEW_LAST_STEP = 6
 
 export function getEntryState() {
   if (typeof window === 'undefined') return ECLAIREUR_STATES.DIRECT
@@ -25,8 +25,75 @@ export function getEntryState() {
     : ECLAIREUR_STATES.DIRECT
 }
 
+function getOverviewContent(step = 0) {
+  switch (step) {
+    case 0:
+      return {
+        lead: 'Chaque point représente une micro-expertise repérée dans les publications produites par le ministère.',
+        body:
+          'Ces compétences relèvent de trois grandes catégories :',
+        categories: [
+          { label: 'Problème public', color: '#14af75' },
+          { label: 'Méthode / savoir-faire', color: '#ffb20e' },
+          { label: 'Instrument / dispositif', color: '#7258d9' },
+        ],
+        placement: 'overview',
+      }
+
+    case 1:
+      return {
+        lead: 'Les liens montrent les micro-expertises associées dans une même publication.',
+        body:
+          'Ils permettent de voir comment différents problèmes, méthodes et dispositifs se combinent dans les travaux du ministère.',
+        placement: 'overview',
+      }
+
+    case 2:
+      return {
+        lead: 'Certaines micro-expertises sont plus fortement reliées entre elles qu’au reste du réseau.',
+        body:
+          'La clusterisation est la méthode qui permet de repérer automatiquement ces ensembles à partir des relations présentes dans le graphe.',
+        placement: 'overview',
+      }
+
+    case 3:
+      return {
+        lead: 'Ces ensembles sont ensuite nommés à partir des compétences qu’ils rassemblent.',
+        body:
+          'Leur intitulé facilite la lecture : ils ne correspondent ni à des catégories administratives ni à un classement défini à l’avance.',
+        placement: 'overview',
+      }
+
+    case 4:
+      return {
+        lead: 'Certains ensembles sont transdirectionnels.',
+        body:
+          'Ils réunissent des compétences mobilisées par plusieurs directions du ministère et font apparaître des croisements de savoirs et de savoir-faire au-delà des frontières organisationnelles.',
+        placement: 'overview',
+      }
+
+    case 5:
+      return {
+        lead: 'Une compétence peut aussi apparaître seule.',
+        body:
+          'Cela ne signifie pas qu’elle est moins importante : le corpus ne fait simplement pas apparaître suffisamment de relations avec d’autres compétences.',
+        placement: 'overview',
+      }
+
+    default:
+      return {
+        lead: 'Vous savez maintenant comment lire la carte.',
+        body:
+          'Les grands ensembles font apparaître les proximités entre compétences, tout en conservant les expertises plus spécialisées ou isolées.',
+        prompt: 'Cliquez sur un grand ensemble de compétences pour l’explorer.',
+        actionLabel: 'Explorer la carte',
+        placement: 'overview',
+      }
+  }
+}
+
 export function getEclaireurContent(state, context = {}) {
-  const { selectedLabel, clusterLabel } = context
+  const { selectedLabel, clusterLabel, overviewStep = 0 } = context
 
   switch (state) {
     case ECLAIREUR_STATES.BULLETIN:
@@ -51,21 +118,14 @@ export function getEclaireurContent(state, context = {}) {
       }
 
     case ECLAIREUR_STATES.OVERVIEW:
-      return {
-        lead:
-          'Vous voyez ici les grands ensembles de compétences qui ressortent des publications produites par le Ministère.',
-        body:
-          'Ils réunissent des savoirs et savoir-faire proches ou complémentaires.',
-        prompt: 'Cliquez sur un ensemble pour entrer dans le détail.',
-        placement: 'overview',
-      }
+      return getOverviewContent(overviewStep)
 
     case ECLAIREUR_STATES.CLUSTER:
       return {
         lead: 'Vous explorez maintenant un grand ensemble de compétences.',
         body:
-          'Les points représentent des savoirs et savoir-faire mis en évidence dans les publications. Les liens montrent les rapprochements documentés entre ces compétences.',
-        prompt: 'Cliquez sur un point pour en découvrir le détail.',
+          'Vous pouvez maintenant entrer dans le détail des savoirs et savoir-faire qui composent cet ensemble.',
+        prompt: 'Cliquez sur un point pour découvrir cette compétence.',
         placement: 'cluster',
       }
 
@@ -77,17 +137,6 @@ export function getEclaireurContent(state, context = {}) {
         prompt:
           'Ouvrez les différentes rubriques pour poursuivre l’exploration.',
         placement: 'drawer',
-      }
-
-    case ECLAIREUR_STATES.TRANSDIRECTIONAL:
-      return {
-        lead: 'Cet ensemble est transdirectionnel.',
-        body:
-          'Cela signifie qu’il fait apparaître des compétences mobilisées par plusieurs directions du ministère. Ces rapprochements permettent de voir comment des savoirs et savoir-faire issus de différentes entités se rencontrent autour de problématiques ou de pratiques communes.',
-        prompt:
-          'Explorez les compétences de l’ensemble pour découvrir ces croisements.',
-        actionLabel: 'Compris',
-        placement: 'transdirectional',
       }
 
     case ECLAIREUR_STATES.HELP: {
