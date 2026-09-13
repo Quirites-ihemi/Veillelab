@@ -18,6 +18,20 @@ const familyColor = {
   'Problème public': '#14af75',
 }
 
+
+// Temps de lecture de la séquence « comment lire la carte ».
+// Les étapes les plus conceptuelles (clusterisation, transversalité) restent
+// volontairement plus longtemps à l’écran. L’utilisateur peut interrompre
+// la séquence à tout moment en interagissant avec la carte.
+const ECLAIREUR_OVERVIEW_DURATIONS = [
+  15000, // micro-expertises + 3 catégories
+  15000, // liens
+  15000, // clusterisation
+  15000, // intitulés des grands ensembles
+  15000, // cluster transdirectionnel
+  15000, // expertise isolée
+]
+
 const MINISTRY_ENTITIES = new Set([
   'Centre de recherche de la Gendarmerie nationale',
   'Service statistique ministériel de la sécurité intérieure',
@@ -219,11 +233,14 @@ export default function Expertises({ data }) {
     if (eclaireurState !== ECLAIREUR_STATES.OVERVIEW) return undefined
     if (overviewGuideStep >= ECLAIREUR_OVERVIEW_LAST_STEP) return undefined
 
+    const duration =
+      ECLAIREUR_OVERVIEW_DURATIONS[overviewGuideStep] ?? 15000
+
     const timer = window.setTimeout(() => {
       setOverviewGuideStep(step =>
         Math.min(step + 1, ECLAIREUR_OVERVIEW_LAST_STEP)
       )
-    }, 5200)
+    }, duration)
 
     return () => window.clearTimeout(timer)
   }, [eclaireurState, overviewGuideStep])
