@@ -500,13 +500,15 @@ export default function ExpertiseConstellation({
   const primaryGuideClusterId = useMemo(() => {
     if (!clusterStats.length) return null
 
-    const candidates = [...clusterStats].sort((a, b) => {
-      const bySize = b.nodeIds.size - a.nodeIds.size
-      if (bySize !== 0) return bySize
-      return String(a.label || '').localeCompare(String(b.label || ''), 'fr')
-    })
+    // Pour la démonstration de l’Éclaireur, on privilégie le cluster sombre
+    // « Formation et transmission des métiers et savoir-faire opérationnels ».
+    // Il est placé haut dans la carte et reste bien visible derrière la carte-guide.
+    const darkCluster = clusterStats.find(cluster => cluster.id === 40)
+    if (darkCluster) return darkCluster.id
 
-    return candidates[0]?.id ?? null
+    // Repli robuste si la donnée évolue : prendre le cluster affiché le plus haut.
+    const highest = [...clusterStats].sort((a, b) => a.centerY - b.centerY)[0]
+    return highest?.id ?? null
   }, [clusterStats])
 
   const guideClusterId =
@@ -522,12 +524,17 @@ export default function ExpertiseConstellation({
   const guideTransClusterId = useMemo(() => {
     if (activeCluster !== null || guideOverviewStep !== 4) return null
 
+    // Garder le même cluster sombre pendant la démonstration lorsque celui-ci
+    // est transdirectionnel, afin d’éviter de déplacer inutilement le regard.
+    const primary = clusterStats.find(cluster => cluster.id === primaryGuideClusterId)
+    if (primary?.transdirectional) return primary.id
+
     const candidates = clusterStats
       .filter(cluster => cluster.transdirectional)
-      .sort((a, b) => b.nodeIds.size - a.nodeIds.size)
+      .sort((a, b) => a.centerY - b.centerY)
 
     return candidates[0]?.id ?? null
-  }, [activeCluster, guideOverviewStep, clusterStats])
+  }, [activeCluster, guideOverviewStep, clusterStats, primaryGuideClusterId])
 
   const guideCategoryNodeIds = useMemo(() => {
     if (activeCluster !== null || guideOverviewStep !== 0) return new Set()
