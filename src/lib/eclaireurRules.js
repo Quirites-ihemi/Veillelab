@@ -8,10 +8,10 @@ export const ECLAIREUR_STATES = {
 }
 
 export const ECLAIREUR_SESSION_KEYS = {
-  welcome: 'quirites:eclaireur:v1:welcome',
-  overview: 'quirites:eclaireur:v1:overview',
-  cluster: 'quirites:eclaireur:v1:cluster',
-  expertise: 'quirites:eclaireur:v1:expertise',
+  welcome: 'quirites:eclaireur:v2:welcome',
+  overview: 'quirites:eclaireur:v2:overview',
+  cluster: 'quirites:eclaireur:v2:cluster',
+  expertise: 'quirites:eclaireur:v2:expertise',
 }
 
 export const ECLAIREUR_OVERVIEW_LAST_STEP = 6
@@ -31,12 +31,7 @@ function getOverviewContent(step = 0) {
       return {
         lead: 'Chaque point représente une micro-expertise repérée dans les publications produites par le ministère.',
         body:
-          'Ces compétences relèvent de trois grandes catégories :',
-        categories: [
-          { label: 'Problème public', color: '#14af75' },
-          { label: 'Méthode / savoir-faire', color: '#ffb20e' },
-          { label: 'Instrument / dispositif', color: '#7258d9' },
-        ],
+          'Les micro-expertises peuvent relever de trois types : problème public, méthode / savoir-faire ou instrument / dispositif. La couleur des points indique le grand ensemble auquel ils appartiennent, pas leur catégorie.',
         placement: 'overview',
       }
 
