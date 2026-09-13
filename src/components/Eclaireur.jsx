@@ -8,6 +8,8 @@ export default function Eclaireur({
   onAction,
   onDismiss,
   onHelp,
+  paused = false,
+  onTogglePause,
 }) {
   if (!state || !content) {
     return (
@@ -62,18 +64,33 @@ export default function Eclaireur({
         ×
       </button>
 
+      {state === 'overview' && onTogglePause && (
+        <button
+          type="button"
+          className={`eclaireur-pause${paused ? ' is-paused' : ''}`}
+          onClick={onTogglePause}
+          aria-pressed={paused}
+        >
+          <span aria-hidden="true">{paused ? '▶' : 'Ⅱ'}</span>
+          {paused ? 'Reprendre' : 'Pause'}
+        </button>
+      )}
+
       <div className="eclaireur-content" key={contentKey ?? state}>
         <p className="eclaireur-lead">{content.lead}</p>
         {content.body && <p>{content.body}</p>}
 
         {content.categories?.length > 0 && (
-          <div className="eclaireur-categories" aria-label="Trois catégories de micro-expertises">
+          <div className="eclaireur-legend-block">
+            <span className="eclaireur-legend-title">Couleurs des points</span>
+            <div className="eclaireur-categories" aria-label="Trois catégories de micro-expertises">
             {content.categories.map(category => (
               <span key={category.label}>
                 <i style={{ background: category.color }} aria-hidden="true" />
                 {category.label}
               </span>
             ))}
+            </div>
           </div>
         )}
 

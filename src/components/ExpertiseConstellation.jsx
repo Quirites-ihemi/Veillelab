@@ -500,15 +500,18 @@ export default function ExpertiseConstellation({
   const primaryGuideClusterId = useMemo(() => {
     if (!clusterStats.length) return null
 
-    // Pour la démonstration de l’Éclaireur, on privilégie le cluster sombre
-    // « Formation et transmission des métiers et savoir-faire opérationnels ».
-    // Il est placé haut dans la carte et reste bien visible derrière la carte-guide.
-    const darkCluster = clusterStats.find(cluster => cluster.id === 40)
-    if (darkCluster) return darkCluster.id
+    // Cluster sombre situé dans la partie haute de la carte : il sert de
+    // repère visuel stable pour la démonstration de l’Éclaireur.
+    const darkReferenceCluster = clusterStats.find(cluster => cluster.id === 40)
+    if (darkReferenceCluster) return darkReferenceCluster.id
 
-    // Repli robuste si la donnée évolue : prendre le cluster affiché le plus haut.
-    const highest = [...clusterStats].sort((a, b) => a.centerY - b.centerY)[0]
-    return highest?.id ?? null
+    const candidates = [...clusterStats].sort((a, b) => {
+      const bySize = b.nodeIds.size - a.nodeIds.size
+      if (bySize !== 0) return bySize
+      return String(a.label || '').localeCompare(String(b.label || ''), 'fr')
+    })
+
+    return candidates[0]?.id ?? null
   }, [clusterStats])
 
   const guideClusterId =
@@ -524,14 +527,14 @@ export default function ExpertiseConstellation({
   const guideTransClusterId = useMemo(() => {
     if (activeCluster !== null || guideOverviewStep !== 4) return null
 
-    // Garder le même cluster sombre pendant la démonstration lorsque celui-ci
-    // est transdirectionnel, afin d’éviter de déplacer inutilement le regard.
-    const primary = clusterStats.find(cluster => cluster.id === primaryGuideClusterId)
-    if (primary?.transdirectional) return primary.id
+    const reference = clusterStats.find(
+      cluster => cluster.id === primaryGuideClusterId && cluster.transdirectional
+    )
+    if (reference) return reference.id
 
     const candidates = clusterStats
       .filter(cluster => cluster.transdirectional)
-      .sort((a, b) => a.centerY - b.centerY)
+      .sort((a, b) => b.nodeIds.size - a.nodeIds.size)
 
     return candidates[0]?.id ?? null
   }, [activeCluster, guideOverviewStep, clusterStats, primaryGuideClusterId])
@@ -1256,10 +1259,19 @@ export default function ExpertiseConstellation({
         </g>
       </svg>
 
-      {mode === 'category' && (
-        <div className="entry-family-legend" aria-label="Catégories d’expertise">
+      {activeCluster === null && (
+        <div
+          className={`entry-family-legend${
+            guideOverviewStep === 0 ? ' eclaireur-family-legend-pulse' : ''
+          }`}
+          aria-label="Légende des catégories de micro-expertises"
+        >
+          <b>Couleurs des points</b>
           {Object.entries(FAMILY_COLORS).map(([label, color]) => (
-            <span key={label}>
+            <span
+              key={label}
+              className={guideOverviewStep === 0 ? 'eclaireur-legend-item-pulse' : undefined}
+            >
               <i style={{ background: color }} />
               {label}
             </span>
@@ -1550,9 +1562,17 @@ export default function ExpertiseConstellation({
           border-radius:11px;
           background:rgba(255,255,255,.96);
           color:#46607f;
-          font-size:11px;
-          font-weight:740;
+          font-size:13px;
+          font-weight:780;
           box-shadow:0 4px 14px rgba(15,46,85,.07);
+        }
+
+        .entry-family-legend b{
+          width:100%;
+          color:#244b7b;
+          font-size:13px;
+          font-weight:900;
+          letter-spacing:.01em;
         }
 
         .entry-family-legend span{
@@ -1562,8 +1582,8 @@ export default function ExpertiseConstellation({
         }
 
         .entry-family-legend i{
-          width:11px;
-          height:11px;
+          width:13px;
+          height:13px;
           border-radius:50%;
         }
 
