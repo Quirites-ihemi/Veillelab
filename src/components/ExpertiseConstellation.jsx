@@ -560,24 +560,33 @@ export default function ExpertiseConstellation({
     return candidates[0]?.id ?? null
   }, [activeCluster, guideOverviewStep, positionedNodes])
 
-  const guideLinkKey = useMemo(() => {
-    if (activeCluster !== null || guideOverviewStep !== 1) return null
+  const guideLinkKeys = useMemo(() => {
+    if (activeCluster !== null || guideOverviewStep !== 1) return new Set()
 
+    // Pendant l'étape « liens », on éclaire plusieurs arêtes du cluster vert
+    // plutôt qu'une seule. Cela rend immédiatement lisible la notion de réseau
+    // sans faire clignoter l'ensemble de la carte.
     const candidates = visibleEdges
       .map(edge => {
         const source = byId.get(edge.source)
         const target = byId.get(edge.target)
         if (!source || !target || source.clusterId !== target.clusterId) return null
-        const clusterBonus = source.clusterId === primaryGuideClusterId ? 100000 : 0
+        const inReferenceCluster = source.clusterId === primaryGuideClusterId
         return {
           key: `${edge.source}|${edge.target}`,
-          score: clusterBonus + source.gephiSize + target.gephiSize,
+          inReferenceCluster,
+          score: source.gephiSize + target.gephiSize,
         }
       })
       .filter(Boolean)
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => {
+        if (a.inReferenceCluster !== b.inReferenceCluster) {
+          return a.inReferenceCluster ? -1 : 1
+        }
+        return b.score - a.score
+      })
 
-    return candidates[0]?.key ?? null
+    return new Set(candidates.slice(0, 6).map(item => item.key))
   }, [activeCluster, guideOverviewStep, visibleEdges, byId, primaryGuideClusterId])
 
   const guideNodeId = useMemo(() => {
@@ -968,7 +977,7 @@ export default function ExpertiseConstellation({
 
               const sameCluster = source.clusterId === target.clusterId
               const isGuideEdge =
-                guideLinkKey === `${edge.source}|${edge.target}`
+                guideLinkKeys.has(`${edge.source}|${edge.target}`)
 
               return (
                 <line
@@ -989,8 +998,8 @@ export default function ExpertiseConstellation({
                   }
                   opacity={
                     selectedActive && clusterActive
-                      ? (sameCluster ? 0.46 : 0.11) * linkDensity
-                      : activeCluster !== null ? 0.035 : 0.075
+                      ? (sameCluster ? 0.68 : 0.24) * linkDensity
+                      : activeCluster !== null ? 0.07 : 0.15
                   }
                 />
               )
@@ -1305,15 +1314,23 @@ export default function ExpertiseConstellation({
         }
 
         .entry-edge{
-          stroke:#8fa0b5;
-          stroke-width:1.75;
+          stroke:#7589a3;
+          stroke-width:2.45;
           stroke-linecap:round;
           vector-effect:non-scaling-stroke;
         }
 
+        .entry-edge.intra-cluster{
+          stroke:#667e9d;
+        }
+
+        .entry-edge.inter-cluster{
+          stroke:#94a4b8;
+        }
+
         .entry-edge.active{
-          stroke:#f39a00;
-          stroke-width:3;
+          stroke:#e88b00;
+          stroke-width:3.8;
         }
 
         .gephi-view-switch{
