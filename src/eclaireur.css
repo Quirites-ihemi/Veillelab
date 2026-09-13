@@ -311,11 +311,11 @@
 .eclaireur-cluster-pulse{
   transform-box:fill-box;
   transform-origin:center;
-  animation:eclaireur-cluster-breathe 1.2s ease-in-out 5;
+  animation:eclaireur-cluster-breathe 1.8s ease-in-out 6;
 }
 
 .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg{
-  animation:eclaireur-title-breathe 1.2s ease-in-out 5;
+  animation:eclaireur-title-breathe 1.8s ease-in-out 6;
 }
 
 .eclaireur-node-pulse-ring{
@@ -467,20 +467,21 @@
 }
 
 .eclaireur-category-node-ring{
-  animation:eclaireur-category-ring 1.3s ease-in-out 4;
+  stroke-width:6;
+  animation:eclaireur-category-ring 2.1s ease-in-out 7;
 }
 
 .eclaireur-isolated-node-ring{
   stroke:#315d95;
-  animation:eclaireur-isolated-ring 1.3s ease-in-out 4;
+  animation:eclaireur-isolated-ring 2.1s ease-in-out 7;
 }
 
 .entry-edge.eclaireur-link-pulse{
-  stroke:#315d95!important;
-  stroke-width:4.2!important;
+  stroke:#214f8f!important;
+  stroke-width:5.4!important;
   opacity:1!important;
-  filter:drop-shadow(0 0 5px rgba(49,93,149,.48));
-  animation:eclaireur-link-breathe 1.3s ease-in-out 4;
+  filter:drop-shadow(0 0 8px rgba(33,79,143,.68));
+  animation:eclaireur-link-breathe 2.1s ease-in-out 7;
 }
 
 @keyframes eclaireur-content-in{
@@ -489,8 +490,8 @@
 }
 
 @keyframes eclaireur-category-ring{
-  0%,100%{opacity:.45;transform:scale(.88)}
-  50%{opacity:1;transform:scale(1.18);filter:drop-shadow(0 0 8px currentColor)}
+  0%,100%{opacity:.62;transform:scale(.82);filter:drop-shadow(0 0 3px currentColor)}
+  50%{opacity:1;transform:scale(1.34);filter:drop-shadow(0 0 14px currentColor)}
 }
 
 @keyframes eclaireur-isolated-ring{
@@ -499,14 +500,14 @@
 }
 
 @keyframes eclaireur-link-breathe{
-  0%,100%{opacity:.55}
-  50%{opacity:1;stroke-width:5.2}
+  0%,100%{opacity:.72;stroke-width:5.4}
+  50%{opacity:1;stroke-width:7.2;filter:drop-shadow(0 0 11px rgba(33,79,143,.82))}
 }
 
 /* Le texte des clusters de l’onglet 1 doit rester lisible pendant le guidage. */
 .entry-cluster-transdirectional-svg.eclaireur-transdirectional-pulse{
   font-weight:900;
-  animation:eclaireur-trans-text 1.05s ease-in-out 5;
+  animation:eclaireur-trans-text 1.55s ease-in-out 7;
 }
 
 @media(prefers-reduced-motion:reduce){
