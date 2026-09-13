@@ -500,10 +500,11 @@ export default function ExpertiseConstellation({
   const primaryGuideClusterId = useMemo(() => {
     if (!clusterStats.length) return null
 
-    // Cluster sombre situé dans la partie haute de la carte : il sert de
-    // repère visuel stable pour la démonstration de l’Éclaireur.
-    const darkReferenceCluster = clusterStats.find(cluster => cluster.id === 40)
-    if (darkReferenceCluster) return darkReferenceCluster.id
+    // Cluster vert « Articulation entre recherche scientifique et pratiques
+    // de sécurité intérieure » : il reste bien dégagé à gauche de la carte et
+    // sert de repère stable pendant la lecture animée de l’Éclaireur.
+    const greenReferenceCluster = clusterStats.find(cluster => cluster.id === 43)
+    if (greenReferenceCluster) return greenReferenceCluster.id
 
     const candidates = [...clusterStats].sort((a, b) => {
       const bySize = b.nodeIds.size - a.nodeIds.size
@@ -539,18 +540,15 @@ export default function ExpertiseConstellation({
     return candidates[0]?.id ?? null
   }, [activeCluster, guideOverviewStep, clusterStats, primaryGuideClusterId])
 
-  const guideCategoryNodeIds = useMemo(() => {
-    if (activeCluster !== null || guideOverviewStep !== 0) return new Set()
+  const guideOverviewNodeId = useMemo(() => {
+    if (activeCluster !== null || guideOverviewStep !== 0) return null
 
-    const ids = new Set()
-    Object.keys(FAMILY_COLORS).forEach(family => {
-      const candidate = positionedNodes
-        .filter(node => node.family === family)
-        .sort((a, b) => b.gephiSize - a.gephiSize)[0]
-      if (candidate) ids.add(candidate.id)
-    })
-    return ids
-  }, [activeCluster, guideOverviewStep, positionedNodes])
+    const candidates = positionedNodes
+      .filter(node => node.clusterId === primaryGuideClusterId)
+      .sort((a, b) => b.gephiSize - a.gephiSize)
+
+    return candidates[0]?.id ?? null
+  }, [activeCluster, guideOverviewStep, positionedNodes, primaryGuideClusterId])
 
   const guideIsolatedNodeId = useMemo(() => {
     if (activeCluster !== null || guideOverviewStep !== 5) return null
@@ -925,6 +923,29 @@ export default function ExpertiseConstellation({
             </g>
           )}
 
+          {guideClusterId !== null && (() => {
+            const guideCluster = clusterStats.find(cluster => cluster.id === guideClusterId)
+            if (!guideCluster) return null
+            return (
+              <g className="eclaireur-cluster-guide-rings" aria-hidden="true">
+                <circle
+                  className="eclaireur-cluster-guide-ring"
+                  cx={guideCluster.centerX}
+                  cy={guideCluster.centerY}
+                  r={guideCluster.radius * 0.72}
+                  style={{ stroke: guideCluster.color || '#97C53D' }}
+                />
+                <circle
+                  className="eclaireur-cluster-guide-ring eclaireur-cluster-guide-ring-2"
+                  cx={guideCluster.centerX}
+                  cy={guideCluster.centerY}
+                  r={guideCluster.radius * 0.94}
+                  style={{ stroke: guideCluster.color || '#97C53D' }}
+                />
+              </g>
+            )
+          })()}
+
           <g className="entry-edges">
             {visibleEdges.map((edge, index) => {
               const source = byId.get(edge.source)
@@ -968,8 +989,8 @@ export default function ExpertiseConstellation({
                   }
                   opacity={
                     selectedActive && clusterActive
-                      ? (sameCluster ? 0.31 : 0.045) * linkDensity
-                      : activeCluster !== null ? 0.012 : 0.028
+                      ? (sameCluster ? 0.46 : 0.11) * linkDensity
+                      : activeCluster !== null ? 0.035 : 0.075
                   }
                 />
               )
@@ -1023,13 +1044,12 @@ export default function ExpertiseConstellation({
                     aria-label={node.label}
                   />
 
-                  {guideCategoryNodeIds.has(node.id) && (
+                  {guideOverviewNodeId === node.id && (
                     <circle
-                      className="eclaireur-category-node-ring"
+                      className="eclaireur-overview-node-ring"
                       cx={node.x}
                       cy={node.y}
-                      r={radius + 11}
-                      style={{ stroke: familyColor(node.family) }}
+                      r={radius + 12}
                     />
                   )}
 
@@ -1259,25 +1279,6 @@ export default function ExpertiseConstellation({
         </g>
       </svg>
 
-      {activeCluster === null && (
-        <div
-          className={`entry-family-legend${
-            guideOverviewStep === 0 ? ' eclaireur-family-legend-pulse' : ''
-          }`}
-          aria-label="Légende des catégories de micro-expertises"
-        >
-          <b>Couleurs des points</b>
-          {Object.entries(FAMILY_COLORS).map(([label, color]) => (
-            <span
-              key={label}
-              className={guideOverviewStep === 0 ? 'eclaireur-legend-item-pulse' : undefined}
-            >
-              <i style={{ background: color }} />
-              {label}
-            </span>
-          ))}
-        </div>
-      )}
 
       <style>{`
         .gephi-entry-shell{
@@ -1304,8 +1305,8 @@ export default function ExpertiseConstellation({
         }
 
         .entry-edge{
-          stroke:#a9b6c7;
-          stroke-width:1.45;
+          stroke:#8fa0b5;
+          stroke-width:1.75;
           stroke-linecap:round;
           vector-effect:non-scaling-stroke;
         }
@@ -1545,48 +1546,6 @@ export default function ExpertiseConstellation({
           vector-effect:non-scaling-stroke;
         }
 
-        .entry-family-legend{
-          position:absolute;
-          z-index:6;
-          top:72px;
-          right:68px;
-          left:auto;
-          bottom:auto;
-          display:flex;
-          flex-wrap:wrap;
-          justify-content:flex-end;
-          gap:10px 15px;
-          max-width:min(62%, 760px);
-          padding:10px 13px;
-          border:1px solid #dbe4f0;
-          border-radius:11px;
-          background:rgba(255,255,255,.96);
-          color:#46607f;
-          font-size:13px;
-          font-weight:780;
-          box-shadow:0 4px 14px rgba(15,46,85,.07);
-        }
-
-        .entry-family-legend b{
-          width:100%;
-          color:#244b7b;
-          font-size:13px;
-          font-weight:900;
-          letter-spacing:.01em;
-        }
-
-        .entry-family-legend span{
-          display:flex;
-          align-items:center;
-          gap:6px;
-        }
-
-        .entry-family-legend i{
-          width:13px;
-          height:13px;
-          border-radius:50%;
-        }
-
 
         .entry-cluster-card{
           width:100%;
@@ -1752,14 +1711,6 @@ export default function ExpertiseConstellation({
             height:570px;
           }
 
-          .entry-family-legend{
-            top:auto;
-            right:14px;
-            left:14px;
-            bottom:14px;
-            max-width:none;
-            justify-content:flex-start;
-          }
 
           .gephi-view-switch{
             max-width:calc(100% - 28px);

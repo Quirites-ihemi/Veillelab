@@ -80,19 +80,6 @@ export default function Eclaireur({
         <p className="eclaireur-lead">{content.lead}</p>
         {content.body && <p>{content.body}</p>}
 
-        {content.categories?.length > 0 && (
-          <div className="eclaireur-legend-block">
-            <span className="eclaireur-legend-title">Couleurs des points</span>
-            <div className="eclaireur-categories" aria-label="Trois catégories de micro-expertises">
-            {content.categories.map(category => (
-              <span key={category.label}>
-                <i style={{ background: category.color }} aria-hidden="true" />
-                {category.label}
-              </span>
-            ))}
-            </div>
-          </div>
-        )}
 
         {content.prompt && (
           <p className="eclaireur-prompt">{content.prompt}</p>
