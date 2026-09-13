@@ -10,12 +10,12 @@
 .eclaireur-card{
   position:absolute;
   z-index:40;
-  width:min(370px,calc(100vw - 36px));
-  padding:17px 18px 16px;
-  border:1px solid rgba(74,101,139,.28);
+  width:min(405px,calc(100vw - 36px));
+  padding:20px 21px 19px;
+  border:1px solid rgba(74,101,139,.36);
   border-radius:16px;
   background:rgba(255,255,255,.97);
-  box-shadow:0 16px 38px rgba(25,47,78,.16),0 2px 8px rgba(25,47,78,.07);
+  box-shadow:0 18px 44px rgba(25,47,78,.20),0 3px 10px rgba(25,47,78,.09);
   color:#324a69;
   font-family:inherit;
   overflow:visible;
@@ -28,7 +28,7 @@
   top:0;
   left:18px;
   right:18px;
-  height:3px;
+  height:4px;
   border-radius:0 0 6px 6px;
   background:linear-gradient(90deg,#3f67a5 0%,#735db3 52%,#c36b48 100%);
   opacity:.95;
@@ -37,26 +37,117 @@
 .eclaireur-heading{
   display:flex;
   align-items:center;
-  gap:7px;
-  margin:0 28px 10px 0;
-  color:#355e96;
-  font-size:12px;
-  line-height:1;
-  font-weight:850;
-  letter-spacing:.055em;
+  gap:11px;
+  margin:0 34px 14px 0;
+  color:#244f85;
+}
+
+.eclaireur-heading-copy{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
+
+.eclaireur-heading-copy strong{
+  color:#17385f;
+  font-size:15.5px;
+  line-height:1.08;
+  font-weight:900;
+  letter-spacing:.035em;
   text-transform:uppercase;
 }
 
-.eclaireur-mark{
-  display:grid;
-  place-items:center;
-  width:24px;
-  height:24px;
+.eclaireur-heading-copy small{
+  color:#2e7f8c;
+  font-size:12.7px;
+  line-height:1.2;
+  font-weight:750;
+  letter-spacing:.01em;
+}
+
+/* Signature de l’Éclaireur : un petit radar, animé uniquement à l’arrivée. */
+.eclaireur-radar{
+  position:relative;
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
   border-radius:50%;
-  background:linear-gradient(145deg,#eaf2ff,#f4ecff);
-  color:#5c55a6;
-  font-size:15px;
-  box-shadow:inset 0 0 0 1px rgba(82,96,160,.14);
+  overflow:visible;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.20) 0 8%,transparent 9%),
+    linear-gradient(145deg,#164b82 0%,#236fa0 58%,#2aa3a5 100%);
+  box-shadow:
+    0 0 0 1px rgba(35,93,143,.18),
+    0 6px 14px rgba(30,84,132,.22);
+}
+
+.eclaireur-radar::before,
+.eclaireur-radar::after{
+  content:'';
+  position:absolute;
+  border-radius:50%;
+  border:1px solid rgba(202,244,242,.48);
+  pointer-events:none;
+}
+
+.eclaireur-radar::before{inset:8px}
+.eclaireur-radar::after{inset:14px}
+
+.eclaireur-radar-ring{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:40px;
+  height:40px;
+  margin:-20px 0 0 -20px;
+  border-radius:50%;
+  border:2px solid rgba(47,173,178,.48);
+  opacity:0;
+  pointer-events:none;
+}
+
+.eclaireur-radar-ring-2{
+  border-color:rgba(62,112,176,.36);
+}
+
+.eclaireur-radar-sweep{
+  position:absolute;
+  left:19px;
+  top:5px;
+  width:2px;
+  height:15px;
+  border-radius:2px;
+  background:linear-gradient(to top,rgba(215,255,250,.15),rgba(231,255,252,.95));
+  transform-origin:1px 15px;
+  opacity:.86;
+}
+
+.eclaireur-radar-dot{
+  position:absolute;
+  left:17px;
+  top:17px;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 7px rgba(215,255,250,.95);
+}
+
+.eclaireur-radar.is-intro{
+  animation:eclaireur-radar-pop 2.55s ease-out 1 both;
+}
+
+.eclaireur-radar.is-intro .eclaireur-radar-sweep{
+  animation:eclaireur-radar-scan 2.25s cubic-bezier(.25,.1,.25,1) 1 .15s both;
+}
+
+.eclaireur-radar.is-intro .eclaireur-radar-ring-1{
+  animation:eclaireur-radar-wave 1.55s ease-out 2 .08s;
+}
+
+.eclaireur-radar.is-intro .eclaireur-radar-ring-2{
+  animation:eclaireur-radar-wave 1.55s ease-out 2 .42s;
 }
 
 .eclaireur-close{
@@ -82,23 +173,25 @@
 
 .eclaireur-card p{
   margin:0 0 9px;
-  font-size:13.2px;
-  line-height:1.52;
+  font-size:15px;
+  line-height:1.58;
   color:#405875;
 }
 
 .eclaireur-card .eclaireur-lead{
   margin-bottom:9px;
   color:#17385f;
-  font-size:14.4px;
-  line-height:1.42;
+  font-size:16.3px;
+  line-height:1.46;
   font-weight:820;
 }
 
 .eclaireur-card .eclaireur-prompt{
-  margin:10px 0 0;
+  margin:12px 0 0;
   color:#244f85;
-  font-weight:790;
+  font-size:15.2px;
+  line-height:1.48;
+  font-weight:850;
 }
 
 .eclaireur-action{
@@ -108,10 +201,10 @@
   gap:8px;
   border:1px solid #b7cae5;
   border-radius:10px;
-  padding:8px 11px;
+  padding:10px 14px;
   background:#f5f8fd;
   color:#315d95;
-  font:800 11.5px/1.2 inherit;
+  font:850 13.4px/1.2 inherit;
   cursor:pointer;
 }
 
@@ -184,7 +277,7 @@
   background:rgba(255,255,255,.95);
   color:#315d95;
   box-shadow:0 7px 20px rgba(25,47,78,.10);
-  font:800 11.5px/1 inherit;
+  font:800 12.5px/1 inherit;
   cursor:pointer;
   backdrop-filter:blur(7px);
 }
@@ -218,11 +311,11 @@
 .eclaireur-cluster-pulse{
   transform-box:fill-box;
   transform-origin:center;
-  animation:eclaireur-cluster-breathe .9s ease-in-out 3;
+  animation:eclaireur-cluster-breathe 1.2s ease-in-out 5;
 }
 
 .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg{
-  animation:eclaireur-title-breathe .9s ease-in-out 3;
+  animation:eclaireur-title-breathe 1.2s ease-in-out 5;
 }
 
 .eclaireur-node-pulse-ring{
@@ -240,14 +333,33 @@
   animation:eclaireur-trans-text .95s ease-in-out 3;
 }
 
+@keyframes eclaireur-radar-pop{
+  0%{transform:scale(.72);box-shadow:0 0 0 0 rgba(42,163,165,.34),0 4px 10px rgba(30,84,132,.14)}
+  18%{transform:scale(1.10);box-shadow:0 0 0 8px rgba(42,163,165,.12),0 7px 16px rgba(30,84,132,.24)}
+  38%{transform:scale(1);box-shadow:0 0 0 14px rgba(42,163,165,0),0 6px 14px rgba(30,84,132,.22)}
+  100%{transform:scale(1);box-shadow:0 0 0 1px rgba(35,93,143,.18),0 6px 14px rgba(30,84,132,.22)}
+}
+
+@keyframes eclaireur-radar-scan{
+  0%{transform:rotate(-35deg);opacity:0}
+  12%{opacity:.92}
+  82%{opacity:.92}
+  100%{transform:rotate(325deg);opacity:.26}
+}
+
+@keyframes eclaireur-radar-wave{
+  0%{opacity:.64;transform:scale(.70)}
+  100%{opacity:0;transform:scale(1.72)}
+}
+
 @keyframes eclaireur-cluster-breathe{
-  0%,100%{opacity:.21;transform:scale(1)}
-  50%{opacity:.40;transform:scale(1.045)}
+  0%,100%{opacity:.56;transform:scale(1);filter:none}
+  50%{opacity:1;transform:scale(1.145);filter:drop-shadow(0 0 12px rgba(52,93,150,.50))}
 }
 
 @keyframes eclaireur-title-breathe{
-  0%,100%{opacity:1}
-  50%{opacity:.64}
+  0%,100%{opacity:1;transform:scale(1);filter:none}
+  50%{opacity:.92;transform:scale(1.045);filter:drop-shadow(0 0 9px rgba(52,93,150,.50))}
 }
 
 @keyframes eclaireur-node-ring{
@@ -288,6 +400,10 @@
 
 @media(prefers-reduced-motion:reduce){
   .eclaireur-card,
+  .eclaireur-radar.is-intro,
+  .eclaireur-radar.is-intro .eclaireur-radar-sweep,
+  .eclaireur-radar.is-intro .eclaireur-radar-ring-1,
+  .eclaireur-radar.is-intro .eclaireur-radar-ring-2,
   .eclaireur-cluster-pulse,
   .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg,
   .eclaireur-node-pulse-ring,
