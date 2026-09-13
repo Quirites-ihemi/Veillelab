@@ -216,7 +216,7 @@
 /* Point d’accueil : à la jonction entre « Pourquoi cette carte ? » et le graphe. */
 .eclaireur-welcome{
   top:116px;
-  left:232px;
+  left:180px;
 }
 
 /* La flèche reste dirigée vers le texte introductif du panneau gauche. */
@@ -245,22 +245,22 @@
 
 .eclaireur-overview{
   top:162px;
-  left:304px;
+  left:225px;
 }
 
 .eclaireur-cluster{
   top:310px;
-  left:304px;
+  left:225px;
 }
 
 .eclaireur-transdirectional{
   top:154px;
-  left:304px;
+  left:225px;
 }
 
 .eclaireur-drawer{
   top:158px;
-  left:calc(100% - 730px);
+  left:calc(100% - 780px);
 }
 
 .eclaireur-help-button{
@@ -311,11 +311,11 @@
 .eclaireur-cluster-pulse{
   transform-box:fill-box;
   transform-origin:center;
-  animation:eclaireur-cluster-breathe 1.8s ease-in-out 6;
+  animation:eclaireur-cluster-breathe 1.25s ease-in-out 12;
 }
 
 .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg{
-  animation:eclaireur-title-breathe 1.8s ease-in-out 6;
+  animation:eclaireur-title-breathe 1.25s ease-in-out 12;
 }
 
 .eclaireur-node-pulse-ring{
@@ -353,13 +353,13 @@
 }
 
 @keyframes eclaireur-cluster-breathe{
-  0%,100%{opacity:.56;transform:scale(1);filter:none}
-  50%{opacity:1;transform:scale(1.145);filter:drop-shadow(0 0 12px rgba(52,93,150,.50))}
+  0%,100%{opacity:.62;transform:scale(.96);filter:drop-shadow(0 0 3px rgba(52,93,150,.24))}
+  50%{opacity:1;transform:scale(1.22);filter:drop-shadow(0 0 22px rgba(52,93,150,.82))}
 }
 
 @keyframes eclaireur-title-breathe{
-  0%,100%{opacity:1;transform:scale(1);filter:none}
-  50%{opacity:.92;transform:scale(1.045);filter:drop-shadow(0 0 9px rgba(52,93,150,.50))}
+  0%,100%{opacity:.82;transform:scale(.98);filter:none}
+  50%{opacity:1;transform:scale(1.09);filter:drop-shadow(0 0 14px rgba(52,93,150,.78))}
 }
 
 @keyframes eclaireur-node-ring{
@@ -372,10 +372,92 @@
   50%{opacity:.72;filter:drop-shadow(0 0 5px rgba(77,110,158,.40))}
 }
 
+
+
+/* Commande de lecture de la séquence pédagogique. */
+.eclaireur-pause{
+  position:absolute;
+  top:14px;
+  right:48px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid #c7d5e6;
+  border-radius:999px;
+  padding:6px 10px;
+  background:#f7faff;
+  color:#315d95;
+  font:850 12px/1 inherit;
+  cursor:pointer;
+}
+
+.eclaireur-pause:hover,
+.eclaireur-pause.is-paused{
+  border-color:#86a7d1;
+  background:#edf4fd;
+}
+
+.eclaireur-pause span{
+  min-width:10px;
+  text-align:center;
+  font-size:11px;
+}
+
+/* La légende est explicite dans le message : les couleurs renvoient
+   directement aux trois catégories visibles sur le graphe. */
+.eclaireur-legend-block{
+  margin:12px 0 5px;
+  padding:10px 11px 9px;
+  border:1px solid #d6e1ee;
+  border-radius:11px;
+  background:#f8fafd;
+}
+
+.eclaireur-legend-title{
+  display:block;
+  margin:0 0 8px;
+  color:#244b7b;
+  font-size:12.6px;
+  line-height:1.2;
+  font-weight:900;
+}
+
+.eclaireur-legend-block .eclaireur-categories{
+  margin:0;
+}
+
+/* Pendant la première séquence, la légende du graphe répond visuellement
+   aux trois nœuds mis en évidence. */
+.entry-family-legend.eclaireur-family-legend-pulse{
+  border-color:#8faed2!important;
+  box-shadow:0 0 0 3px rgba(74,112,166,.12),0 8px 24px rgba(15,46,85,.16)!important;
+}
+
+.entry-family-legend .eclaireur-legend-item-pulse{
+  animation:eclaireur-legend-item-pulse 1.25s ease-in-out 12;
+}
+
+@keyframes eclaireur-legend-item-pulse{
+  0%,100%{opacity:.70;transform:scale(.97)}
+  50%{opacity:1;transform:scale(1.08)}
+}
+
+/* Pause = la séquence ne change plus d'étape et les repères visuels
+   restent figés là où l'utilisateur les a arrêtés. */
+.eclaireur-sequence-paused .eclaireur-category-node-ring,
+.eclaireur-sequence-paused .eclaireur-isolated-node-ring,
+.eclaireur-sequence-paused .entry-edge.eclaireur-link-pulse,
+.eclaireur-sequence-paused .eclaireur-cluster-pulse,
+.eclaireur-sequence-paused .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg,
+.eclaireur-sequence-paused .entry-cluster-transdirectional-svg.eclaireur-transdirectional-pulse,
+.eclaireur-sequence-paused .entry-family-legend .eclaireur-legend-item-pulse{
+  animation-play-state:paused!important;
+}
+
 @media(max-width:1380px){
-  .eclaireur-welcome{left:198px;top:110px}
-  .eclaireur-overview,.eclaireur-cluster,.eclaireur-transdirectional{left:260px}
-  .eclaireur-drawer{left:calc(100% - 660px)}
+  .eclaireur-welcome{left:150px;top:110px}
+  .eclaireur-overview,.eclaireur-cluster,.eclaireur-transdirectional{left:205px}
+  .eclaireur-drawer{left:calc(100% - 710px)}
 }
 
 @media(max-width:980px){
@@ -407,7 +489,8 @@
   .eclaireur-cluster-pulse,
   .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg,
   .eclaireur-node-pulse-ring,
-  .entry-cluster-transdirectional-svg.eclaireur-transdirectional-pulse{
+  .entry-cluster-transdirectional-svg.eclaireur-transdirectional-pulse,
+  .entry-family-legend .eclaireur-legend-item-pulse{
     animation:none!important;
     transition:none!important;
   }
@@ -459,7 +542,7 @@
 .eclaireur-category-node-ring,
 .eclaireur-isolated-node-ring{
   fill:none;
-  stroke-width:4;
+  stroke-width:7;
   vector-effect:non-scaling-stroke;
   transform-box:fill-box;
   transform-origin:center;
@@ -467,21 +550,20 @@
 }
 
 .eclaireur-category-node-ring{
-  stroke-width:6;
-  animation:eclaireur-category-ring 2.1s ease-in-out 7;
+  animation:eclaireur-category-ring 1.25s ease-in-out 12;
 }
 
 .eclaireur-isolated-node-ring{
   stroke:#315d95;
-  animation:eclaireur-isolated-ring 2.1s ease-in-out 7;
+  animation:eclaireur-isolated-ring 1.25s ease-in-out 12;
 }
 
 .entry-edge.eclaireur-link-pulse{
-  stroke:#214f8f!important;
-  stroke-width:5.4!important;
+  stroke:#163f79!important;
+  stroke-width:7!important;
   opacity:1!important;
-  filter:drop-shadow(0 0 8px rgba(33,79,143,.68));
-  animation:eclaireur-link-breathe 2.1s ease-in-out 7;
+  filter:drop-shadow(0 0 10px rgba(49,93,149,.78));
+  animation:eclaireur-link-breathe 1.25s ease-in-out 12;
 }
 
 @keyframes eclaireur-content-in{
@@ -490,24 +572,24 @@
 }
 
 @keyframes eclaireur-category-ring{
-  0%,100%{opacity:.62;transform:scale(.82);filter:drop-shadow(0 0 3px currentColor)}
-  50%{opacity:1;transform:scale(1.34);filter:drop-shadow(0 0 14px currentColor)}
+  0%,100%{opacity:.72;transform:scale(.78);filter:drop-shadow(0 0 4px currentColor)}
+  50%{opacity:1;transform:scale(1.52);filter:drop-shadow(0 0 16px currentColor)}
 }
 
 @keyframes eclaireur-isolated-ring{
-  0%,100%{opacity:.42;transform:scale(.82)}
-  50%{opacity:1;transform:scale(1.25);filter:drop-shadow(0 0 9px rgba(49,93,149,.55))}
+  0%,100%{opacity:.66;transform:scale(.78)}
+  50%{opacity:1;transform:scale(1.48);filter:drop-shadow(0 0 15px rgba(49,93,149,.82))}
 }
 
 @keyframes eclaireur-link-breathe{
-  0%,100%{opacity:.72;stroke-width:5.4}
-  50%{opacity:1;stroke-width:7.2;filter:drop-shadow(0 0 11px rgba(33,79,143,.82))}
+  0%,100%{opacity:.55;stroke-width:5.5}
+  50%{opacity:1;stroke-width:8.5}
 }
 
 /* Le texte des clusters de l’onglet 1 doit rester lisible pendant le guidage. */
 .entry-cluster-transdirectional-svg.eclaireur-transdirectional-pulse{
   font-weight:900;
-  animation:eclaireur-trans-text 1.55s ease-in-out 7;
+  animation:eclaireur-trans-text 1.25s ease-in-out 12;
 }
 
 @media(prefers-reduced-motion:reduce){
