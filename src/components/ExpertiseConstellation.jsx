@@ -212,6 +212,10 @@ export default function ExpertiseConstellation({
   edges,
   selected,
   onSelect,
+  onClusterChange,
+  guidePulseCluster = false,
+  guidePulseNode = false,
+  guideHighlightTransdirectional = false,
   nodeSize = 1,
   linkDensity = 1,
   resetToken = 0,
@@ -496,6 +500,30 @@ export default function ExpertiseConstellation({
   const unit = model.unit
   const clusterStats = model.clusters
 
+  const guideClusterId = useMemo(() => {
+    if (!guidePulseCluster || activeCluster !== null || !clusterStats.length) {
+      return null
+    }
+
+    const candidates = [...clusterStats].sort((a, b) => {
+      const bySize = b.nodeIds.size - a.nodeIds.size
+      if (bySize !== 0) return bySize
+      return String(a.label || '').localeCompare(String(b.label || ''), 'fr')
+    })
+
+    return candidates[0]?.id ?? null
+  }, [guidePulseCluster, activeCluster, clusterStats])
+
+  const guideNodeId = useMemo(() => {
+    if (!guidePulseNode || activeCluster === null) return null
+
+    const candidates = positionedNodes
+      .filter(node => node.clusterId === activeCluster)
+      .sort((a, b) => b.gephiSize - a.gephiSize)
+
+    return candidates[0]?.id ?? null
+  }, [guidePulseNode, activeCluster, positionedNodes])
+
   const viewCenter = useMemo(
     () => ({
       x: view.x + view.w / 2,
@@ -551,6 +579,7 @@ export default function ExpertiseConstellation({
   const closeCluster = () => {
     setActiveCluster(null)
     onSelect?.(null)
+    onClusterChange?.(null)
     setScale(1)
     setPan({ x: 0, y: 0 })
   }
@@ -566,6 +595,11 @@ export default function ExpertiseConstellation({
     // A cluster focus must not inherit a previous node selection.
     onSelect?.(null)
     setActiveCluster(cluster.id)
+    onClusterChange?.({
+      id: cluster.id,
+      label: cluster.label,
+      transdirectional: Boolean(cluster.transdirectional),
+    })
 
     const clusterNodes = positionedNodes.filter(
       node => node.clusterId === cluster.id
@@ -877,6 +911,11 @@ export default function ExpertiseConstellation({
                 return (
                   <circle
                     key={`halo-${cluster.id}`}
+                    className={
+                      guideClusterId === cluster.id
+                        ? 'eclaireur-cluster-pulse'
+                        : undefined
+                    }
                     cx={cluster.centerX}
                     cy={cluster.centerY}
                     r={cluster.radius}
@@ -983,6 +1022,15 @@ export default function ExpertiseConstellation({
                     aria-label={node.label}
                   />
 
+                  {guideNodeId === node.id && (
+                    <circle
+                      className="eclaireur-node-pulse-ring"
+                      cx={node.x}
+                      cy={node.y}
+                      r={radius + 10}
+                    />
+                  )}
+
                   <circle
                     cx={node.x}
                     cy={node.y}
@@ -1051,7 +1099,11 @@ export default function ExpertiseConstellation({
                 return (
                   <g
                     key={`label-${cluster.id}`}
-                    className="entry-cluster-label"
+                    className={`entry-cluster-label ${
+                      guideClusterId === cluster.id
+                        ? 'eclaireur-cluster-label-pulse'
+                        : ''
+                    }`}
                     opacity={dim ? 0.12 : 1}
                     role="button"
                     tabIndex="0"
@@ -1103,7 +1155,12 @@ export default function ExpertiseConstellation({
                         x={anchorX}
                         y={anchorY + totalHeight / 2 + lineHeight}
                         textAnchor="middle"
-                        className="entry-cluster-transdirectional-svg"
+                        className={`entry-cluster-transdirectional-svg ${
+                          guideHighlightTransdirectional &&
+                          activeCluster === cluster.id
+                            ? 'eclaireur-transdirectional-pulse'
+                            : ''
+                        }`}
                         style={{ fontSize: `${titleSize * 0.62}px` }}
                       >
                         Cluster transdirectionnel
