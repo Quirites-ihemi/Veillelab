@@ -213,16 +213,12 @@ export default function ExpertiseConstellation({
   selected,
   onSelect,
   onClusterChange,
-  guidePulseCluster = false,
+  guideOverviewStep = null,
   guidePulseNode = false,
-  guideHighlightTransdirectional = false,
   nodeSize = 1,
   linkDensity = 1,
   resetToken = 0,
   fitToken = 0,
-  readingOpen = false,
-  onToggleReading,
-  onCloseReading,
 }) {
   const svgRef = useRef(null)
   const dragRef = useRef(null)
@@ -286,6 +282,7 @@ export default function ExpertiseConstellation({
             y: layout.y,
             gephiSize: layout.size,
             clusterId: layout.cluster,
+            isolated: Boolean(layout.isolated),
           }
         })
         .filter(Boolean),
@@ -314,7 +311,7 @@ export default function ExpertiseConstellation({
   // Le cadre final, lui, englobe les boîtes de titre réelles — donc plus
   // aucun titre n'est rogné.
   // -------------------------------------------------------------------------
-  const TITLE_PX = 21
+  const TITLE_PX = 24
   const TITLE_BOOST = 1.4
 
   // Seuil d'affichage permanent des titres de clusters. En deçà, le titre
@@ -325,8 +322,8 @@ export default function ExpertiseConstellation({
   // pixels écran puis convertie en unités monde via `unit`.
   const OPEN_LABEL_WIDTH = 230
   const OPEN_LABEL_OFFSET = 30
-  const OPEN_LABEL_FONT_MAX = 17
-  const OPEN_LABEL_FONT_MIN = 11
+  const OPEN_LABEL_FONT_MAX = 19
+  const OPEN_LABEL_FONT_MIN = 13
   const OPEN_LABEL_LINES = 3
 
   const model = useMemo(() => {
@@ -500,10 +497,8 @@ export default function ExpertiseConstellation({
   const unit = model.unit
   const clusterStats = model.clusters
 
-  const guideClusterId = useMemo(() => {
-    if (!guidePulseCluster || activeCluster !== null || !clusterStats.length) {
-      return null
-    }
+  const primaryGuideClusterId = useMemo(() => {
+    if (!clusterStats.length) return null
 
     const candidates = [...clusterStats].sort((a, b) => {
       const bySize = b.nodeIds.size - a.nodeIds.size
@@ -512,7 +507,70 @@ export default function ExpertiseConstellation({
     })
 
     return candidates[0]?.id ?? null
-  }, [guidePulseCluster, activeCluster, clusterStats])
+  }, [clusterStats])
+
+  const guideClusterId =
+    activeCluster === null && (guideOverviewStep === 2 || guideOverviewStep === 6)
+      ? primaryGuideClusterId
+      : null
+
+  const guideTitleClusterId =
+    activeCluster === null && guideOverviewStep === 3
+      ? primaryGuideClusterId
+      : null
+
+  const guideTransClusterId = useMemo(() => {
+    if (activeCluster !== null || guideOverviewStep !== 4) return null
+
+    const candidates = clusterStats
+      .filter(cluster => cluster.transdirectional)
+      .sort((a, b) => b.nodeIds.size - a.nodeIds.size)
+
+    return candidates[0]?.id ?? null
+  }, [activeCluster, guideOverviewStep, clusterStats])
+
+  const guideCategoryNodeIds = useMemo(() => {
+    if (activeCluster !== null || guideOverviewStep !== 0) return new Set()
+
+    const ids = new Set()
+    Object.keys(FAMILY_COLORS).forEach(family => {
+      const candidate = positionedNodes
+        .filter(node => node.family === family)
+        .sort((a, b) => b.gephiSize - a.gephiSize)[0]
+      if (candidate) ids.add(candidate.id)
+    })
+    return ids
+  }, [activeCluster, guideOverviewStep, positionedNodes])
+
+  const guideIsolatedNodeId = useMemo(() => {
+    if (activeCluster !== null || guideOverviewStep !== 5) return null
+
+    const candidates = positionedNodes
+      .filter(node => node.isolated)
+      .sort((a, b) => b.gephiSize - a.gephiSize)
+
+    return candidates[0]?.id ?? null
+  }, [activeCluster, guideOverviewStep, positionedNodes])
+
+  const guideLinkKey = useMemo(() => {
+    if (activeCluster !== null || guideOverviewStep !== 1) return null
+
+    const candidates = visibleEdges
+      .map(edge => {
+        const source = byId.get(edge.source)
+        const target = byId.get(edge.target)
+        if (!source || !target || source.clusterId !== target.clusterId) return null
+        const clusterBonus = source.clusterId === primaryGuideClusterId ? 100000 : 0
+        return {
+          key: `${edge.source}|${edge.target}`,
+          score: clusterBonus + source.gephiSize + target.gephiSize,
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.score - a.score)
+
+    return candidates[0]?.key ?? null
+  }, [activeCluster, guideOverviewStep, visibleEdges, byId, primaryGuideClusterId])
 
   const guideNodeId = useMemo(() => {
     if (!guidePulseNode || activeCluster === null) return null
@@ -791,77 +849,6 @@ export default function ExpertiseConstellation({
 
   return (
     <section className="constellation-shell gephi-entry-shell">
-      <div className="gephi-view-switch map-reading-switch" aria-label="Lecture de la carte">
-        <button
-          type="button"
-          className={readingOpen ? 'active' : ''}
-          onClick={() => onToggleReading?.()}
-          aria-expanded={readingOpen}
-          aria-controls="map-reading-inline"
-        >
-          ⓘ&nbsp;&nbsp;Lecture de la carte
-        </button>
-      </div>
-
-      {readingOpen && (
-        <section
-          id="map-reading-inline"
-          className="map-reading-inline"
-          aria-label="Lecture de la carte"
-        >
-          <button
-            type="button"
-            className="map-reading-inline-close"
-            onClick={() => onCloseReading?.()}
-            aria-label="Fermer la lecture de la carte"
-          >
-            ×
-          </button>
-
-          <h2>Lecture de la carte</h2>
-
-          <p>
-            Cette carte est un <strong>graphe en réseau réalisé avec Gephi</strong>.
-            Chaque point représente une <strong>micro-expertise</strong> identifiée
-            dans les publications du ministère. Les liens relient des expertises
-            qui sont <strong>associées dans une même publication</strong>. Le graphe
-            permet ainsi de visualiser non seulement des expertises prises
-            séparément, mais aussi la manière dont elles se combinent.
-          </p>
-
-          <p>
-            La disposition du réseau fait apparaître des ensembles plus densément
-            reliés. Un algorithme de <strong>clusterisation</strong> repère ces
-            communautés : un cluster rassemble des micro-expertises qui
-            entretiennent davantage de relations entre elles qu’avec le reste du
-            réseau. Les intitulés des clusters ont ensuite été construits à partir
-            de leur contenu afin d’en faciliter la lecture.
-            <strong> Ils ne correspondent donc ni à des catégories administratives
-            ni à un classement prédéfini.</strong>
-          </p>
-
-          <p>
-            Des expertises plus spécialisées ou isolées sont volontairement
-            conservées. <strong>L’absence de lien ne signifie pas qu’elles sont
-            moins importantes</strong>, mais seulement qu’aucune association
-            suffisante avec d’autres expertises n’apparaît dans le corpus étudié.
-          </p>
-
-          <p>
-            Certains clusters sont qualifiés de <strong>transdirectionnels</strong>
-            lorsqu’ils réunissent des expertises mobilisées dans les publications
-            de plusieurs entités du ministère. Ils font apparaître des domaines où
-            des savoir-faire, méthodes ou problèmes publics se croisent au-delà
-            des frontières organisationnelles.
-          </p>
-
-          <p className="map-reading-last">
-            Le graphe sera alimenté par les productions futures repérées par le
-            bulletin de veille.
-          </p>
-        </section>
-      )}
-
       <div className="gephi-zoom-tools" aria-label="Zoom du graphe">
         <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant">+</button>
         <button type="button" onClick={() => zoom(0.86)} aria-label="Zoom arrière">−</button>
@@ -949,6 +936,8 @@ export default function ExpertiseConstellation({
                 )
 
               const sameCluster = source.clusterId === target.clusterId
+              const isGuideEdge =
+                guideLinkKey === `${edge.source}|${edge.target}`
 
               return (
                 <line
@@ -963,7 +952,9 @@ export default function ExpertiseConstellation({
                       (edge.source === selectedId || edge.target === selectedId)
                         ? 'entry-edge active'
                         : 'entry-edge'
-                    } ${sameCluster ? 'intra-cluster' : 'inter-cluster'}`
+                    } ${sameCluster ? 'intra-cluster' : 'inter-cluster'} ${
+                      isGuideEdge ? 'eclaireur-link-pulse' : ''
+                    }`
                   }
                   opacity={
                     selectedActive && clusterActive
@@ -1022,6 +1013,25 @@ export default function ExpertiseConstellation({
                     aria-label={node.label}
                   />
 
+                  {guideCategoryNodeIds.has(node.id) && (
+                    <circle
+                      className="eclaireur-category-node-ring"
+                      cx={node.x}
+                      cy={node.y}
+                      r={radius + 11}
+                      style={{ stroke: familyColor(node.family) }}
+                    />
+                  )}
+
+                  {guideIsolatedNodeId === node.id && (
+                    <circle
+                      className="eclaireur-isolated-node-ring"
+                      cx={node.x}
+                      cy={node.y}
+                      r={radius + 12}
+                    />
+                  )}
+
                   {guideNodeId === node.id && (
                     <circle
                       className="eclaireur-node-pulse-ring"
@@ -1065,6 +1075,9 @@ export default function ExpertiseConstellation({
                   const revealed =
                     cluster.showLabel ||
                     hoveredClusterId === cluster.id ||
+                    guideClusterId === cluster.id ||
+                    guideTitleClusterId === cluster.id ||
+                    guideTransClusterId === cluster.id ||
                     scale > 1.35
                   if (!revealed) return null
                 }
@@ -1100,7 +1113,8 @@ export default function ExpertiseConstellation({
                   <g
                     key={`label-${cluster.id}`}
                     className={`entry-cluster-label ${
-                      guideClusterId === cluster.id
+                      guideClusterId === cluster.id ||
+                      guideTitleClusterId === cluster.id
                         ? 'eclaireur-cluster-label-pulse'
                         : ''
                     }`}
@@ -1156,8 +1170,7 @@ export default function ExpertiseConstellation({
                         y={anchorY + totalHeight / 2 + lineHeight}
                         textAnchor="middle"
                         className={`entry-cluster-transdirectional-svg ${
-                          guideHighlightTransdirectional &&
-                          activeCluster === cluster.id
+                          guideTransClusterId === cluster.id
                             ? 'eclaireur-transdirectional-pulse'
                             : ''
                         }`}

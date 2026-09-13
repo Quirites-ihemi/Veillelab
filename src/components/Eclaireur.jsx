@@ -4,6 +4,7 @@ import '../eclaireur.css'
 export default function Eclaireur({
   state,
   content,
+  contentKey,
   onAction,
   onDismiss,
   onHelp,
@@ -61,22 +62,36 @@ export default function Eclaireur({
         ×
       </button>
 
-      <p className="eclaireur-lead">{content.lead}</p>
-      {content.body && <p>{content.body}</p>}
-      {content.prompt && (
-        <p className="eclaireur-prompt">{content.prompt}</p>
-      )}
+      <div className="eclaireur-content" key={contentKey ?? state}>
+        <p className="eclaireur-lead">{content.lead}</p>
+        {content.body && <p>{content.body}</p>}
 
-      {content.actionLabel && (
-        <button
-          type="button"
-          className="eclaireur-action"
-          onClick={onAction}
-        >
-          {content.actionLabel}
-          <span aria-hidden="true">→</span>
-        </button>
-      )}
+        {content.categories?.length > 0 && (
+          <div className="eclaireur-categories" aria-label="Trois catégories de micro-expertises">
+            {content.categories.map(category => (
+              <span key={category.label}>
+                <i style={{ background: category.color }} aria-hidden="true" />
+                {category.label}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {content.prompt && (
+          <p className="eclaireur-prompt">{content.prompt}</p>
+        )}
+
+        {content.actionLabel && (
+          <button
+            type="button"
+            className="eclaireur-action"
+            onClick={onAction}
+          >
+            {content.actionLabel}
+            <span aria-hidden="true">→</span>
+          </button>
+        )}
+      </div>
     </aside>
   )
 }
