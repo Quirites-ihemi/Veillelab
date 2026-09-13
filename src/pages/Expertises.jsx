@@ -1,6 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ExpertiseConstellation from '../components/ExpertiseConstellation.jsx'
+import Eclaireur from '../components/Eclaireur.jsx'
+import {
+  ECLAIREUR_SESSION_KEYS,
+  ECLAIREUR_STATES,
+  getEclaireurContent,
+  getEntryState,
+} from '../lib/eclaireurRules.js'
 import { normalize, sentenceCase } from '../lib/text.js'
 import '../expertises-fenetres-originales.css'
 
@@ -79,12 +86,16 @@ const EXPERTISE_INTRO_STYLES = `
 }
 `
 
-function Accordion({ title, children }) {
+function Accordion({ title, children, onOpen }) {
   const [open, setOpen] = useState(false)
 
   return (
     <div className={`ui-accordion ${open ? 'open' : ''}`}>
-      <button onClick={() => setOpen(v => !v)}>
+      <button onClick={() => setOpen(v => {
+        const next = !v
+        if (next) onOpen?.()
+        return next
+      })}>
         <span>{title}</span>
         <span>{open ? '⌃' : '⌄'}</span>
       </button>
@@ -139,6 +150,117 @@ export default function Expertises({ data }) {
   const [linkDensity, setLinkDensity] = useState(1)
   const [resetToken, setResetToken] = useState(0)
   const [fitToken, setFitToken] = useState(0)
+
+  const sessionHas = key => {
+    if (typeof window === 'undefined') return false
+    return window.sessionStorage.getItem(key) === '1'
+  }
+
+  const sessionMark = key => {
+    if (typeof window === 'undefined') return
+    window.sessionStorage.setItem(key, '1')
+  }
+
+  const [activeClusterMeta, setActiveClusterMeta] = useState(null)
+  const [eclaireurState, setEclaireurState] = useState(() =>
+    sessionHas(ECLAIREUR_SESSION_KEYS.welcome) ? null : getEntryState()
+  )
+
+  const eclaireurContent = getEclaireurContent(eclaireurState, {
+    selectedLabel: selected?.label || null,
+    clusterLabel: activeClusterMeta?.label || null,
+  })
+
+  const markCurrentEclaireurSeen = state => {
+    if (state === ECLAIREUR_STATES.BULLETIN || state === ECLAIREUR_STATES.DIRECT) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.welcome)
+    }
+    if (state === ECLAIREUR_STATES.OVERVIEW) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.overview)
+    }
+    if (state === ECLAIREUR_STATES.CLUSTER) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.cluster)
+    }
+    if (state === ECLAIREUR_STATES.EXPERTISE) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.expertise)
+    }
+    if (state === ECLAIREUR_STATES.TRANSDIRECTIONAL) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.transdirectional)
+    }
+  }
+
+  const dismissEclaireur = () => {
+    markCurrentEclaireurSeen(eclaireurState)
+    setEclaireurState(null)
+  }
+
+  const handleEclaireurAction = () => {
+    if (
+      eclaireurState === ECLAIREUR_STATES.BULLETIN ||
+      eclaireurState === ECLAIREUR_STATES.DIRECT
+    ) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.welcome)
+      sessionMark(ECLAIREUR_SESSION_KEYS.overview)
+      setEclaireurState(ECLAIREUR_STATES.OVERVIEW)
+      return
+    }
+
+    if (eclaireurState === ECLAIREUR_STATES.TRANSDIRECTIONAL) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.transdirectional)
+      sessionMark(ECLAIREUR_SESSION_KEYS.cluster)
+      setEclaireurState(ECLAIREUR_STATES.CLUSTER)
+      return
+    }
+
+    dismissEclaireur()
+  }
+
+  const showHelp = () => setEclaireurState(ECLAIREUR_STATES.HELP)
+
+  const handleClusterChange = cluster => {
+    setActiveClusterMeta(cluster)
+
+    if (!cluster) {
+      setEclaireurState(null)
+      return
+    }
+
+    sessionMark(ECLAIREUR_SESSION_KEYS.overview)
+
+    if (
+      cluster.transdirectional &&
+      !sessionHas(ECLAIREUR_SESSION_KEYS.transdirectional)
+    ) {
+      sessionMark(ECLAIREUR_SESSION_KEYS.transdirectional)
+      setEclaireurState(ECLAIREUR_STATES.TRANSDIRECTIONAL)
+      return
+    }
+
+    if (!sessionHas(ECLAIREUR_SESSION_KEYS.cluster)) {
+      setEclaireurState(ECLAIREUR_STATES.CLUSTER)
+    } else {
+      setEclaireurState(null)
+    }
+  }
+
+  const selectExpertise = node => {
+    setSelected(node)
+    if (!node) return
+
+    sessionMark(ECLAIREUR_SESSION_KEYS.cluster)
+    if (!sessionHas(ECLAIREUR_SESSION_KEYS.expertise)) {
+      setEclaireurState(ECLAIREUR_STATES.EXPERTISE)
+    } else {
+      setEclaireurState(null)
+    }
+  }
+
+  const acknowledgeExpertiseGuide = () => {
+    sessionMark(ECLAIREUR_SESSION_KEYS.expertise)
+    if (eclaireurState === ECLAIREUR_STATES.EXPERTISE) {
+      setEclaireurState(null)
+    }
+  }
 
   const entities = useMemo(
     () => [
@@ -196,6 +318,8 @@ export default function Expertises({ data }) {
     setEntity('Toutes les entités')
     setFamily('Tous')
     setReadingOpen(false)
+    setActiveClusterMeta(null)
+    setEclaireurState(null)
     setResetToken(x => x + 1)
   }
 
@@ -290,7 +414,7 @@ export default function Expertises({ data }) {
                 <button
                   key={n.id}
                   onClick={() => {
-                    setSelected(n)
+                    selectExpertise(n)
                     setSearch('')
                   }}
                 >
@@ -334,6 +458,8 @@ export default function Expertises({ data }) {
             onChange={e => {
               setEntity(e.target.value)
               setSelected(null)
+              setActiveClusterMeta(null)
+              setEclaireurState(null)
             }}
           >
             {entities.map(x => (
@@ -352,6 +478,8 @@ export default function Expertises({ data }) {
             onChange={e => {
               setFamily(e.target.value)
               setSelected(null)
+              setActiveClusterMeta(null)
+              setEclaireurState(null)
             }}
           >
             <option>Tous</option>
@@ -464,7 +592,13 @@ export default function Expertises({ data }) {
           nodes={filtered}
           edges={visibleEdges}
           selected={selected}
-          onSelect={setSelected}
+          onSelect={selectExpertise}
+          onClusterChange={handleClusterChange}
+          guidePulseCluster={eclaireurState === ECLAIREUR_STATES.OVERVIEW}
+          guidePulseNode={eclaireurState === ECLAIREUR_STATES.CLUSTER}
+          guideHighlightTransdirectional={
+            eclaireurState === ECLAIREUR_STATES.TRANSDIRECTIONAL
+          }
           nodeSize={nodeSize}
           linkDensity={linkDensity}
           resetToken={resetToken}
@@ -472,6 +606,7 @@ export default function Expertises({ data }) {
           readingOpen={readingOpen}
           onToggleReading={() => {
             setSelected(null)
+            setEclaireurState(null)
             setReadingOpen(open => !open)
           }}
           onCloseReading={() => setReadingOpen(false)}
@@ -479,12 +614,23 @@ export default function Expertises({ data }) {
 
       </section>
 
+      <Eclaireur
+        state={eclaireurState}
+        content={eclaireurContent}
+        onAction={handleEclaireurAction}
+        onDismiss={dismissEclaireur}
+        onHelp={showHelp}
+      />
+
       {selected && (
         <aside className="detail-drawer">
 
           <button
             className="drawer-close"
-            onClick={() => setSelected(null)}
+            onClick={() => {
+              setSelected(null)
+              setEclaireurState(null)
+            }}
           >
             <Icon name="close" />
           </button>
@@ -571,7 +717,10 @@ export default function Expertises({ data }) {
               })}
           </div>
 
-          <Accordion title="Expertises directement associées">
+          <Accordion
+            title="Expertises directement associées"
+            onOpen={acknowledgeExpertiseGuide}
+          >
             <div className="chips">
 
               {(selected.associated || [])
@@ -585,7 +734,7 @@ export default function Expertises({ data }) {
                     <button
                       className="chip clickable"
                       key={a.id}
-                      onClick={() => setSelected(n)}
+                      onClick={() => selectExpertise(n)}
                     >
                       {n.label}
                     </button>
@@ -595,7 +744,10 @@ export default function Expertises({ data }) {
             </div>
           </Accordion>
 
-          <Accordion title="Domaines mobilisés">
+          <Accordion
+            title="Domaines mobilisés"
+            onOpen={acknowledgeExpertiseGuide}
+          >
             <div className="chips">
 
               {(selected.domains || []).map(x => (
