@@ -516,11 +516,13 @@
 }
 
 .entry-edge.eclaireur-link-pulse{
-  stroke:#124d92!important;
-  stroke-width:8!important;
+  stroke:#075fc5!important;
+  stroke-width:10!important;
   opacity:1!important;
-  filter:drop-shadow(0 0 13px rgba(30,91,160,.94));
-  animation:eclaireur-link-breathe 1.5s ease-in-out 10;
+  filter:
+    drop-shadow(0 0 6px rgba(255,255,255,.96))
+    drop-shadow(0 0 18px rgba(0,106,230,1));
+  animation:eclaireur-link-breathe 1.2s ease-in-out 13;
 }
 
 @keyframes eclaireur-content-in{
@@ -540,9 +542,21 @@
 }
 
 @keyframes eclaireur-link-breathe{
-  0%,100%{opacity:.42;stroke-width:5.5}
-  45%{opacity:1;stroke-width:10}
-  70%{opacity:.86;stroke-width:7.5}
+  0%,100%{
+    opacity:.38;
+    stroke-width:6;
+    filter:drop-shadow(0 0 4px rgba(255,255,255,.72)) drop-shadow(0 0 8px rgba(0,106,230,.62));
+  }
+  38%{
+    opacity:1;
+    stroke-width:13;
+    filter:drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 24px rgba(0,106,230,1));
+  }
+  62%{
+    opacity:1;
+    stroke-width:10.5;
+    filter:drop-shadow(0 0 7px rgba(255,255,255,.92)) drop-shadow(0 0 19px rgba(0,106,230,.94));
+  }
 }
 
 /* Le texte des clusters de l’onglet 1 doit rester lisible pendant le guidage. */
