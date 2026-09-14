@@ -45,10 +45,10 @@ function getOverviewContent(step = 0) {
 
     case 2:
       return {
-        lead: 'Certaines micro-expertises sont plus fortement reliées entre elles qu’au reste du réseau.',
+        lead: 'Certaines micro-expertises sont plus fortement reliées entre elles qu’au reste du réseau : on parle alors de **clusters**.',
         body:
           'La clusterisation est la méthode qui permet de repérer automatiquement ces ensembles à partir des relations présentes dans le graphe.',
-        placement: 'overview',
+        placement: 'overview-low',
       }
 
     case 3:
@@ -56,7 +56,7 @@ function getOverviewContent(step = 0) {
         lead: 'Ces ensembles sont ensuite nommés à partir des compétences qu’ils rassemblent.',
         body:
           'Leur intitulé facilite la lecture : ils ne correspondent ni à des catégories administratives ni à un classement défini à l’avance.',
-        placement: 'overview',
+        placement: 'overview-low',
       }
 
     case 4:
@@ -64,7 +64,7 @@ function getOverviewContent(step = 0) {
         lead: 'Certains ensembles sont transdirectionnels.',
         body:
           'Ils réunissent des compétences mobilisées par plusieurs directions du ministère et font apparaître des croisements de savoirs et de savoir-faire au-delà des frontières organisationnelles.',
-        placement: 'overview',
+        placement: 'overview-low',
       }
 
     case 5:
@@ -72,17 +72,17 @@ function getOverviewContent(step = 0) {
         lead: 'Une compétence peut aussi apparaître seule.',
         body:
           'Cela ne signifie pas qu’elle est moins importante : le corpus ne fait simplement pas apparaître suffisamment de relations avec d’autres compétences.',
-        placement: 'overview',
+        placement: 'overview-low',
       }
 
     default:
       return {
-        lead: 'Vous savez maintenant comment lire la carte.',
+        lead: 'Vous savez maintenant comment lire le graphe.',
         body:
           'Les grands ensembles font apparaître les proximités entre compétences, tout en conservant les expertises plus spécialisées ou isolées.',
         prompt: 'Cliquez sur un grand ensemble de compétences pour l’explorer.',
-        actionLabel: 'Explorer la carte',
-        placement: 'overview',
+        actionLabel: 'Explorer le graphe',
+        placement: 'overview-low',
       }
   }
 }
@@ -98,7 +98,7 @@ export function getEclaireurContent(state, context = {}) {
           'Les publications du ministère mobilisent de nombreux savoirs et savoir-faire portés par nos collègues. Cette carte met en valeur la richesse de ces compétences internes, montre comment elles se complètent et fait apparaître les rapprochements entre elles.',
         prompt:
           'Explorez les grands ensembles de compétences pour découvrir cette richesse.',
-        actionLabel: 'Explorer les grands ensembles',
+        actionLabel: 'Découvrir le graphe',
         placement: 'welcome',
       }
 
@@ -107,8 +107,7 @@ export function getEclaireurContent(state, context = {}) {
         lead: 'Bienvenue dans Quiritès Veille Lab.',
         body:
           'Quiritès Veille Lab est l’application compagne du bulletin de veille du ministère de l’Intérieur. Vous êtes ici dans l’onglet 1, consacré aux compétences du ministère. Les publications produites par le ministère mobilisent une grande diversité de connaissances, de méthodes et de savoir-faire portés par nos collègues. Cette carte permet de rendre visible cette richesse et de découvrir comment ces compétences se rapprochent et se complètent.',
-        prompt: 'Commencez par choisir un grand ensemble.',
-        actionLabel: 'Découvrir la carte',
+        actionLabel: 'Découvrir le graphe',
         placement: 'welcome',
       }
 
