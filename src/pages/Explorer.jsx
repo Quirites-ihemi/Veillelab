@@ -2,9 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import KnowledgeGraph from '../components/KnowledgeGraph.jsx'
 import ProofModal from '../components/ProofModal.jsx'
+import ExplorerEclaireur from '../components/ExplorerEclaireur.jsx'
 import { askGraph } from '../services/chatApi.js'
 import { buildAdjacency, nodeMeta } from '../lib/graph.js'
 import { normalize, sentenceCase } from '../lib/text.js'
+import { EXPLORER_GUIDE_SESSION_KEY, EXPLORER_GUIDE_STEP_MS } from '../lib/explorerEclaireurRules.js'
+import '../explorer-eclaireur.css'
 
 const legendTypes=['acteur','expert_public','action','notion_idee','probleme','localisation','signal_faible','recommandation']
 const TYPE_COLOR={
@@ -123,7 +126,7 @@ function PublicationDrawer({open,onClose,publications,search,setSearch,onSelect,
   </>
 }
 
-function ExplorerIntro({onChoose}){
+function ExplorerIntro({onChoose,guideActive=false}){
   return <main className="page explorer-v02-home">
     <section className="explorer-v02-hero">
       <div className="explorer-v02-copy">
@@ -133,7 +136,7 @@ function ExplorerIntro({onChoose}){
         <p>Il permet ainsi de <strong>naviguer à l’intérieur d’un texte et des connaissances qu’il mobilise</strong>, en passant d’une entité à une autre et en suivant les relations qui les relient.</p>
         <p>Le <strong>GraphRAG</strong> prolonge cette logique en permettant d’interroger les contenus documentaires et d’en extraire des objets spécifiques : <strong>acteurs, recommandations, localisations, actions, enjeux, concepts</strong>, etc.</p>
         <div className="explorer-hero-action">
-          <button className="btn explorer-primary" onClick={onChoose}><Icon name="file" size={17}/>Choisir une publication</button>
+          <button className={`btn explorer-primary ${guideActive?'explorer-guide-intro-target':''}`} onClick={onChoose}><Icon name="file" size={17}/>Choisir une publication</button>
         </div>
       </div>
       <KnowledgeIllustration/>
@@ -156,6 +159,28 @@ export default function Explorer({data}){
   const [selectedNode,setSelectedNode]=useState(null),[proof,setProof]=useState(null),[showWeak,setShowWeak]=useState(true),[showRelationLabels,setShowRelationLabels]=useState(false)
   const [enabledTypes,setEnabledTypes]=useState(legendTypes),[nodeScale,setNodeScale]=useState(1),[labelScale,setLabelScale]=useState(1),[linkDensity,setLinkDensity]=useState(1),[resetToken,setResetToken]=useState(0),[fitToken,setFitToken]=useState(0)
   const [question,setQuestion]=useState(''),[chat,setChat]=useState(null),[loading,setLoading]=useState(false),[chatOpen,setChatOpen]=useState(false)
+  const [guideStep,setGuideStep]=useState(()=>{
+    try{return window.sessionStorage.getItem(EXPLORER_GUIDE_SESSION_KEY)?7:1}catch(_e){return 1}
+  })
+  const [guidePaused,setGuidePaused]=useState(false)
+  const [guideCollapsed,setGuideCollapsed]=useState(()=>{
+    try{return Boolean(window.sessionStorage.getItem(EXPLORER_GUIDE_SESSION_KEY))}catch(_e){return false}
+  })
+  const [guideRunKey,setGuideRunKey]=useState(0)
+
+  useEffect(()=>{
+    if(!selectedPub||guideCollapsed||guidePaused||guideStep<2||guideStep>6)return
+    const timer=window.setTimeout(()=>setGuideStep(step=>Math.min(7,step+1)),EXPLORER_GUIDE_STEP_MS)
+    return ()=>window.clearTimeout(timer)
+  },[selectedPub?.publication_id,guideStep,guidePaused,guideCollapsed,guideRunKey])
+
+  useEffect(()=>{
+    if(guideStep!==7)return
+    try{window.sessionStorage.setItem(EXPLORER_GUIDE_SESSION_KEY,'1')}catch(_e){}
+  },[guideStep])
+
+  const replayGuide=()=>{setGuideCollapsed(false);setGuidePaused(false);setGuideStep(selectedPub?2:1);setGuideRunKey(x=>x+1)}
+  const collapseGuide=()=>setGuideCollapsed(true)
 
   // En mode publication, l'écran Explorer doit rester calé sur le viewport.
   // Le rail gauche et le tiroir droit défilent chacun de leur côté : ils ne
@@ -173,9 +198,9 @@ export default function Explorer({data}){
     }
   },[selectedPub?.publication_id])
 
-  const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false);setShowRelationLabels(false)}
+  const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false);setShowRelationLabels(false);if(!guideCollapsed&&guideStep===1){setGuideStep(2);setGuidePaused(false);setGuideRunKey(x=>x+1)}}
 
-  if(!selectedPub)return <div className="explorer-v02-shell"><ExplorerIntro onChoose={()=>setDrawerOpen(true)}/><PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication}/></div>
+  if(!selectedPub)return <div className="explorer-v02-shell"><ExplorerIntro onChoose={()=>setDrawerOpen(true)} guideActive={!guideCollapsed&&guideStep===1}/><ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed={guideCollapsed}/><PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication}/></div>
 
   const nodes=data.nodes.filter(n=>n.publication_id===selectedPub.publication_id)
   const relations=data.relations.filter(r=>r.publication_id===selectedPub.publication_id)
@@ -201,6 +226,16 @@ export default function Explorer({data}){
   const selectAllTypes=()=>setEnabledTypes([...legendTypes])
   const deselectAllTypes=()=>{setSelectedNode(null);setProof(null);setEnabledTypes([])}
   const reset=()=>{setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setEnabledTypes(legendTypes);setNodeScale(1);setLabelScale(1);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1)}
+  const selectNode=n=>{
+    setSelectedNode(n)
+    if(!guideCollapsed&&guideStep===2){setGuideStep(3);setGuidePaused(false);setGuideRunKey(x=>x+1)}
+    else if(!guideCollapsed&&guideStep===5){setGuideStep(6);setGuidePaused(false);setGuideRunKey(x=>x+1)}
+  }
+  const selectRelation=r=>{
+    setProof(r)
+    if(!guideCollapsed&&guideStep===3){setGuideStep(6);setGuidePaused(false);setGuideRunKey(x=>x+1)}
+  }
+  const openProof=item=>{setProof(item);if(!guideCollapsed&&guideStep===6)setGuideStep(7)}
   async function runQuestion(value){
     const q=String(value||'').trim()
     if(!q||loading)return
@@ -217,7 +252,7 @@ export default function Explorer({data}){
     <aside className="left-rail explorer-rail">
       <button className="explorer-change-publication" onClick={()=>setDrawerOpen(true)}><Icon name="file" size={17}/><span><small>Publication</small><strong>Changer de publication</strong></span><Icon name="chevron" size={17}/></button>
       <section className="rail-section"><h4>Publication sélectionnée</h4><article className="selected-publication-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article></section>
-      <section className="rail-section"><h4>Rechercher dans la publication</h4><div className="rail-search"><input value={nodeSearch} onChange={e=>setNodeSearch(e.target.value)} placeholder="Rechercher un terme, une entité…"/><Icon name="search" size={18}/></div>{nodeMatches.length>0&&<div className="rail-results">{nodeMatches.map(n=><button key={n.node_id} onClick={()=>{const t=normalizeGraphType(n.type_noeud);setEnabledTypes(v=>v.includes(t)?v:[...v,t]);setSelectedNode(n);setNodeSearch('')}}>{n.libelle}<small>{nodeMeta(n.type_noeud).label}</small></button>)}</div>}</section>
+      <section className="rail-section"><h4>Rechercher dans la publication</h4><div className="rail-search"><input value={nodeSearch} onChange={e=>setNodeSearch(e.target.value)} placeholder="Rechercher un terme, une entité…"/><Icon name="search" size={18}/></div>{nodeMatches.length>0&&<div className="rail-results">{nodeMatches.map(n=><button key={n.node_id} onClick={()=>{const t=normalizeGraphType(n.type_noeud);setEnabledTypes(v=>v.includes(t)?v:[...v,t]);selectNode(n);setNodeSearch('')}}>{n.libelle}<small>{nodeMeta(n.type_noeud).label}</small></button>)}</div>}</section>
       <section className="rail-section"><div className="type-filter-heading"><h4>Type de nœud</h4><div className="type-filter-actions"><button type="button" onClick={selectAllTypes} disabled={enabledTypes.length===legendTypes.length}>Tout sélectionner</button><button type="button" onClick={deselectAllTypes} disabled={enabledTypes.length===0}>Tout désélectionner</button></div></div><div className="type-filter-list">{legendTypes.map(t=>{const m=nodeMeta(t),count=nodes.filter(n=>normalizeGraphType(n.type_noeud)===t).length;return <label key={t}><input type="checkbox" checked={enabledTypes.includes(t)} onChange={()=>toggleType(t)}/><i style={{background:colorForType(t)}}></i><span>{m.label}</span><b>{count}</b></label>})}</div></section>
       <section className="rail-section weak-row"><label><span>Afficher les liens faibles <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showWeak} onChange={e=>setShowWeak(e.target.checked)}/></label></section>
       <section className="rail-section weak-row relation-label-row"><label><span>Libellés des relations <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showRelationLabels} onChange={e=>setShowRelationLabels(e.target.checked)}/></label></section>
@@ -233,23 +268,24 @@ export default function Explorer({data}){
             <div className="chat-scroll-area">
               {!chat&&!loading&&<div className="chat-welcome"><strong>Que voulez-vous explorer ?</strong><p>Posez une question sur les connaissances et les relations présentes dans cette publication.</p></div>}
               {loading&&<div className="chat-loading"><span></span><p>Recherche dans le graphe documentaire…</p></div>}
-              {chat&&<div className="chat-response"><ChatAnswer chat={chat}/>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>setSelectedNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}
+              {chat&&<div className="chat-response"><ChatAnswer chat={chat}/>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>selectNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}
               <div className="chat-suggestions">{CHAT_SUGGESTIONS.map(suggestion=><button type="button" key={suggestion} disabled={loading} onClick={()=>runQuestion(suggestion)}>{suggestion}</button>)}</div>
             </div>
             <form onSubmit={submit} className="chat-question-form"><textarea rows="2" value={question} onChange={e=>setQuestion(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();e.currentTarget.form?.requestSubmit()}}} placeholder="Posez une question sur cette publication…"/><button disabled={loading||!question.trim()} title="Envoyer"><Icon name="send" size={20}/></button></form>
           </div>}
         </div>
-        <KnowledgeGraph nodes={graphNodes} relations={graphRelations} selectedId={graphSelectedNode?.node_id} onSelectNode={setSelectedNode} onSelectRelation={setProof} highlightIds={highlighted} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} labelScale={labelScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken}/>
+        <KnowledgeGraph nodes={graphNodes} relations={graphRelations} selectedId={graphSelectedNode?.node_id} onSelectNode={selectNode} onSelectRelation={selectRelation} highlightIds={highlighted} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} labelScale={labelScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken} guideStep={guideCollapsed?0:guideStep}/>
+        <ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed={guideCollapsed}/>
       </div>
     </section>
 
-    {selectedNode&&<aside className="detail-drawer publication-drawer">
-      <div className="drawer-type node-type"><i style={{background:colorForType(selectedNode.type_noeud)}}></i>{nodeMeta(selectedNode.type_noeud).label}</div>
+    {(selectedNode||(!guideCollapsed&&guideStep===6))&&<aside className={`detail-drawer publication-drawer ${!guideCollapsed&&guideStep===6?'explorer-proof-guide':''}`}>
+      <div className="drawer-type node-type"><i style={{background:colorForType((selectedNode||currentNode).type_noeud)}}></i>{nodeMeta((selectedNode||currentNode).type_noeud).label}</div>
       <button className="drawer-close" onClick={()=>setSelectedNode(null)}><Icon name="close"/></button>
-      <h2>{selectedNode.libelle}</h2><p className="drawer-definition">Élément documenté dans la publication. Consultez les relations et la preuve ci-dessous pour vérifier son contexte source.</p>
-      <h4>Nœuds liés ({currentLinked.length})</h4><div className="linked-node-list">{currentLinked.map(n=>{const m=nodeMeta(n.type_noeud);const c=colorForType(n.type_noeud);return <button key={n.node_id} onClick={()=>setSelectedNode(n)}><i style={{background:c}}></i><span>{n.libelle}</span><b style={{color:c}}>{m.label}</b></button>})}</div>
+      <h2>{(selectedNode||currentNode).libelle}</h2><p className="drawer-definition">Élément documenté dans la publication. Consultez les relations et la preuve ci-dessous pour vérifier son contexte source.</p>
+      <h4>Nœuds liés ({currentLinked.length})</h4><div className="linked-node-list">{currentLinked.map(n=>{const m=nodeMeta(n.type_noeud);const c=colorForType(n.type_noeud);return <button key={n.node_id} onClick={()=>selectNode(n)}><i style={{background:c}}></i><span>{n.libelle}</span><b style={{color:c}}>{m.label}</b></button>})}</div>
       <h4>Preuve documentaire</h4><article className="proof-source-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article>
-      <div className="inline-proof"><strong>{selectedNode.page_source?`Page / timecode ${selectedNode.page_source}`:'Page / timecode non renseigné'}</strong>{evidence?<p>{evidence.texte.slice(0,420)}{evidence.texte.length>420?'…':''}</p>:<p>Aucun extrait associé n’est disponible pour cet élément.</p>}<button onClick={()=>setProof(selectedNode)}><Icon name="eye" size={16}/>Voir la preuve complète</button></div>
+      <div className="inline-proof"><strong>{(selectedNode||currentNode).page_source?`Page / timecode ${(selectedNode||currentNode).page_source}`:'Page / timecode non renseigné'}</strong>{evidence?<p>{evidence.texte.slice(0,420)}{evidence.texte.length>420?'…':''}</p>:<p>Aucun extrait associé n’est disponible pour cet élément.</p>}<button onClick={()=>openProof(selectedNode||currentNode)}><Icon name="eye" size={16}/>Voir la preuve complète</button></div>
     </aside>}
     <ProofModal proof={proof} publication={selectedPub} contents={data.contents} nodeMap={nodeMap} onClose={()=>setProof(null)}/>
   </main>
