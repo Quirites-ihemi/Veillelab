@@ -360,7 +360,7 @@ function LegendGlyph({type}){
 
 const LEGEND_INSET=58
 
-export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,labelScale=1,linkDensity=1,showWeak=true,showRelationLabels=false,maxNodes=38,resetToken=0,fitToken=0}){
+export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelationId,onSelectNode,onSelectRelation,highlightIds=[],nodeScale=1,labelScale=1,linkDensity=1,showWeak=true,showRelationLabels=false,maxNodes=38,resetToken=0,fitToken=0,guideStep=0}){
   const [scale,setScale]=useState(1),[pan,setPan]=useState({x:0,y:0})
   const [frame,setFrame]=useState({w:0,h:0})
   const [hoveredRelationId,setHoveredRelationId]=useState(null)
@@ -429,6 +429,36 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
     return new Set(candidates.slice(0,4).map(r=>r.relation_id))
   },[selectedId,visible,adj])
 
+  // Cibles de démonstration de l'Éclaireur. Elles sont choisies uniquement
+  // à partir de la structure du graphe visible : aucune interprétation du
+  // contenu et aucun appel au backend.
+  const guideStructure=useMemo(()=>{
+    const incident=visible.relations
+      .filter(r=>r.source_id===focusId||r.cible_id===focusId)
+      .slice()
+      .sort((a,b)=>String(a.relation_id).localeCompare(String(b.relation_id)))
+    const linkIds=new Set(incident.slice(0,10).map(r=>r.relation_id))
+    const pointIds=new Set([focusId])
+    incident.slice(0,3).forEach(r=>pointIds.add(r.source_id===focusId?r.cible_id:r.source_id))
+
+    const first=incident[0]
+    const firstNeighbor=first?(first.source_id===focusId?first.cible_id:first.source_id):null
+    let second=null
+    if(firstNeighbor){
+      second=visible.relations.find(r=>r.relation_id!==first?.relation_id&&(r.source_id===firstNeighbor||r.cible_id===firstNeighbor)&&r.source_id!==focusId&&r.cible_id!==focusId)
+    }
+    const pathIds=new Set([first?.relation_id,second?.relation_id].filter(Boolean))
+    const pathNodeIds=new Set([focusId,firstNeighbor].filter(Boolean))
+    if(second){pathNodeIds.add(second.source_id);pathNodeIds.add(second.cible_id)}
+
+    const degree=new Map(visible.nodes.map(n=>[n.node_id,(adj.get(n.node_id)||[]).length]))
+    const viewpoint=[...pointIds].filter(id=>id!==focusId).sort((a,b)=>(degree.get(b)||0)-(degree.get(a)||0))[0]||firstNeighbor||focusId
+    const viewpointRelation=incident.find(r=>(r.source_id===focusId?r.cible_id:r.source_id)===viewpoint)?.relation_id||null
+    return {linkIds,pointIds,pathIds,pathNodeIds,viewpoint,viewpointRelation}
+  },[visible,focusId,adj])
+
+  const guideMode=guideStep===2?'points':guideStep===3?'links':guideStep===4?'path':guideStep===5?'viewpoint':''
+
   const legendTypes=LEGEND_ORDER.filter(type=>visible.nodes.some(n=>(n.type_noeud==='Problème'?'probleme':n.type_noeud)===type))
 
   // Un seul cadrage stable : les libellés sont dimensionnés dans le même
@@ -484,12 +514,17 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
     moved.current=false
   }
 
-  return <div ref={shell} className="knowledge-constellation explorer-v6-knowledge explorer-v9-knowledge">
+  return <div ref={shell} className={`knowledge-constellation explorer-v6-knowledge explorer-v9-knowledge ${guideMode?`explorer-guide-${guideMode}`:''}`}>
     <div className="kg-icon-legend">
       <div className="kg-legend-items">{legendTypes.map(type=>{const visual=visualFor(type);return <span className="kg-legend-item" key={type}><LegendGlyph type={type}/><b>{visual.label}</b></span>})}</div>
       <span className="kg-drag-hint"><span className="kg-hand">↔</span> Cliquez-glissez pour déplacer le graphe</span>
     </div>
     <svg viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`} className="knowledge-svg" onWheel={e=>{e.preventDefault();setScale(s=>Math.max(.58,Math.min(1.85,s+(e.deltaY < 0 ? .08 : -.08))))}} onPointerDownCapture={beginPan} onPointerMove={movePan} onPointerUp={endPan} onPointerCancel={cancelPan} onPointerLeave={cancelPan}>
+      <defs>
+        <marker id="kg-guide-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L9,4.5 L0,9 z" fill="#0B69C6"/>
+        </marker>
+      </defs>
       <g transform={`translate(${pan.x} ${pan.y}) scale(${scale})`} style={{transformOrigin:`${viewBox.x+viewBox.w/2}px ${viewBox.y+viewBox.h/2}px`}}>
         {visible.relations.map(r=>{
           const a=positions[r.source_id],b=positions[r.cible_id];if(!a||!b)return null
@@ -500,20 +535,24 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           if(!showWeak&&!strong)return null
           const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,label=relationLabel(r.type_relation)
           const entryLabel=entryRelationIds.has(r.relation_id)
+          const guideRelation=guideStructure.linkIds.has(r.relation_id)
+          const guidePath=guideStructure.pathIds.has(r.relation_id)
+          const guideViewpointRelation=r.relation_id===guideStructure.viewpointRelation
           // Doctrine des verbes : 18 px à l'entrée / affichage global,
           // 20 px dès qu'une relation est liée au nœud sélectionné, survolée
           // ou explicitement sélectionnée.
-          const relationFontPx=(selected||hovered||linkedToSelected)?20:18
+          const relationFontPx=(guideStep===3&&guideRelation)?24:(guideStep===4&&guidePath)?22:(selected||hovered||linkedToSelected)?20:18
           const labelWidthPx=Math.max(104,Math.min(260,label.length*relationFontPx*.58+30))
           const labelHeightPx=relationFontPx+20
-          const showThisLabel=showRelationLabels||selected||hovered||linkedToSelected||entryLabel
-          return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''}`}
+          const showThisLabel=showRelationLabels||selected||hovered||linkedToSelected||entryLabel||(guideStep===3&&guideRelation)||(guideStep===4&&guidePath)
+          return <g key={r.relation_id} data-relation-id={r.relation_id} className={`kg-relation ${strong?'strong':'weak'} ${selected?'selected':''} ${guideRelation?'guide-relation':''} ${guidePath?'guide-path':''} ${guideViewpointRelation?'guide-viewpoint-relation':''}`}
             onPointerEnter={()=>setHoveredRelationId(r.relation_id)}
             onPointerLeave={()=>setHoveredRelationId(current=>current===r.relation_id?null:current)}>
             {/* Ligne de capture invisible : facilite le survol et le clic sur une arête fine. */}
             <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="transparent" strokeWidth="14" vectorEffect="non-scaling-stroke" pointerEvents="stroke"/>
             <line className={`kg-edge ${strong?'strong':'weak'}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
               vectorEffect="non-scaling-stroke"
+              markerEnd={((guideStep===3&&guideRelation)||(guideStep===4&&guidePath))?'url(#kg-guide-arrow)':undefined}
               style={{
                 stroke:strong?EDGE_STRONG:'#71839C',
                 opacity:strong?.96:Math.min(.72,.56*linkDensity),
@@ -545,10 +584,14 @@ export default function KnowledgeGraph({nodes,relations,selectedId,selectedRelat
           const stroke=active?visual.color:lighten(visual.color,.10)
           const glyphColor=active?'#fff':visual.color
           const role=focus?'focus':isDirect?'direct':'secondary'
+          const guidePoint=guideStructure.pointIds.has(n.node_id)
+          const guidePathNode=guideStructure.pathNodeIds.has(n.node_id)
+          const guideViewpoint=n.node_id===guideStructure.viewpoint
           const labelStyle=labelStyleForRole(role,entryMode,labelScale)
           const lines=wrap(n.libelle,labelStyle.maxChars)
-          return <g key={n.node_id} data-node-id={n.node_id} className={`kg-node ${focus?'focus':''} ${p.secondary?'secondary':''}`} role="button" tabIndex="0" aria-label={n.libelle} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectNode(n)}}}>
+          return <g key={n.node_id} data-node-id={n.node_id} className={`kg-node ${focus?'focus':''} ${p.secondary?'secondary':''} ${guidePoint?'guide-node':''} ${guidePathNode?'guide-path-node':''} ${guideViewpoint?'guide-viewpoint':''}`} role="button" tabIndex="0" aria-label={n.libelle} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectNode(n)}}}>
             <circle className="node-hit-target" cx={p.x} cy={p.y} r={Math.max(r+13,30)} fill="transparent"/>
+            {((guideStep===2&&guidePoint)||(guideStep===5&&guideViewpoint))&&<circle className="kg-guide-halo" pointerEvents="none" cx={p.x} cy={p.y} r={r+31} fill="none" stroke="#0B69C6" strokeWidth="5" opacity=".9"/>}
             {/* C. nœud sélectionné : trois couches de halo clair plutôt
                 qu'une saturation ou une taille supplémentaire */}
             {focus&&<circle pointerEvents="none" cx={p.x} cy={p.y} r={r+36} fill={lighten(visual.color,.68)} opacity=".5"/>}
