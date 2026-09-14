@@ -1,6 +1,17 @@
 import React from 'react'
 import '../eclaireur.css'
 
+function renderInlineBold(value) {
+  if (typeof value !== 'string' || !value.includes('**')) return value
+
+  return value.split(/(\*\*[^*]+\*\*)/g).map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={`strong-${index}`}>{part.slice(2, -2)}</strong>
+    }
+    return <React.Fragment key={`text-${index}`}>{part}</React.Fragment>
+  })
+}
+
 export default function Eclaireur({
   state,
   content,
@@ -77,12 +88,12 @@ export default function Eclaireur({
       )}
 
       <div className="eclaireur-content" key={contentKey ?? state}>
-        <p className="eclaireur-lead">{content.lead}</p>
-        {content.body && <p>{content.body}</p>}
+        <p className="eclaireur-lead">{renderInlineBold(content.lead)}</p>
+        {content.body && <p>{renderInlineBold(content.body)}</p>}
 
 
         {content.prompt && (
-          <p className="eclaireur-prompt">{content.prompt}</p>
+          <p className="eclaireur-prompt">{renderInlineBold(content.prompt)}</p>
         )}
 
         {content.actionLabel && (
