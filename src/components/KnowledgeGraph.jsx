@@ -91,18 +91,21 @@ function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
    pour que le cadrage tienne compte du texte et pas seulement
    des cercles.
    --------------------------------------------------------- */
-// Hiérarchie des libellés :
-// - à l'entrée dans une publication : 28 / 23 / 18
-// - après sélection d'un nœud : 26 / 20 / 16
+// Hiérarchie des libellés — nouvelle base visuelle onglet 2 :
+// - nœud principal / de référence : 34 px
+// - voisins directs : 28 px
+// - autres nœuds visibles : 22 px
+// La même hiérarchie est conservée après sélection pour éviter que
+// les libellés ne rétrécissent au moment où l'utilisateur explore.
 const NODE_LABEL_STYLE_SELECTED={
-  focus:{fontSize:26,lineH:30,charW:13.8,maxChars:29},
-  direct:{fontSize:20,lineH:24,charW:10.6,maxChars:27},
-  secondary:{fontSize:16,lineH:20,charW:8.5,maxChars:24},
+  focus:{fontSize:34,lineH:40,charW:18.0,maxChars:29},
+  direct:{fontSize:28,lineH:33,charW:14.9,maxChars:27},
+  secondary:{fontSize:22,lineH:27,charW:11.7,maxChars:24},
 }
 const NODE_LABEL_STYLE_ENTRY={
-  focus:{fontSize:28,lineH:32,charW:14.8,maxChars:30},
-  direct:{fontSize:23,lineH:27,charW:12.2,maxChars:28},
-  secondary:{fontSize:18,lineH:22,charW:9.6,maxChars:25},
+  focus:{fontSize:34,lineH:40,charW:18.0,maxChars:30},
+  direct:{fontSize:28,lineH:33,charW:14.9,maxChars:28},
+  secondary:{fontSize:22,lineH:27,charW:11.7,maxChars:25},
 }
 
 function labelStyleForRole(role,entryMode=false,labelScale=1){
