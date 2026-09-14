@@ -1,0 +1,110 @@
+/* =========================================================
+   ONGLET 2 — ÉCLAIREUR V1
+   Couche strictement front-end et déterministe.
+   ========================================================= */
+.explorer-v02-shell{position:relative}
+.explorer-eclaireur{
+  position:absolute; z-index:44; width:min(455px,calc(100vw - 40px));
+  background:rgba(255,255,255,.985); border:2px solid #b9c8dd; border-radius:18px;
+  box-shadow:0 18px 46px rgba(27,50,83,.23); padding:0 22px 18px;
+  color:#243b5c; transition:left .55s ease,right .55s ease,top .55s ease,bottom .55s ease,transform .35s ease,opacity .35s ease;
+  animation:explorerGuideEnter .48s cubic-bezier(.2,.85,.25,1) both;
+}
+.explorer-v02-shell>.explorer-eclaireur[data-guide-step="1"]{position:fixed;right:34px;top:155px;left:auto;bottom:auto}
+.publication-workspace>.explorer-eclaireur{position:absolute}
+.explorer-eclaireur-points,.explorer-eclaireur-links{left:26px;bottom:30px;right:auto;top:auto}
+.explorer-eclaireur-path,.explorer-eclaireur-viewpoint{right:28px;bottom:30px;left:auto;top:auto}
+.explorer-eclaireur-proof{left:30px;top:138px;right:auto;bottom:auto}
+.explorer-eclaireur-free{left:30px;bottom:28px;right:auto;top:auto}
+.explorer-eclaireur-proof:after{
+  content:""; position:absolute; right:-33px; top:52%; width:30px; height:3px; background:#2b76b9;
+  box-shadow:0 0 11px rgba(43,118,185,.6)
+}
+.explorer-eclaireur-proof:before{
+  content:""; position:absolute; right:-39px; top:calc(52% - 6px); border-left:12px solid #2b76b9; border-top:7px solid transparent; border-bottom:7px solid transparent
+}
+.explorer-eclaireur-head{display:flex;align-items:center;gap:13px;min-height:78px;border-bottom:1px solid #dde5ef;position:relative}
+.explorer-eclaireur-head>div{display:flex;flex-direction:column;gap:2px}
+.explorer-eclaireur-head strong{font-size:18px;letter-spacing:.055em;color:#193b67}
+.explorer-eclaireur-head small{font-size:14px;font-weight:750;color:#2b7f8f}
+.explorer-eclaireur-close{margin-left:auto;border:0;background:transparent;color:#73849b;font-size:28px;line-height:1;cursor:pointer;padding:8px}
+.explorer-eclaireur-radar{position:relative;width:42px;height:42px;border-radius:50%;background:#1f5a91;display:inline-block;flex:0 0 auto;overflow:visible;box-shadow:0 0 0 5px rgba(46,140,128,.10)}
+.explorer-eclaireur-radar .ring{position:absolute;border:2px solid rgba(115,230,221,.8);border-radius:50%;inset:8px}
+.explorer-eclaireur-radar .ring-b{inset:14px;opacity:.85}
+.explorer-eclaireur-radar .sweep{position:absolute;left:21px;top:7px;width:2px;height:15px;background:#d9fffa;transform-origin:bottom center;animation:explorerRadarSweep 2.4s linear 1}
+.explorer-eclaireur-radar .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;left:18px;top:18px;box-shadow:0 0 9px #b9fff5}
+.explorer-eclaireur-radar:after{content:"";position:absolute;inset:-7px;border:3px solid rgba(46,140,128,.5);border-radius:50%;animation:explorerRadarPulse 1.15s ease-out 2}
+.explorer-eclaireur-copy{padding-top:15px}
+.explorer-eclaireur-copy h3{font-size:22px;line-height:1.2;margin:0 0 10px;color:#173861}
+.explorer-eclaireur-copy p{font-size:17px;line-height:1.52;margin:8px 0;color:#314968}
+.explorer-eclaireur-copy strong{color:#173861;font-weight:850}
+.explorer-eclaireur-controls{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid #e2e8f1}
+.explorer-eclaireur-controls span{font-size:12px;color:#718098}
+.explorer-eclaireur-pause,.explorer-eclaireur-controls.final button{border:1px solid #a9bdd4;background:#f4f8fc;color:#1c558c;border-radius:10px;font-size:14px;font-weight:800;padding:9px 13px;cursor:pointer}
+.explorer-eclaireur-controls.final button{background:#244f82;color:white;border-color:#244f82;padding:10px 16px}
+.explorer-eclaireur-recall{position:absolute;z-index:43;left:18px;bottom:18px;border:1px solid #b4c6dc;background:white;color:#214b78;border-radius:999px;padding:9px 14px 9px 9px;display:flex;align-items:center;gap:8px;font-weight:800;box-shadow:0 7px 20px rgba(24,54,91,.16);cursor:pointer}
+.explorer-eclaireur-mini-radar{position:relative;width:25px;height:25px;border-radius:50%;background:#1f5a91;display:inline-block}
+.explorer-eclaireur-mini-radar:after{content:"";position:absolute;inset:5px;border:1.5px solid #9fe7df;border-radius:50%}
+.explorer-eclaireur-mini-radar i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;left:10.5px;top:10.5px}
+@keyframes explorerGuideEnter{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes explorerRadarPulse{0%{transform:scale(.7);opacity:.85}100%{transform:scale(1.55);opacity:0}}
+@keyframes explorerRadarSweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* Cible de l'état 1 : visible sans rajouter une consigne textuelle. */
+.explorer-guide-intro-target{animation:explorerIntroTarget 1.45s ease-in-out infinite!important;box-shadow:0 0 0 0 rgba(63,82,117,.45)}
+@keyframes explorerIntroTarget{0%,100%{box-shadow:0 0 0 0 rgba(63,82,117,.18);transform:translateY(0)}50%{box-shadow:0 0 0 9px rgba(63,82,117,.16);transform:translateY(-2px)}}
+
+/* État 2 : les points. Les halos sont franchement visibles. */
+.explorer-guide-points .kg-node.guide-node .kg-guide-halo{animation:kgGuideNodeFlash 1.2s ease-in-out infinite}
+.explorer-guide-points .kg-node.guide-node:nth-of-type(2n) .kg-guide-halo{animation-delay:.24s}
+.explorer-guide-points .kg-node.guide-node:nth-of-type(3n) .kg-guide-halo{animation-delay:.48s}
+@keyframes kgGuideNodeFlash{0%,100%{opacity:.18;stroke-width:3}50%{opacity:1;stroke-width:9}}
+
+/* État 3 : plusieurs arêtes + leurs verbes. */
+.explorer-guide-links .kg-relation.guide-relation .kg-edge{
+  stroke:#0b69c6!important;stroke-width:5.4!important;opacity:1!important;
+  filter:drop-shadow(0 0 5px rgba(11,105,198,.8));animation:kgGuideLinkFlash 1s ease-in-out infinite
+}
+.explorer-guide-links .kg-relation.guide-relation:nth-of-type(2n) .kg-edge{animation-delay:.18s}
+.explorer-guide-links .kg-relation.guide-relation:nth-of-type(3n) .kg-edge{animation-delay:.36s}
+.explorer-guide-links .kg-relation.guide-relation .kg-relation-label{animation:kgGuideVerbFlash 1.15s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.explorer-guide-links .kg-relation:not(.guide-relation){opacity:.42}
+@keyframes kgGuideLinkFlash{0%,100%{stroke-width:4.4;opacity:.74}50%{stroke-width:7.2;opacity:1}}
+@keyframes kgGuideVerbFlash{0%,100%{opacity:.78}50%{opacity:1;filter:drop-shadow(0 0 6px rgba(11,105,198,.55))}}
+
+/* État 4 : un chemin plutôt qu'un clignotement massif. */
+.explorer-guide-path .kg-relation.guide-path .kg-edge{stroke:#2a6ea6!important;stroke-width:4.6!important;opacity:1!important;stroke-dasharray:15 10;animation:kgGuidePathFlow 1.2s linear infinite;filter:drop-shadow(0 0 4px rgba(42,110,166,.55))}
+.explorer-guide-path .kg-relation:not(.guide-path){opacity:.22}
+.explorer-guide-path .kg-node:not(.guide-path-node){opacity:.42}
+@keyframes kgGuidePathFlow{to{stroke-dashoffset:-50}}
+
+/* État 5 : un voisin devient visuellement le prochain point de départ. */
+.explorer-guide-viewpoint .kg-node.guide-viewpoint .kg-guide-halo{animation:kgGuideViewpoint 1.1s ease-in-out infinite}
+.explorer-guide-viewpoint .kg-node:not(.guide-viewpoint){opacity:.58}
+@keyframes kgGuideViewpoint{0%,100%{opacity:.32;stroke-width:4}50%{opacity:1;stroke-width:10}}
+
+/* État 6 : la preuve documentaire est le point d'arrivée. */
+.publication-drawer.explorer-proof-guide h4:nth-of-type(2),
+.publication-drawer.explorer-proof-guide .inline-proof{
+  animation:explorerProofPulse 1.1s ease-in-out infinite
+}
+.publication-drawer.explorer-proof-guide .inline-proof{outline:3px solid rgba(45,122,180,.55);outline-offset:4px;border-radius:10px}
+@keyframes explorerProofPulse{0%,100%{filter:none}50%{filter:drop-shadow(0 0 10px rgba(45,122,180,.55))}}
+
+/* Les arêtes restent lisibles en usage normal. */
+.explorer-v02-graph .kg-edge{stroke-width:1.7!important;opacity:.72!important}
+.explorer-v02-graph .kg-relation.strong .kg-edge{stroke-width:2.7!important;opacity:.98!important}
+
+@media (prefers-reduced-motion:reduce){
+  .explorer-eclaireur,.explorer-eclaireur-radar:after,.explorer-eclaireur-radar .sweep,.explorer-guide-intro-target,
+  .kg-guide-halo,.explorer-guide-links .kg-edge,.explorer-guide-links .kg-relation-label,.explorer-guide-path .kg-edge,
+  .publication-drawer.explorer-proof-guide h4,.publication-drawer.explorer-proof-guide .inline-proof{animation:none!important}
+}
+@media(max-width:1000px){
+  .explorer-eclaireur{width:min(420px,calc(100vw - 24px));left:12px!important;right:auto!important;bottom:18px!important;top:auto!important}
+}
+.publication-workspace .graph-stage{position:relative!important}
+.explorer-guide-viewpoint .kg-relation.guide-viewpoint-relation .kg-edge{
+  stroke:#0B69C6!important;stroke-width:5.2!important;opacity:1!important;
+  filter:drop-shadow(0 0 5px rgba(11,105,198,.7));animation:kgGuideLinkFlash 1.05s ease-in-out infinite
+}
