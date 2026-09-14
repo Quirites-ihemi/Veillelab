@@ -245,14 +245,16 @@
 
 .eclaireur-overview{
   top:162px;
-  left:118px;
+  left:calc(100% - 470px);
 }
 
-/* À partir de la clusterisation, l’Éclaireur descend pour libérer le titre
-   du cluster vert et laisser la démonstration visible dans son ensemble. */
+/* Pendant la lecture animée, l’Éclaireur se déplace franchement vers la
+   droite : les clusters situés à gauche, notamment le cluster vert de
+   démonstration, restent totalement dégagés. À partir de la clusterisation,
+   il descend aussi afin de ne pas masquer le titre du cluster. */
 .eclaireur-overview-low{
   top:392px;
-  left:118px;
+  left:calc(100% - 470px);
 }
 
 .eclaireur-cluster{
@@ -437,6 +439,7 @@
 /* Pause = la séquence ne change plus d'étape et les repères visuels
    restent figés là où l'utilisateur les a arrêtés. */
 .eclaireur-sequence-paused .eclaireur-overview-node-ring,
+.eclaireur-sequence-paused .eclaireur-overview-node-core,
 .eclaireur-sequence-paused .eclaireur-isolated-node-ring,
 .eclaireur-sequence-paused .entry-edge.eclaireur-link-pulse,
 .eclaireur-sequence-paused .eclaireur-cluster-pulse,
@@ -448,7 +451,8 @@
 
 @media(max-width:1380px){
   .eclaireur-welcome{left:82px;top:110px}
-  .eclaireur-overview,.eclaireur-overview-low,.eclaireur-cluster,.eclaireur-transdirectional{left:92px}
+  .eclaireur-overview,.eclaireur-overview-low{left:calc(100% - 455px)}
+  .eclaireur-cluster,.eclaireur-transdirectional{left:92px}
   .eclaireur-drawer{left:calc(100% - 710px)}
 }
 
@@ -505,7 +509,7 @@
 .eclaireur-overview-node-ring,
 .eclaireur-isolated-node-ring{
   fill:none;
-  stroke-width:7;
+  stroke-width:9;
   vector-effect:non-scaling-stroke;
   transform-box:fill-box;
   transform-origin:center;
@@ -513,8 +517,14 @@
 }
 
 .eclaireur-overview-node-ring{
-  stroke:#234f86;
-  animation:eclaireur-overview-node-ring 1.5s ease-in-out 10;
+  stroke:#0b67cf;
+  animation:eclaireur-overview-node-ring 1.05s ease-in-out 15;
+}
+
+.eclaireur-overview-node-core{
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:eclaireur-overview-node-core 1.05s ease-in-out 15;
 }
 
 .eclaireur-isolated-node-ring{
@@ -523,13 +533,13 @@
 }
 
 .entry-edge.eclaireur-link-pulse{
-  stroke:#075fc5!important;
-  stroke-width:10!important;
+  stroke:#005fd1!important;
+  stroke-width:11.5!important;
   opacity:1!important;
   filter:
-    drop-shadow(0 0 6px rgba(255,255,255,.96))
-    drop-shadow(0 0 18px rgba(0,106,230,1));
-  animation:eclaireur-link-breathe 1.2s ease-in-out 13;
+    drop-shadow(0 0 7px rgba(255,255,255,1))
+    drop-shadow(0 0 22px rgba(0,102,225,1));
+  animation:eclaireur-link-breathe 1.0s ease-in-out 15;
 }
 
 @keyframes eclaireur-content-in{
@@ -538,9 +548,15 @@
 }
 
 @keyframes eclaireur-overview-node-ring{
-  0%,100%{opacity:.38;transform:scale(.72);filter:drop-shadow(0 0 2px rgba(35,79,134,.35))}
-  45%{opacity:1;transform:scale(1.72);filter:drop-shadow(0 0 20px rgba(35,79,134,.98))}
-  70%{opacity:.86;transform:scale(1.26);filter:drop-shadow(0 0 12px rgba(35,79,134,.78))}
+  0%,100%{opacity:.18;transform:scale(.72);filter:drop-shadow(0 0 2px rgba(0,95,209,.25))}
+  42%{opacity:1;transform:scale(2.02);filter:drop-shadow(0 0 28px rgba(0,102,225,1))}
+  68%{opacity:.92;transform:scale(1.42);filter:drop-shadow(0 0 18px rgba(0,102,225,.92))}
+}
+
+@keyframes eclaireur-overview-node-core{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(0,102,225,0))}
+  42%{transform:scale(1.24);filter:drop-shadow(0 0 14px rgba(0,102,225,.95))}
+  68%{transform:scale(1.12);filter:drop-shadow(0 0 8px rgba(0,102,225,.78))}
 }
 
 @keyframes eclaireur-isolated-ring{
@@ -550,19 +566,19 @@
 
 @keyframes eclaireur-link-breathe{
   0%,100%{
-    opacity:.38;
-    stroke-width:6;
-    filter:drop-shadow(0 0 4px rgba(255,255,255,.72)) drop-shadow(0 0 8px rgba(0,106,230,.62));
+    opacity:.16;
+    stroke-width:6.5;
+    filter:drop-shadow(0 0 3px rgba(255,255,255,.60)) drop-shadow(0 0 7px rgba(0,95,209,.48));
   }
-  38%{
+  36%{
     opacity:1;
-    stroke-width:13;
-    filter:drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 24px rgba(0,106,230,1));
+    stroke-width:16;
+    filter:drop-shadow(0 0 9px rgba(255,255,255,1)) drop-shadow(0 0 30px rgba(0,102,225,1));
   }
-  62%{
+  64%{
     opacity:1;
-    stroke-width:10.5;
-    filter:drop-shadow(0 0 7px rgba(255,255,255,.92)) drop-shadow(0 0 19px rgba(0,106,230,.94));
+    stroke-width:12.5;
+    filter:drop-shadow(0 0 8px rgba(255,255,255,.98)) drop-shadow(0 0 22px rgba(0,102,225,.98));
   }
 }
 
@@ -575,6 +591,7 @@
 @media(prefers-reduced-motion:reduce){
   .eclaireur-content,
   .eclaireur-overview-node-ring,
+  .eclaireur-overview-node-core,
   .eclaireur-isolated-node-ring,
   .entry-edge.eclaireur-link-pulse{
     animation:none!important;
