@@ -540,14 +540,17 @@ export default function ExpertiseConstellation({
     return candidates[0]?.id ?? null
   }, [activeCluster, guideOverviewStep, clusterStats, primaryGuideClusterId])
 
-  const guideOverviewNodeId = useMemo(() => {
-    if (activeCluster !== null || guideOverviewStep !== 0) return null
+  const guideOverviewNodeIds = useMemo(() => {
+    if (activeCluster !== null || guideOverviewStep !== 0) return new Set()
 
+    // Pour expliquer ce qu'est un point, on fait pulser plusieurs micro-expertises
+    // du cluster vert. Trois points sont assez nombreux pour attirer l'œil sans
+    // donner l'impression que toute la communauté est sélectionnée.
     const candidates = positionedNodes
       .filter(node => node.clusterId === primaryGuideClusterId)
       .sort((a, b) => b.gephiSize - a.gephiSize)
 
-    return candidates[0]?.id ?? null
+    return new Set(candidates.slice(0, 3).map(node => node.id))
   }, [activeCluster, guideOverviewStep, positionedNodes, primaryGuideClusterId])
 
   const guideIsolatedNodeId = useMemo(() => {
@@ -563,30 +566,36 @@ export default function ExpertiseConstellation({
   const guideLinkKeys = useMemo(() => {
     if (activeCluster !== null || guideOverviewStep !== 1) return new Set()
 
-    // Pendant l'étape « liens », on éclaire plusieurs arêtes du cluster vert
-    // plutôt qu'une seule. Cela rend immédiatement lisible la notion de réseau
-    // sans faire clignoter l'ensemble de la carte.
+    // Pendant l'étape « liens », on éclaire nettement davantage d'arêtes autour
+    // du cluster vert. Les liens internes sont prioritaires, puis viennent ses
+    // connexions vers le reste du réseau : cela rend immédiatement visible la
+    // logique relationnelle du graphe sans faire clignoter toutes les arêtes.
     const candidates = visibleEdges
       .map(edge => {
         const source = byId.get(edge.source)
         const target = byId.get(edge.target)
-        if (!source || !target || source.clusterId !== target.clusterId) return null
-        const inReferenceCluster = source.clusterId === primaryGuideClusterId
+        if (!source || !target) return null
+
+        const sourceInReference = source.clusterId === primaryGuideClusterId
+        const targetInReference = target.clusterId === primaryGuideClusterId
+        const bothInReference = sourceInReference && targetInReference
+        const touchesReference = sourceInReference || targetInReference
+
+        if (!touchesReference) return null
+
         return {
           key: `${edge.source}|${edge.target}`,
-          inReferenceCluster,
+          priority: bothInReference ? 0 : 1,
           score: source.gephiSize + target.gephiSize,
         }
       })
       .filter(Boolean)
       .sort((a, b) => {
-        if (a.inReferenceCluster !== b.inReferenceCluster) {
-          return a.inReferenceCluster ? -1 : 1
-        }
+        if (a.priority !== b.priority) return a.priority - b.priority
         return b.score - a.score
       })
 
-    return new Set(candidates.slice(0, 6).map(item => item.key))
+    return new Set(candidates.slice(0, 12).map(item => item.key))
   }, [activeCluster, guideOverviewStep, visibleEdges, byId, primaryGuideClusterId])
 
   const guideNodeId = useMemo(() => {
@@ -1053,7 +1062,7 @@ export default function ExpertiseConstellation({
                     aria-label={node.label}
                   />
 
-                  {guideOverviewNodeId === node.id && (
+                  {guideOverviewNodeIds.has(node.id) && (
                     <circle
                       className="eclaireur-overview-node-ring"
                       cx={node.x}
@@ -1081,6 +1090,11 @@ export default function ExpertiseConstellation({
                   )}
 
                   <circle
+                    className={
+                      guideOverviewNodeIds.has(node.id)
+                        ? 'eclaireur-overview-node-core'
+                        : undefined
+                    }
                     cx={node.x}
                     cy={node.y}
                     r={radius}
