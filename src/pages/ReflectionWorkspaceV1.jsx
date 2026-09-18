@@ -252,7 +252,7 @@ function needPriority(needId, material) {
   if (needId === 'actors') {
     if (['acteur', 'expert_public'].includes(nodeType)) return 100
     if (kind === 'relation' && ACTOR_RELATIONS.has(relationType)) return 80
-    if (/(minist[eè]re|office|agence|direction|service|police|gendarmerie|collectivit|association|observatoire|pr[eé]fet|op[eé]rateur)/i.test(text)) return 55
+    if (/(minist[eè]re|office|agence|direction|service|police|gendarmerie|collectivit[a-zàâäéèêëîïôöùûüç-]*|association|observatoire|pr[eé]fet|op[eé]rateur)/i.test(text)) return 55
     return 10
   }
 
@@ -260,14 +260,14 @@ function needPriority(needId, material) {
     if (['action', 'instrument_dispositif'].includes(nodeType)) return 100
     if (kind === 'relation' && PUBLIC_ACTION_RELATIONS.has(relationType)) return 80
     if (nodeType === 'recommandation') return 45
-    if (/(dispositif|programme|plan|mesure|mise en œuvre|mise en oeuvre|exp[eé]riment|politique publique|strat[eé]gie|contr[oô]le|accompagnement)/i.test(text)) return 55
+    if (/(dispositif|programme|plan|mesure|mise en œuvre|mise en oeuvre|exp[eé]riment[a-zàâäéèêëîïôöùûüç-]*|politique publique|strat[eé]gie|contr[oô]le|accompagnement)/i.test(text)) return 55
     return 10
   }
 
   if (needId === 'trends') {
     if (['tendance', 'signal_faible'].includes(nodeType)) return 100
     if (kind === 'relation' && TREND_RELATIONS.has(relationType)) return 75
-    if (/(tendance|signal faible|[eé]volu|[eé]merg|hausse|baisse|augment|diminu|progress|recul|nouveau|nouvelle|r[eé]cent|depuis|entre 20)/i.test(text)) return 60
+    if (/(tendance|signal faible|[eé]volu[a-zàâäéèêëîïôöùûüç-]*|[eé]merg[a-zàâäéèêëîïôöùûüç-]*|hausse|baisse|augment[a-zàâäéèêëîïôöùûüç-]*|diminu[a-zàâäéèêëîïôöùûüç-]*|progress[a-zàâäéèêëîïôöùûüç-]*|recul|nouveau|nouvelle|r[eé]cent[a-zàâäéèêëîïôöùûüç-]*|depuis|entre 20)/i.test(text)) return 60
     return 10
   }
 
@@ -277,8 +277,14 @@ function needPriority(needId, material) {
 function visibleResultsForNeed(needId, result) {
   const all = Array.isArray(result?.results) ? result.results : (Array.isArray(result?.materials) ? result.materials : [])
   if (needId === 'overview' || needId === 'precise') return all
+
+  // Les besoins spécialisés ne doivent pas afficher exactement la même liste
+  // que la recherche générique. On conserve uniquement les matériaux dont
+  // la structure ou le texte apporte réellement quelque chose au besoin choisi.
+  const threshold = needId === 'public-action' ? 55 : 55
   return all
     .map((item, index) => ({ item, index, priority: needPriority(needId, item) }))
+    .filter(entry => entry.priority >= threshold)
     .sort((a, b) => b.priority - a.priority || Number(b.item?.score || 0) - Number(a.item?.score || 0) || a.index - b.index)
     .map(entry => entry.item)
 }
@@ -310,6 +316,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
   const canvasRef = useRef(null)
   const dragRef = useRef(null)
+  const searchInputRef = useRef(null)
+  const searchRequestRef = useRef(0)
 
   const activeNeed = NEEDS.find(item => item.id === activeNeedId) || NEEDS[0]
   const selectedCards = useMemo(() => cards.filter(card => selectedIds.includes(card.id)), [cards, selectedIds])
@@ -342,28 +350,45 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     }
   }, [])
 
-  const chooseNeed = id => {
-    setActiveNeedId(id)
-    setSearchResult(null)
-    setSearchError('')
-    setRightCollapsed(false)
-  }
+  const executeNeedSearch = async (needId, rawQuery) => {
+    const clean = String(rawQuery || '').trim()
+    if (!clean) return
 
-  const runSearch = async event => {
-    event?.preventDefault()
-    if (!query.trim() || searchLoading) return
+    const requestId = ++searchRequestRef.current
     setSearchLoading(true)
     setSearchError('')
     setSearchResult(null)
     try {
-      const config = needSearchConfig(activeNeedId, query)
+      const config = needSearchConfig(needId, clean)
       const result = await searchCorpus(config.query, config.options)
-      setSearchResult(result)
+      if (requestId === searchRequestRef.current) setSearchResult(result)
     } catch (error) {
-      setSearchError(error?.message || String(error))
+      if (requestId === searchRequestRef.current) setSearchError(error?.message || String(error))
     } finally {
-      setSearchLoading(false)
+      if (requestId === searchRequestRef.current) setSearchLoading(false)
     }
+  }
+
+  const chooseNeed = id => {
+    setActiveNeedId(id)
+    setSearchError('')
+    setRightCollapsed(false)
+
+    // Le clic sur un besoin doit produire un effet visible.
+    // Si une requête est déjà saisie, on relance immédiatement la recherche
+    // avec le nouveau besoin. Sinon on place le curseur dans la zone de saisie.
+    if (query.trim()) {
+      executeNeedSearch(id, query)
+    } else {
+      setSearchResult(null)
+      window.setTimeout(() => searchInputRef.current?.focus(), 0)
+    }
+  }
+
+  const runSearch = event => {
+    event?.preventDefault()
+    if (!query.trim() || searchLoading) return
+    executeNeedSearch(activeNeedId, query)
   }
 
   const beginComposer = type => {
@@ -516,11 +541,14 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             <div><h2>Besoins documentaires</h2><p>Choisissez ce que vous cherchez à faire avec le corpus.</p></div>
           </header>
           <div className="qvl-need-list">
-            {NEEDS.map(need => <button key={need.id} type="button" className={`qvl-need-card ${need.tone} ${activeNeedId === need.id ? 'active' : ''}`} onClick={() => chooseNeed(need.id)}>
-              <span className="qvl-need-icon"><Icon name={need.icon} size={21}/></span>
-              <span className="qvl-need-copy"><strong>{need.label}</strong><small>{need.description}</small></span>
-              <Icon name="chevron" size={15}/>
-            </button>)}
+            {NEEDS.map(need => {
+              const active = activeNeedId === need.id
+              return <button key={need.id} type="button" aria-pressed={active} className={`qvl-need-card ${need.tone} ${active ? 'active' : ''}`} onClick={() => chooseNeed(need.id)}>
+                <span className="qvl-need-icon"><Icon name={need.icon} size={21}/></span>
+                <span className="qvl-need-copy"><strong>{need.label}</strong><small>{need.description}</small></span>
+                {active ? <span className="qvl-need-selected" aria-hidden="true">✓</span> : <Icon name="chevron" size={15}/>}
+              </button>
+            })}
           </div>
           <div className="qvl-scope-note"><Icon name="info" size={15}/><span>Ces fonctions portent uniquement sur les sujets effectivement couverts par le corpus actif.</span></div>
         </>}
@@ -623,7 +651,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
           </header>
 
           <form className="qvl-need-search" onSubmit={runSearch}>
-            <textarea maxLength={500} value={query} onChange={event => setQuery(event.target.value)} placeholder={activeNeed.placeholder}/>
+            <textarea ref={searchInputRef} maxLength={500} value={query} onChange={event => setQuery(event.target.value)} placeholder={activeNeed.placeholder}/>
             <span className="qvl-char-count">{query.length}/500</span>
             <button type="submit" disabled={!query.trim() || searchLoading}><Icon name="search" size={18}/>{searchLoading ? 'Recherche…' : activeNeed.submitLabel}</button>
           </form>

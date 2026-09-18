@@ -377,3 +377,21 @@
   .qvl-need-copy small{font-size:11.2px}
   .qvl-canvas-stage{height:670px}
 }
+
+
+/* V2.4 — besoins documentaires réellement actionnables */
+.qvl-need-card{position:relative}
+.qvl-need-card.active{
+  border-color:#3f6f9f;
+  box-shadow:0 0 0 3px rgba(63,111,159,.12),0 8px 20px rgba(34,58,85,.08);
+}
+.qvl-need-selected{
+  width:22px;height:22px;border-radius:999px;display:grid;place-items:center;
+  align-self:start;margin-top:4px;background:#315f8f;color:#fff;font-size:13px;font-weight:900;
+}
+.qvl-need-card:focus-visible,.qvl-postit-add:focus-visible,.qvl-panel-toggle:focus-visible,.qvl-link-button:focus-visible{
+  outline:3px solid rgba(33,111,182,.28);outline-offset:2px;
+}
+.qvl-need-search textarea:focus{
+  border-color:#5c85ad;box-shadow:0 0 0 4px rgba(71,119,165,.12);
+}
