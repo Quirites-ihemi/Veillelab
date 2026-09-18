@@ -208,22 +208,79 @@ function restoreWorkspace() {
 
 function needSearchConfig(needId, query) {
   const clean = query.trim()
-  if (needId === 'precise') return { query: clean, options: { limit: 18, maxPerPublication: 5, diversifyByPublication: false } }
-  if (needId === 'trends') return { query: `${clean} tendance évolution émergence signal faible`, options: { limit: 30, maxPerPublication: 4, kinds: ['node', 'chunk'] } }
-  if (needId === 'actors') return { query: `${clean} acteur`, options: { limit: 30, maxPerPublication: 5, kinds: ['node'] } }
-  if (needId === 'public-action') return { query: `${clean} action dispositif instrument`, options: { limit: 30, maxPerPublication: 5, kinds: ['node'] } }
-  return { query: clean, options: { limit: 24, maxPerPublication: 2, diversifyByPublication: true } }
+  // La requête de l’utilisateur reste intacte : on ne lui ajoute plus des mots
+  // génériques ("acteur", "tendance", "dispositif") qui dégradaient fortement
+  // le rappel sur le moteur lexical. La spécialisation se fait ensuite par
+  // classement des matériaux effectivement trouvés dans le corpus.
+  if (needId === 'precise') return { query: clean, options: { limit: 24, maxPerPublication: 6, diversifyByPublication: false } }
+  if (needId === 'overview') return { query: clean, options: { limit: 30, maxPerPublication: 3, diversifyByPublication: true } }
+  return { query: clean, options: { limit: 30, maxPerPublication: 8, diversifyByPublication: false } }
+}
+
+function nodeTypeOf(material) {
+  return String(material?.node_type || material?.content?.node_type || '').trim().toLowerCase()
+}
+
+function relationTypeOf(material) {
+  return String(material?.relation_type || material?.content?.relation_type || '').trim().toUpperCase()
+}
+
+const ACTOR_RELATIONS = new Set([
+  'S_APPUIE_SUR','MOBILISE','MET_EN_OEUVRE','PILOTE','ENCADRE','MENE',
+  'INTERVIENT_SUR','INTERVIENT_DANS_LA_PRISE_EN_CHARGE_DE','EXPERTISE_SUR',
+  'SE_POSITIONNE_SUR','EST_DESTINATAIRE_DE','CONCERNES_PAR','PARTICIPE_A',
+  'ACCOMPAGNE','SOUTIENT','FINANCE','CODEVELOPPE'
+])
+
+const PUBLIC_ACTION_RELATIONS = new Set([
+  'REPOND_A','MET_EN_OEUVRE','S_APPUIE_SUR','MOBILISE','PERMET_DE','INSTITUE',
+  'DEVELOPPE','RENFORCE','ENCADRE','PILOTE','PRECONISE','CONTRIBUE_A',
+  'CONDITION_DE_REUSSITE_DE'
+])
+
+const TREND_RELATIONS = new Set([
+  'FAIT_SUITE_A','ILLUSTRE','OBSERVEE_DANS','CARACTERISE','SE_MANIFESTE_PAR',
+  'TAUX_ELEVE_DE','TAUX_FAIBLE_DE','RENFORCE','INFLUENCE'
+])
+
+function needPriority(needId, material) {
+  const nodeType = nodeTypeOf(material)
+  const relationType = relationTypeOf(material)
+  const kind = String(material?.kind || '').toLowerCase()
+  const text = `${materialText(material)} ${material?.section || ''}`
+
+  if (needId === 'actors') {
+    if (['acteur', 'expert_public'].includes(nodeType)) return 100
+    if (kind === 'relation' && ACTOR_RELATIONS.has(relationType)) return 80
+    if (/(minist[eè]re|office|agence|direction|service|police|gendarmerie|collectivit|association|observatoire|pr[eé]fet|op[eé]rateur)/i.test(text)) return 55
+    return 10
+  }
+
+  if (needId === 'public-action') {
+    if (['action', 'instrument_dispositif'].includes(nodeType)) return 100
+    if (kind === 'relation' && PUBLIC_ACTION_RELATIONS.has(relationType)) return 80
+    if (nodeType === 'recommandation') return 45
+    if (/(dispositif|programme|plan|mesure|mise en œuvre|mise en oeuvre|exp[eé]riment|politique publique|strat[eé]gie|contr[oô]le|accompagnement)/i.test(text)) return 55
+    return 10
+  }
+
+  if (needId === 'trends') {
+    if (['tendance', 'signal_faible'].includes(nodeType)) return 100
+    if (kind === 'relation' && TREND_RELATIONS.has(relationType)) return 75
+    if (/(tendance|signal faible|[eé]volu|[eé]merg|hausse|baisse|augment|diminu|progress|recul|nouveau|nouvelle|r[eé]cent|depuis|entre 20)/i.test(text)) return 60
+    return 10
+  }
+
+  return 50
 }
 
 function visibleResultsForNeed(needId, result) {
-  const all = result?.results || result?.materials || []
-  if (needId === 'actors') return all.filter(item => ['acteur', 'expert_public'].includes(String(item.node_type || '').toLowerCase()))
-  if (needId === 'public-action') return all.filter(item => ['action', 'instrument_dispositif'].includes(String(item.node_type || '').toLowerCase()))
-  if (needId === 'trends') {
-    const trendWords = /(tendance|signal faible|évolu|evolu|émerg|emerg|hausse|baisse|augment|diminu|progress|recul|nouveau|nouvelle|récent|recent|depuis|entre 20)/i
-    return all.filter(item => ['tendance', 'signal_faible'].includes(String(item.node_type || '').toLowerCase()) || trendWords.test(`${materialText(item)} ${item.section || ''}`))
-  }
+  const all = Array.isArray(result?.results) ? result.results : (Array.isArray(result?.materials) ? result.materials : [])
+  if (needId === 'overview' || needId === 'precise') return all
   return all
+    .map((item, index) => ({ item, index, priority: needPriority(needId, item) }))
+    .sort((a, b) => b.priority - a.priority || Number(b.item?.score || 0) - Number(a.item?.score || 0) || a.index - b.index)
+    .map(entry => entry.item)
 }
 
 function cardCenter(card) {
@@ -576,7 +633,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
           {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
           {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans le corpus actif…</strong></div>}
           {!searchLoading && searchResult && <NeedResults need={activeNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
-          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>Votre bibliothèque est prête.</strong><p>Formulez votre besoin ci-dessus. Les résultats resteront sourcés et pourront être déposés directement dans le canevas.</p></div>}
+          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>Votre bibliothèque est prête.</strong><p>Formulez votre besoin ci-dessus. Les résultats pourront être déposés directement dans le canevas avec leur provenance.</p></div>}
         </>}
       </aside>
     </div>

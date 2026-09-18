@@ -281,3 +281,99 @@
   .qvl-hero-visual{display:none}
   .qvl-canvas-stage{height:700px}
 }
+
+/* V2.3 — correction lisibilité, cohérence typographique et fonctionnement des besoins */
+.qvl-reflection-page,
+.qvl-reflection-page button,
+.qvl-reflection-page input,
+.qvl-reflection-page textarea,
+.qvl-reflection-page select,
+.qvl-reflection-page h1,
+.qvl-reflection-page h2,
+.qvl-reflection-page h3,
+.qvl-reflection-page strong,
+.qvl-reflection-page p,
+.qvl-reflection-page span,
+.qvl-reflection-page small,
+.qvl-reflection-page em,
+.qvl-reflection-page a{
+  font-family:"Source Sans 3",Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+.qvl-reflection-page{font-size:16px}
+.qvl-reflection-back-wrap{padding-top:2px}
+.qvl-reflection-hero{padding-top:2px;padding-bottom:8px}
+.qvl-hero-copy{min-height:104px;padding:8px 16px;grid-template-columns:minmax(0,1fr) minmax(430px,560px)}
+.qvl-hero-copy h1{font-size:38px;font-weight:800;letter-spacing:-.02em}
+.qvl-hero-copy p{font-size:16px}
+.qvl-hero-copy span{font-size:13px}
+
+.qvl-reflection-shell{--left:286px;--right:308px;gap:8px}
+.qvl-reflection-left,.qvl-reflection-right{padding:13px 10px 12px}
+.qvl-side-heading{grid-template-columns:40px 1fr;gap:10px;padding-bottom:12px}
+.qvl-side-heading h2{font-size:22px;font-weight:800;line-height:1.06}
+.qvl-side-heading p{font-size:14px;line-height:1.35}
+.qvl-need-list{gap:9px;margin-top:11px}
+.qvl-need-card{grid-template-columns:38px minmax(0,1fr) 16px;gap:9px;padding:12px 9px}
+.qvl-need-copy strong{font-size:15.5px;line-height:1.18;font-weight:750}
+.qvl-need-copy small{font-size:13px;line-height:1.34;margin-top:5px}
+.qvl-scope-note{font-size:12.5px;line-height:1.38}
+
+.qvl-canvas-intro{padding:12px 15px 8px}
+.qvl-canvas-title h2{font-size:25px;font-weight:800}
+.qvl-canvas-title p{font-size:14px;line-height:1.4}
+.qvl-postit-add{font-size:12.5px;height:38px}
+.qvl-link-button,.qvl-link-count{font-size:12px;height:38px}
+.qvl-canvas-stage{height:735px}
+.qvl-canvas{min-width:1140px;min-height:940px}
+
+/* L'état vide reste bien centré horizontalement, mais il est remonté pour inviter à commencer. */
+.qvl-empty-canvas{left:50%;top:30%;transform:translate(-50%,-50%);width:min(640px,84%);text-align:center}
+.qvl-empty-postits{margin-bottom:10px}
+.qvl-empty-canvas h3{font-size:26px;font-weight:800;line-height:1.12;text-align:center}
+.qvl-empty-canvas p{font-size:14.5px;line-height:1.5;max-width:560px}
+.qvl-empty-canvas>span{font-size:13.5px;font-style:normal}
+
+.qvl-canvas-card>p{font-family:inherit;font-size:15.5px;line-height:1.4}
+.qvl-canvas-card.collapsed>p{font-family:inherit;font-size:12.5px}
+.qvl-canvas-card header>span{font-size:11.5px}
+.qvl-canvas-card footer strong{font-size:11.8px}
+.qvl-canvas-card footer span{font-size:10.5px}
+.qvl-canvas-help{font-size:11.5px}
+
+.qvl-reflection-right .qvl-side-heading h2{font-size:21px}
+.qvl-reflection-right .qvl-side-heading p{font-size:13.5px}
+.qvl-need-search textarea{font-size:14px;height:92px}
+.qvl-need-search button{font-size:13px;height:42px}
+.qvl-general-advice strong{font-size:11.5px}
+.qvl-general-advice p{font-size:12.5px}
+.qvl-right-empty strong{font-size:17px;font-weight:800}
+.qvl-right-empty p{font-size:13px}
+.qvl-result-heading strong{font-size:13.5px}
+.qvl-result-heading span{font-size:11px}
+.qvl-result-card-top{font-size:10.8px}
+.qvl-result-excerpt{font-size:13.5px}
+.qvl-result-source>strong{font-size:12.5px}
+.qvl-result-source>span{font-size:11px}
+.qvl-result-source em{font-size:10.3px}
+.qvl-result-actions a,.qvl-result-actions button{font-size:10.8px}
+
+.qvl-proof-modal>header h2{font-size:20px;font-weight:800}
+.qvl-overview-strip strong{font-family:inherit}
+.qvl-right-empty strong{font-family:inherit}
+
+@media(max-width:1450px){
+  .qvl-reflection-shell{--left:275px;--right:298px}
+  .qvl-hero-copy{grid-template-columns:minmax(0,1fr) minmax(360px,470px)}
+  .qvl-hero-copy h1{font-size:35px}
+  .qvl-need-copy strong{font-size:14.5px}
+  .qvl-need-copy small{font-size:12px}
+  .qvl-canvas-stage{height:700px}
+}
+@media(max-width:1230px){
+  .qvl-reflection-shell{--left:255px;--right:285px}
+  .qvl-hero-copy{grid-template-columns:minmax(0,1fr) 330px}
+  .qvl-need-copy strong{font-size:13.5px}
+  .qvl-need-copy small{font-size:11.2px}
+  .qvl-canvas-stage{height:670px}
+}
