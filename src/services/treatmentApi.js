@@ -2,7 +2,7 @@ const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 const CLOUD_TREATMENT_URL = 'https://veillelab-cloud-backend2-633342872265.europe-west9.run.app'
 
 function getTreatmentUrl() {
-  // T01 et T03 utilisent désormais explicitement Cloud Run.
+  // T01, T02 et T03 utilisent désormais explicitement Cloud Run.
   // On n'autorise plus une ancienne variable VITE_TREATMENT_API_URL
   // à rediriger silencieusement les traitements vers Apps Script.
   return CLOUD_TREATMENT_URL
@@ -32,7 +32,7 @@ async function fetchJson(url, options = {}) {
 }
 
 async function pollCloudJob(baseUrl, jobId, treatmentId) {
-  const maxAttempts = treatmentId === 'T01' ? 400 : 180
+  const maxAttempts = treatmentId === 'T01' ? 400 : treatmentId === 'T02' ? 320 : 180
   const storageKey = `quirites:${treatmentId.toLowerCase()}:activeJob`
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     await wait(attempt === 0 ? 1200 : 2500)
@@ -84,7 +84,7 @@ async function generateViaCloud({ url, treatment, need, corpus, graphNodes = [],
 
 export async function generateTreatment({ treatment, need, publications, contents, nodes = [], relations = [] }) {
   const treatmentId = treatment?.traitement_id
-  if (!['T01','T03'].includes(treatmentId)) throw new Error('Cette branche Cloud est actuellement disponible pour T01 et T03.')
+  if (!['T01','T02','T03'].includes(treatmentId)) throw new Error('Cette branche Cloud est actuellement disponible pour T01, T02 et T03.')
   const url = getTreatmentUrl()
   const corpus = buildCorpus(publications, contents)
   const publicationIds = new Set(publications.map(p => p.publication_id))
