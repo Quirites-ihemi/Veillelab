@@ -395,3 +395,113 @@
 .qvl-need-search textarea:focus{
   border-color:#5c85ad;box-shadow:0 0 0 4px rgba(71,119,165,.12);
 }
+
+/* V2.6 — séparation recherche guidée / question libre + liaisons robustes */
+.qvl-canvas-card>p{
+  font-weight:400!important;
+}
+.qvl-canvas-card.collapsed>p{
+  font-weight:400!important;
+}
+
+.qvl-guided-status{
+  display:grid;
+  grid-template-columns:22px 1fr;
+  gap:8px;
+  align-items:start;
+  margin-top:12px;
+  padding:10px 11px;
+  border:1px solid #d6e3ef;
+  border-radius:11px;
+  background:#f4f8fc;
+  color:#567089;
+}
+.qvl-guided-status svg{color:#4d78a3;margin-top:2px}
+.qvl-guided-status strong{display:block;font-size:12.5px;color:#315878}
+.qvl-guided-status span{display:block;margin-top:2px;font-size:11.5px;line-height:1.4;color:#6b7d90}
+
+.qvl-free-search{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid #dfe6ed;
+}
+.qvl-free-search-toggle{
+  width:100%;
+  min-height:46px;
+  display:grid;
+  grid-template-columns:22px 1fr 20px;
+  gap:8px;
+  align-items:center;
+  text-align:left;
+  border:1px solid #d6e0ea;
+  border-radius:10px;
+  background:#fff;
+  color:#45627e;
+  padding:8px 10px;
+  cursor:pointer;
+}
+.qvl-free-search-toggle:hover{background:#f7fafc}
+.qvl-free-search-toggle>span:nth-child(2){display:flex;flex-direction:column;gap:1px}
+.qvl-free-search-toggle strong{font-size:12.5px;line-height:1.2;color:#315575}
+.qvl-free-search-toggle small{font-size:10.8px;line-height:1.25;color:#7a8999}
+.qvl-free-search-toggle>span:last-child{font-size:18px;text-align:center;color:#66809c}
+.qvl-free-search form{position:relative;margin-top:8px}
+.qvl-free-search textarea{
+  width:100%;height:86px;box-sizing:border-box;resize:none;
+  border:1px solid #cbd8e4;border-radius:10px;background:#fff;
+  padding:11px 11px 24px;color:#294a6d;outline:0;
+  font:inherit;font-size:13px;line-height:1.4;
+}
+.qvl-free-search textarea:focus{border-color:#5c85ad;box-shadow:0 0 0 4px rgba(71,119,165,.12)}
+.qvl-free-search .qvl-char-count{position:absolute;right:9px;top:64px;font-size:9.5px;color:#91a0b0}
+.qvl-free-search form>button{
+  width:100%;height:39px;margin-top:6px;border:0;border-radius:9px;
+  background:linear-gradient(180deg,#4c6b90,#3e5d82);color:#fff;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  font-size:12px;font-weight:700;cursor:pointer;
+}
+.qvl-free-search form>button:disabled{opacity:.45;cursor:not-allowed}
+
+.qvl-link-builder{
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) 150px 110px 72px;
+  gap:8px;
+  align-items:center;
+  margin-top:10px;
+  padding:10px;
+  border:1px solid #bcd0e3;
+  border-radius:10px;
+  background:#edf5fd;
+  box-shadow:0 4px 12px rgba(37,65,94,.06);
+}
+.qvl-link-builder>div{min-width:0}
+.qvl-link-builder strong{display:block;font-size:12.5px;color:#2e577d}
+.qvl-link-builder span{display:block;margin-top:2px;font-size:11.5px;line-height:1.3;color:#607990}
+.qvl-link-builder select{
+  width:100%;height:34px;border:1px solid #b9cadd;border-radius:8px;
+  background:#fff;color:#385a79;padding:0 8px;font-size:11.5px;
+}
+.qvl-link-builder button{
+  height:34px;border-radius:8px;border:1px solid #c6d4e2;background:#fff;
+  color:#4d6883;font-size:11px;font-weight:700;cursor:pointer;
+}
+.qvl-link-builder button.primary{background:#3f6186;color:#fff;border-color:#3f6186}
+.qvl-link-builder button:disabled{opacity:.45;cursor:not-allowed}
+.qvl-link-builder button.ghost:hover{background:#f8fafc}
+
+.qvl-canvas.link-mode .qvl-canvas-card{cursor:pointer}
+.qvl-canvas-card.link-selected{
+  outline:3px solid rgba(43,113,181,.28);
+  box-shadow:0 0 0 2px #4f7fab,0 10px 24px rgba(34,58,86,.16);
+}
+.qvl-link-order{
+  position:absolute;left:-10px;top:-10px;z-index:8;
+  width:25px;height:25px;border-radius:999px;
+  display:grid;place-items:center;background:#2f6598;color:#fff;
+  font-size:12px;font-weight:800;box-shadow:0 3px 8px rgba(32,62,92,.22);
+}
+
+@media(max-width:1320px){
+  .qvl-link-builder{grid-template-columns:1fr 130px 100px 66px}
+  .qvl-link-builder span{font-size:10.8px}
+}

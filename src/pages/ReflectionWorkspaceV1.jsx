@@ -301,7 +301,10 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [links, setLinks] = useState(initial.links)
   const [selectedIds, setSelectedIds] = useState([])
   const [activeNeedId, setActiveNeedId] = useState('overview')
-  const [query, setQuery] = useState('')
+  const [resultNeedId, setResultNeedId] = useState('overview')
+  const [manualQuery, setManualQuery] = useState('')
+  const [freeSearchOpen, setFreeSearchOpen] = useState(false)
+  const [searchContext, setSearchContext] = useState(null)
   const [searchResult, setSearchResult] = useState(null)
   const [searchLoading, setSearchLoading] = useState(false)
   const [searchError, setSearchError] = useState('')
@@ -309,7 +312,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [draft, setDraft] = useState('')
   const [leftCollapsed, setLeftCollapsed] = useState(false)
   const [rightCollapsed, setRightCollapsed] = useState(false)
-  const [showLinkComposer, setShowLinkComposer] = useState(false)
   const [linkMode, setLinkMode] = useState(false)
   const [linkLabel, setLinkLabel] = useState('est lié à')
   const [showLinks, setShowLinks] = useState(false)
@@ -320,12 +322,26 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const searchRequestRef = useRef(0)
 
   const activeNeed = NEEDS.find(item => item.id === activeNeedId) || NEEDS[0]
+  const resultNeed = NEEDS.find(item => item.id === resultNeedId) || NEEDS[0]
   const selectedCards = useMemo(() => cards.filter(card => selectedIds.includes(card.id)), [cards, selectedIds])
-  const visibleResults = useMemo(() => visibleResultsForNeed(activeNeedId, searchResult), [activeNeedId, searchResult])
+  const visibleResults = useMemo(() => visibleResultsForNeed(resultNeedId, searchResult), [resultNeedId, searchResult])
 
   useEffect(() => {
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links })) } catch {}
   }, [cards, links])
+
+  useEffect(() => {
+    if (searchContext?.source !== 'canvas') return
+    const expected = [...(searchContext.cardIds || [])].sort().join('|')
+    const current = [...selectedIds].sort().join('|')
+    if (expected && expected !== current) {
+      searchRequestRef.current += 1
+      setSearchLoading(false)
+      setSearchResult(null)
+      setSearchError('')
+      setSearchContext(null)
+    }
+  }, [selectedIds, searchContext])
 
   useEffect(() => {
     const onMove = event => {
@@ -350,11 +366,17 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     }
   }, [])
 
-  const executeNeedSearch = async (needId, rawQuery) => {
+  const executeNeedSearch = async (needId, rawQuery, context = {}) => {
     const clean = String(rawQuery || '').trim()
     if (!clean) return
 
     const requestId = ++searchRequestRef.current
+    setResultNeedId(needId)
+    setSearchContext({
+      source: context.source || 'guided',
+      cardIds: Array.isArray(context.cardIds) ? context.cardIds : [],
+      query: clean,
+    })
     setSearchLoading(true)
     setSearchError('')
     setSearchResult(null)
@@ -373,50 +395,49 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setActiveNeedId(id)
     setSearchError('')
     setRightCollapsed(false)
+    setFreeSearchOpen(false)
+    setManualQuery('')
 
-    // Un besoin documentaire doit agir sur le travail en cours, pas seulement
-    // changer un libellé dans le panneau droit. Ordre de priorité :
-    // 1) une requête déjà saisie ;
-    // 2) les cartes explicitement sélectionnées dans le canevas ;
-    // 3) s'il n'y a qu'une seule carte dans le canevas, cette carte ;
-    // 4) sinon, demander à l'utilisateur de saisir son sujet.
-    const typedQuery = query.trim()
-    if (typedQuery) {
-      executeNeedSearch(id, typedQuery)
-      return
-    }
-
+    // Le besoin documentaire travaille d'abord à partir du canevas courant.
+    // Une ancienne question libre ne doit jamais prendre le pas sur le post-it sélectionné.
     const cardsToUse = selectedCards.length
       ? selectedCards
       : (cards.length === 1 ? cards : [])
 
+    if (!selectedCards.length && cards.length === 1) setSelectedIds([cards[0].id])
+
     const canvasQuery = cardsToUse
       .map(card => String(card?.text || '').trim())
       .filter(Boolean)
-      .slice(0, 3)
+      .slice(0, 2)
       .join(' ; ')
       .trim()
 
     if (canvasQuery) {
-      setQuery(canvasQuery)
-      executeNeedSearch(id, canvasQuery)
+      executeNeedSearch(id, canvasQuery, { source: 'canvas', cardIds: cardsToUse.map(card => card.id) })
       return
     }
 
+    // Aucun post-it exploitable : on annule toute ancienne réponse pour éviter
+    // qu'elle soit confondue avec le nouveau besoin sélectionné.
+    searchRequestRef.current += 1
+    setSearchLoading(false)
     setSearchResult(null)
-    window.setTimeout(() => searchInputRef.current?.focus(), 0)
+    setSearchContext({ source: 'awaiting-card', cardIds: [], query: '' })
   }
 
-  const runSearch = event => {
+  const runManualSearch = event => {
     event?.preventDefault()
-    if (!query.trim() || searchLoading) return
-    executeNeedSearch(activeNeedId, query)
+    const clean = manualQuery.trim()
+    if (!clean || searchLoading) return
+    executeNeedSearch('precise', clean, { source: 'manual', cardIds: [] })
   }
 
   const beginComposer = type => {
     if (type === 'corpus') {
       setRightCollapsed(false)
-      setTimeout(() => document.querySelector('.qvl-need-search textarea')?.focus(), 0)
+      setFreeSearchOpen(true)
+      setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0)
       return
     }
     const cardType = CARD_TYPES.find(item => item.id === type)
@@ -471,9 +492,9 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const toggleSelection = (card, event) => {
     if (linkMode) {
       setSelectedIds(ids => {
-        const next = ids.includes(card.id) ? ids.filter(id => id !== card.id) : [...ids, card.id].slice(-2)
-        if (next.length === 2) setShowLinkComposer(true)
-        return next
+        if (ids.includes(card.id)) return ids.filter(id => id !== card.id)
+        if (ids.length >= 2) return [card.id]
+        return [...ids, card.id]
       })
       return
     }
@@ -483,20 +504,21 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     } else {
       setSelectedIds([card.id])
     }
-    setShowLinkComposer(false)
   }
 
   const toggleLinkMode = () => {
     setLinkMode(value => {
       const next = !value
       setSelectedIds([])
-      setShowLinkComposer(false)
+      setLinkLabel('est lié à')
       return next
     })
   }
 
   const startDrag = (event, card) => {
-    if (event.button !== 0 || event.target.closest('button,textarea,input,a')) return
+    // En mode liaison, un clic doit sélectionner le post-it et jamais démarrer un glisser-déposer.
+    if (linkMode) return
+    if (event.button !== 0 || event.target.closest('button,textarea,input,a,select')) return
     const element = event.currentTarget.closest('.qvl-canvas-card')
     const rect = element.getBoundingClientRect()
     dragRef.current = { id: card.id, offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top, width: rect.width, height: rect.height }
@@ -511,7 +533,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     if (!exists) {
       setLinks(list => [...list, { id: `link-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, source, target, label: linkLabel }])
     }
-    setShowLinkComposer(false)
     setLinkLabel('est lié à')
     setLinkMode(false)
     setSelectedIds([])
@@ -586,13 +607,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             <div className="qvl-link-tools">
               <button type="button" className={`qvl-link-button ${linkMode ? 'active' : ''}`} onClick={toggleLinkMode}><Icon name="link" size={16}/>{linkMode ? 'Annuler la liaison' : 'Relier des cartes'}</button>
               {links.length > 0 && <button type="button" className="qvl-link-count" onClick={() => setShowLinks(value => !value)}>Liens ({links.length})</button>}
-              {showLinkComposer && selectedIds.length === 2 && <div className="qvl-link-popover">
-                <strong>Qualifier le lien</strong>
-                <select value={linkLabel} onChange={event => setLinkLabel(event.target.value)}>
-                  {LINK_LABELS.map(label => <option key={label || 'none'} value={label}>{label || 'Sans libellé'}</option>)}
-                </select>
-                <button type="button" onClick={createLink}>Créer le lien</button>
-              </div>}
               {showLinks && links.length > 0 && <div className="qvl-link-list-popover">
                 <strong>Liens du canevas</strong>
                 {links.map(link => {
@@ -603,6 +617,17 @@ export default function ReflectionWorkspaceV1({ onBack }) {
               </div>}
             </div>
           </div>
+          {linkMode && <div className="qvl-link-builder">
+            <div>
+              <strong>Créer une liaison entre deux post-it</strong>
+              <span>{selectedIds.length === 0 ? 'Cliquez sur le premier post-it.' : selectedIds.length === 1 ? 'Premier post-it choisi. Cliquez maintenant sur le second.' : 'Deux post-it sont sélectionnés. Choisissez éventuellement le type de lien.'}</span>
+            </div>
+            <select value={linkLabel} onChange={event => setLinkLabel(event.target.value)} disabled={selectedIds.length !== 2}>
+              {LINK_LABELS.map(label => <option key={label || 'none'} value={label}>{label || 'Sans libellé'}</option>)}
+            </select>
+            <button type="button" className="primary" disabled={selectedIds.length !== 2} onClick={createLink}>Créer le lien</button>
+            <button type="button" className="ghost" onClick={toggleLinkMode}>Annuler</button>
+          </div>}
         </header>
 
         {composer && <div className={`qvl-canvas-composer ${composer.tone}`}>
@@ -612,7 +637,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         </div>}
 
         <div className="qvl-canvas-stage">
-          <div className={`qvl-canvas ${cards.length ? 'has-cards' : ''}`} ref={canvasRef} onClick={event => { if (event.target === event.currentTarget) setSelectedIds([]) }}>
+          <div className={`qvl-canvas ${cards.length ? 'has-cards' : ''} ${linkMode ? 'link-mode' : ''}`} ref={canvasRef} onClick={event => { if (event.target === event.currentTarget) setSelectedIds([]) }}>
             <svg className="qvl-links-layer" width="100%" height="100%" aria-hidden="true">
               <defs><marker id="qvl-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker></defs>
               {links.map(link => {
@@ -639,9 +664,11 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
             {cards.map(card => {
               const selected = selectedIds.includes(card.id)
+              const linkIndex = linkMode ? selectedIds.indexOf(card.id) + 1 : 0
               const meta = card.material ? publicationMeta(card.material) : null
               const locator = card.material ? locatorOf(card.material) : null
-              return <article key={card.id} className={`qvl-canvas-card ${card.tone} ${selected ? 'selected' : ''} ${card.materialId ? 'corpus-card' : ''} ${card.collapsed ? 'collapsed' : ''}`} style={{ left: card.x, top: card.y }} onClick={event => { event.stopPropagation(); toggleSelection(card, event) }} onPointerDown={event => startDrag(event, card)}>
+              return <article key={card.id} className={`qvl-canvas-card ${card.tone} ${selected ? 'selected' : ''} ${linkIndex ? 'link-selected' : ''} ${card.materialId ? 'corpus-card' : ''} ${card.collapsed ? 'collapsed' : ''}`} style={{ left: card.x, top: card.y }} onClick={event => { event.stopPropagation(); toggleSelection(card, event) }} onPointerDown={event => startDrag(event, card)}>
+                {linkIndex > 0 && <span className="qvl-link-order" aria-hidden="true">{linkIndex}</span>}
                 <header>
                   <span>{card.kind}</span>
                   <div className="qvl-card-controls">
@@ -672,18 +699,25 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             <div><h2>Ce que le corpus apporte</h2><p>Explorez le corpus et ajoutez les éléments utiles à votre canevas.</p></div>
           </header>
 
-          <form className="qvl-need-search" onSubmit={runSearch}>
-            <textarea ref={searchInputRef} maxLength={500} value={query} onChange={event => setQuery(event.target.value)} placeholder={activeNeed.placeholder}/>
-            <span className="qvl-char-count">{query.length}/500</span>
-            <button type="submit" disabled={!query.trim() || searchLoading}><Icon name="search" size={18}/>{searchLoading ? 'Recherche…' : activeNeed.submitLabel}</button>
-          </form>
+          {searchContext?.source === 'canvas' && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Recherche à partir du canevas</strong><span>Le besoin sélectionné est appliqué au post-it actif, sans recopier son texte dans un champ de saisie.</span></div></div>}
 
-          <div className="qvl-general-advice"><Icon name="info" size={16}/><div><strong>Repère</strong><p>{activeNeed.advice}</p></div></div>
+          {searchContext?.source !== 'manual' && <div className="qvl-general-advice"><Icon name="info" size={16}/><div><strong>Repère</strong><p>{activeNeed.advice}</p></div></div>}
 
           {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
           {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans le corpus actif…</strong></div>}
-          {!searchLoading && searchResult && <NeedResults need={activeNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
-          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>Votre bibliothèque est prête.</strong><p>Formulez votre besoin ci-dessus. Les résultats pourront être déposés directement dans le canevas avec leur provenance.</p></div>}
+          {!searchLoading && searchResult && <NeedResults need={resultNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
+          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>{searchContext?.source === 'awaiting-card' ? 'Choisissez le point de départ.' : 'Votre bibliothèque est prête.'}</strong><p>{searchContext?.source === 'awaiting-card' ? 'Sélectionnez un post-it dans le canevas, puis cliquez sur l’un des besoins documentaires à gauche.' : 'Sélectionnez un post-it puis un besoin documentaire. Les résultats apparaîtront ici avec leur provenance.'}</p></div>}
+
+          <div className={`qvl-free-search ${freeSearchOpen ? 'open' : ''}`}>
+            <button type="button" className="qvl-free-search-toggle" onClick={() => { setFreeSearchOpen(value => !value); window.setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0) }}>
+              <Icon name="search" size={16}/><span><strong>Question libre au corpus</strong><small>Pour une recherche qui ne part pas d’un post-it.</small></span><span aria-hidden="true">{freeSearchOpen ? '−' : '+'}</span>
+            </button>
+            {freeSearchOpen && <form onSubmit={runManualSearch}>
+              <textarea ref={searchInputRef} maxLength={500} value={manualQuery} onChange={event => setManualQuery(event.target.value)} placeholder="Posez directement une question au corpus…"/>
+              <span className="qvl-char-count">{manualQuery.length}/500</span>
+              <button type="submit" disabled={!manualQuery.trim() || searchLoading}><Icon name="search" size={18}/>{searchLoading ? 'Recherche…' : 'Chercher dans le corpus'}</button>
+            </form>}
+          </div>
         </>}
       </aside>
     </div>
