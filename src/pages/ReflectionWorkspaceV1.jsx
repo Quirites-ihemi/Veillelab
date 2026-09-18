@@ -374,15 +374,37 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setSearchError('')
     setRightCollapsed(false)
 
-    // Le clic sur un besoin doit produire un effet visible.
-    // Si une requête est déjà saisie, on relance immédiatement la recherche
-    // avec le nouveau besoin. Sinon on place le curseur dans la zone de saisie.
-    if (query.trim()) {
-      executeNeedSearch(id, query)
-    } else {
-      setSearchResult(null)
-      window.setTimeout(() => searchInputRef.current?.focus(), 0)
+    // Un besoin documentaire doit agir sur le travail en cours, pas seulement
+    // changer un libellé dans le panneau droit. Ordre de priorité :
+    // 1) une requête déjà saisie ;
+    // 2) les cartes explicitement sélectionnées dans le canevas ;
+    // 3) s'il n'y a qu'une seule carte dans le canevas, cette carte ;
+    // 4) sinon, demander à l'utilisateur de saisir son sujet.
+    const typedQuery = query.trim()
+    if (typedQuery) {
+      executeNeedSearch(id, typedQuery)
+      return
     }
+
+    const cardsToUse = selectedCards.length
+      ? selectedCards
+      : (cards.length === 1 ? cards : [])
+
+    const canvasQuery = cardsToUse
+      .map(card => String(card?.text || '').trim())
+      .filter(Boolean)
+      .slice(0, 3)
+      .join(' ; ')
+      .trim()
+
+    if (canvasQuery) {
+      setQuery(canvasQuery)
+      executeNeedSearch(id, canvasQuery)
+      return
+    }
+
+    setSearchResult(null)
+    window.setTimeout(() => searchInputRef.current?.focus(), 0)
   }
 
   const runSearch = event => {
