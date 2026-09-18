@@ -3,481 +3,627 @@ import Icon from '../components/Icon.jsx'
 import { runReflectionAction, searchCorpus } from '../services/reflectionApi.js'
 import './reflection-workspace.css'
 
-const STARTERS = [
-  { id:'question', label:'Formuler ma question', kind:'Question', tone:'blue', placeholder:'Quelle question souhaitez-vous explorer ?' },
-  { id:'problem', label:'Décrire le problème', kind:'Problème', tone:'ice', placeholder:'Décrivez le problème tel que vous le posez aujourd’hui…' },
-  { id:'hypothesis', label:'Poser une hypothèse', kind:'Hypothèse', tone:'mint', placeholder:'Formulez l’hypothèse que vous souhaitez documenter ou mettre à l’épreuve…' },
-  { id:'corpus', label:'Ajouter un élément du corpus', kind:'Élément du corpus', tone:'sand', placeholder:'Recherchez d’abord un élément dans le corpus depuis la colonne de droite.' },
-  { id:'note', label:'Ajouter une note libre', kind:'Note', tone:'lilac', placeholder:'Écrivez une observation, une piste ou un point à garder en tête…' },
+const NEEDS = [
+  {
+    id: 'overview',
+    label: 'Comprendre rapidement ce que le corpus contient sur un thème',
+    description: 'Obtenir une vue d’ensemble des angles abordés, publications, acteurs, territoires et principaux éléments présents dans le corpus.',
+    placeholder: 'Sur quel thème souhaitez-vous faire le point ?',
+    submitLabel: 'Explorer le thème',
+    icon: 'book',
+    tone: 'blue',
+    advice: 'Une faible présence dans les résultats peut traduire une faible couverture du corpus, pas une faible importance du phénomène.',
+  },
+  {
+    id: 'precise',
+    label: 'Trouver une information précise dans le corpus',
+    description: 'Chercher un fait, un chiffre, un concept, un dispositif, un acteur ou une information ciblée.',
+    placeholder: 'Quelle information recherchez-vous précisément ?',
+    submitLabel: 'Chercher dans le corpus',
+    icon: 'search',
+    tone: 'yellow',
+    advice: 'L’absence de résultat ne signifie pas nécessairement que l’information n’existe pas : elle peut être formulée autrement ou ne pas être couverte par le corpus.',
+  },
+  {
+    id: 'trends',
+    label: 'Voir ce qui évolue ou émerge',
+    description: 'Repérer les évolutions, récurrences et signaux présents dans les sujets couverts par le corpus.',
+    placeholder: 'Sur quel sujet souhaitez-vous repérer des évolutions ou des signaux ?',
+    submitLabel: 'Repérer les évolutions',
+    icon: 'graph',
+    tone: 'green',
+    advice: 'Une évolution dans le corpus n’est pas automatiquement une évolution du phénomène lui-même. Vérifiez notamment les périodes et la composition des sources mobilisées.',
+  },
+  {
+    id: 'actors',
+    label: 'Identifier les acteurs concernés et leur rôle',
+    description: 'Repérer les acteurs mentionnés dans les publications et la manière dont leur rôle y est décrit.',
+    placeholder: 'Sur quel sujet souhaitez-vous identifier les acteurs ?',
+    submitLabel: 'Identifier les acteurs',
+    icon: 'target',
+    tone: 'coral',
+    advice: 'Le rôle affiché correspond à la manière dont l’acteur est décrit dans les publications du corpus ; il ne résume pas nécessairement l’ensemble de ses compétences.',
+  },
+  {
+    id: 'public-action',
+    label: 'Voir comment l’action publique répond au problème',
+    description: 'Identifier, dans les sujets couverts, les dispositifs, instruments, acteurs de mise en œuvre et modalités d’action déjà documentés.',
+    placeholder: 'Quel problème ou sujet d’action publique souhaitez-vous explorer ?',
+    submitLabel: 'Explorer l’action publique',
+    icon: 'building',
+    tone: 'lilac',
+    advice: 'Le corpus montre uniquement les réponses d’action publique documentées par les publications présentes ; il ne constitue pas un inventaire exhaustif des dispositifs existants.',
+  },
 ]
 
-const ACTION_GROUPS = [
-  {
-    title:'Documenter', icon:'book',
-    items:[
-      { id:'DOC01', label:'Trouver des éléments dans le corpus', icon:'search' },
-      { id:'DOC02', label:'Remonter à la source et à la preuve', icon:'file' },
-      { id:'DOC03', label:'Trouver des situations comparables', icon:'graph' },
-    ]
-  },
-  {
-    title:'Mettre à l’épreuve', icon:'target',
-    items:[
-      { id:'MIR01', label:'Confronter mon affirmation au corpus', icon:'target' },
-      { id:'MIR04', label:'Repérer des contradictions entre les éléments', icon:'warning' },
-      { id:'MIR08', label:'Vérifier sur quoi mon affirmation repose concrètement', icon:'search' },
-    ]
-  },
-  {
-    title:'Prendre du recul', icon:'layers',
-    items:[
-      { id:'MET01', label:'Vérifier si deux éléments sont comparables', icon:'link' },
-      { id:'MET02', label:'Vérifier la nature du lien', icon:'link' },
-      { id:'MET04', label:'Éprouver une recommandation', icon:'spark' },
-    ]
-  },
+const CARD_TYPES = [
+  { id: 'question', label: 'Question', tone: 'blue', icon: '?', placeholder: 'Quelle question souhaitez-vous poser ?' },
+  { id: 'idea', label: 'Idée / hypothèse', tone: 'yellow', icon: '✦', placeholder: 'Formulez votre idée ou votre hypothèse…' },
+  { id: 'note', label: 'Note', tone: 'lilac', icon: '✎', placeholder: 'Ajoutez une observation, une piste ou un rappel…' },
+  { id: 'check', label: 'Point à vérifier', tone: 'green', icon: '✓', placeholder: 'Quel point souhaitez-vous vérifier plus tard ?' },
 ]
 
-const ACTION_BY_ID = Object.fromEntries(ACTION_GROUPS.flatMap(group => group.items).map(item => [item.id,item]))
-const STORAGE_KEY = 'quirites:reflection-canvas:v1'
+const LINK_LABELS = ['est lié à', 'appuie', 'nuance', 'questionne', '']
+const STORAGE_KEY = 'quirites:reflection-workspace:v2'
+const LEGACY_STORAGE_KEY = 'quirites:reflection-canvas:v1'
 
-function normalizeMaterialId(value){
-  const text=String(value||'').trim()
-  if(!text)return null
-  if(/^(chunk|node|relation):/i.test(text))return text
-  if(/^C\d+/i.test(text))return `chunk:${text}`
-  if(/^N\d+/i.test(text))return `node:${text}`
-  if(/^R\d+/i.test(text))return `relation:${text}`
+function normalizeMaterialId(value) {
+  const text = String(value || '').trim()
+  if (!text) return null
+  if (/^(chunk|node|relation):/i.test(text)) return text
+  if (/^C\d+/i.test(text)) return `chunk:${text}`
+  if (/^N\d+/i.test(text)) return `node:${text}`
+  if (/^R\d+/i.test(text)) return `relation:${text}`
   return null
 }
 
-function materialIdOf(material){
-  if(!material)return null
-  if(material.material_id)return normalizeMaterialId(material.material_id)
-  if(material.chunk_id)return normalizeMaterialId(material.chunk_id)
-  if(material.node_id)return normalizeMaterialId(material.node_id)
-  if(material.relation_id)return normalizeMaterialId(material.relation_id)
-  if(material.finding_id)return normalizeMaterialId(material.finding_id)
-  if(material.result_id)return normalizeMaterialId(material.result_id)
-  if(material.id)return normalizeMaterialId(material.id)
+function materialIdOf(material) {
+  if (!material) return null
+  if (material.material_id) return normalizeMaterialId(material.material_id)
+  if (material.result_id) return normalizeMaterialId(material.result_id)
+  if (material.chunk_id) return normalizeMaterialId(material.chunk_id)
+  if (material.node_id) return normalizeMaterialId(material.node_id)
+  if (material.relation_id) return normalizeMaterialId(material.relation_id)
+  if (material.id) return normalizeMaterialId(material.id)
   return null
 }
 
-function publicationOf(material){
+function publicationOf(material) {
   return material?.publication || material?.source_publication || null
 }
 
-function materialText(material){
-  if(!material)return ''
-  if(material?.content?.text)return material.content.text
-  if(material?.text)return material.text
-  if(material?.label)return material.label
-  if(material?.libelle)return material.libelle
-  if(material?.formulation)return material.formulation
-  if(material?.source_label||material?.target_label)return `${material.source_label||''} — ${material.relation_type||'relation'} → ${material.target_label||''}`
-  if(material?.source?.label||material?.target?.label)return `${material.source?.label||''} — ${material.relation_type||'relation'} → ${material.target?.label||''}`
+function publicationMeta(material) {
+  const pub = publicationOf(material) || {}
+  return {
+    id: material?.publication_id || pub.publication_id || '',
+    title: material?.publication_title || pub.title || pub.titre || '',
+    organisation: material?.organisme_producteur || pub.organisme_producteur || '',
+    year: material?.annee_publication || material?.année_publication || pub.annee_publication || pub.année_publication || '',
+    urlSource: material?.url_source || pub.url_source || '',
+    urlContent: material?.url_contenu || pub.url_contenu || '',
+  }
+}
+
+function provenanceLevelOf(material) {
+  return material?.provenance_level || material?.provenance?.level || ''
+}
+
+function materialText(material) {
+  if (!material) return ''
+  if (material?.content?.text) return material.content.text
+  if (material?.text) return material.text
+  if (material?.label) return material.label
+  if (material?.libelle) return material.libelle
+  if (material?.formulation) return material.formulation
+  if (material?.source_label || material?.target_label) return `${material.source_label || ''} — ${material.relation_type || 'relation'} → ${material.target_label || ''}`
+  if (material?.source?.label || material?.target?.label) return `${material.source?.label || ''} — ${material.relation_type || 'relation'} → ${material.target?.label || ''}`
   return material?.selected_material?.text || ''
 }
 
-function locatorOf(material){
-  return material?.provenance?.locator || material?.provenance?.source_locator || material?.locator || material?.page_source || null
+function locatorOf(material) {
+  if (material?.page_debut || material?.page_fin) {
+    const start = String(material.page_debut || '').trim()
+    const end = String(material.page_fin || '').trim()
+    if (start && end && start !== end) return { label: `p. ${start}–${end}`, page: start }
+    if (start || end) return { label: `p. ${start || end}`, page: start || end }
+  }
+  const raw = String(material?.provenance?.source_locator || material?.provenance?.locator || material?.locator || material?.page_source || '').trim()
+  if (!raw) return null
+  if (/^\d+$/.test(raw)) return { label: `p. ${raw}`, page: raw }
+  if (/^\d+(?:;\d+)+$/.test(raw)) return { label: `p. ${raw.split(';').join(', ')}`, page: raw.split(';')[0] }
+  if (/^\d{1,2}:\d{2}/.test(raw)) return { label: `timecode ${raw}`, page: null }
+  return { label: `repère ${raw}`, page: null }
 }
 
-function materialKind(material){
-  const id=materialIdOf(material)
-  if(id?.startsWith('chunk:'))return 'Extrait'
-  if(id?.startsWith('relation:'))return 'Relation'
-  if(id?.startsWith('node:'))return material?.content?.node_type || material?.node_type || 'Élément du graphe'
+function materialKind(material) {
+  const id = materialIdOf(material)
+  if (id?.startsWith('chunk:')) return 'Extrait'
+  if (id?.startsWith('relation:')) return 'Relation'
+  if (id?.startsWith('node:')) {
+    const type = material?.node_type || material?.content?.node_type || ''
+    if (type === 'acteur' || type === 'expert_public') return 'Acteur'
+    if (type === 'tendance') return 'Tendance'
+    if (type === 'signal_faible') return 'Signal faible'
+    if (type === 'action') return 'Action'
+    if (type === 'instrument_dispositif') return 'Instrument / dispositif'
+    return type ? type.replaceAll('_', ' ') : 'Élément du graphe'
+  }
   return 'Élément du corpus'
 }
 
-function shortText(text, max=260){
-  const value=String(text||'').replace(/\s+/g,' ').trim()
-  return value.length>max?`${value.slice(0,max).trim()}…`:value
+function shortText(text, max = 290) {
+  const value = String(text || '').replace(/\s+/g, ' ').trim()
+  return value.length > max ? `${value.slice(0, max).trim()}…` : value
 }
 
-function makeCanvasCard({kind='Note',text='',tone='blue',material=null,x=null,y=null}){
-  const now=Date.now()
+function isPdfUrl(url) {
+  return /\.pdf(?:$|[?#])/i.test(String(url || ''))
+}
+
+function sourceUrlOf(material) {
+  const meta = publicationMeta(material)
+  const primary = meta.urlContent || meta.urlSource
+  if (!primary) return ''
+  const locator = locatorOf(material)
+  if (isPdfUrl(primary) && locator?.page) {
+    const clean = primary.replace(/#.*$/, '')
+    return `${clean}#page=${locator.page}`
+  }
+  return primary
+}
+
+function sourceButtonLabel(material) {
+  const meta = publicationMeta(material)
+  return isPdfUrl(meta.urlContent) ? 'Ouvrir le document' : 'Ouvrir la source'
+}
+
+function makeCanvasCard({ kind = 'Note', text = '', tone = 'lilac', material = null, x = null, y = null }) {
+  const now = Date.now()
   return {
-    id:`card-${now}-${Math.random().toString(36).slice(2,7)}`,
+    id: `card-${now}-${Math.random().toString(36).slice(2, 7)}`,
     kind,
     text,
     tone,
     material,
-    materialId:materialIdOf(material),
-    x:x??56,
-    y:y??48,
-    createdAt:now,
+    materialId: materialIdOf(material),
+    x: x ?? 64,
+    y: y ?? 72,
+    collapsed: false,
+    createdAt: now,
   }
 }
 
-function restoreCanvas(){
-  try{
-    const parsed=JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'null')
-    return Array.isArray(parsed)?parsed:[]
-  }catch{return []}
-}
-
-function actionReadiness(actionId, selectedCards){
-  const selected=selectedCards || []
-  const materials=selected.filter(card=>card.materialId)
-  const only=selected[0]
-  const text=only?.text?.trim()
-  if(actionId==='DOC01')return {ready:selected.length===1&&Boolean(text), hint:'Sélectionnez une carte contenant une question, une hypothèse, un problème ou une note.'}
-  if(actionId==='DOC02')return {ready:selected.length===1&&Boolean(only?.materialId), hint:'Sélectionnez un élément du corpus ajouté au canevas.'}
-  if(actionId==='DOC03')return {ready:selected.length===1&&Boolean(text||only?.materialId), hint:'Sélectionnez un élément à partir duquel chercher des situations comparables.'}
-  if(actionId==='MIR01')return {ready:selected.length===1&&Boolean(text), hint:'Sélectionnez une carte qui formule une affirmation ou une hypothèse.'}
-  if(actionId==='MIR04')return {ready:materials.length>=2, hint:'Sélectionnez au moins deux éléments du corpus dans le canevas.'}
-  if(actionId==='MIR08')return {ready:selected.length===1&&Boolean(text), hint:'Sélectionnez une affirmation ou une hypothèse à vérifier.'}
-  if(actionId==='MET01')return {ready:materials.length===2&&selected.length===2, hint:'Sélectionnez exactement deux éléments du corpus.'}
-  if(actionId==='MET02')return {ready:selected.length===1&&only?.materialId?.startsWith('relation:'), hint:'Sélectionnez une relation du graphe ajoutée au canevas.'}
-  if(actionId==='MET04'){
-    const nodeType=String(only?.material?.content?.node_type||only?.material?.node_type||'').toLowerCase()
-    return {ready:selected.length===1&&only?.materialId?.startsWith('node:')&&nodeType.includes('recommand'), hint:'Sélectionnez un nœud de recommandation ajouté au canevas.'}
-  }
-  return {ready:false,hint:'Sélectionnez un élément du canevas.'}
-}
-
-function payloadForAction(actionId, selectedCards){
-  const only=selectedCards[0]
-  const materialIds=selectedCards.map(card=>card.materialId).filter(Boolean)
-  if(actionId==='DOC01')return {element:only.text,limit:12}
-  if(actionId==='DOC02')return {material_id:only.materialId}
-  if(actionId==='DOC03')return only.materialId?{material_id:only.materialId}:{element:only.text}
-  if(actionId==='MIR01')return {assertion:only.text}
-  if(actionId==='MIR04')return {material_ids:materialIds}
-  if(actionId==='MIR08')return {text:only.text}
-  if(actionId==='MET01')return {material_ids:materialIds}
-  if(actionId==='MET02')return {material_id:only.materialId}
-  if(actionId==='MET04')return {material_id:only.materialId}
-  return {}
-}
-
-function flattenActionMaterials(actionId,result){
-  if(!result)return []
-  if(actionId==='DOC01')return result.materials||[]
-  if(actionId==='DOC02'){
-    const base=[]
-    if(result.selected_material){
-      base.push({
-        material_id:result.selected_material_id,
-        content:{text:result.selected_material.text||result.selected_material.label||''},
-        publication:result.publication,
-        provenance:result.provenance,
-      })
+function restoreWorkspace() {
+  try {
+    const current = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null')
+    if (current && Array.isArray(current.cards)) {
+      return { cards: current.cards.map(card => ({ ...card, collapsed: Boolean(card.collapsed) })), links: Array.isArray(current.links) ? current.links : [] }
     }
-    return base
-  }
-  if(actionId==='DOC03')return (result.cases||[]).flatMap(item=>item.evidence_materials||item.materials||item.evidence||[])
-  if(actionId==='MIR01')return [...(result.evidence?.support||[]),...(result.evidence?.nuance||[]),...(result.evidence?.contradiction||[])]
-  if(actionId==='MIR04')return [...(result.findings?.explicit_contradictions||[]),...(result.findings?.documented_tensions||[])]
-  if(actionId==='MIR08')return (result.checks||[]).flatMap(check=>check.materials||[])
-  if(actionId==='MET01')return []
-  if(actionId==='MET02')return result.relation?[{
-    material_id:`relation:${result.relation.relation_id}`,
-    content:{text:`${result.relation.source?.label||''} — ${result.relation.relation_type||''} → ${result.relation.target?.label||''}`},
-    publication:result.relation.publication,
-    provenance:result.provenance,
-    relation_type:result.relation.relation_type,
-  }]:[]
-  if(actionId==='MET04')return result.recommendation?[{
-    material_id:`node:${result.recommendation.node_id}`,
-    content:{text:result.recommendation.label,node_type:result.recommendation.node_type},
-    node_type:result.recommendation.node_type,
-    publication:result.recommendation.publication,
-    provenance:result.recommendation.provenance,
-  }]:[]
-  return []
+    const legacy = JSON.parse(sessionStorage.getItem(LEGACY_STORAGE_KEY) || 'null')
+    if (Array.isArray(legacy)) return { cards: legacy.map(card => ({ ...card, collapsed: false })), links: [] }
+  } catch {}
+  return { cards: [], links: [] }
 }
 
-export default function ReflectionWorkspaceV1({onBack}){
-  const [cards,setCards]=useState(restoreCanvas)
-  const [selectedIds,setSelectedIds]=useState([])
-  const [composer,setComposer]=useState(null)
-  const [draft,setDraft]=useState('')
-  const [activeAction,setActiveAction]=useState(null)
-  const [actionResult,setActionResult]=useState(null)
-  const [actionLoading,setActionLoading]=useState(false)
-  const [actionError,setActionError]=useState('')
-  const [corpusQuery,setCorpusQuery]=useState('')
-  const [corpusResult,setCorpusResult]=useState(null)
-  const [corpusLoading,setCorpusLoading]=useState(false)
-  const [corpusError,setCorpusError]=useState('')
-  const [guidance,setGuidance]=useState('')
-  const canvasRef=useRef(null)
-  const dragRef=useRef(null)
+function needSearchConfig(needId, query) {
+  const clean = query.trim()
+  if (needId === 'precise') return { query: clean, options: { limit: 18, maxPerPublication: 5, diversifyByPublication: false } }
+  if (needId === 'trends') return { query: `${clean} tendance évolution émergence signal faible`, options: { limit: 30, maxPerPublication: 4, kinds: ['node', 'chunk'] } }
+  if (needId === 'actors') return { query: `${clean} acteur`, options: { limit: 30, maxPerPublication: 5, kinds: ['node'] } }
+  if (needId === 'public-action') return { query: `${clean} action dispositif instrument`, options: { limit: 30, maxPerPublication: 5, kinds: ['node'] } }
+  return { query: clean, options: { limit: 24, maxPerPublication: 2, diversifyByPublication: true } }
+}
 
-  useEffect(()=>{
-    try{sessionStorage.setItem(STORAGE_KEY,JSON.stringify(cards))}catch{}
-  },[cards])
+function visibleResultsForNeed(needId, result) {
+  const all = result?.results || result?.materials || []
+  if (needId === 'actors') return all.filter(item => ['acteur', 'expert_public'].includes(String(item.node_type || '').toLowerCase()))
+  if (needId === 'public-action') return all.filter(item => ['action', 'instrument_dispositif'].includes(String(item.node_type || '').toLowerCase()))
+  if (needId === 'trends') {
+    const trendWords = /(tendance|signal faible|évolu|evolu|émerg|emerg|hausse|baisse|augment|diminu|progress|recul|nouveau|nouvelle|récent|recent|depuis|entre 20)/i
+    return all.filter(item => ['tendance', 'signal_faible'].includes(String(item.node_type || '').toLowerCase()) || trendWords.test(`${materialText(item)} ${item.section || ''}`))
+  }
+  return all
+}
 
-  const selectedCards=useMemo(()=>selectedIds.map(id=>cards.find(card=>card.id===id)).filter(Boolean),[selectedIds,cards])
+function cardCenter(card) {
+  const width = 248
+  const height = card.collapsed ? 64 : 152
+  return { x: Number(card.x || 0) + width / 2, y: Number(card.y || 0) + height / 2 }
+}
 
-  useEffect(()=>{
-    const onMove=e=>{
-      const drag=dragRef.current
-      if(!drag||!canvasRef.current)return
-      const rect=canvasRef.current.getBoundingClientRect()
-      const maxX=Math.max(12,rect.width-drag.width-12)
-      const maxY=Math.max(12,rect.height-drag.height-12)
-      const x=Math.min(maxX,Math.max(12,e.clientX-rect.left-drag.offsetX))
-      const y=Math.min(maxY,Math.max(12,e.clientY-rect.top-drag.offsetY))
-      setCards(list=>list.map(card=>card.id===drag.id?{...card,x,y}:card))
+export default function ReflectionWorkspaceV1({ onBack }) {
+  const initial = useMemo(restoreWorkspace, [])
+  const [cards, setCards] = useState(initial.cards)
+  const [links, setLinks] = useState(initial.links)
+  const [selectedIds, setSelectedIds] = useState([])
+  const [activeNeedId, setActiveNeedId] = useState('overview')
+  const [query, setQuery] = useState('')
+  const [searchResult, setSearchResult] = useState(null)
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [searchError, setSearchError] = useState('')
+  const [composer, setComposer] = useState(null)
+  const [draft, setDraft] = useState('')
+  const [leftCollapsed, setLeftCollapsed] = useState(false)
+  const [rightCollapsed, setRightCollapsed] = useState(false)
+  const [showLinkComposer, setShowLinkComposer] = useState(false)
+  const [linkLabel, setLinkLabel] = useState('est lié à')
+  const [showLinks, setShowLinks] = useState(false)
+  const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
+  const canvasRef = useRef(null)
+  const dragRef = useRef(null)
+
+  const activeNeed = NEEDS.find(item => item.id === activeNeedId) || NEEDS[0]
+  const selectedCards = useMemo(() => cards.filter(card => selectedIds.includes(card.id)), [cards, selectedIds])
+  const visibleResults = useMemo(() => visibleResultsForNeed(activeNeedId, searchResult), [activeNeedId, searchResult])
+
+  useEffect(() => {
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links })) } catch {}
+  }, [cards, links])
+
+  useEffect(() => {
+    const onMove = event => {
+      const drag = dragRef.current
+      if (!drag || !canvasRef.current) return
+      const rect = canvasRef.current.getBoundingClientRect()
+      const maxX = Math.max(12, rect.width - drag.width - 12)
+      const maxY = Math.max(12, rect.height - drag.height - 12)
+      const x = Math.min(maxX, Math.max(12, event.clientX - rect.left - drag.offsetX))
+      const y = Math.min(maxY, Math.max(12, event.clientY - rect.top - drag.offsetY))
+      setCards(list => list.map(card => card.id === drag.id ? { ...card, x, y } : card))
     }
-    const onUp=()=>{dragRef.current=null;document.body.classList.remove('qvl-reflection-dragging')}
-    window.addEventListener('pointermove',onMove)
-    window.addEventListener('pointerup',onUp)
-    return()=>{window.removeEventListener('pointermove',onMove);window.removeEventListener('pointerup',onUp)}
-  },[])
+    const onUp = () => {
+      dragRef.current = null
+      document.body.classList.remove('qvl-reflection-dragging')
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+    }
+  }, [])
 
-  const beginComposer=starter=>{
-    if(starter.id==='corpus'){
-      setGuidance('Utilisez « Interroger le corpus » à droite, puis ajoutez le matériau qui vous intéresse au canevas.')
-      setComposer(null)
-      setTimeout(()=>document.querySelector('.qvl-global-search-panel textarea')?.focus(),0)
+  const chooseNeed = id => {
+    setActiveNeedId(id)
+    setSearchResult(null)
+    setSearchError('')
+    setRightCollapsed(false)
+  }
+
+  const runSearch = async event => {
+    event?.preventDefault()
+    if (!query.trim() || searchLoading) return
+    setSearchLoading(true)
+    setSearchError('')
+    setSearchResult(null)
+    try {
+      const config = needSearchConfig(activeNeedId, query)
+      const result = await searchCorpus(config.query, config.options)
+      setSearchResult(result)
+    } catch (error) {
+      setSearchError(error?.message || String(error))
+    } finally {
+      setSearchLoading(false)
+    }
+  }
+
+  const beginComposer = type => {
+    if (type === 'corpus') {
+      setRightCollapsed(false)
+      setTimeout(() => document.querySelector('.qvl-need-search textarea')?.focus(), 0)
       return
     }
-    setComposer(starter)
+    const cardType = CARD_TYPES.find(item => item.id === type)
+    if (!cardType) return
+    setComposer(cardType)
     setDraft('')
-    setGuidance('')
-    setTimeout(()=>document.querySelector('.qvl-canvas-composer textarea')?.focus(),0)
+    setTimeout(() => document.querySelector('.qvl-canvas-composer textarea')?.focus(), 0)
   }
 
-  const addDraft=()=>{
-    if(!composer||!draft.trim())return
-    const index=cards.length
-    const x=38+(index%3)*242
-    const y=44+(Math.floor(index/3)%3)*150
-    const card=makeCanvasCard({kind:composer.kind,text:draft.trim(),tone:composer.tone,x,y})
-    setCards(list=>[...list,card])
-    setSelectedIds([card.id])
-    setComposer(null);setDraft('');setActionResult(null);setActiveAction(null)
-  }
-
-  const addMaterialToCanvas=(material,kindOverride)=>{
-    const text=materialText(material)
-    if(!text)return
-    const index=cards.length
-    const card=makeCanvasCard({
-      kind:kindOverride||materialKind(material),
-      text,
-      tone:'sand',
-      material,
-      x:54+(index%3)*236,
-      y:54+(Math.floor(index/3)%3)*154,
+  const addDraft = () => {
+    if (!composer || !draft.trim()) return
+    const index = cards.length
+    const card = makeCanvasCard({
+      kind: composer.label,
+      text: draft.trim(),
+      tone: composer.tone,
+      x: 58 + (index % 3) * 276,
+      y: 76 + (Math.floor(index / 3) % 4) * 190,
     })
-    setCards(list=>[...list,card])
+    setCards(list => [...list, card])
     setSelectedIds([card.id])
-    setGuidance('Élément ajouté au canevas. Vous pouvez maintenant le sélectionner pour remonter à la preuve, chercher un cas comparable ou examiner ses liens.')
+    setComposer(null)
+    setDraft('')
   }
 
-  const deleteCard=id=>{
-    setCards(list=>list.filter(card=>card.id!==id))
-    setSelectedIds(ids=>ids.filter(value=>value!==id))
+  const addMaterialToCanvas = material => {
+    const text = materialText(material)
+    if (!text) return
+    const index = cards.length
+    const card = makeCanvasCard({
+      kind: 'Élément du corpus',
+      text,
+      tone: 'sand',
+      material,
+      x: 76 + (index % 3) * 276,
+      y: 86 + (Math.floor(index / 3) % 4) * 190,
+    })
+    setCards(list => [...list, card])
+    setSelectedIds([card.id])
   }
 
-  const toggleSelection=(card,e)=>{
-    const multi=e.shiftKey||e.ctrlKey||e.metaKey
-    if(multi){
-      setSelectedIds(ids=>ids.includes(card.id)?ids.filter(id=>id!==card.id):[...ids,card.id].slice(-8))
-    }else setSelectedIds([card.id])
-    setGuidance('')
+  const deleteCard = id => {
+    setCards(list => list.filter(card => card.id !== id))
+    setSelectedIds(ids => ids.filter(value => value !== id))
+    setLinks(list => list.filter(link => link.source !== id && link.target !== id))
   }
 
-  const startDrag=(e,card)=>{
-    if(e.button!==0||e.target.closest('button,textarea,input,a'))return
-    const el=e.currentTarget.closest('.qvl-canvas-card')
-    const rect=el.getBoundingClientRect()
-    dragRef.current={id:card.id,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top,width:rect.width,height:rect.height}
+  const toggleCardCollapsed = id => {
+    setCards(list => list.map(card => card.id === id ? { ...card, collapsed: !card.collapsed } : card))
+  }
+
+  const toggleSelection = (card, event) => {
+    const multi = event.shiftKey || event.ctrlKey || event.metaKey
+    if (multi) {
+      setSelectedIds(ids => ids.includes(card.id) ? ids.filter(id => id !== card.id) : [...ids, card.id].slice(-2))
+    } else {
+      setSelectedIds([card.id])
+    }
+    setShowLinkComposer(false)
+  }
+
+  const startDrag = (event, card) => {
+    if (event.button !== 0 || event.target.closest('button,textarea,input,a')) return
+    const element = event.currentTarget.closest('.qvl-canvas-card')
+    const rect = element.getBoundingClientRect()
+    dragRef.current = { id: card.id, offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top, width: rect.width, height: rect.height }
     document.body.classList.add('qvl-reflection-dragging')
-    el.setPointerCapture?.(e.pointerId)
+    element.setPointerCapture?.(event.pointerId)
   }
 
-  const runAction=async actionId=>{
-    const readiness=actionReadiness(actionId,selectedCards)
-    setActiveAction(actionId)
-    setActionResult(null)
-    setActionError('')
-    if(!readiness.ready){setGuidance(readiness.hint);return}
-    setGuidance('')
-    setActionLoading(true)
-    try{
-      const result=await runReflectionAction(actionId,payloadForAction(actionId,selectedCards))
-      setActionResult(result)
-    }catch(error){setActionError(error?.message||String(error))}
-    finally{setActionLoading(false)}
+  const createLink = () => {
+    if (selectedIds.length !== 2) return
+    const [source, target] = selectedIds
+    const exists = links.some(link => (link.source === source && link.target === target) || (link.source === target && link.target === source))
+    if (!exists) {
+      setLinks(list => [...list, { id: `link-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, source, target, label: linkLabel }])
+    }
+    setShowLinkComposer(false)
+    setLinkLabel('est lié à')
   }
 
-  const runCorpusSearch=async e=>{
-    e?.preventDefault()
-    if(!corpusQuery.trim()||corpusLoading)return
-    setCorpusLoading(true);setCorpusError('');setCorpusResult(null)
-    try{setCorpusResult(await searchCorpus(corpusQuery.trim(),{limit:12,maxPerPublication:3}))}
-    catch(error){setCorpusError(error?.message||String(error))}
-    finally{setCorpusLoading(false)}
+  const removeLink = id => setLinks(list => list.filter(link => link.id !== id))
+
+  const showProof = async material => {
+    const materialId = materialIdOf(material)
+    setProofState({ open: true, loading: true, error: '', material, result: null })
+    if (!materialId) {
+      setProofState({ open: true, loading: false, error: '', material, result: null })
+      return
+    }
+    try {
+      const result = await runReflectionAction('DOC02', { material_id: materialId })
+      setProofState({ open: true, loading: false, error: '', material, result })
+    } catch (error) {
+      setProofState({ open: true, loading: false, error: error?.message || String(error), material, result: null })
+    }
   }
 
-  const currentAction=activeAction?ACTION_BY_ID[activeAction]:null
+  const shellClass = `qvl-reflection-shell ${leftCollapsed ? 'left-collapsed' : ''} ${rightCollapsed ? 'right-collapsed' : ''}`
 
   return <main className="qvl-reflection-page">
     <div className="qvl-reflection-back-wrap"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button></div>
+
     <section className="qvl-reflection-hero">
-      <div className="qvl-hero-motto" aria-hidden="true"><span>Comprendre</span><span>Éclairer</span><span>Agir</span><i/></div>
       <div className="qvl-hero-copy">
-        <h1>Réfléchir avec le corpus</h1>
-        <h2>Documenter · Mettre à l’épreuve · Prendre du recul</h2>
-        <p>Le travail humain au centre ; le corpus à portée de main ; l’IA en appui, jamais au volant.</p>
+        <h1>Faire avancer son analyse avec le corpus</h1>
+        <p>Une bibliothèque à portée de main pour explorer, documenter et relier les éléments utiles à votre travail.</p>
+        <span>Les résultats reflètent uniquement les sujets et publications présents dans le corpus actif.</span>
       </div>
-      <div className="qvl-hero-signature" aria-hidden="true"><span className="qvl-building-sketch">⌂</span><span>Des savoirs<br/>pour l’action<br/>publique</span><i/></div>
     </section>
 
-    <div className="qvl-reflection-shell">
+    <div className={shellClass}>
       <aside className="qvl-reflection-left">
-        <h2>Pour avancer dans votre réflexion</h2>
-        {ACTION_GROUPS.map((group,index)=><section className="qvl-action-group" key={group.title}>
-          <h3><Icon name={group.icon} size={18}/><span>{index+1}. {group.title}</span></h3>
-          <div className="qvl-action-list">
-            {group.items.map(item=>{
-              const readiness=actionReadiness(item.id,selectedCards)
-              return <button type="button" key={item.id} className={`qvl-action-button ${activeAction===item.id?'active':''} ${readiness.ready?'ready':'context-needed'}`} onClick={()=>runAction(item.id)} title={readiness.ready?item.label:readiness.hint}>
-                <span className="qvl-action-icon"><Icon name={item.icon} size={22}/></span>
-                <span>{item.label}</span>
-                <Icon name="chevron" size={16}/>
-              </button>
-            })}
+        <button className="qvl-panel-toggle left" type="button" onClick={() => setLeftCollapsed(value => !value)} aria-label={leftCollapsed ? 'Déployer les besoins documentaires' : 'Replier les besoins documentaires'}>
+          {leftCollapsed ? '›' : '‹'}
+        </button>
+        {leftCollapsed ? <div className="qvl-collapsed-label">Besoins documentaires</div> : <>
+          <header className="qvl-side-heading">
+            <span className="qvl-side-icon"><Icon name="book" size={19}/></span>
+            <div><h2>Besoins documentaires</h2><p>Choisissez ce que vous cherchez à faire avec le corpus.</p></div>
+          </header>
+          <div className="qvl-need-list">
+            {NEEDS.map(need => <button key={need.id} type="button" className={`qvl-need-card ${need.tone} ${activeNeedId === need.id ? 'active' : ''}`} onClick={() => chooseNeed(need.id)}>
+              <span className="qvl-need-icon"><Icon name={need.icon} size={21}/></span>
+              <span className="qvl-need-copy"><strong>{need.label}</strong><small>{need.description}</small></span>
+              <Icon name="chevron" size={15}/>
+            </button>)}
           </div>
-        </section>)}
+          <div className="qvl-scope-note"><Icon name="info" size={15}/><span>Ces fonctions portent uniquement sur les sujets effectivement couverts par le corpus actif.</span></div>
+        </>}
       </aside>
 
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
-          <div className="qvl-canvas-title"><span className="qvl-pencil">✎</span><h2>Votre espace de réflexion</h2></div>
-          <p>Commencez par poser ce sur quoi vous travaillez : une question, un problème, une hypothèse, un élément du corpus ou simplement une note. À partir de là, vous pourrez chercher ce qui existe dans le corpus, vérifier vos affirmations, confronter plusieurs éléments ou prendre du recul sur votre raisonnement.</p>
-          <p className="qvl-canvas-promise">Vous construisez l’analyse. Quiritès vous aide à l’étayer, à la questionner et à <strong>identifier les sources utiles</strong>.</p>
-          <div className="qvl-starter-row">
-            {STARTERS.map(starter=><button type="button" key={starter.id} className={`qvl-starter ${starter.tone}`} onClick={()=>beginComposer(starter)}><Icon name="plus" size={18}/><span>{starter.label}</span></button>)}
+          <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2><p>Posez une question, formulez une idée, ajoutez une note ou conservez un élément du corpus. Déplacez les cartes, rapprochez-les et reliez-les pour faire apparaître progressivement votre raisonnement.</p></div></div>
+          <div className="qvl-canvas-promise"><strong>Vos idées restent les vôtres.</strong><span>Les éléments du corpus restent sourcés.</span></div>
+          <div className="qvl-canvas-toolbar">
+            {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
+            <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
+            <span className="qvl-toolbar-spacer"/>
+            <div className="qvl-link-tools">
+              <button type="button" className="qvl-link-button" disabled={selectedIds.length !== 2} onClick={() => setShowLinkComposer(value => !value)}><Icon name="link" size={16}/>Relier 2 cartes</button>
+              {links.length > 0 && <button type="button" className="qvl-link-count" onClick={() => setShowLinks(value => !value)}>Liens ({links.length})</button>}
+              {showLinkComposer && selectedIds.length === 2 && <div className="qvl-link-popover">
+                <strong>Qualifier le lien</strong>
+                <select value={linkLabel} onChange={event => setLinkLabel(event.target.value)}>
+                  {LINK_LABELS.map(label => <option key={label || 'none'} value={label}>{label || 'Sans libellé'}</option>)}
+                </select>
+                <button type="button" onClick={createLink}>Créer le lien</button>
+              </div>}
+              {showLinks && links.length > 0 && <div className="qvl-link-list-popover">
+                <strong>Liens du canevas</strong>
+                {links.map(link => {
+                  const source = cards.find(card => card.id === link.source)
+                  const target = cards.find(card => card.id === link.target)
+                  return <div key={link.id}><span>{shortText(source?.text, 26)} {link.label || '—'} {shortText(target?.text, 26)}</span><button type="button" onClick={() => removeLink(link.id)}>×</button></div>
+                })}
+              </div>}
+            </div>
           </div>
         </header>
 
-        {composer&&<div className="qvl-canvas-composer">
-          <div><strong>{composer.kind}</strong><span>Écrivez avec vos mots. Rien ne sera généré à votre place.</span></div>
-          <textarea value={draft} onChange={e=>setDraft(e.target.value)} placeholder={composer.placeholder} onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')addDraft()}}/>
-          <div className="qvl-composer-actions"><button type="button" onClick={()=>{setComposer(null);setDraft('')}}>Annuler</button><button type="button" className="primary" disabled={!draft.trim()} onClick={addDraft}>Ajouter au canevas</button></div>
+        {composer && <div className={`qvl-canvas-composer ${composer.tone}`}>
+          <div><strong>{composer.label}</strong><span>Écrivez avec vos mots. Vous pourrez déplacer et replier cette carte ensuite.</span></div>
+          <textarea value={draft} onChange={event => setDraft(event.target.value)} placeholder={composer.placeholder} onKeyDown={event => { if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') addDraft() }}/>
+          <div className="qvl-composer-actions"><button type="button" onClick={() => { setComposer(null); setDraft('') }}>Annuler</button><button type="button" className="primary" disabled={!draft.trim()} onClick={addDraft}>Ajouter au canevas</button></div>
         </div>}
 
-        <div className={`qvl-canvas ${cards.length?'has-cards':''}`} ref={canvasRef} onClick={e=>{if(e.target===e.currentTarget)setSelectedIds([])}}>
-          {!cards.length&&<div className="qvl-empty-canvas">
-            <div className="qvl-empty-cards" aria-hidden="true"><i/><i/></div>
-            <h3>Votre canevas est encore vide</h3>
-            <p>Ajoutez une carte pour commencer à structurer votre réflexion.</p>
-            <div className="qvl-hand-hint" aria-hidden="true"><span>↖</span><em>Commencez ici<br/>et construisez votre analyse<br/>pas à pas</em></div>
-          </div>}
-          {cards.map(card=>{
-            const selected=selectedIds.includes(card.id)
-            return <article key={card.id} className={`qvl-canvas-card ${card.tone} ${selected?'selected':''} ${card.materialId?'corpus-card':''}`} style={{left:card.x,top:card.y}} onClick={e=>{e.stopPropagation();toggleSelection(card,e)}} onPointerDown={e=>startDrag(e,card)}>
-              <header><span>{card.kind}</span>{card.materialId&&<small>{card.materialId.replace(':',' · ')}</small>}<button type="button" aria-label="Supprimer la carte" onClick={e=>{e.stopPropagation();deleteCard(card.id)}}><Icon name="close" size={14}/></button></header>
-              <p>{card.text}</p>
-              {card.material&&<footer><span>{publicationOf(card.material)?.publication_id||publicationOf(card.material)?.titre||''}</span>{locatorOf(card.material)&&<span>p./repère {locatorOf(card.material)}</span>}</footer>}
-            </article>
-          })}
+        <div className="qvl-canvas-stage">
+          <div className={`qvl-canvas ${cards.length ? 'has-cards' : ''}`} ref={canvasRef} onClick={event => { if (event.target === event.currentTarget) setSelectedIds([]) }}>
+            <svg className="qvl-links-layer" width="100%" height="100%" aria-hidden="true">
+              <defs><marker id="qvl-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker></defs>
+              {links.map(link => {
+                const source = cards.find(card => card.id === link.source)
+                const target = cards.find(card => card.id === link.target)
+                if (!source || !target) return null
+                const a = cardCenter(source)
+                const b = cardCenter(target)
+                const midX = (a.x + b.x) / 2
+                const midY = (a.y + b.y) / 2
+                return <g key={link.id} className="qvl-link-line">
+                  <path d={`M ${a.x} ${a.y} C ${midX} ${a.y}, ${midX} ${b.y}, ${b.x} ${b.y}`} markerEnd="url(#qvl-arrow)"/>
+                  {link.label && <><rect x={midX - 40} y={midY - 11} width="80" height="22" rx="11"/><text x={midX} y={midY + 3} textAnchor="middle">{link.label}</text></>}
+                </g>
+              })}
+            </svg>
+
+            {!cards.length && <div className="qvl-empty-canvas">
+              <div className="qvl-empty-postits" aria-hidden="true"><i className="blue"/><i className="yellow"/><i className="lilac"/></div>
+              <h3>Installez votre réflexion ici</h3>
+              <p>Commencez par une question, une idée ou une note. Cherchez ensuite dans le corpus et ajoutez les éléments utiles à côté de votre propre raisonnement.</p>
+              <span>Une bibliothèque à portée de main, un espace de travail qui reste le vôtre.</span>
+            </div>}
+
+            {cards.map(card => {
+              const selected = selectedIds.includes(card.id)
+              const meta = card.material ? publicationMeta(card.material) : null
+              const locator = card.material ? locatorOf(card.material) : null
+              return <article key={card.id} className={`qvl-canvas-card ${card.tone} ${selected ? 'selected' : ''} ${card.materialId ? 'corpus-card' : ''} ${card.collapsed ? 'collapsed' : ''}`} style={{ left: card.x, top: card.y }} onClick={event => { event.stopPropagation(); toggleSelection(card, event) }} onPointerDown={event => startDrag(event, card)}>
+                <header>
+                  <span>{card.kind}</span>
+                  <div className="qvl-card-controls">
+                    <button type="button" aria-label={card.collapsed ? 'Déployer la carte' : 'Réduire la carte'} title={card.collapsed ? 'Déployer' : 'Réduire'} onClick={event => { event.stopPropagation(); toggleCardCollapsed(card.id) }}><Icon name={card.collapsed ? 'plus' : 'minus'} size={13}/></button>
+                    <button type="button" aria-label="Supprimer la carte" title="Supprimer" onClick={event => { event.stopPropagation(); deleteCard(card.id) }}><Icon name="close" size={13}/></button>
+                  </div>
+                </header>
+                <p>{card.collapsed ? shortText(card.text, 72) : card.text}</p>
+                {!card.collapsed && card.material && <footer>
+                  <strong>{meta?.title || meta?.id}</strong>
+                  <span>{[meta?.organisation, meta?.year].filter(Boolean).join(' · ')}</span>
+                  <span>{[locator?.label, provenanceLevelOf(card.material) ? `provenance ${provenanceLevelOf(card.material)}` : ''].filter(Boolean).join(' · ')}</span>
+                </footer>}
+              </article>
+            })}
+          </div>
         </div>
-        {cards.length>0&&<div className="qvl-canvas-help"><span>{selectedCards.length?`${selectedCards.length} carte${selectedCards.length>1?'s':''} sélectionnée${selectedCards.length>1?'s':''}`:'Cliquez sur une carte pour la sélectionner.'}</span><span>Maj/Ctrl + clic pour sélectionner plusieurs éléments · Faites glisser une carte pour la déplacer.</span></div>}
+        <div className="qvl-canvas-help"><span>{selectedCards.length ? `${selectedCards.length} carte${selectedCards.length > 1 ? 's' : ''} sélectionnée${selectedCards.length > 1 ? 's' : ''}` : 'Cliquez sur une carte pour la sélectionner.'}</span><span>Ctrl/Maj + clic pour sélectionner deux cartes et les relier · Chaque post-it peut être réduit.</span></div>
       </section>
 
       <aside className="qvl-reflection-right">
-        <section className="qvl-corpus-panel">
-          <h2><Icon name="file" size={21}/>Ce que le corpus apporte</h2>
-          <div className={`qvl-assist-zone ${actionResult||actionLoading||actionError||guidance?'active':''}`}>
-            {!activeAction&&!actionLoading&&!actionResult&&!actionError&&!guidance&&<RightEmpty/>}
-            {guidance&&<div className="qvl-guidance"><span className="qvl-guidance-icon"><Icon name="info" size={20}/></span><strong>Pour utiliser cette fonction</strong><p>{guidance}</p></div>}
-            {currentAction&&actionLoading&&<div className="qvl-loading"><span>✦</span><strong>{currentAction.label}</strong><p>Le corpus est interrogé à partir de l’élément sélectionné.</p></div>}
-            {actionError&&<div className="qvl-error"><strong>La vérification n’a pas abouti</strong><p>{actionError}</p></div>}
-            {actionResult&&<ActionResult actionId={activeAction} result={actionResult} onAdd={addMaterialToCanvas}/>} 
-          </div>
-        </section>
+        <button className="qvl-panel-toggle right" type="button" onClick={() => setRightCollapsed(value => !value)} aria-label={rightCollapsed ? 'Déployer le corpus' : 'Replier le corpus'}>
+          {rightCollapsed ? '‹' : '›'}
+        </button>
+        {rightCollapsed ? <div className="qvl-collapsed-label">Corpus</div> : <>
+          <header className="qvl-side-heading corpus">
+            <span className="qvl-side-icon"><Icon name="file" size={19}/></span>
+            <div><h2>Ce que le corpus apporte</h2><p>{activeNeed.label}</p></div>
+          </header>
 
-        <section className="qvl-global-search-panel">
-          <div className="qvl-search-panel-head"><h2><span className="qvl-chat-bubble">◯</span>Interroger le corpus</h2><button type="button" onClick={()=>setGuidance('Posez une question ou quelques mots-clés. Le moteur cherche dans l’ensemble du corpus actif et restitue uniquement les matériaux réellement présents.')}>Conseils d’usage</button></div>
-          <form onSubmit={runCorpusSearch}>
-            <textarea maxLength={500} value={corpusQuery} onChange={e=>setCorpusQuery(e.target.value)} placeholder="Posez une question sur le corpus…"/>
-            <span className="qvl-char-count">{corpusQuery.length}/500</span>
-            <div className="qvl-corpus-scope"><Icon name="layers" size={17}/><span>Tout le corpus</span><span>⌄</span></div>
-            <button className="qvl-search-submit" type="submit" disabled={!corpusQuery.trim()||corpusLoading}><Icon name="search" size={19}/>{corpusLoading?'Recherche…':'Lancer la recherche'}</button>
+          <section className={`qvl-active-need ${activeNeed.tone}`}>
+            <strong>{activeNeed.label}</strong>
+            <p>{activeNeed.description}</p>
+          </section>
+
+          <form className="qvl-need-search" onSubmit={runSearch}>
+            <textarea maxLength={500} value={query} onChange={event => setQuery(event.target.value)} placeholder={activeNeed.placeholder}/>
+            <span className="qvl-char-count">{query.length}/500</span>
+            <button type="submit" disabled={!query.trim() || searchLoading}><Icon name="search" size={18}/>{searchLoading ? 'Recherche…' : activeNeed.submitLabel}</button>
           </form>
-          {corpusError&&<div className="qvl-search-error">{corpusError}</div>}
-          {corpusResult&&<CorpusSearchResult result={corpusResult} onAdd={addMaterialToCanvas}/>} 
-          {!corpusResult&&!corpusError&&<div className="qvl-corpus-info"><Icon name="info" size={17}/><span>Le corpus entier est disponible : notes, rapports, études, articles, textes officiels, podcasts, etc.</span></div>}
-        </section>
+
+          <div className="qvl-general-advice"><Icon name="info" size={16}/><div><strong>Repère</strong><p>{activeNeed.advice}</p></div></div>
+
+          {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
+          {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans le corpus actif…</strong></div>}
+          {!searchLoading && searchResult && <NeedResults need={activeNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
+          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>Votre bibliothèque est prête.</strong><p>Formulez votre besoin ci-dessus. Les résultats resteront sourcés et pourront être déposés directement dans le canevas.</p></div>}
+        </>}
       </aside>
     </div>
+
+    {proofState.open && <ProofModal state={proofState} onClose={() => setProofState({ open: false, loading: false, error: '', material: null, result: null })}/>} 
   </main>
 }
 
-function RightEmpty(){return <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={31}/></span><strong>Sélectionnez une carte de votre canevas.</strong><p>Quiritès vous proposera les recherches et vérifications adaptées à ce que vous êtes en train de travailler.</p></div>}
+function NeedResults({ need, result, materials, onAdd, onProof }) {
+  const all = result?.results || result?.materials || []
+  const pubs = new Map()
+  materials.forEach(item => {
+    const meta = publicationMeta(item)
+    if (meta.id) pubs.set(meta.id, meta)
+  })
+  const domains = [...new Set(materials.map(item => item.domaine).filter(Boolean))]
 
-function CorpusSearchResult({result,onAdd}){
-  const materials=result?.results||result?.materials||[]
-  return <div className="qvl-search-results">
-    <div className="qvl-result-summary"><strong>{materials.length} élément{materials.length>1?'s':''}</strong><span>dans le corpus</span></div>
-    <div className="qvl-mini-results">{materials.slice(0,8).map((material,index)=><MaterialMini key={materialIdOf(material)||index} material={material} onAdd={()=>onAdd(material)}/>)}</div>
-  </div>
-}
-
-function ActionResult({actionId,result,onAdd}){
-  const action=ACTION_BY_ID[actionId]
-  const materials=flattenActionMaterials(actionId,result)
-  return <div className="qvl-action-result">
-    <header><span className="qvl-result-kicker">{action?.label}</span><ResultHeadline actionId={actionId} result={result}/></header>
-    <ResultBody actionId={actionId} result={result}/>
-    {materials.length>0&&<div className="qvl-result-materials">
-      <h4>Éléments mobilisés</h4>
-      {materials.slice(0,8).map((material,index)=><MaterialMini key={materialIdOf(material)||`${actionId}-${index}`} material={material} onAdd={()=>onAdd(material)}/>) }
+  return <section className="qvl-need-results">
+    {need.id === 'overview' && <div className="qvl-overview-strip">
+      <div><strong>{pubs.size}</strong><span>publication{pubs.size > 1 ? 's' : ''}</span></div>
+      <div><strong>{materials.length}</strong><span>élément{materials.length > 1 ? 's' : ''}</span></div>
+      <div><strong>{domains.length}</strong><span>domaine{domains.length > 1 ? 's' : ''}</span></div>
     </div>}
-    <div className="qvl-method-note"><Icon name="info" size={15}/><span>{result?.guardrails?.note||'Le résultat reste un appui documentaire. La décision et l’interprétation appartiennent à l’analyste.'}</span></div>
-  </div>
+    <div className="qvl-result-heading"><div><strong>{materials.length} résultat{materials.length > 1 ? 's' : ''}</strong><span>{need.id === 'overview' ? 'pour construire une première vue du thème' : 'correspondant à ce besoin documentaire'}</span></div>{all.length !== materials.length && <small>{all.length - materials.length} autre{all.length - materials.length > 1 ? 's' : ''} résultat{all.length - materials.length > 1 ? 's' : ''} écarté{all.length - materials.length > 1 ? 's' : ''} car hors de cette catégorie</small>}</div>
+    {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Aucun élément suffisamment ciblé n’a été repéré pour cette catégorie.</strong><p>Essayez une formulation plus précise ou revenez à « Comprendre rapidement ce que le corpus contient sur un thème » pour élargir l’exploration.</p></div>}
+  </section>
 }
 
-function ResultHeadline({actionId,result}){
-  let text='Résultat documentaire'
-  if(actionId==='DOC01')text=`${result?.search?.returned_materials??result?.materials?.length??0} éléments trouvés`
-  if(actionId==='DOC02')text=result?.provenance?.status==='fine_proof_available'?'Preuve fine disponible':'Provenance disponible'
-  if(actionId==='DOC03')text=`${result?.cases?.length??0} situation${(result?.cases?.length??0)>1?'s':''} candidate${(result?.cases?.length??0)>1?'s':''}`
-  if(actionId==='MIR01')text='Ce que le corpus permet de confronter'
-  if(actionId==='MIR04')text='Tensions et contradictions documentées'
-  if(actionId==='MIR08')text='État de l’ancrage empirique'
-  if(actionId==='MET01')text='Conditions de comparabilité'
-  if(actionId==='MET02')text='Nature documentaire du lien'
-  if(actionId==='MET04')text='Documentation de la recommandation'
-  return <h3>{text}</h3>
-}
-
-function ResultBody({actionId,result}){
-  if(actionId==='DOC01')return <p className="qvl-result-note">Le corpus restitue les matériaux les plus pertinents sans construire l’analyse à votre place.</p>
-  if(actionId==='DOC02')return <div className="qvl-status-stack"><StatusRow label="Niveau de provenance" value={result?.provenance?.level||'—'}/><StatusRow label="Repère" value={result?.provenance?.source_locator||'Non disponible'}/><p>{result?.provenance?.message}</p>{(result?.proofs||[]).slice(0,2).map((proof,index)=><blockquote key={proof.proof_id||index}>{shortText(proof.text||proof.texte,360)}</blockquote>)}</div>
-  if(actionId==='DOC03')return <div className="qvl-status-stack"><StatusRow label="Cas candidats" value={result?.cases?.length??0}/><p>{result?.guardrails?.note}</p></div>
-  if(actionId==='MIR01')return <div className="qvl-metric-grid"><Metric label="Appuis" value={result?.evidence?.support?.length||0}/><Metric label="Nuances / tensions" value={result?.evidence?.nuance?.length||0}/><Metric label="Contradictions explicites" value={result?.evidence?.contradiction?.length||0}/>{result?.claim_analysis?.methodological_caution&&<p className="qvl-wide-note">{result.claim_analysis.methodological_caution}</p>}</div>
-  if(actionId==='MIR04')return <div className="qvl-metric-grid"><Metric label="Contradictions explicites" value={result?.findings?.explicit_contradictions?.length||0}/><Metric label="Tensions documentées" value={result?.findings?.documented_tensions?.length||0}/><p className="qvl-wide-note">{result?.documentary_state?.note}</p></div>
-  if(actionId==='MIR08')return <div className="qvl-metric-grid"><Metric label="Segments vérifiés" value={result?.summary?.empirical_segments_checked||0}/><Metric label="Ancrés empiriquement" value={result?.summary?.empirically_anchored_segments||0}/><Metric label="À documenter" value={result?.summary?.weakly_anchored_segments||0}/></div>
-  if(actionId==='MET01')return <div className="qvl-criteria-list">{(result?.criteria||[]).map(item=><CriterionRow key={item.id} label={item.label} status={item.status}/>) }<p>{result?.summary?.note}</p></div>
-  if(actionId==='MET02')return <div className="qvl-status-stack"><StatusRow label="Type de relation" value={result?.relation?.relation_type||'—'}/><StatusRow label="Famille" value={humanStatus(result?.assessment?.relation_family)}/><StatusRow label="Lecture causale" value={result?.assessment?.causal_interpretation?.causal_inference_allowed?'À examiner':'Non établie'}/><p>{result?.assessment?.causal_interpretation?.note}</p></div>
-  if(actionId==='MET04')return <div className="qvl-criteria-list">{(result?.criteria||[]).map(item=><CriterionRow key={item.id} label={item.label} status={item.status}/>) }<p>{result?.summary?.note}</p></div>
-  return null
-}
-
-function Metric({label,value}){return <div className="qvl-metric"><strong>{value}</strong><span>{label}</span></div>}
-function StatusRow({label,value}){return <div className="qvl-status-row"><span>{label}</span><strong>{value}</strong></div>}
-function CriterionRow({label,status}){const documented=status==='documented_in_graph'||['documented_alignment','documented_overlap','same_publication_context','partially_aligned_source_context'].includes(status);const caution=status?.startsWith('different_');return <div className={`qvl-criterion ${documented?'ok':caution?'caution':'neutral'}`}><span>{documented?'✓':caution?'!':'·'}</span><div><strong>{label}</strong><small>{humanStatus(status)}</small></div></div>}
-function humanStatus(value){return String(value||'').replaceAll('_',' ').replace(/^./,c=>c.toUpperCase())||'Non documenté'}
-
-function MaterialMini({material,onAdd}){
-  const id=materialIdOf(material)
-  const pub=publicationOf(material)
-  const text=materialText(material)||material?.source?.label||material?.target?.label||''
-  const provenance=material?.provenance
-  return <article className="qvl-material-mini">
-    <div className="qvl-material-top"><span>{materialKind(material)}</span>{id&&<small>{id.replace(':',' · ')}</small>}</div>
-    <p>{shortText(text,240)}</p>
-    <div className="qvl-material-meta"><span>{pub?.publication_id||pub?.titre||material?.publication_id||''}</span>{locatorOf(material)&&<span>repère {locatorOf(material)}</span>}{provenance?.level&&<span>prov. {provenance.level}</span>}</div>
-    <button type="button" onClick={onAdd}><Icon name="plus" size={14}/>Ajouter au canevas</button>
+function ResultMaterial({ material, onAdd, onProof }) {
+  const id = materialIdOf(material)
+  const meta = publicationMeta(material)
+  const locator = locatorOf(material)
+  const provenance = provenanceLevelOf(material)
+  const sourceUrl = sourceUrlOf(material)
+  return <article className="qvl-result-card">
+    <div className="qvl-result-card-top"><span>{materialKind(material)}</span>{id && <small>{id.replace(':', ' · ')}</small>}</div>
+    <p className="qvl-result-excerpt">{shortText(materialText(material), 360)}</p>
+    <div className="qvl-result-source">
+      <strong>{meta.title || meta.id || 'Publication source'}</strong>
+      <span>{[meta.organisation, meta.year].filter(Boolean).join(' · ')}</span>
+      <div>{meta.id && <em>{meta.id}</em>}{locator?.label && <em>{locator.label}</em>}{provenance && <em>provenance {provenance}</em>}</div>
+    </div>
+    <div className="qvl-result-actions">
+      {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noreferrer"><Icon name="external" size={14}/>{sourceButtonLabel(material)}</a> : <span className="qvl-source-unavailable">Lien source indisponible</span>}
+      <button type="button" className="ghost" onClick={onProof}><Icon name="file" size={14}/>Voir la preuve complète</button>
+      <button type="button" className="primary" onClick={onAdd}><Icon name="plus" size={14}/>Ajouter au canevas</button>
+    </div>
   </article>
+}
+
+function ProofModal({ state, onClose }) {
+  const result = state.result
+  const material = state.material
+  const meta = result?.publication ? publicationMeta({ publication: result.publication }) : publicationMeta(material)
+  const fallbackUrl = sourceUrlOf(material)
+  const publicationUrl = result?.publication?.url_contenu || result?.publication?.url_source || fallbackUrl
+  const proofs = result?.proofs || []
+  return <div className="qvl-proof-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
+    <section className="qvl-proof-modal" role="dialog" aria-modal="true" aria-label="Preuve complète">
+      <header><div><span>Preuve complète</span><h2>{meta.title || meta.id || 'Publication source'}</h2></div><button type="button" onClick={onClose}><Icon name="close" size={18}/></button></header>
+      <div className="qvl-proof-source-line"><strong>{[meta.organisation, meta.year].filter(Boolean).join(' · ') || 'Source identifiée dans le corpus'}</strong>{result?.provenance?.level && <span>Provenance {result.provenance.level}</span>}{result?.provenance?.source_locator && <span>Repère {result.provenance.source_locator}</span>}</div>
+      {state.loading && <div className="qvl-proof-loading"><span>✦</span>Recherche de la preuve exacte…</div>}
+      {state.error && <div className="qvl-proof-error">{state.error}</div>}
+      {!state.loading && !state.error && result?.provenance?.message && <p className="qvl-proof-message">{result.provenance.message}</p>}
+      {!state.loading && !state.error && proofs.length > 0 && <div className="qvl-proof-excerpts">{proofs.map((proof, index) => <article key={proof.proof_id || index}><div><strong>{proof.proof_id || `Extrait ${index + 1}`}</strong>{proof.locator && <span>{/^\d/.test(String(proof.locator)) ? `p. ${String(proof.locator).replaceAll(';', ', ')}` : proof.locator}</span>}</div><p>{proof.text}</p></article>)}</div>}
+      {!state.loading && !state.error && !proofs.length && <div className="qvl-proof-no-excerpt"><p>{result ? 'Aucun extrait fin supplémentaire n’est disponible pour ce matériau.' : materialText(material)}</p></div>}
+      <footer>{publicationUrl && <a href={isPdfUrl(publicationUrl) && result?.provenance?.source_locator && /^\d/.test(result.provenance.source_locator) ? `${publicationUrl.replace(/#.*$/, '')}#page=${result.provenance.source_locator.split(';')[0]}` : publicationUrl} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Ouvrir la source</a>}<button type="button" onClick={onClose}>Fermer</button></footer>
+    </section>
+  </div>
 }
