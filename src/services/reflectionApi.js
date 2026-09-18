@@ -21,10 +21,16 @@ export function runReflectionAction(actionId, payload = {}) {
 }
 
 export function searchCorpus(query, options = {}) {
-  return postJson('/corpus-search', {
+  const body = {
     query,
     limit: options.limit || 12,
     max_per_publication: options.maxPerPublication || 3,
     diversify_by_publication: options.diversifyByPublication !== false,
-  })
+  }
+  if (Array.isArray(options.kinds) && options.kinds.length) body.kinds = options.kinds
+  if (Array.isArray(options.publicationIds) && options.publicationIds.length) body.publication_ids = options.publicationIds
+  if (Array.isArray(options.provenanceLevels) && options.provenanceLevels.length) body.provenance_levels = options.provenanceLevels
+  if (options.domaine) body.domaine = options.domaine
+  if (options.organisme) body.organisme = options.organisme
+  return postJson('/corpus-search', body)
 }
