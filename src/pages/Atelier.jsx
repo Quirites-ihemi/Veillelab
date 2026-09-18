@@ -9,7 +9,7 @@ const regimeClass={'Synthèse stricte':'strict','Extraction stricte':'extract','
 const ALLOWED_TREATMENTS=[
   {key:'resume',title:'Résumé analytique',ids:['T01'],icon:'spark',fallbackRegime:'Synthèse stricte',description:'Obtenez une synthèse structurée et neutre d’une publication sélectionnée.'},
   {key:'glossaire',title:'Glossaire',ids:['T02'],icon:'book',fallbackRegime:'Enrichissement contrôlé',description:'Générez un glossaire des termes clés et notions importantes du sujet.'},
-  {key:'carte',title:'Carte de réflexion assistée',ids:['T03'],icon:'graph',fallbackRegime:'Enrichissement contrôlé',description:'Structurez vos idées, établissez des liens et explorez de nouvelles perspectives avec l’IA.'},
+  {key:'carte',title:'Avancer avec le corpus',ids:['T03'],icon:'graph',fallbackRegime:'Enrichissement contrôlé',description:'Explorez le corpus, gardez les éléments utiles à portée de main et construisez votre réflexion dans un espace de travail visuel.'},
   {key:'recommandations',title:'Extraction de recommandations',ids:['T04'],icon:'spark',fallbackRegime:'Extraction stricte',description:'Identifiez et extrayez les recommandations clés des rapports et documents.'},
   {key:'experts',title:'Experts ministériels',ids:['T06','T08'],match:/expert/i,icon:'spark',fallbackRegime:'Enrichissement contrôlé',description:'Repérez des experts ministériels et leurs domaines d’expertise sur vos sujets.'},
   {key:'scenario',title:'Scénario de veille',ids:['T05'],match:/sc[eé]nario/i,icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Élaborez votre scénario de veille avec l’appui de l’IA générative, étape par étape.'}
@@ -322,7 +322,7 @@ function ReflectionWorkspace({treatment,data,onBack,initialNeed=''}){
   return <main className="page reflection-page qvl-reflection-v02">
     <style>{REFLECTION_SCREEN_STYLES}</style>
     <button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button>
-    <header className="qvl-reflection-head"><div className="qvl-reflection-title-row"><h1>Carte de réflexion assistée</h1><span className="regime enrich">Enrichissement contrôlé</span></div><p>Structurez vos idées, établissez des liens et explorez de nouvelles perspectives avec l’IA.</p></header>
+    <header className="qvl-reflection-head"><div className="qvl-reflection-title-row"><h1>Avancer avec le corpus</h1><span className="regime enrich">Enrichissement contrôlé</span></div><p>Explorez le corpus, gardez les éléments utiles à portée de main et construisez votre réflexion dans un espace de travail visuel.</p></header>
 
     <div className="qvl-question-bar">
       <div className="qvl-question-label">Question centrale</div>

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import { runReflectionAction, searchCorpus } from '../services/reflectionApi.js'
 import './reflection-workspace.css'
+import heroImage from '../quirites-lab-lighthouse.png'
 
 const NEEDS = [
   {
@@ -416,9 +417,15 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
     <section className="qvl-reflection-hero">
       <div className="qvl-hero-copy">
-        <h1>Faire avancer son analyse avec le corpus</h1>
-        <p>Une bibliothèque à portée de main pour explorer, documenter et relier les éléments utiles à votre travail.</p>
-        <span>Les résultats reflètent uniquement les sujets et publications présents dans le corpus actif.</span>
+        <div className="qvl-hero-text">
+          <h1>Avancer avec le corpus</h1>
+          <p>Une bibliothèque à portée de main pour explorer, documenter et relier les éléments utiles à votre travail.</p>
+          <span>Les résultats reflètent uniquement les sujets et publications présents dans le corpus actif.</span>
+        </div>
+        <div className="qvl-hero-visual" aria-hidden="true">
+          <img src={heroImage} alt=""/>
+          <div><strong>Explorer</strong><span>Relier</span><em>Avancer</em></div>
+        </div>
       </div>
     </section>
 
@@ -446,7 +453,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
           <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2><p>Posez une question, formulez une idée, ajoutez une note ou conservez un élément du corpus. Déplacez les cartes, rapprochez-les et reliez-les pour faire apparaître progressivement votre raisonnement.</p></div></div>
-          <div className="qvl-canvas-promise"><strong>Vos idées restent les vôtres.</strong><span>Les éléments du corpus restent sourcés.</span></div>
           <div className="qvl-canvas-toolbar">
             {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
             <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>

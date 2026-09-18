@@ -15,3 +15,136 @@
 @media(max-width:1450px){.qvl-reflection-shell{--left:270px;--right:325px}.qvl-hero-copy h1{font-size:28px}.qvl-canvas-stage{height:560px}.qvl-need-copy strong{font-size:10.5px}.qvl-need-copy small{font-size:8.3px}.qvl-result-list{max-height:405px}}
 @media(max-width:1230px){.qvl-reflection-shell{--left:245px;--right:300px;gap:8px}.qvl-need-card{grid-template-columns:30px minmax(0,1fr) 13px;padding:9px 7px}.qvl-need-icon{width:29px;height:29px}.qvl-need-copy strong{font-size:9.8px}.qvl-need-copy small{font-size:7.8px}.qvl-canvas-title p{font-size:9.8px}.qvl-postit-add{font-size:8.7px;padding:0 7px}.qvl-canvas-stage{height:535px}.qvl-reflection-left,.qvl-reflection-right,.qvl-reflection-center{min-height:715px}}
 @media(max-width:1040px){.qvl-reflection-shell{--left:44px;--right:44px;grid-template-columns:44px minmax(520px,1fr) 44px}.qvl-reflection-left>*:not(.qvl-panel-toggle):not(.qvl-collapsed-label),.qvl-reflection-right>*:not(.qvl-panel-toggle):not(.qvl-collapsed-label){display:none}.qvl-reflection-left .qvl-collapsed-label,.qvl-reflection-right .qvl-collapsed-label{display:flex}.qvl-reflection-center{min-width:0}.qvl-canvas-stage{height:600px}}
+
+/* V2.1 — lisibilité renforcée + header visuel */
+.qvl-reflection-page{font-size:14px}
+.qvl-reflection-back-wrap .back-link{font-size:14px;font-weight:700}
+.qvl-hero-copy{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;align-items:stretch;padding:22px 24px;overflow:hidden}
+.qvl-hero-text{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.qvl-hero-copy h1{font-size:34px;line-height:1.08;margin-bottom:9px}
+.qvl-hero-copy p{font-size:15px;line-height:1.5;max-width:880px}
+.qvl-hero-copy span{font-size:12.5px;line-height:1.4;margin-top:9px}
+.qvl-hero-visual{position:relative;min-height:116px;border-radius:14px;overflow:hidden;background:#173b62;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.qvl-hero-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,48,80,.05),rgba(18,48,80,.18) 52%,rgba(18,48,80,.48));pointer-events:none}
+.qvl-hero-visual img{width:100%;height:100%;object-fit:cover;object-position:14% 50%;display:block;filter:saturate(.88) brightness(1.04)}
+.qvl-hero-visual>div{position:absolute;z-index:2;right:18px;bottom:15px;display:flex;gap:7px;align-items:baseline;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+.qvl-hero-visual strong,.qvl-hero-visual span,.qvl-hero-visual em{margin:0;color:#fff;font-family:Georgia,"Times New Roman",serif;font-size:14px;font-style:normal;letter-spacing:.01em}
+.qvl-hero-visual span{opacity:.9}.qvl-hero-visual em{opacity:.78}
+
+.qvl-reflection-shell{--left:305px;--right:365px;gap:12px}
+.qvl-panel-toggle{width:29px;height:29px;font-size:20px}
+.qvl-collapsed-label{font-size:11px}
+.qvl-side-heading{grid-template-columns:38px 1fr;gap:10px;padding-bottom:14px}
+.qvl-side-icon{width:36px;height:36px}
+.qvl-side-heading h2{font-size:20px;line-height:1.15}
+.qvl-side-heading p{font-size:12px;line-height:1.42}
+.qvl-need-list{gap:10px;margin-top:14px}
+.qvl-need-card{grid-template-columns:38px minmax(0,1fr) 16px;gap:10px;padding:12px 10px;border-radius:13px}
+.qvl-need-icon{width:36px;height:36px}
+.qvl-need-copy strong{font-size:13px;line-height:1.28}
+.qvl-need-copy small{font-size:10.8px;line-height:1.42;margin-top:5px}
+.qvl-scope-note{font-size:10.8px;line-height:1.45;padding:10px}
+
+.qvl-canvas-intro{padding:18px 19px 12px}
+.qvl-canvas-title{grid-template-columns:38px 1fr;gap:10px}
+.qvl-canvas-title-icon{width:36px;height:36px;font-size:19px}
+.qvl-canvas-title h2{font-size:23px;line-height:1.15;margin-bottom:5px}
+.qvl-canvas-title p{font-size:12.8px;line-height:1.5}
+.qvl-canvas-toolbar{gap:7px;margin-top:14px}
+.qvl-postit-add{height:36px;padding:0 11px;font-size:11.2px}
+.qvl-postit-add span{font-size:14px}
+.qvl-link-button,.qvl-link-count{height:35px;font-size:11px;padding:0 10px}
+.qvl-link-popover strong,.qvl-link-list-popover>strong{font-size:12px}
+.qvl-link-popover select{font-size:11.5px;height:34px}
+.qvl-link-popover>button{font-size:11px;height:34px}
+.qvl-link-list-popover span{font-size:10.5px}
+.qvl-canvas-composer{grid-template-columns:190px 1fr 145px;gap:10px;padding:12px}
+.qvl-canvas-composer>div:first-child strong{font-size:12.5px}
+.qvl-canvas-composer>div:first-child span{font-size:10px;line-height:1.35}
+.qvl-canvas-composer textarea{font-size:12.5px;line-height:1.4;height:64px}
+.qvl-composer-actions button{height:31px;font-size:10.8px}
+.qvl-canvas-stage{height:650px}
+.qvl-canvas{min-height:850px}
+.qvl-empty-canvas{width:min(560px,80%)}
+.qvl-empty-canvas h3{font-size:22px}
+.qvl-empty-canvas p{font-size:13px;line-height:1.55}
+.qvl-empty-canvas>span{font-size:12.5px}
+
+.qvl-canvas-card{width:270px;min-height:154px;padding:13px 14px 12px}
+.qvl-canvas-card.collapsed{min-height:66px;height:66px;padding-bottom:8px}
+.qvl-canvas-card header>span{font-size:10.5px;letter-spacing:.5px}
+.qvl-card-controls button{width:25px;height:25px}
+.qvl-canvas-card>p{font-size:15px;line-height:1.42}
+.qvl-canvas-card.collapsed>p{font-size:11.8px;line-height:1.25}
+.qvl-canvas-card footer strong{font-size:10.8px;line-height:1.35}
+.qvl-canvas-card footer span{font-size:9.8px;line-height:1.35}
+.qvl-canvas-help{height:40px;font-size:10.5px;padding:0 15px}
+.qvl-link-line text{font-size:10.5px}
+
+.qvl-active-need{padding:12px 13px;margin-top:14px}
+.qvl-active-need strong{font-size:13px;line-height:1.32}
+.qvl-active-need p{font-size:10.8px;line-height:1.45;margin-top:5px}
+.qvl-need-search{margin-top:12px}
+.qvl-need-search textarea{height:94px;padding:12px 12px 24px;font-size:13px;line-height:1.45}
+.qvl-char-count{top:72px;font-size:9.5px}
+.qvl-need-search button{height:40px;font-size:11.8px}
+.qvl-general-advice{grid-template-columns:20px 1fr;gap:8px;padding:11px;margin-top:11px}
+.qvl-general-advice strong{font-size:10.5px}
+.qvl-general-advice p{font-size:10.8px;line-height:1.45}
+.qvl-search-error{font-size:11px;line-height:1.45}
+.qvl-search-loading{font-size:11.5px}
+.qvl-right-empty{min-height:210px;padding:22px}
+.qvl-right-empty strong{font-size:16px}
+.qvl-right-empty p{font-size:11.5px;line-height:1.5}
+.qvl-overview-strip strong{font-size:20px}
+.qvl-overview-strip span{font-size:9.5px}
+.qvl-result-heading strong{font-size:12.5px}
+.qvl-result-heading span{font-size:9.5px}
+.qvl-result-heading small{font-size:9px;line-height:1.35}
+.qvl-result-list{max-height:505px}
+.qvl-result-card{padding:12px;margin-bottom:10px}
+.qvl-result-card-top{font-size:9.6px}
+.qvl-result-card-top small{font-size:9px}
+.qvl-result-excerpt{font-size:12.6px;line-height:1.5;margin:8px 0 10px}
+.qvl-result-source>strong{font-size:11.3px;line-height:1.4}
+.qvl-result-source>span{font-size:10px;line-height:1.35;margin-top:3px}
+.qvl-result-source em{font-size:9.3px;padding:3px 6px}
+.qvl-result-actions{gap:6px;margin-top:10px}
+.qvl-result-actions a,.qvl-result-actions button{height:31px;padding:0 9px;font-size:9.9px}
+.qvl-source-unavailable{font-size:9.8px}
+.qvl-no-result strong{font-size:11.5px}
+.qvl-no-result p{font-size:10.5px}
+
+.qvl-proof-modal>header span{font-size:10px}
+.qvl-proof-modal>header h2{font-size:20px}
+.qvl-proof-source-line{font-size:10.5px}
+.qvl-proof-loading,.qvl-proof-error,.qvl-proof-no-excerpt,.qvl-proof-message{font-size:11.5px}
+.qvl-proof-excerpts article>div{font-size:10px}
+.qvl-proof-excerpts article p{font-size:12.5px;line-height:1.6}
+.qvl-proof-modal>footer a,.qvl-proof-modal>footer button{height:35px;font-size:10.8px}
+
+@media(max-width:1450px){
+  .qvl-reflection-shell{--left:285px;--right:340px;gap:10px}
+  .qvl-hero-copy{grid-template-columns:minmax(0,1fr) 280px}
+  .qvl-hero-copy h1{font-size:31px}
+  .qvl-need-copy strong{font-size:12.5px}
+  .qvl-need-copy small{font-size:10.3px}
+  .qvl-result-list{max-height:470px}
+}
+@media(max-width:1230px){
+  .qvl-reflection-shell{--left:260px;--right:315px;gap:8px}
+  .qvl-hero-copy{grid-template-columns:minmax(0,1fr) 230px;gap:16px}
+  .qvl-need-card{grid-template-columns:34px minmax(0,1fr) 14px;padding:10px 8px}
+  .qvl-need-icon{width:33px;height:33px}
+  .qvl-need-copy strong{font-size:11.8px}
+  .qvl-need-copy small{font-size:9.8px}
+  .qvl-canvas-title p{font-size:12px}
+  .qvl-postit-add{font-size:10.5px;padding:0 9px}
+  .qvl-canvas-stage{height:610px}
+  .qvl-canvas-card{width:255px}
+  .qvl-reflection-left,.qvl-reflection-right,.qvl-reflection-center{min-height:760px}
+}
+@media(max-width:1040px){
+  .qvl-hero-copy{grid-template-columns:1fr}
+  .qvl-hero-visual{display:none}
+}
