@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import { runReflectionAction, searchCorpus } from '../services/reflectionApi.js'
 import './reflection-workspace.css'
-import heroImage from '../quirites-lab-lighthouse.png'
+import heroImage from '../header-corpus-securite.png'
 
 const NEEDS = [
   {
@@ -227,8 +227,8 @@ function visibleResultsForNeed(needId, result) {
 }
 
 function cardCenter(card) {
-  const width = 248
-  const height = card.collapsed ? 64 : 152
+  const width = 260
+  const height = card.collapsed ? 68 : 164
   return { x: Number(card.x || 0) + width / 2, y: Number(card.y || 0) + height / 2 }
 }
 
@@ -247,6 +247,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [leftCollapsed, setLeftCollapsed] = useState(false)
   const [rightCollapsed, setRightCollapsed] = useState(false)
   const [showLinkComposer, setShowLinkComposer] = useState(false)
+  const [linkMode, setLinkMode] = useState(false)
   const [linkLabel, setLinkLabel] = useState('est lié à')
   const [showLinks, setShowLinks] = useState(false)
   const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
@@ -364,6 +365,14 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   }
 
   const toggleSelection = (card, event) => {
+    if (linkMode) {
+      setSelectedIds(ids => {
+        const next = ids.includes(card.id) ? ids.filter(id => id !== card.id) : [...ids, card.id].slice(-2)
+        if (next.length === 2) setShowLinkComposer(true)
+        return next
+      })
+      return
+    }
     const multi = event.shiftKey || event.ctrlKey || event.metaKey
     if (multi) {
       setSelectedIds(ids => ids.includes(card.id) ? ids.filter(id => id !== card.id) : [...ids, card.id].slice(-2))
@@ -371,6 +380,15 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       setSelectedIds([card.id])
     }
     setShowLinkComposer(false)
+  }
+
+  const toggleLinkMode = () => {
+    setLinkMode(value => {
+      const next = !value
+      setSelectedIds([])
+      setShowLinkComposer(false)
+      return next
+    })
   }
 
   const startDrag = (event, card) => {
@@ -391,6 +409,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     }
     setShowLinkComposer(false)
     setLinkLabel('est lié à')
+    setLinkMode(false)
+    setSelectedIds([])
   }
 
   const removeLink = id => setLinks(list => list.filter(link => link.id !== id))
@@ -424,7 +444,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         </div>
         <div className="qvl-hero-visual" aria-hidden="true">
           <img src={heroImage} alt=""/>
-          <div><strong>Explorer</strong><span>Relier</span><em>Avancer</em></div>
         </div>
       </div>
     </section>
@@ -458,7 +477,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
             <span className="qvl-toolbar-spacer"/>
             <div className="qvl-link-tools">
-              <button type="button" className="qvl-link-button" disabled={selectedIds.length !== 2} onClick={() => setShowLinkComposer(value => !value)}><Icon name="link" size={16}/>Relier 2 cartes</button>
+              <button type="button" className={`qvl-link-button ${linkMode ? 'active' : ''}`} onClick={toggleLinkMode}><Icon name="link" size={16}/>{linkMode ? 'Annuler la liaison' : 'Relier des cartes'}</button>
               {links.length > 0 && <button type="button" className="qvl-link-count" onClick={() => setShowLinks(value => !value)}>Liens ({links.length})</button>}
               {showLinkComposer && selectedIds.length === 2 && <div className="qvl-link-popover">
                 <strong>Qualifier le lien</strong>
@@ -533,7 +552,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             })}
           </div>
         </div>
-        <div className="qvl-canvas-help"><span>{selectedCards.length ? `${selectedCards.length} carte${selectedCards.length > 1 ? 's' : ''} sélectionnée${selectedCards.length > 1 ? 's' : ''}` : 'Cliquez sur une carte pour la sélectionner.'}</span><span>Ctrl/Maj + clic pour sélectionner deux cartes et les relier · Chaque post-it peut être réduit.</span></div>
+        <div className={`qvl-canvas-help ${linkMode ? 'link-mode' : ''}`}><span>{linkMode ? `Mode liaison : sélectionnez deux cartes (${selectedCards.length}/2).` : selectedCards.length ? `${selectedCards.length} carte${selectedCards.length > 1 ? 's' : ''} sélectionnée${selectedCards.length > 1 ? 's' : ''}` : 'Cliquez sur une carte pour la sélectionner.'}</span><span>{linkMode ? 'Cliquez simplement sur deux post-it, puis qualifiez le lien.' : 'Les volets peuvent être repliés pour agrandir le canevas · Chaque post-it peut être réduit.'}</span></div>
       </section>
 
       <aside className="qvl-reflection-right">
@@ -543,13 +562,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         {rightCollapsed ? <div className="qvl-collapsed-label">Corpus</div> : <>
           <header className="qvl-side-heading corpus">
             <span className="qvl-side-icon"><Icon name="file" size={19}/></span>
-            <div><h2>Ce que le corpus apporte</h2><p>{activeNeed.label}</p></div>
+            <div><h2>Ce que le corpus apporte</h2><p>Explorez le corpus et ajoutez les éléments utiles à votre canevas.</p></div>
           </header>
-
-          <section className={`qvl-active-need ${activeNeed.tone}`}>
-            <strong>{activeNeed.label}</strong>
-            <p>{activeNeed.description}</p>
-          </section>
 
           <form className="qvl-need-search" onSubmit={runSearch}>
             <textarea maxLength={500} value={query} onChange={event => setQuery(event.target.value)} placeholder={activeNeed.placeholder}/>
