@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ReflectionMap from '../components/ReflectionMap.jsx'
 import ReflectionWorkspaceV1 from './ReflectionWorkspaceV1.jsx'
+import GlossaryWorkspace from './GlossaryWorkspace.jsx'
 import { generateTreatment } from '../services/treatmentApi.js'
 import { normalize } from '../lib/text.js'
 
@@ -110,6 +111,7 @@ function Regime({cls,title,children}){return <div className={`qvl-regime-info ${
 
 function Workspace({treatment,data,onBack,initialNeed=''}){
  if(treatment.traitement_id==='T03') return <ReflectionWorkspaceV1 onBack={onBack}/>
+ if(treatment.traitement_id==='T02') return <GlossaryWorkspace treatment={treatment} data={data} onBack={onBack}/>
  if(treatment.traitement_id==='T04') return <RecommendationWorkspace treatment={treatment} data={data} onBack={onBack}/>
  const pubs=data.publications.filter(p=>p.has_graph)
  const isT01=treatment.traitement_id==='T01'
