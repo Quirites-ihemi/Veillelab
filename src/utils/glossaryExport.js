@@ -1,0 +1,240 @@
+// Quiritès Veille Lab — exports T02 Glossaire
+// Les exports sont construits exclusivement à partir du JSON T02 déjà généré.
+// Aucun nouvel appel au modèle n'est effectué au moment de l'export.
+
+const encoder = new TextEncoder()
+
+function utf8(value){ return encoder.encode(String(value ?? '')) }
+
+function xmlEscape(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&apos;')
+}
+
+function sanitizeFilename(value){
+  return String(value || 'glossaire')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-zA-Z0-9_-]+/g,'-')
+    .replace(/^-+|-+$/g,'')
+    .slice(0,72) || 'glossaire'
+}
+
+function today(){ return new Date().toISOString().slice(0,10) }
+
+function sourceUrl(source){
+  const raw=String(source?.url||'').trim()
+  if(!raw)return ''
+  const repere=String(source?.repere||'').trim()
+  if(/\.pdf(?:$|[?#])/i.test(raw)&&/^\d+$/.test(repere)){
+    return `${raw.split('#')[0]}#page=${repere}`
+  }
+  return raw
+}
+
+function statusLabel(status){
+  if(status==='definition_source') return 'Défini dans la source'
+  if(status==='insuffisamment_defini') return 'Définition insuffisante dans le corpus'
+  return 'Sens précisé à partir du contexte'
+}
+
+function crc32(bytes){
+  let crc = 0 ^ -1
+  for(let i=0;i<bytes.length;i++){
+    crc ^= bytes[i]
+    for(let j=0;j<8;j++) crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1))
+  }
+  return (crc ^ -1) >>> 0
+}
+
+function u16(n){ const b=new Uint8Array(2); new DataView(b.buffer).setUint16(0,n,true); return b }
+function u32(n){ const b=new Uint8Array(4); new DataView(b.buffer).setUint32(0,n>>>0,true); return b }
+function concat(parts){
+  const total=parts.reduce((n,p)=>n+p.length,0)
+  const out=new Uint8Array(total); let offset=0
+  parts.forEach(p=>{out.set(p,offset);offset+=p.length})
+  return out
+}
+
+// ZIP "store" minimal, suffisant pour les conteneurs Office Open XML.
+function buildZip(files){
+  const locals=[]; const central=[]; let offset=0
+  Object.entries(files).forEach(([name,content])=>{
+    const nameBytes=utf8(name)
+    const data=content instanceof Uint8Array?content:utf8(content)
+    const crc=crc32(data)
+    const local=concat([
+      u32(0x04034b50),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(nameBytes.length),u16(0),nameBytes,data
+    ])
+    locals.push(local)
+    const cen=concat([
+      u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(nameBytes.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset),nameBytes
+    ])
+    central.push(cen)
+    offset+=local.length
+  })
+  const centralStart=offset
+  const centralBytes=concat(central)
+  const end=concat([
+    u32(0x06054b50),u16(0),u16(0),u16(central.length),u16(central.length),u32(centralBytes.length),u32(centralStart),u16(0)
+  ])
+  return concat([...locals,centralBytes,end])
+}
+
+function downloadBytes(bytes,filename,mime){
+  const blob=new Blob([bytes],{type:mime})
+  const url=URL.createObjectURL(blob)
+  const a=document.createElement('a')
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove()
+  setTimeout(()=>URL.revokeObjectURL(url),1500)
+}
+
+function wText(text,bold=false,italic=false,color=''){ 
+  const rpr=[]
+  if(bold)rpr.push('<w:b/>')
+  if(italic)rpr.push('<w:i/>')
+  if(color)rpr.push(`<w:color w:val="${color}"/>`)
+  return `<w:r>${rpr.length?`<w:rPr>${rpr.join('')}</w:rPr>`:''}<w:t xml:space="preserve">${xmlEscape(text)}</w:t></w:r>`
+}
+function wPara(inner,style='',spacingAfter=120){
+  const ppr=[]
+  if(style)ppr.push(`<w:pStyle w:val="${style}"/>`)
+  ppr.push(`<w:spacing w:after="${spacingAfter}"/>`)
+  return `<w:p><w:pPr>${ppr.join('')}</w:pPr>${inner}</w:p>`
+}
+function wHyperlink(text,rId){
+  return `<w:hyperlink r:id="${rId}" w:history="1"><w:r><w:rPr><w:color w:val="0563C1"/><w:u w:val="single"/></w:rPr><w:t>${xmlEscape(text)}</w:t></w:r></w:hyperlink>`
+}
+
+export function buildGlossaryDocx(result){
+  const entries=result?.output?.entries||[]
+  const pubs=result?.corpus||[]
+  const angle=String(result?.besoin||'').trim()
+  const links=[]; let linkNo=1
+  const paras=[]
+  paras.push(wPara(wText('Glossaire',true), 'Title', 100))
+  if(angle) paras.push(wPara(wText(`Angle : ${angle}`), '', 80))
+  paras.push(wPara(wText(`Publications mobilisées : ${pubs.length}`), '', 80))
+  pubs.forEach(pub=>{
+    const bits=[pub.titre||pub.publication_id,pub.organisme_producteur,pub.annee_publication].filter(Boolean)
+    paras.push(wPara(wText(`• ${bits.join(' — ')}`), '', 30))
+  })
+  paras.push(wPara(wText(`Date d’export : ${new Intl.DateTimeFormat('fr-FR').format(new Date())}`), '', 120))
+  paras.push(wPara(wText('Note : ce glossaire est produit uniquement à partir du corpus sélectionné. Les entrées « Sens précisé à partir du contexte » ne correspondent pas à une définition formelle donnée par la source.',false,true,'5E6F86'), '', 180))
+
+  entries.forEach((entry,index)=>{
+    paras.push(wPara(wText(`${index+1}. ${entry.terme}`,true), 'Heading1', 70))
+    paras.push(wPara(wText(statusLabel(entry.statut),false,true,'5E6F86'), '', 80))
+    paras.push(wPara(wText(entry.explicitation||''), '', 120))
+    ;(entry.sources||[]).forEach(source=>{
+      const ref=[source.titre||source.publication_id,source.organisme_producteur,source.annee_publication,source.repere?`p./repère ${source.repere}`:'repère indisponible'].filter(Boolean).join(' — ')
+      paras.push(wPara(wText(`Source : ${ref}`,false,false,'243E67'), '', 40))
+      const href=sourceUrl(source)
+      if(href){
+        const rId=`rId${linkNo++}`
+        links.push({rId,url:href})
+        paras.push(wPara(wHyperlink('Ouvrir la source',rId), '', 80))
+      }
+    })
+  })
+
+  const documentXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>${paras.join('')}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr></w:body></w:document>`
+
+  const documentRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>${links.map(l=>`<Relationship Id="${l.rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="${xmlEscape(l.url)}" TargetMode="External"/>`).join('')}</Relationships>`
+
+  const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:rPr><w:rFonts w:ascii="Aptos" w:hAnsi="Aptos"/><w:sz w:val="22"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:rPr><w:rFonts w:ascii="Aptos Display" w:hAnsi="Aptos Display"/><w:b/><w:color w:val="102A56"/><w:sz w:val="36"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:rPr><w:rFonts w:ascii="Aptos Display" w:hAnsi="Aptos Display"/><w:b/><w:color w:val="16345D"/><w:sz w:val="28"/></w:rPr></w:style></w:styles>`
+
+  const core=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>Glossaire Quiritès Veille Lab</dc:title><dc:creator>Quiritès Veille Lab</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created></cp:coreProperties>`
+  const app=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Quiritès Veille Lab</Application></Properties>`
+  const rootRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`
+  const contentTypes=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`
+
+  return buildZip({
+    '[Content_Types].xml':contentTypes,
+    '_rels/.rels':rootRels,
+    'docProps/core.xml':core,
+    'docProps/app.xml':app,
+    'word/document.xml':documentXml,
+    'word/styles.xml':styles,
+    'word/_rels/document.xml.rels':documentRels
+  })
+}
+
+function colName(n){
+  let s=''; let x=n
+  while(x>0){x--;s=String.fromCharCode(65+(x%26))+s;x=Math.floor(x/26)}
+  return s
+}
+function xCell(ref,value,style=''){
+  return `<c r="${ref}" t="inlineStr"${style?` s="${style}"`:''}><is><t xml:space="preserve">${xmlEscape(value)}</t></is></c>`
+}
+
+export function buildGlossaryXlsx(result){
+  const entries=result?.output?.entries||[]
+  const angle=String(result?.besoin||'').trim()
+  const headers=['angle_glossaire','terme','statut','definition','publication_id','titre_publication','organisme','annee','type_document','page_timecode','chunk_id','url_source','extrait']
+  const rows=[]
+  entries.forEach(entry=>{
+    const sources=entry.sources?.length?entry.sources:[{}]
+    sources.forEach(source=>rows.push([
+      angle,
+      entry.terme||'',
+      statusLabel(entry.statut),
+      entry.explicitation||'',
+      source.publication_id||'',
+      source.titre||'',
+      source.organisme_producteur||'',
+      source.annee_publication||'',
+      source.type_document||'',
+      source.repere||'',
+      source.chunk_id||'',
+      sourceUrl(source),
+      source.extrait||''
+    ]))
+  })
+
+  const xmlRows=[]
+  xmlRows.push(`<row r="1" ht="30" customHeight="1">${headers.map((h,i)=>xCell(`${colName(i+1)}1`,h,'1')).join('')}</row>`)
+  rows.forEach((row,ri)=>{
+    const n=ri+2
+    xmlRows.push(`<row r="${n}">${row.map((v,i)=>xCell(`${colName(i+1)}${n}`,v,'2')).join('')}</row>`)
+  })
+  const lastRow=Math.max(rows.length+1,1)
+  const widths=[24,28,30,55,16,42,34,12,18,18,16,45,70]
+  const cols=widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')
+  const sheet=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols>${cols}</cols><sheetData>${xmlRows.join('')}</sheetData><autoFilter ref="A1:M${lastRow}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews></worksheet>`
+  const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Aptos"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Aptos"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF16345D"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`
+  const workbook=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Glossaire" sheetId="1" r:id="rId1"/></sheets></workbook>`
+  const workbookRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`
+  const rootRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`
+  const core=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>Données du glossaire Quiritès Veille Lab</dc:title><dc:creator>Quiritès Veille Lab</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created></cp:coreProperties>`
+  const app=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Quiritès Veille Lab</Application></Properties>`
+  const contentTypes=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`
+
+  return buildZip({
+    '[Content_Types].xml':contentTypes,
+    '_rels/.rels':rootRels,
+    'docProps/core.xml':core,
+    'docProps/app.xml':app,
+    'xl/workbook.xml':workbook,
+    'xl/_rels/workbook.xml.rels':workbookRels,
+    'xl/styles.xml':styles,
+    'xl/worksheets/sheet1.xml':sheet
+  })
+}
+
+export function exportGlossaryWord(result){
+  const angle=sanitizeFilename(result?.besoin||'corpus')
+  downloadBytes(buildGlossaryDocx(result),`Glossaire_${angle}_${today()}.docx`,'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+}
+
+export function exportGlossaryExcel(result){
+  const angle=sanitizeFilename(result?.besoin||'corpus')
+  downloadBytes(buildGlossaryXlsx(result),`Glossaire_donnees_${angle}_${today()}.xlsx`,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+}
