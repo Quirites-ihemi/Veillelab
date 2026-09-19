@@ -14,8 +14,8 @@ const ALLOWED_TREATMENTS=[
   {key:'resume',title:'Résumé analytique',ids:['T01'],icon:'spark',fallbackRegime:'Synthèse stricte',description:'Obtenez une synthèse structurée et neutre d’une publication sélectionnée.'},
   {key:'glossaire',title:'Glossaire',ids:['T02'],icon:'book',fallbackRegime:'Enrichissement contrôlé',description:'Générez un glossaire des termes clés et notions importantes du sujet.'},
   {key:'recommandations',title:'Extraction de recommandations',ids:['T04'],icon:'spark',fallbackRegime:'Extraction stricte',description:'Identifiez et extrayez les recommandations clés des rapports et documents.'},
-  {key:'experts',title:'Experts ministériels',ids:['T08'],match:/expert/i,icon:'spark',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
-  {key:'scenario',title:'Scénario de veille',ids:['T06'],match:/sc[eé]nario/i,icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Élaborez votre scénario de veille avec l’appui de l’IA générative, étape par étape.'}
+  {key:'experts',title:'Experts ministériels',ids:['T08'],icon:'spark',fallbackRegime:'Extraction stricte',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
+  {key:'scenario',title:'Scénario de veille',ids:['T06'],icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Élaborez votre scénario de veille avec l’appui de l’IA générative, étape par étape.'}
 ]
 
 const ATELIER_SCREEN_STYLES=`
@@ -60,13 +60,13 @@ const ATELIER_SCREEN_STYLES=`
 @media(max-width:800px){.qvl-v02 .qvl-treatment-grid{grid-template-columns:1fr}.qvl-v02 .qvl-page-heading h1{font-size:30px}.qvl-v02 .qvl-promise{padding:18px;grid-template-columns:1fr}.qvl-v02 .qvl-promise-icon{display:none}}
 `
 
-function treatmentText(t){return `${t?.nom_traitement||''} ${t?.fonction||''} ${t?.objectif||''}`}
 function resolveSixTreatments(treatments=[]){
-  const used=new Set()
+  // Les identifiants du référentiel sont canoniques : on route toujours par ID exact.
+  // Ne pas rechercher "expert" dans l'objectif d'un autre traitement : T06 contient
+  // le mot "expertises" dans son texte et était donc pris à tort pour T08.
+  const byId=new Map(treatments.map(t=>[t.traitement_id,t]))
   return ALLOWED_TREATMENTS.map(spec=>{
-    let t=spec.match?treatments.find(x=>!used.has(x.traitement_id)&&spec.match.test(treatmentText(x))):null
-    if(!t)t=(spec.ids||[]).map(id=>treatments.find(x=>!used.has(x.traitement_id)&&x.traitement_id===id)).find(Boolean)
-    if(t)used.add(t.traitement_id)
+    const t=(spec.ids||[]).map(id=>byId.get(id)).find(Boolean)
     return t?{spec,t}:null
   }).filter(Boolean)
 }
