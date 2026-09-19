@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import { generateTreatment } from '../services/treatmentApi.js'
+import { exportGlossaryWord, exportGlossaryExcel } from '../utils/glossaryExport.js'
 import './glossary-workspace.css'
 
 const MAX_SOURCES = 4
@@ -19,7 +20,7 @@ function sourceHref(source){
 function statusLabel(status){
   if(status==='definition_source')return 'Défini dans la source'
   if(status==='insuffisamment_defini')return 'Définition insuffisante dans le corpus'
-  return 'Explicitation contextuelle'
+  return 'Sens précisé à partir du contexte'
 }
 
 function statusClass(status){
@@ -115,8 +116,14 @@ export default function GlossaryWorkspace({treatment,data,onBack}){
 
     <section className="qvl-glossary-results">
       <div className="qvl-glossary-results-head">
-        <div><h2>Vocabulaire identifié</h2><p>{result?`${result?.selection?.termes_retenus||0} terme${(result?.selection?.termes_retenus||0)>1?'s':''} retenu${(result?.selection?.termes_retenus||0)>1?'s':''} après contrôle de provenance.`:'Le glossaire apparaîtra ici.'}</p></div>
-        {result&&<div className="qvl-term-filter"><Icon name="search" size={17}/><input value={termSearch} onChange={e=>setTermSearch(e.target.value)} placeholder="Filtrer les termes…"/></div>}
+        <div><h2>Vocabulaire identifié</h2><p>{result?`${result?.selection?.termes_retenus||0} terme${(result?.selection?.termes_retenus||0)>1?'s':''} retenu${(result?.selection?.termes_retenus||0)>1?'s':''} · ${result?.selection?.publications||result?.corpus?.length||0} publication${(result?.selection?.publications||result?.corpus?.length||0)>1?'s':''} mobilisée${(result?.selection?.publications||result?.corpus?.length||0)>1?'s':''}.`:'Le glossaire apparaîtra ici.'}</p></div>
+        {result&&<div className="qvl-glossary-head-actions">
+          <div className="qvl-glossary-export-actions" aria-label="Exporter le glossaire">
+            <button type="button" className="qvl-export-btn word" onClick={()=>exportGlossaryWord(result)}><Icon name="file" size={17}/>Exporter Word</button>
+            <button type="button" className="qvl-export-btn data" onClick={()=>exportGlossaryExcel(result)}><Icon name="layers" size={17}/>Exporter les données</button>
+          </div>
+          <div className="qvl-term-filter"><Icon name="search" size={17}/><input value={termSearch} onChange={e=>setTermSearch(e.target.value)} placeholder="Filtrer les termes…"/></div>
+        </div>}
       </div>
 
       {!result&&!loading&&<div className="qvl-glossary-empty"><span><Icon name="book" size={34}/></span><strong>Un glossaire sourcé, pas un dictionnaire générique</strong><p>Chaque terme est relié aux passages qui permettent de le définir ou de l’expliciter dans le contexte des publications choisies.</p></div>}
