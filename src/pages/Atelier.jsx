@@ -4,6 +4,7 @@ import ReflectionMap from '../components/ReflectionMap.jsx'
 import ReflectionWorkspaceV1 from './ReflectionWorkspaceV1.jsx'
 import GlossaryWorkspace from './GlossaryWorkspace.jsx'
 import RecommendationWorkspaceV1 from './RecommendationWorkspaceV1.jsx'
+import ExpertsWorkspace from './ExpertsWorkspace.jsx'
 import { generateTreatment } from '../services/treatmentApi.js'
 import { normalize } from '../lib/text.js'
 
@@ -13,7 +14,7 @@ const ALLOWED_TREATMENTS=[
   {key:'resume',title:'Résumé analytique',ids:['T01'],icon:'spark',fallbackRegime:'Synthèse stricte',description:'Obtenez une synthèse structurée et neutre d’une publication sélectionnée.'},
   {key:'glossaire',title:'Glossaire',ids:['T02'],icon:'book',fallbackRegime:'Enrichissement contrôlé',description:'Générez un glossaire des termes clés et notions importantes du sujet.'},
   {key:'recommandations',title:'Extraction de recommandations',ids:['T04'],icon:'spark',fallbackRegime:'Extraction stricte',description:'Identifiez et extrayez les recommandations clés des rapports et documents.'},
-  {key:'experts',title:'Experts ministériels',ids:['T06','T08'],match:/expert/i,icon:'spark',fallbackRegime:'Enrichissement contrôlé',description:'Repérez des experts ministériels et leurs domaines d’expertise sur vos sujets.'},
+  {key:'experts',title:'Experts ministériels',ids:['T06','T08'],match:/expert/i,icon:'spark',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
   {key:'scenario',title:'Scénario de veille',ids:['T05'],match:/sc[eé]nario/i,icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Élaborez votre scénario de veille avec l’appui de l’IA générative, étape par étape.'}
 ]
 
@@ -114,6 +115,7 @@ function Workspace({treatment,data,onBack,initialNeed=''}){
  if(treatment.traitement_id==='T03') return <ReflectionWorkspaceV1 onBack={onBack}/>
  if(treatment.traitement_id==='T02') return <GlossaryWorkspace treatment={treatment} data={data} onBack={onBack}/>
  if(treatment.traitement_id==='T04') return <RecommendationWorkspaceV1 treatment={treatment} data={data} onBack={onBack}/>
+ if(treatment.traitement_id==='T08') return <ExpertsWorkspace treatment={treatment} data={data} onBack={onBack}/>
  const pubs=data.publications.filter(p=>p.has_graph)
  const isT01=treatment.traitement_id==='T01'
  const firstChunkPub=pubs.find(p=>(p.chunk_count||0)>0)
