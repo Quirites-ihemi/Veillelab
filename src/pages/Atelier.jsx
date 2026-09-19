@@ -14,8 +14,8 @@ const ALLOWED_TREATMENTS=[
   {key:'resume',title:'Résumé analytique',ids:['T01'],icon:'spark',fallbackRegime:'Synthèse stricte',description:'Obtenez une synthèse structurée et neutre d’une publication sélectionnée.'},
   {key:'glossaire',title:'Glossaire',ids:['T02'],icon:'book',fallbackRegime:'Enrichissement contrôlé',description:'Générez un glossaire des termes clés et notions importantes du sujet.'},
   {key:'recommandations',title:'Extraction de recommandations',ids:['T04'],icon:'spark',fallbackRegime:'Extraction stricte',description:'Identifiez et extrayez les recommandations clés des rapports et documents.'},
-  {key:'experts',title:'Experts ministériels',ids:['T06','T08'],match:/expert/i,icon:'spark',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
-  {key:'scenario',title:'Scénario de veille',ids:['T05'],match:/sc[eé]nario/i,icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Élaborez votre scénario de veille avec l’appui de l’IA générative, étape par étape.'}
+  {key:'experts',title:'Experts ministériels',ids:['T08'],match:/expert/i,icon:'spark',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
+  {key:'scenario',title:'Scénario de veille',ids:['T06'],match:/sc[eé]nario/i,icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Élaborez votre scénario de veille avec l’appui de l’IA générative, étape par étape.'}
 ]
 
 const ATELIER_SCREEN_STYLES=`
