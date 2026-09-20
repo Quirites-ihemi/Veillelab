@@ -23,22 +23,68 @@ function addItem(paras,item,links,prefix='• '){paras.push(wPara(wText(`${prefi
 export function buildScenarioDocx(result){
   const links=[],paras=[]
   paras.push(wPara(wText('Scénario de veille',true),'Title',90))
-  paras.push(wPara(wText(`Date d’export : ${new Intl.DateTimeFormat('fr-FR').format(new Date())}`),'',70))
-  paras.push(wPara(wText('Besoin de veille',true),'Heading1',50));paras.push(wPara(wText(result?.need_working||result?.need_original||''),'',70))
-  if(result?.need_original&&result?.need_working&&result.need_original!==result.need_working)paras.push(wPara(wText(`Besoin initial : ${result.need_original}`,false,true,'687B94'),'',70))
+  paras.push(wPara(wText(`Date d’export : ${new Intl.DateTimeFormat('fr-FR').format(new Date())}`),'',45))
+  paras.push(wPara(wText('Traçabilité',true),'Heading2',35))
+  const trace=result?.traceability||{}
+  paras.push(wPara(wText(`Moteurs : ${[trace.framing_engine,trace.axes_engine,trace.watch_engine].filter(Boolean).join(' · ')||'non renseigné'}`,false,false,'687B94'),'',65))
 
-  paras.push(wPara(wText('Notions de cadrage retenues',true),'Heading1',50))
-  if(result?.formulation_items?.length)result.formulation_items.forEach(i=>addItem(paras,i,links));else paras.push(wPara(wText('Aucune notion retenue.')))
+  paras.push(wPara(wText('1. Besoin de veille',true),'Heading1',45))
+  paras.push(wPara(wText(result?.need_original||''),'',65))
+  ;(result?.clarifications||[]).forEach(a=>{paras.push(wPara(wText(a.question,true),'',20));paras.push(wPara(wText(a.answer),'',45))})
 
-  paras.push(wPara(wText('Axes et questions de veille',true),'Heading1',50))
-  if(result?.axes?.length){result.axes.forEach(axis=>{addItem(paras,axis,links,'');(axis.questions||[]).forEach(q=>paras.push(wPara(wText(`• ${q}`),'',25)))})}else paras.push(wPara(wText('Aucun axe retenu.')))
+  if(result?.structure){
+    paras.push(wPara(wText('2. Structuration retenue',true),'Heading1',45))
+    paras.push(wPara(wText(result.structure.title||'',true),'',25))
+    if(result.structure.logic)paras.push(wPara(wText(result.structure.logic),'',65))
+  }
 
-  paras.push(wPara(wText('Tendances, signes de changement et signaux faibles',true),'Heading1',50))
-  if(result?.dynamics?.length){result.dynamics.forEach(axis=>{paras.push(wPara(wText(axis.axis_title||'Axe',true),'Heading2',40));(axis.trends||[]).forEach(i=>addItem(paras,{...i,title:`Tendance — ${i.label}`},links));(axis.changes||[]).forEach(i=>addItem(paras,{...i,title:`Signe de changement — ${i.label}`},links));(axis.weak_signals||[]).forEach(i=>addItem(paras,{...i,title:`Signal faible — ${i.label}`},links))})}else paras.push(wPara(wText('Aucun élément dynamique retenu.')))
+  paras.push(wPara(wText('3. Axes de veille',true),'Heading1',45))
+  if(result?.axes?.length){
+    result.axes.forEach(axis=>{
+      paras.push(wPara(wText(axis.title||'',true),'Heading2',25))
+      paras.push(wPara(wText(`Statut : ${axis.corpus_status||'à instruire'}`,true,false,'365D7D'),'',25))
+      if(axis.objective)paras.push(wPara(wText(axis.objective),'',35))
+      if(axis.why)paras.push(wPara(wText(`Pourquoi cet axe : ${axis.why}`),'',35))
+      ;(axis.questions||[]).forEach(q=>paras.push(wPara(wText(`• ${q}`),'',20)))
+      if(axis.corpus_contribution)paras.push(wPara(wText(`Ce que le corpus apporte : ${axis.corpus_contribution}`),'',25))
+      if(axis.corpus_limit)paras.push(wPara(wText(`Limite documentaire : ${axis.corpus_limit}`,false,true,'8B4A4A'),'',30))
+      addSourceParas(paras,axis.sources||[],links)
+    })
+  }else paras.push(wPara(wText('Aucun axe retenu.')))
 
-  paras.push(wPara(wText('Angles morts et limites documentaires',true),'Heading1',50));(result?.coverage_limits||[]).forEach(x=>paras.push(wPara(wText(`• ${x}`),'',25)));if(!(result?.coverage_limits||[]).length)paras.push(wPara(wText('Aucune limite documentaire ajoutée.')))
+  paras.push(wPara(wText('4. Grille de guet',true),'Heading1',45))
+  if(result?.watch?.length){
+    result.watch.forEach(axis=>{
+      paras.push(wPara(wText(axis.axis_title||'Axe',true),'Heading2',30))
+      if(axis.trends?.length){
+        paras.push(wPara(wText('Tendances documentées',true),'',25))
+        axis.trends.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',20));if(item.synthese)paras.push(wPara(wText(item.synthese),'',20));if(item.limite)paras.push(wPara(wText(`Limite : ${item.limite}`,false,true,'8B4A4A'),'',25));addSourceParas(paras,item.sources||[],links)})
+      }
+      if(axis.watch_signs?.length){
+        paras.push(wPara(wText('Signes de changement à guetter — propositions IA à valider',true),'',25))
+        axis.watch_signs.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',15));if(item.pourquoi_guetter)paras.push(wPara(wText(`Pourquoi : ${item.pourquoi_guetter}`),'',15));if(item.ce_qui_confirmerait)paras.push(wPara(wText(`Ce qui renforcerait le signal : ${item.ce_qui_confirmerait}`),'',15));if(item.ce_qui_affaiblirait)paras.push(wPara(wText(`Ce qui l’affaiblirait : ${item.ce_qui_affaiblirait}`),'',20));addSourceParas(paras,item.sources||[],links)})
+      }
+      if(axis.cluster_hypotheses?.length){
+        paras.push(wPara(wText('Hypothèses de regroupement — propositions IA à valider',true),'',25))
+        axis.cluster_hypotheses.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',15));if(item.interpretation)paras.push(wPara(wText(item.interpretation),'',15));if(item.ce_qui_invaliderait)paras.push(wPara(wText(`Ce qui invaliderait l’hypothèse : ${item.ce_qui_invaliderait}`,false,true,'8B4A4A'),'',20))})
+      }
+      if(axis.sources_to_watch?.length){
+        paras.push(wPara(wText('Sources à surveiller',true),'',25))
+        axis.sources_to_watch.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',15));if(item.raison)paras.push(wPara(wText(item.raison),'',15));addSourceParas(paras,item.sources||[],links)})
+      }
+      if(axis.blind_spots?.length){
+        paras.push(wPara(wText('Angles morts / points à instruire',true),'',25))
+        axis.blind_spots.forEach(x=>paras.push(wPara(wText(`• ${x}`),'',18)))
+      }
+    })
+  }else paras.push(wPara(wText('Aucun élément de grille de guet retenu.')))
 
-  paras.push(wPara(wText('Sources mobilisées',true),'Heading1',50));(result?.sources||[]).forEach(s=>{paras.push(wPara(wText(`• ${sourceRef(s)}`),'',25));const href=sourceUrl(s);if(href){const rId=`rId${links.length+1}`;links.push({rId,url:href});paras.push(wPara(wHyperlink('Ouvrir la source',rId),'',35))}})
+  if(result?.methodology){
+    paras.push(wPara(wText('Repère méthodologique — enrichissement contrôlé',true),'Heading1',45))
+    paras.push(wPara(wText(result.methodology.label||''),'',25))
+    if(result.methodology.usage)paras.push(wPara(wText(result.methodology.usage),'',25))
+    if(result.methodology.url){const rId=`rId${links.length+1}`;links.push({rId,url:result.methodology.url});paras.push(wPara(wHyperlink('Ouvrir la ressource',rId),'',35))}
+  }
 
   const documentXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>${paras.join('')}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr></w:body></w:document>`
   const documentRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>${links.map(l=>`<Relationship Id="${l.rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="${xmlEscape(l.url)}" TargetMode="External"/>`).join('')}</Relationships>`
@@ -46,33 +92,39 @@ export function buildScenarioDocx(result){
   const core=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>Scénario de veille Quiritès Veille Lab</dc:title><dc:creator>Quiritès Veille Lab</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created></cp:coreProperties>`
   const app=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Quiritès Veille Lab</Application></Properties>`
   const rootRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`
-  const contentTypes=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`
+  const contentTypes=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`
   return buildZip({'[Content_Types].xml':contentTypes,'_rels/.rels':rootRels,'docProps/core.xml':core,'docProps/app.xml':app,'word/document.xml':documentXml,'word/styles.xml':styles,'word/_rels/document.xml.rels':documentRels})
 }
 
 function colName(n){let s='',x=n;while(x>0){x--;s=String.fromCharCode(65+(x%26))+s;x=Math.floor(x/26)}return s}
 function xCell(ref,value,style=''){return `<c r="${ref}" t="inlineStr"${style?` s="${style}"`:''}><is><t xml:space="preserve">${xmlEscape(value)}</t></is></c>`}
 export function buildScenarioXlsx(result){
-  const headers=['besoin','categorie','axe','element','description','pourquoi','limite','publication_id','titre_publication','organisme','annee','repere','provenance','url_source']
+  const headers=['besoin','categorie','axe','origine','statut','element','description','pourquoi','limite_ou_invalidation','publication_id','titre_publication','organisme','annee','repere','provenance','url_source']
   const rows=[]
-  const add=(category,axis,item,source={})=>{const s=normSource(source);rows.push([result?.need_working||result?.need_original||'',category,axis||'',item.title||item.label||'',item.objective||item.interpretation||'',item.why||'',item.limit||'',s.publication_id,s.title,s.organisation,s.year,s.locator,s.provenance,sourceUrl(s)])}
-  ;(result?.formulation_items||[]).forEach(item=>{const sources=item.sources?.length?item.sources:[{}];sources.forEach(s=>add('Notion de cadrage','',item,s))})
-  ;(result?.axes||[]).forEach(axis=>{const sources=axis.sources?.length?axis.sources:[{}];sources.forEach(s=>add('Axe de veille',axis.title,axis,s));(axis.questions||[]).forEach(q=>add('Question de veille',axis.title,{title:q},{}))})
-  ;(result?.dynamics||[]).forEach(axis=>{(axis.trends||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Tendance',axis.axis_title,i,s)));(axis.changes||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Signe de changement',axis.axis_title,i,s)));(axis.weak_signals||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Signal faible',axis.axis_title,i,s)))})
-  ;(result?.coverage_limits||[]).forEach(x=>add('Limite documentaire','',{title:x},{}))
+  const add=(category,axis,origin,status,item,source={})=>{const s=normSource(source);rows.push([result?.need_original||'',category,axis||'',origin||'',status||'',item.title||item.label||'',item.description||item.objective||item.synthese||item.interpretation||item.pourquoi_guetter||'',item.why||item.raison||'',item.limit||item.limite||item.ce_qui_invaliderait||item.ce_qui_affaiblirait||'',s.publication_id,s.title,s.organisation,s.year,s.locator,s.provenance,sourceUrl(s)])}
+  ;(result?.clarifications||[]).forEach(a=>rows.push([result?.need_original||'','Précision utilisateur','','utilisateur','','',a.answer,a.question,'','','','','','','','']))
+  ;(result?.axes||[]).forEach(axis=>{const sources=axis.sources?.length?axis.sources:[{}];sources.forEach(s=>add('Axe de veille',axis.title,axis.origin||'proposition_ia',axis.corpus_status,axis,s));(axis.questions||[]).forEach(q=>add('Question de veille',axis.title,'proposition_ia',axis.corpus_status,{title:q},{}))})
+  ;(result?.watch||[]).forEach(axis=>{
+    ;(axis.trends||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Tendance documentée',axis.axis_title,'corpus','documente',i,s)))
+    ;(axis.watch_signs||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Signe de changement à guetter',axis.axis_title,'proposition_ia','à valider',i,s)))
+    ;(axis.cluster_hypotheses||[]).forEach(i=>add('Hypothèse de regroupement',axis.axis_title,'proposition_ia','à valider',i,{}))
+    ;(axis.sources_to_watch||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Source à surveiller',axis.axis_title,i.origin||'proposition_ia','retenue',i,s)))
+    ;(axis.blind_spots||[]).forEach(x=>add('Angle mort / point à instruire',axis.axis_title,'corpus','limite',{title:x},{}))
+  })
+  if(result?.methodology)add('Repère méthodologique','','enrichissement_controle','', {title:result.methodology.label,description:result.methodology.usage}, {url:result.methodology.url})
   const xmlRows=[`<row r="1">${headers.map((h,i)=>xCell(`${colName(i+1)}1`,h,'1')).join('')}</row>`]
   rows.forEach((row,ri)=>{const n=ri+2;xmlRows.push(`<row r="${n}">${row.map((v,i)=>xCell(`${colName(i+1)}${n}`,v,'2')).join('')}</row>`)})
-  const widths=[48,24,42,52,70,70,70,16,48,32,12,18,14,48],cols=widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')
-  const sheet=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols>${cols}</cols><sheetData>${xmlRows.join('')}</sheetData><autoFilter ref="A1:N${Math.max(rows.length+1,1)}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews></worksheet>`
+  const widths=[46,26,38,24,22,50,68,62,62,16,48,30,12,18,14,48],cols=widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')
+  const sheet=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols>${cols}</cols><sheetData>${xmlRows.join('')}</sheetData><autoFilter ref="A1:P${Math.max(rows.length+1,1)}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews></worksheet>`
   const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Aptos"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Aptos"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1D63C7"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`
   const workbook=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Scenario" sheetId="1" r:id="rId1"/></sheets></workbook>`
   const workbookRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`
   const rootRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`
   const core=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>Données du scénario de veille Quiritès</dc:title><dc:creator>Quiritès Veille Lab</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created></cp:coreProperties>`
   const app=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Quiritès Veille Lab</Application></Properties>`
-  const contentTypes=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`
+  const contentTypes=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`
   return buildZip({'[Content_Types].xml':contentTypes,'_rels/.rels':rootRels,'docProps/core.xml':core,'docProps/app.xml':app,'xl/workbook.xml':workbook,'xl/_rels/workbook.xml.rels':workbookRels,'xl/styles.xml':styles,'xl/worksheets/sheet1.xml':sheet})
 }
 
-export function exportScenarioWord(result){downloadBytes(buildScenarioDocx(result),`Scenario_de_veille_${sanitizeFilename(result?.need_working||result?.need_original)}_${today()}.docx`,'application/vnd.openxmlformats-officedocument.wordprocessingml.document')}
-export function exportScenarioExcel(result){downloadBytes(buildScenarioXlsx(result),`Scenario_de_veille_donnees_${sanitizeFilename(result?.need_working||result?.need_original)}_${today()}.xlsx`,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+export function exportScenarioWord(result){downloadBytes(buildScenarioDocx(result),`Scenario_de_veille_${sanitizeFilename(result?.need_original)}_${today()}.docx`,'application/vnd.openxmlformats-officedocument.wordprocessingml.document')}
+export function exportScenarioExcel(result){downloadBytes(buildScenarioXlsx(result),`Scenario_de_veille_donnees_${sanitizeFilename(result?.need_original)}_${today()}.xlsx`,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
