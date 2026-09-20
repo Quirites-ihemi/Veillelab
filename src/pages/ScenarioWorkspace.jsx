@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
-import { searchCorpus } from '../services/reflectionApi.js'
+import { searchCorpus, analyzeScenarioFraming } from '../services/reflectionApi.js'
 import { exportScenarioWord, exportScenarioExcel } from '../utils/scenarioExport.js'
 import scenarioHero from '../header-corpus-securite.png'
 import './scenario-workspace.css'
@@ -390,6 +390,37 @@ function resultToItem(result, forcedCategory='') {
   }
 }
 
+function framingNotionToItem(notion={}) {
+  const sources = (Array.isArray(notion.sources) ? notion.sources : []).map(source => ({
+    publication_id: source.publication_id || '',
+    title: source.titre || source.publication_id || 'Source',
+    organisation: source.organisme_producteur || '',
+    year: source.annee_publication || '',
+    locator: source.repere || '',
+    url: source.url || '',
+    provenance: source.provenance_level || '',
+    chunk_id: source.material_id || '',
+    excerpt: source.extrait || '',
+    material_id: source.material_id || '',
+  }))
+  return {
+    id: notion.notion_id || `notion:${normalize(notion.label || '')}`,
+    category: 'Notion',
+    nodeType: 'notion_idee',
+    title: notion.label || 'Notion de cadrage',
+    summary: '',
+    text: notion.label || '',
+    why: notion.pourquoi || '',
+    limit: notion.limite || '',
+    dimension: notion.dimension_eclairee || '',
+    level: notion.niveau || '',
+    source: sources[0] || {},
+    sources,
+    origin: 'corpus',
+    raw: notion,
+  }
+}
+
 function dedupe(items=[]) {
   const out = []
   const seen = new Set()
@@ -417,7 +448,7 @@ function sourceLabel(source) {
 }
 
 function ProposalCard({ item, retained, discarded, reformulation, onRetain, onDiscard, onReformulate }) {
-  const href = sourceUrl(item.source)
+  const sources = item.sources?.length ? item.sources : (item.source?.title ? [item.source] : [])
   return <article className={`qvl-scn-card qvl-scn-formulation-card ${retained ? 'retained' : ''} ${discarded ? 'discarded' : ''}`}>
     <div className="qvl-scn-card-top">
       <span className="qvl-scn-type">{item.category}</span>
@@ -429,13 +460,18 @@ function ProposalCard({ item, retained, discarded, reformulation, onRetain, onDi
       <p>{item.why || 'Cette notion aide à préciser une dimension de votre besoin de veille.'}</p>
       {item.limit && <p className="qvl-scn-limit"><strong>Limite :</strong> {item.limit.replace(/^Limite\s*:\s*/i, '')}</p>}
     </div>
-    {item.summary && <details className="qvl-scn-detail"><summary>Voir l’élément documentaire</summary><p>{item.summary}</p></details>}
-    <div className="qvl-scn-source">
-      <span className="qvl-scn-source-label">Source</span>
-      <strong>{sourceLabel(item.source)}</strong>
-      {item.source.provenance && <span>provenance {item.source.provenance}</span>}
-      {href && <a href={href} target="_blank" rel="noreferrer"><Icon name="external" size={14}/> Ouvrir la source</a>}
-    </div>
+    {sources.length > 0 && <details className="qvl-scn-detail"><summary>Voir les éléments documentaires ({sources.length})</summary>
+      <div className="qvl-scn-source-list">{sources.map((source, index) => {
+        const href = sourceUrl(source)
+        return <div className="qvl-scn-source qvl-scn-source-item" key={`${source.material_id || source.publication_id || index}-${index}`}>
+          <span className="qvl-scn-source-label">Source {sources.length > 1 ? index + 1 : ''}</span>
+          <strong>{sourceLabel(source)}</strong>
+          {source.provenance && <span>provenance {source.provenance}</span>}
+          {source.excerpt && <p>{clip(source.excerpt, 360)}</p>}
+          {href && <a href={href} target="_blank" rel="noreferrer"><Icon name="external" size={14}/> Ouvrir la source</a>}
+        </div>
+      })}</div>
+    </details>}
     <div className="qvl-scn-card-actions">
       <button type="button" className={retained ? 'active' : ''} onClick={() => onRetain(item.id)}>{retained ? '✓ Retenu' : 'Retenir'}</button>
       {onReformulate && <button type="button" className={reformulation ? 'active' : ''} onClick={() => onReformulate(item.id)}>{reformulation ? '✓ Mobilisé pour préciser' : 'Utiliser pour préciser mon besoin'}</button>}
@@ -474,6 +510,7 @@ export default function ScenarioWorkspace({ data, onBack }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
+  const [framing, setFraming] = useState(null)
   const [generalResults, setGeneralResults] = useState([])
   const [nodeResults, setNodeResults] = useState([])
   const [trendResults, setTrendResults] = useState([])
@@ -496,13 +533,20 @@ export default function ScenarioWorkspace({ data, onBack }) {
   const runSearch = async () => {
     const userNeed = need.trim()
     if (!userNeed || loading) return
-    const profile = extractScenarioSearchProfile(userNeed)
-    const query = profile.query || userNeed
-    setSearchProfile(profile)
     setLoading(true)
     setError('')
     setFinalized(false)
     try {
+      // Étape 1 : un cadrage sémantique dédié T06 décompose le besoin sans le
+      // reformuler, puis sélectionne/audite les notions réellement utiles.
+      const framingResult = await analyzeScenarioFraming(userNeed)
+      const query = framingResult?.analysis?.requete_recherche || framingResult?.analysis?.sujet_central || userNeed
+      const profile = extractScenarioSearchProfile(query)
+      setSearchProfile(profile)
+
+      // Les étapes 2 et 3 continuent d'utiliser le moteur global, mais sur le
+      // sujet central identifié par T06 : les précisions de périmètre ne sont
+      // plus des conditions bloquantes de récupération.
       const [general, nodes, trends, signals] = await Promise.all([
         searchCorpus(query, { limit: 24, maxPerPublication: 4 }),
         searchCorpus(query, { kinds: ['node'], limit: 42, maxPerPublication: 6 }),
@@ -510,14 +554,12 @@ export default function ScenarioWorkspace({ data, onBack }) {
         searchCorpus(`${query} signal faible signe de changement`, { kinds: ['node', 'chunk'], limit: 36, maxPerPublication: 5 }),
       ])
 
-      // T06 applique un second garde-fou : un résultat doit réellement porter
-      // sur le sujet central du besoin. Les mots de contexte (commune, échelle,
-      // évolution...) ne suffisent jamais à eux seuls à rendre une source pertinente.
       const filteredGeneral = rankScenarioResults(filterScenarioResults(general?.results || [], profile.anchors), profile.anchors, profile.context)
       const filteredNodes = rankScenarioResults(filterScenarioResults(nodes?.results || [], profile.anchors), profile.anchors, profile.context)
       const filteredTrends = rankScenarioResults(filterScenarioResults(trends?.results || [], profile.anchors), profile.anchors, profile.context)
       const filteredSignals = rankScenarioResults(filterScenarioResults(signals?.results || [], profile.anchors), profile.anchors, profile.context)
 
+      setFraming(framingResult)
       setGeneralResults(filteredGeneral)
       setNodeResults(filteredNodes)
       setTrendResults(filteredTrends)
@@ -530,15 +572,13 @@ export default function ScenarioWorkspace({ data, onBack }) {
       setStep(1)
     } catch (e) {
       setError(e?.message || String(e))
+      setFraming(null)
     } finally {
       setLoading(false)
     }
   }
 
-  const formulationCorpusItems = useMemo(() => {
-    const notionNodes = nodeResults.filter(r => FORMULATION_NODE_TYPES.has(r.node_type))
-    return buildFormulationItems(notionNodes, searchProfile)
-  }, [nodeResults, searchProfile])
+  const formulationCorpusItems = useMemo(() => (framing?.notions || []).map(framingNotionToItem), [framing])
 
   const formulationItems = formulationCorpusItems
 
@@ -546,9 +586,10 @@ export default function ScenarioWorkspace({ data, onBack }) {
     const allowed = nodeResults
       .filter(r => OBJECT_NODE_TYPES.has(r.node_type))
       .map(r => resultToItem(r))
-    const retainedForm = formulationItems.filter(item => retained.has(item.id) && item.origin === 'corpus' && !['Tendance', 'Signal faible'].includes(item.category))
-    return dedupe([...retainedForm, ...allowed]).slice(0, 18)
-  }, [nodeResults, formulationItems, retained])
+    // Les notions de cadrage restent des notions : elles ne deviennent pas
+    // automatiquement des objets de veille à l'étape suivante.
+    return dedupe(allowed).slice(0, 18)
+  }, [nodeResults])
 
   const trendItems = useMemo(() => dedupe([
     ...nodeResults.filter(r => r.node_type === 'tendance').map(r => resultToItem(r, 'Tendance')),
@@ -636,7 +677,7 @@ export default function ScenarioWorkspace({ data, onBack }) {
     {step === 1 && <section className="qvl-scn-section">
       <div className="qvl-scn-need">
         <label>Votre besoin de veille</label>
-        <textarea value={need} onChange={e => { setNeed(e.target.value); setSearched(false); setFinalized(false) }} placeholder="Décrivez librement ce que vous souhaitez mettre en veille, pourquoi et pour qui…"/>
+        <textarea value={need} onChange={e => { setNeed(e.target.value); setSearched(false); setFraming(null); setFinalized(false) }} placeholder="Décrivez librement ce que vous souhaitez mettre en veille, pourquoi et pour qui…"/>
         <button type="button" className="qvl-scn-primary" onClick={runSearch} disabled={!need.trim() || loading}><Icon name="search" size={17}/>{loading ? 'Exploration du corpus…' : 'Voir ce que le corpus met à disposition'}</button>
       </div>
       {error && <p className="qvl-scn-error">{error}</p>}
@@ -646,6 +687,7 @@ export default function ScenarioWorkspace({ data, onBack }) {
           <strong>Aucune notion du corpus n’est suffisamment pertinente pour préciser ce besoin.</strong>
           <span>Quiritès préfère ne rien proposer plutôt que d’élargir artificiellement votre demande. Vous pourrez poursuivre avec votre formulation initiale.</span>
         </div>}
+        {framing?.limites_couverture?.length > 0 && <div className="qvl-scn-coverage"><strong>Dimensions encore peu couvertes dans les matériaux retrouvés</strong><span>{framing.limites_couverture.join(' · ')}</span></div>}
         <div className="qvl-scn-grid qvl-scn-notion-grid">{formulationItems.map(item => <ProposalCard key={item.id} item={item} retained={retained.has(item.id)} discarded={discarded.has(item.id)} reformulation={reformulationRefs.has(item.id)} onRetain={toggleRetain} onDiscard={toggleDiscard} onReformulate={toggleReformulation}/>)}</div>
         {reformulationRefs.size > 0 && <div className="qvl-scn-reformulate">
           <label>Préciser votre besoin à partir des éléments choisis</label>
