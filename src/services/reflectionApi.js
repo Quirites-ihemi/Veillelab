@@ -39,10 +39,15 @@ export function analyzeScenarioFraming(need) {
   return postJson('/scenario-framing', { need })
 }
 
-export function analyzeScenarioAxes(need, notions = []) {
-  return postJson('/scenario-axes', { need, notions })
+export function analyzeScenarioAxes(need, framing = {}, answers = []) {
+  return postJson('/scenario-axes', { need, cadrage: framing, reponses: answers })
 }
 
-export function analyzeScenarioDynamics(need, axes = []) {
-  return postJson('/scenario-dynamics', { need, axes })
+
+export function analyzeScenarioAxisSupport(need, framing = {}, answers = [], axes = []) {
+  return postJson('/scenario-axis-support', { need, cadrage: framing, reponses: answers, axes })
+}
+
+export function analyzeScenarioDynamics(need, framing = {}, answers = [], axes = []) {
+  return postJson('/scenario-dynamics', { need, cadrage: framing, reponses: answers, axes })
 }
