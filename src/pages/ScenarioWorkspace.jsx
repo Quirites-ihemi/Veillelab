@@ -123,7 +123,9 @@ function tokenFamilyMatch(haystack, token) {
 
   return words.some(word => {
     const wordStem = simpleStem(word)
-    return wordStem === stem || wordStem.startsWith(stem) || stem.startsWith(wordStem)
+    if (wordStem === stem) return true
+    if (wordStem.length < 6 || stem.length < 6) return false
+    return wordStem.startsWith(stem) || stem.startsWith(wordStem)
   })
 }
 
@@ -143,6 +145,145 @@ function rankScenarioResults(results=[], anchors=[], context=[]) {
     const scoreB = contextB * 100 + anchorB * 20 + Number(b.score || 0)
     return scoreB - scoreA
   })
+}
+
+const FORMULATION_CATEGORY_BONUS = {
+  acteur: 18,
+  expert_public: 18,
+  instrument_dispositif: 22,
+  action: 22,
+  probleme: 16,
+  localisation: 16,
+  notion_idee: 12,
+  recommandation: 12,
+  methode: 8,
+}
+
+const CONTEXT_READABLE = [
+  { match: /\b(commune|communes|communal|communale|communaux|communales|municipal|municipale|municipaux|municipales)\b/i, label: "l’échelle communale" },
+  { match: /\b(francilien|francilienne|franciliens|franciliennes|ile de france)\b/i, label: "le périmètre francilien / Île-de-France" },
+  { match: /\b(collectivite|collectivites|territorial|territoriale|territoriaux|territoriales)\b/i, label: "l’échelle des collectivités territoriales" },
+  { match: /\b(departement|departements|departemental|departementale|departementaux|departementales)\b/i, label: "l’échelle départementale" },
+  { match: /\b(region|regions|regional|regionale|regionaux|regionales)\b/i, label: "l’échelle régionale" },
+  { match: /\b(europe|europeen|europeenne|europeens|europeennes|union europeenne)\b/i, label: "le périmètre européen" },
+]
+
+function directResultText(result={}) {
+  if (result.kind === 'chunk') return normalize([result.section, result.text].filter(Boolean).join(' '))
+  if (result.kind === 'node') return normalize([result.label, result.normalized_label].filter(Boolean).join(' '))
+  if (result.kind === 'relation') return normalize([result.source_label, result.relation_type, result.target_label].filter(Boolean).join(' '))
+  return ''
+}
+
+function publicationResultText(result={}) {
+  return normalize([result.publication_title, result.organisme_producteur, result.domaine].filter(Boolean).join(' '))
+}
+
+function tokenFamilyCount(haystack, token) {
+  const words = normalize(haystack).split(' ').filter(Boolean)
+  const normalizedToken = normalize(token)
+  const stem = simpleStem(normalizedToken)
+  if (!normalizedToken || !stem) return 0
+  if (normalizedToken.startsWith('commun')) return words.filter(word => word.startsWith('commun') || word.startsWith('municip')).length
+  if (normalizedToken.startsWith('collectivit')) return words.filter(word => word.startsWith('collectivit')).length
+  if (normalizedToken.startsWith('francilien')) return words.filter(word => word.startsWith('francilien')).length + (normalize(haystack).includes('ile de france') ? 1 : 0)
+  return words.filter(word => {
+    const wordStem = simpleStem(word)
+    if (wordStem === stem) return true
+    if (wordStem.length < 6 || stem.length < 6) return false
+    return wordStem.startsWith(stem) || stem.startsWith(wordStem)
+  }).length
+}
+
+function relevanceAssessment(result, profile) {
+  const anchors = profile?.anchors || []
+  const context = profile?.context || []
+  const direct = directResultText(result)
+  const publication = publicationResultText(result)
+
+  let topicStrength = 0
+  const matchedAnchors = []
+  anchors.forEach(anchor => {
+    const directCount = tokenFamilyCount(direct, anchor)
+    const publicationCount = tokenFamilyCount(publication, anchor)
+    if (directCount > 0) matchedAnchors.push(anchor)
+    if (directCount >= 2) topicStrength += 4
+    else if (directCount === 1) topicStrength += 3
+    else if (publicationCount > 0) topicStrength += 1
+  })
+
+  const directContext = context.filter(token => tokenFamilyCount(direct, token) > 0)
+  const publicationContext = context.filter(token => !directContext.includes(token) && tokenFamilyCount(publication, token) > 0)
+  const contextStrength = directContext.length * 3 + publicationContext.length
+  const categoryBonus = result.kind === 'node' ? (FORMULATION_CATEGORY_BONUS[result.node_type] || 6) : result.kind === 'relation' ? 8 : 4
+
+  // Un titre de publication pertinent ne suffit pas : la proposition elle-même
+  // doit documenter le sujet central. C'est le garde-fou contre les faux positifs
+  // issus de mots secondaires comme « commune », « territoire » ou « évolution ».
+  const directTopic = matchedAnchors.length > 0
+  const strongTopic = topicStrength >= 3 && directTopic
+  const strongContext = context.length === 0 || directContext.length > 0
+  const score = topicStrength * 100 + contextStrength * 25 + categoryBonus + Number(result.score || 0)
+
+  return {
+    eligible: strongTopic,
+    tier: strongTopic && strongContext ? 'strong' : strongTopic ? 'broader' : 'reject',
+    score,
+    matchedAnchors,
+    directContext,
+    publicationContext,
+  }
+}
+
+function readableContextMatches(result, profile) {
+  const text = `${directResultText(result)} ${publicationResultText(result)}`
+  const labels = CONTEXT_READABLE.filter(rule => rule.match.test(text)).map(rule => rule.label)
+  // On ne garde que les dimensions effectivement demandées dans le besoin.
+  const requested = new Set()
+  const contextText = normalize((profile?.context || []).join(' '))
+  CONTEXT_READABLE.forEach(rule => { if (rule.match.test(contextText)) requested.add(rule.label) })
+  return labels.filter(label => requested.size === 0 || requested.has(label))
+}
+
+function whyThisResult(result, profile, assessment) {
+  const category = result.kind === 'node' ? result.node_type : ''
+  let first = 'Cet élément documente directement le sujet au cœur de votre besoin.'
+  if (['instrument_dispositif', 'action', 'recommandation'].includes(category)) {
+    first = 'Cet élément documente une réponse, un dispositif ou une modalité d’action directement liée au sujet de votre veille.'
+  } else if (['acteur', 'expert_public'].includes(category)) {
+    first = 'Cet élément identifie un acteur directement associé au sujet de votre veille.'
+  } else if (category === 'localisation') {
+    first = 'Cet élément apporte un repère territorial directement lié au sujet de votre veille.'
+  } else if (category === 'probleme') {
+    first = 'Cet élément documente une dimension du problème directement liée au sujet de votre veille.'
+  } else if (category === 'notion_idee') {
+    first = 'Cet élément précise une notion ou un angle directement lié au sujet de votre veille.'
+  }
+
+  const contexts = readableContextMatches(result, profile)
+  if (contexts.length) return `${first} Il correspond aussi à ${contexts.slice(0, 2).join(' et ')}.`
+  if ((profile?.context || []).length && assessment?.tier === 'broader') {
+    return `${first} En revanche, il ne documente pas explicitement toutes les précisions de périmètre formulées dans votre demande : à vous de juger s’il mérite d’être retenu.`
+  }
+  return first
+}
+
+function buildFormulationItems(results=[], profile={}) {
+  const assessed = results
+    .map(result => ({ result, assessment: relevanceAssessment(result, profile) }))
+    .filter(entry => entry.assessment.eligible)
+    .sort((a, b) => b.assessment.score - a.assessment.score)
+
+  const strong = assessed.filter(entry => entry.assessment.tier === 'strong')
+  const broader = assessed.filter(entry => entry.assessment.tier === 'broader')
+  const selected = strong.slice(0, 6)
+  if (selected.length < 3) selected.push(...broader.slice(0, Math.min(2, 6 - selected.length)))
+
+  return dedupe(selected.map(({ result, assessment }) => ({
+    ...resultToItem(result),
+    why: whyThisResult(result, profile, assessment),
+    matchTier: assessment.tier,
+  }))).slice(0, 6)
 }
 
 function normalize(value='') {
@@ -250,21 +391,26 @@ function sourceLabel(source) {
 
 function ProposalCard({ item, retained, discarded, reformulation, onRetain, onDiscard, onReformulate }) {
   const href = sourceUrl(item.source)
-  return <article className={`qvl-scn-card ${retained ? 'retained' : ''} ${discarded ? 'discarded' : ''}`}>
+  return <article className={`qvl-scn-card qvl-scn-formulation-card ${retained ? 'retained' : ''} ${discarded ? 'discarded' : ''}`}>
     <div className="qvl-scn-card-top">
       <span className="qvl-scn-type">{item.category}</span>
-      <span className={`qvl-scn-origin ${item.origin === 'enrichment' ? 'enrich' : ''}`}>{item.origin === 'enrichment' ? 'Enrichissement contrôlé' : 'Corpus'}</span>
+      <span className="qvl-scn-origin">Corpus</span>
     </div>
     <h3>{item.title}</h3>
-    {item.summary && <p>{item.summary}</p>}
+    <div className="qvl-scn-why">
+      <strong>Pourquoi cet élément est proposé</strong>
+      <p>{item.why || 'Cet élément documente directement une dimension de votre besoin de veille.'}</p>
+    </div>
+    {item.summary && <details className="qvl-scn-detail"><summary>Voir l’élément documentaire</summary><p>{item.summary}</p></details>}
     <div className="qvl-scn-source">
-      <strong>{item.origin === 'enrichment' ? item.source.title : sourceLabel(item.source)}</strong>
+      <span className="qvl-scn-source-label">Source</span>
+      <strong>{sourceLabel(item.source)}</strong>
       {item.source.provenance && <span>provenance {item.source.provenance}</span>}
       {href && <a href={href} target="_blank" rel="noreferrer"><Icon name="external" size={14}/> Ouvrir la source</a>}
     </div>
     <div className="qvl-scn-card-actions">
       <button type="button" className={retained ? 'active' : ''} onClick={() => onRetain(item.id)}>{retained ? '✓ Retenu' : 'Retenir'}</button>
-      {onReformulate && <button type="button" className={reformulation ? 'active' : ''} onClick={() => onReformulate(item.id)}>{reformulation ? '✓ Pour reformulation' : 'Reformuler le besoin'}</button>}
+      {onReformulate && <button type="button" className={reformulation ? 'active' : ''} onClick={() => onReformulate(item.id)}>{reformulation ? '✓ Mobilisé pour préciser' : 'Utiliser pour préciser mon besoin'}</button>}
       <button type="button" className={discarded ? 'danger active' : 'danger'} onClick={() => onDiscard(item.id)}>{discarded ? 'Écarté' : 'Écarter'}</button>
     </div>
   </article>
@@ -308,16 +454,15 @@ export default function ScenarioWorkspace({ data, onBack }) {
   const [discarded, setDiscarded] = useState(new Set())
   const [reformulationRefs, setReformulationRefs] = useState(new Set())
   const [finalized, setFinalized] = useState(false)
+  const [searchProfile, setSearchProfile] = useState({ query: '', anchors: [], context: [] })
 
   const activeNeed = workingNeed.trim() || need.trim()
 
-  const espasItem = useMemo(() => ({
+  const espasMethodItem = useMemo(() => ({
     id: 'enrichment:espas-horizon',
-    category: 'Ressource méthodologique',
     title: 'ESPAS Horizon Scanning — communauté des veilleurs de l’Union européenne',
-    summary: 'Ressource externe proposée pour élargir, si vous le souhaitez, le regard porté sur les tendances et les changements émergents.',
-    origin: 'enrichment',
-    source: { title: 'ESPAS Horizon', organisation: 'European Strategy and Policy Analysis System', year: '', locator: '', url: 'https://espas.eu/horizon.html', provenance: '' },
+    summary: 'Repère méthodologique externe pour la lecture des tendances et des changements émergents.',
+    source: { title: 'ESPAS Horizon', organisation: 'European Strategy and Policy Analysis System', url: 'https://espas.eu/horizon.html' },
   }), [])
 
   const runSearch = async () => {
@@ -325,6 +470,7 @@ export default function ScenarioWorkspace({ data, onBack }) {
     if (!userNeed || loading) return
     const profile = extractScenarioSearchProfile(userNeed)
     const query = profile.query || userNeed
+    setSearchProfile(profile)
     setLoading(true)
     setError('')
     setFinalized(false)
@@ -362,14 +508,11 @@ export default function ScenarioWorkspace({ data, onBack }) {
   }
 
   const formulationCorpusItems = useMemo(() => {
-    const priorityNodes = nodeResults
-      .filter(r => ['acteur', 'expert_public', 'notion_idee', 'probleme', 'instrument_dispositif', 'action', 'localisation', 'tendance', 'signal_faible'].includes(r.node_type))
-      .map(r => resultToItem(r))
-    const docs = generalResults.map(r => resultToItem(r))
-    return dedupe([...priorityNodes, ...docs]).slice(0, 7)
-  }, [nodeResults, generalResults])
+    const preferredNodes = nodeResults.filter(r => ['acteur', 'expert_public', 'notion_idee', 'probleme', 'instrument_dispositif', 'action', 'localisation', 'recommandation'].includes(r.node_type))
+    return buildFormulationItems([...preferredNodes, ...generalResults], searchProfile)
+  }, [nodeResults, generalResults, searchProfile])
 
-  const formulationItems = useMemo(() => [...formulationCorpusItems, espasItem], [formulationCorpusItems, espasItem])
+  const formulationItems = formulationCorpusItems
 
   const objectItems = useMemo(() => {
     const allowed = nodeResults
@@ -466,18 +609,19 @@ export default function ScenarioWorkspace({ data, onBack }) {
       </div>
       {error && <p className="qvl-scn-error">{error}</p>}
       {searched && <>
-        <div className="qvl-scn-section-title"><div><h2>Ce que le corpus met à disposition</h2><p>Ces éléments peuvent être retenus, écartés ou utilisés par vous pour ajuster votre formulation.</p></div></div>
+        <div className="qvl-scn-section-title"><div><h2>Ce que le corpus peut apporter à votre besoin</h2><p>Le corpus contient des éléments directement liés à votre demande. Pour chacun, Quiritès indique pourquoi il peut être utile. À vous de décider s’il doit nourrir votre scénario, vous conduire à préciser votre besoin ou être écarté.</p></div></div>
         {formulationCorpusItems.length === 0 && <div className="qvl-scn-no-match">
-          <strong>Aucun élément du corpus n'est suffisamment pertinent pour ce besoin.</strong>
-          <span>Quiritès préfère ne rien proposer plutôt que de faire remonter une source seulement proche par le vocabulaire.</span>
+          <strong>Aucun élément du corpus n’est suffisamment pertinent pour ce besoin.</strong>
+          <span>Quiritès préfère ne rien proposer plutôt que de faire remonter une source seulement proche par le vocabulaire. Certaines dimensions de votre besoin peuvent simplement être peu couvertes dans le corpus actuel.</span>
         </div>}
         <div className="qvl-scn-grid">{formulationItems.map(item => <ProposalCard key={item.id} item={item} retained={retained.has(item.id)} discarded={discarded.has(item.id)} reformulation={reformulationRefs.has(item.id)} onRetain={toggleRetain} onDiscard={toggleDiscard} onReformulate={toggleReformulation}/>)}</div>
         {reformulationRefs.size > 0 && <div className="qvl-scn-reformulate">
-          <label>Votre formulation de travail</label>
+          <label>Préciser votre besoin à partir des éléments choisis</label>
+          <p className="qvl-scn-reformulate-help">Votre texte reste sous votre contrôle. Modifiez-le uniquement si les éléments retenus vous conduisent à préciser votre demande.</p>
           <textarea value={workingNeed} onChange={e => setWorkingNeed(e.target.value)} />
-          <div className="qvl-scn-hints"><span>Éléments que vous avez choisi de mobiliser pour reformuler :</span>{formulationItems.filter(i => reformulationRefs.has(i.id)).map(i => <b key={i.id}>{i.title}</b>)}</div>
+          <div className="qvl-scn-hints"><span>Éléments mobilisés pour vous aider à préciser :</span>{formulationItems.filter(i => reformulationRefs.has(i.id)).map(i => <b key={i.id}>{i.title}</b>)}</div>
         </div>}
-        <div className="qvl-scn-reflexive"><Icon name="info" size={16}/>À vous de juger : ces propositions éclairent-elles réellement votre besoin, ou vous éloignent-elles de votre question ?</div>
+        <div className="qvl-scn-reflexive"><Icon name="info" size={16}/>À vous de juger : chaque proposition éclaire-t-elle réellement votre besoin ? Le lien avec votre sujet est-il suffisamment direct pour qu’elle mérite d’entrer dans le scénario ?</div>
         <div className="qvl-scn-next"><button className="qvl-scn-primary" type="button" onClick={() => setStep(2)}>Valider cette sélection et continuer <Icon name="chevron" size={16}/></button></div>
       </>}
     </section>}
@@ -497,6 +641,11 @@ export default function ScenarioWorkspace({ data, onBack }) {
         <div className="qvl-scn-signal-col trend"><h3>Tendances</h3><p>Évolutions structurantes ou durables déjà documentées.</p>{trendItems.length ? trendItems.map(item => <SelectionCard key={item.id} item={item} retained={retained.has(item.id)} onToggle={toggleRetain}/>) : <span className="qvl-scn-empty-line">Aucune tendance suffisamment pertinente trouvée.</span>}</div>
         <div className="qvl-scn-signal-col change"><h3>Signes de changement</h3><p>Évolutions récentes ou indices d’inflexion présents dans les sources.</p>{changeItems.length ? changeItems.map(item => <SelectionCard key={item.id} item={item} retained={retained.has(item.id)} onToggle={toggleRetain}/>) : <span className="qvl-scn-empty-line">Aucun signe de changement suffisamment pertinent trouvé.</span>}</div>
         <div className="qvl-scn-signal-col weak"><h3>Signaux faibles</h3><p>Éléments déjà qualifiés comme signaux faibles dans le corpus.</p>{weakSignalItems.length ? weakSignalItems.map(item => <SelectionCard key={item.id} item={item} retained={retained.has(item.id)} onToggle={toggleRetain}/>) : <span className="qvl-scn-empty-line">Aucun signal faible explicitement documenté pour ce besoin.</span>}</div>
+      </div>
+      <div className="qvl-scn-method-note">
+        <div><span className="qvl-scn-origin enrich">Enrichissement contrôlé</span><strong>{espasMethodItem.title}</strong></div>
+        <p>{espasMethodItem.summary}</p>
+        <a href={espasMethodItem.source.url} target="_blank" rel="noreferrer"><Icon name="external" size={14}/> Ouvrir la ressource</a>
       </div>
       <div className="qvl-scn-reflexive"><Icon name="info" size={16}/>À vous de juger : s’agit-il d’une tendance installée, d’un signe de changement ou d’un signal faible encore incertain ?</div>
       <div className="qvl-scn-next"><button className="qvl-scn-secondary" type="button" onClick={() => setStep(2)}><Icon name="back" size={16}/>Étape précédente</button><button className="qvl-scn-primary" type="button" onClick={() => setStep(4)}>Prévisualiser mon scénario <Icon name="chevron" size={16}/></button></div>
