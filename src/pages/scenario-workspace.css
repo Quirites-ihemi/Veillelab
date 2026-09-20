@@ -27,3 +27,14 @@
 .qvl-scn-no-match strong{color:#17375f}.qvl-scn-no-match span{font-size:13px;line-height:1.45}
 .qvl-scn-method-note{margin-top:15px;border:1px solid #eadfbe;background:#fffaf0;border-radius:11px;padding:12px 14px;color:#5f5a4a}
 .qvl-scn-method-note>div{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.qvl-scn-method-note strong{color:#3f536f;font-size:14px}.qvl-scn-method-note p{margin:7px 0;color:#66738a;font-size:12.5px}.qvl-scn-method-note a{display:inline-flex;align-items:center;gap:5px;color:#1e5db7;text-decoration:none;font-weight:750;font-size:12.5px}
+
+/* T06 V0.4 — formulation par notions + interface plus conviviale */
+.qvl-scn-hero{display:grid;grid-template-columns:minmax(0,1fr) 390px;align-items:center;gap:26px;min-height:152px;padding:18px 20px 18px 24px;border:1px solid #dbe5f2;border-radius:18px;background:linear-gradient(100deg,#f7fbff 0%,#fff 54%,#f7f4ff 100%);overflow:hidden;box-shadow:0 8px 26px rgba(24,53,94,.06)}
+.qvl-scn-hero-copy{min-width:0}.qvl-scn-kicker{display:inline-flex;align-items:center;margin-bottom:6px;color:#2d69b9;font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.08em}.qvl-scn-hero h1{font-size:40px}.qvl-scn-hero p{max-width:760px;font-size:16.5px;line-height:1.5;color:#435f80}.qvl-scn-hero img{width:100%;height:124px;object-fit:cover;object-position:center;border-radius:14px;box-shadow:0 7px 20px rgba(20,45,82,.12)}
+.qvl-scn-notion-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.qvl-scn-notion-grid .qvl-scn-formulation-card{background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);border-color:#cfdded;box-shadow:0 7px 18px rgba(35,69,111,.055)}
+.qvl-scn-notion-grid .qvl-scn-formulation-card:nth-child(2n){background:linear-gradient(180deg,#fff 0%,#fbfaff 100%)}
+.qvl-scn-limit{margin-top:8px!important;padding-top:8px;border-top:1px solid #dce6f1;color:#6a5361!important}.qvl-scn-limit strong{display:inline!important;color:#9a4f59!important;font-size:inherit!important;margin:0!important}
+.qvl-scn-formulation-card .qvl-scn-type{background:#edf4ff;border-radius:999px;padding:5px 8px;color:#225b9f}.qvl-scn-formulation-card .qvl-scn-origin{background:#eaf8ef;color:#286c48}
+@media(max-width:980px){.qvl-scn-hero{grid-template-columns:1fr}.qvl-scn-hero img{height:110px}.qvl-scn-notion-grid{grid-template-columns:1fr}}
+
+.qvl-scn-preview-notions{margin-top:10px;padding-top:9px;border-top:1px solid #e6edf5;display:grid;gap:4px}.qvl-scn-preview-notions strong{color:#173a67;font-size:12px}.qvl-scn-preview-notions span{color:#60758f;font-size:12px;line-height:1.45}

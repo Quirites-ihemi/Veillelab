@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import { searchCorpus } from '../services/reflectionApi.js'
 import { exportScenarioWord, exportScenarioExcel } from '../utils/scenarioExport.js'
+import scenarioHero from '../header-corpus-securite.png'
 import './scenario-workspace.css'
 
 const STEPS = [
@@ -22,6 +23,10 @@ const OBJECT_TYPE_LABELS = {
   recommandation: 'Réponse publique',
   methode: 'Méthode',
 }
+
+const FORMULATION_NODE_TYPES = new Set(['notion_idee'])
+const OBJECT_NODE_TYPES = new Set(['acteur', 'expert_public', 'localisation', 'instrument_dispositif', 'action', 'probleme', 'recommandation'])
+const DYNAMIC_INTENT_WORDS = /(evolution|perspective|avenir|futur|tendance|changement|emerg)/i
 
 const CHANGE_WORDS = /(émerg|evolu|évolu|hausse|baisse|augmentation|diminution|apparition|diffusion|renforcement|accélération|acceleration|mutation|nouveau|nouvelle|croissan|recul|essor|développement|developpement|progression|déplacement|deplacement)/i
 
@@ -88,6 +93,7 @@ function extractScenarioSearchProfile(value='') {
     query: queryTokens.length ? queryTokens.join(' ') : normalized,
     anchors,
     context,
+    normalized,
   }
 }
 
@@ -245,45 +251,66 @@ function readableContextMatches(result, profile) {
   return labels.filter(label => requested.size === 0 || requested.has(label))
 }
 
+function requestedContextLabels(profile={}) {
+  const needText = profile.normalized || ''
+  return CONTEXT_READABLE.filter(rule => rule.match.test(needText)).map(rule => rule.label)
+}
+
 function whyThisResult(result, profile, assessment) {
-  const category = result.kind === 'node' ? result.node_type : ''
-  let first = 'Cet élément documente directement le sujet au cœur de votre besoin.'
-  if (['instrument_dispositif', 'action', 'recommandation'].includes(category)) {
-    first = 'Cet élément documente une réponse, un dispositif ou une modalité d’action directement liée au sujet de votre veille.'
-  } else if (['acteur', 'expert_public'].includes(category)) {
-    first = 'Cet élément identifie un acteur directement associé au sujet de votre veille.'
-  } else if (category === 'localisation') {
-    first = 'Cet élément apporte un repère territorial directement lié au sujet de votre veille.'
-  } else if (category === 'probleme') {
-    first = 'Cet élément documente une dimension du problème directement liée au sujet de votre veille.'
-  } else if (category === 'notion_idee') {
-    first = 'Cet élément précise une notion ou un angle directement lié au sujet de votre veille.'
+  const contexts = readableContextMatches(result, profile)
+  const requestedContexts = requestedContextLabels(profile)
+  const central = (profile?.anchors || []).slice(0, 2).join(' / ')
+  const label = String(result.label || '').trim()
+
+  let why = central
+    ? `Cette notion est directement reliée au sujet central « ${central} » dans le corpus.`
+    : 'Cette notion est directement reliée au sujet formulé dans votre besoin.'
+
+  if (contexts.length) {
+    why += ` Elle peut vous aider à préciser ${contexts.slice(0, 2).join(' et ')} à travers la notion « ${label} ».`
+  } else {
+    why += ` Elle peut vous aider à préciser l’angle de cadrage « ${label} » avant de choisir les objets à surveiller.`
   }
 
-  const contexts = readableContextMatches(result, profile)
-  if (contexts.length) return `${first} Il correspond aussi à ${contexts.slice(0, 2).join(' et ')}.`
-  if ((profile?.context || []).length && assessment?.tier === 'broader') {
-    return `${first} En revanche, il ne documente pas explicitement toutes les précisions de périmètre formulées dans votre demande : à vous de juger s’il mérite d’être retenu.`
+  const limits = []
+  const missingContexts = requestedContexts.filter(ctx => !contexts.includes(ctx))
+  if (missingContexts.length) {
+    limits.push(`elle ne documente pas explicitement ${missingContexts.slice(0, 2).join(' ni ')}`)
   }
-  return first
+  if (DYNAMIC_INTENT_WORDS.test(profile?.normalized || '') && !CHANGE_WORDS.test(label)) {
+    limits.push("elle ne renseigne pas directement l’évolution du phénomène")
+  }
+  if (!limits.length) {
+    limits.push("cette notion aide au cadrage du besoin ; elle ne constitue pas, à elle seule, une tendance ni un objet de veille")
+  }
+
+  return {
+    why,
+    limit: `Limite : ${limits.join(' ; ')}.`,
+  }
 }
 
 function buildFormulationItems(results=[], profile={}) {
   const assessed = results
+    .filter(result => result.kind === 'node' && FORMULATION_NODE_TYPES.has(result.node_type))
     .map(result => ({ result, assessment: relevanceAssessment(result, profile) }))
     .filter(entry => entry.assessment.eligible)
     .sort((a, b) => b.assessment.score - a.assessment.score)
 
   const strong = assessed.filter(entry => entry.assessment.tier === 'strong')
   const broader = assessed.filter(entry => entry.assessment.tier === 'broader')
-  const selected = strong.slice(0, 6)
-  if (selected.length < 3) selected.push(...broader.slice(0, Math.min(2, 6 - selected.length)))
+  const selected = strong.slice(0, 4)
+  if (selected.length < 3) selected.push(...broader.slice(0, Math.min(2, 4 - selected.length)))
 
-  return dedupe(selected.map(({ result, assessment }) => ({
-    ...resultToItem(result),
-    why: whyThisResult(result, profile, assessment),
-    matchTier: assessment.tier,
-  }))).slice(0, 6)
+  return dedupe(selected.map(({ result, assessment }) => {
+    const rationale = whyThisResult(result, profile, assessment)
+    return {
+      ...resultToItem(result, 'Notion'),
+      why: rationale.why,
+      limit: rationale.limit,
+      matchTier: assessment.tier,
+    }
+  })).slice(0, 4)
 }
 
 function normalize(value='') {
@@ -398,8 +425,9 @@ function ProposalCard({ item, retained, discarded, reformulation, onRetain, onDi
     </div>
     <h3>{item.title}</h3>
     <div className="qvl-scn-why">
-      <strong>Pourquoi cet élément est proposé</strong>
-      <p>{item.why || 'Cet élément documente directement une dimension de votre besoin de veille.'}</p>
+      <strong>Pourquoi cette notion est proposée</strong>
+      <p>{item.why || 'Cette notion aide à préciser une dimension de votre besoin de veille.'}</p>
+      {item.limit && <p className="qvl-scn-limit"><strong>Limite :</strong> {item.limit.replace(/^Limite\s*:\s*/i, '')}</p>}
     </div>
     {item.summary && <details className="qvl-scn-detail"><summary>Voir l’élément documentaire</summary><p>{item.summary}</p></details>}
     <div className="qvl-scn-source">
@@ -508,15 +536,15 @@ export default function ScenarioWorkspace({ data, onBack }) {
   }
 
   const formulationCorpusItems = useMemo(() => {
-    const preferredNodes = nodeResults.filter(r => ['acteur', 'expert_public', 'notion_idee', 'probleme', 'instrument_dispositif', 'action', 'localisation', 'recommandation'].includes(r.node_type))
-    return buildFormulationItems([...preferredNodes, ...generalResults], searchProfile)
-  }, [nodeResults, generalResults, searchProfile])
+    const notionNodes = nodeResults.filter(r => FORMULATION_NODE_TYPES.has(r.node_type))
+    return buildFormulationItems(notionNodes, searchProfile)
+  }, [nodeResults, searchProfile])
 
   const formulationItems = formulationCorpusItems
 
   const objectItems = useMemo(() => {
     const allowed = nodeResults
-      .filter(r => !['tendance', 'signal_faible'].includes(r.node_type))
+      .filter(r => OBJECT_NODE_TYPES.has(r.node_type))
       .map(r => resultToItem(r))
     const retainedForm = formulationItems.filter(item => retained.has(item.id) && item.origin === 'corpus' && !['Tendance', 'Signal faible'].includes(item.category))
     return dedupe([...retainedForm, ...allowed]).slice(0, 18)
@@ -592,9 +620,13 @@ export default function ScenarioWorkspace({ data, onBack }) {
 
   return <main className="page qvl-scenario-v01">
     <button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button>
-    <header className="qvl-scn-head">
-      <h1>Scénario de veille</h1>
-      <p>Du besoin exprimé par le veilleur à un livrable structuré, construit à partir de ses choix et du corpus.</p>
+    <header className="qvl-scn-head qvl-scn-hero">
+      <div className="qvl-scn-hero-copy">
+        <span className="qvl-scn-kicker">Atelier de veille</span>
+        <h1>Scénario de veille</h1>
+        <p>Exprimez votre besoin, laissez le corpus vous proposer des notions utiles pour le préciser, puis construisez votre scénario pas à pas.</p>
+      </div>
+      <img src={scenarioHero} alt="Bibliothèque de travail Quiritès" />
     </header>
 
     <nav className="qvl-scn-nav" aria-label="Étapes du scénario de veille">
@@ -609,26 +641,26 @@ export default function ScenarioWorkspace({ data, onBack }) {
       </div>
       {error && <p className="qvl-scn-error">{error}</p>}
       {searched && <>
-        <div className="qvl-scn-section-title"><div><h2>Ce que le corpus peut apporter à votre besoin</h2><p>Le corpus contient des éléments directement liés à votre demande. Pour chacun, Quiritès indique pourquoi il peut être utile. À vous de décider s’il doit nourrir votre scénario, vous conduire à préciser votre besoin ou être écarté.</p></div></div>
+        <div className="qvl-scn-section-title"><div><h2>Les notions du corpus qui peuvent préciser votre besoin</h2><p>À ce stade, Quiritès ne fait remonter que des notions de cadrage directement liées à votre demande. Chaque proposition est justifiée, sourcée et accompagnée de ses limites.</p></div></div>
         {formulationCorpusItems.length === 0 && <div className="qvl-scn-no-match">
-          <strong>Aucun élément du corpus n’est suffisamment pertinent pour ce besoin.</strong>
-          <span>Quiritès préfère ne rien proposer plutôt que de faire remonter une source seulement proche par le vocabulaire. Certaines dimensions de votre besoin peuvent simplement être peu couvertes dans le corpus actuel.</span>
+          <strong>Aucune notion du corpus n’est suffisamment pertinente pour préciser ce besoin.</strong>
+          <span>Quiritès préfère ne rien proposer plutôt que d’élargir artificiellement votre demande. Vous pourrez poursuivre avec votre formulation initiale.</span>
         </div>}
-        <div className="qvl-scn-grid">{formulationItems.map(item => <ProposalCard key={item.id} item={item} retained={retained.has(item.id)} discarded={discarded.has(item.id)} reformulation={reformulationRefs.has(item.id)} onRetain={toggleRetain} onDiscard={toggleDiscard} onReformulate={toggleReformulation}/>)}</div>
+        <div className="qvl-scn-grid qvl-scn-notion-grid">{formulationItems.map(item => <ProposalCard key={item.id} item={item} retained={retained.has(item.id)} discarded={discarded.has(item.id)} reformulation={reformulationRefs.has(item.id)} onRetain={toggleRetain} onDiscard={toggleDiscard} onReformulate={toggleReformulation}/>)}</div>
         {reformulationRefs.size > 0 && <div className="qvl-scn-reformulate">
           <label>Préciser votre besoin à partir des éléments choisis</label>
           <p className="qvl-scn-reformulate-help">Votre texte reste sous votre contrôle. Modifiez-le uniquement si les éléments retenus vous conduisent à préciser votre demande.</p>
           <textarea value={workingNeed} onChange={e => setWorkingNeed(e.target.value)} />
           <div className="qvl-scn-hints"><span>Éléments mobilisés pour vous aider à préciser :</span>{formulationItems.filter(i => reformulationRefs.has(i.id)).map(i => <b key={i.id}>{i.title}</b>)}</div>
         </div>}
-        <div className="qvl-scn-reflexive"><Icon name="info" size={16}/>À vous de juger : chaque proposition éclaire-t-elle réellement votre besoin ? Le lien avec votre sujet est-il suffisamment direct pour qu’elle mérite d’entrer dans le scénario ?</div>
+        <div className="qvl-scn-reflexive"><Icon name="info" size={16}/>À vous de juger : cette notion aide-t-elle réellement à préciser votre besoin, ou risque-t-elle au contraire de l’élargir inutilement ?</div>
         <div className="qvl-scn-next"><button className="qvl-scn-primary" type="button" onClick={() => setStep(2)}>Valider cette sélection et continuer <Icon name="chevron" size={16}/></button></div>
       </>}
     </section>}
 
     {step === 2 && <section className="qvl-scn-section">
       <div className="qvl-scn-current-need"><strong>Besoin de veille</strong><span>{activeNeed}</span></div>
-      <div className="qvl-scn-section-title"><div><h2>Objets de veille proposés par le corpus</h2><p>Retenez uniquement les acteurs, phénomènes, dispositifs, territoires ou notions qui doivent réellement structurer votre veille.</p></div></div>
+      <div className="qvl-scn-section-title"><div><h2>Objets de veille proposés par le corpus</h2><p>Retenez uniquement les acteurs, phénomènes, dispositifs ou territoires qui doivent réellement structurer votre veille.</p></div></div>
       <div className="qvl-scn-grid three">{objectItems.map(item => <SelectionCard key={item.id} item={item} retained={retained.has(item.id)} onToggle={toggleRetain}/>)}</div>
       <div className="qvl-scn-reflexive"><Icon name="info" size={16}/>À vous de juger : quels objets sont assez importants pour structurer la veille, et lesquels risquent de disperser l’attention ?</div>
       <div className="qvl-scn-next"><button className="qvl-scn-secondary" type="button" onClick={() => setStep(1)}><Icon name="back" size={16}/>Étape précédente</button><button className="qvl-scn-primary" type="button" onClick={() => setStep(3)}>Valider cette sélection et continuer <Icon name="chevron" size={16}/></button></div>
@@ -654,7 +686,11 @@ export default function ScenarioWorkspace({ data, onBack }) {
     {step === 4 && <section className="qvl-scn-section">
       <div className="qvl-scn-section-title"><div><h2>Prévisualisation du scénario</h2><p>Cette prévisualisation assemble uniquement votre besoin et les éléments que vous avez retenus.</p></div></div>
       <div className="qvl-scn-preview">
-        <PreviewBlock n="1" title="Besoin de veille"><p>{preview.need_working}</p>{preview.need_working !== preview.need_original && <small>Besoin initial : {preview.need_original}</small>}</PreviewBlock>
+        <PreviewBlock n="1" title="Besoin de veille">
+          <p>{preview.need_working}</p>
+          {preview.need_working !== preview.need_original && <small>Besoin initial : {preview.need_original}</small>}
+          {preview.formulation_items.length > 0 && <div className="qvl-scn-preview-notions"><strong>Notions de cadrage retenues</strong><span>{preview.formulation_items.map(item => item.title).join(' · ')}</span></div>}
+        </PreviewBlock>
         <PreviewBlock n="2" title="Questions de veille"><ul>{preview.questions.map((q, i) => <li key={i}>{q}</li>)}</ul><small>Propositions de structuration à modifier si nécessaire.</small></PreviewBlock>
         <PreviewItems n="3" title="Objets de veille" items={preview.objects}/>
         <PreviewItems n="4" title="Tendances à suivre" items={preview.trends}/>
