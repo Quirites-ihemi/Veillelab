@@ -25,6 +25,126 @@ const OBJECT_TYPE_LABELS = {
 
 const CHANGE_WORDS = /(émerg|evolu|évolu|hausse|baisse|augmentation|diminution|apparition|diffusion|renforcement|accélération|acceleration|mutation|nouveau|nouvelle|croissan|recul|essor|développement|developpement|progression|déplacement|deplacement)/i
 
+const SCENARIO_BOILERPLATE_WORDS = new Set([
+  'souhaite','souhaiter','souhaitons','voudrais','voudrait','veux','veut','faire','mettre','mieux',
+  'veille','suivi','surveillance','suivre','surveiller','observer','observation','comprendre','analyser','analyse',
+  'evolution','evolutions','perspective','perspectives','avenir','futur','future','tendance','tendances',
+  'changement','changements','signal','signaux','faible','faibles','emergence','emergent','emergents',
+  'sujet','besoin','question','theme','domaine','matiere','enjeu','enjeux','particulier','particuliere',
+  'particulierement','notamment','vise','viser','visant','concerne','concernant','autour','focus',
+  'acteur','acteurs','action','actions','reponse','reponses','dispositif','dispositifs','source','sources',
+  'lutte','contre','leurs','notre','votre','recente','recentes','recent','recents','nouveau','nouveaux','nouvelle','nouvelles',
+  'bon','bonne','bons','bonnes','pratique','pratiques',
+  'echelle','niveau','local','locale','locaux','locales','communal','communale','communaux','communales',
+  'territorial','territoriale','territoriaux','territoriales','regional','regionale','regionaux','regionales'
+])
+
+const SCENARIO_CONTEXT_WORDS = new Set([
+  'commune','communes','collectivite','collectivites','francilien','francilienne','franciliens','franciliennes',
+  'france','europe','europeen','europeenne','europeens','europeennes','departement','departements',
+  'region','regions','ville','villes','rural','rurale','ruraux','rurales','urbain','urbaine','urbains','urbaines',
+  'public','publique','publics','publiques','prive','privee','prives','privees'
+])
+
+function scenarioWords(value='') {
+  return normalize(value).split(' ').filter(Boolean)
+}
+
+function simpleStem(token='') {
+  let value = normalize(token)
+  if (value.length > 7 && value.endsWith('es')) value = value.slice(0, -2)
+  else if (value.length > 6 && value.endsWith('s')) value = value.slice(0, -1)
+  if (value.length > 7 && value.endsWith('e')) value = value.slice(0, -1)
+  return value
+}
+
+function extractScenarioSearchProfile(value='') {
+  const normalized = normalize(value)
+  if (!normalized) return { query: '', anchors: [], context: [] }
+
+  // On cherche d'abord le cœur du besoin, avant les précisions de périmètre.
+  let core = normalized
+  const veillePos = core.search(/\bveille\b/)
+  if (veillePos >= 0) core = core.slice(veillePos + 'veille'.length).trim()
+  core = core.replace(/^(?:sur|de|du|des|la|le|les|l|une|un)\s+/, '')
+  core = core.split(/\b(?:a l echelle|au niveau|en particulier|particulierement|notamment|sur le territoire|dans|pour|afin de|visant|concerne|concernant)\b/)[0].trim()
+
+  const all = scenarioWords(normalized).filter(t => t.length >= 4)
+  let anchors = scenarioWords(core)
+    .filter(t => t.length >= 5 && !SCENARIO_BOILERPLATE_WORDS.has(t) && !SCENARIO_CONTEXT_WORDS.has(t))
+
+  if (!anchors.length) {
+    anchors = all.filter(t => t.length >= 5 && !SCENARIO_BOILERPLATE_WORDS.has(t) && !SCENARIO_CONTEXT_WORDS.has(t))
+  }
+
+  anchors = [...new Set(anchors)].slice(0, 3)
+  const anchorSet = new Set(anchors)
+  const context = [...new Set(all.filter(t => !anchorSet.has(t) && !SCENARIO_BOILERPLATE_WORDS.has(t)))]
+    .filter(t => SCENARIO_CONTEXT_WORDS.has(t) || t.length >= 7)
+    .slice(0, 3)
+
+  const queryTokens = [...anchors, ...context]
+  return {
+    query: queryTokens.length ? queryTokens.join(' ') : normalized,
+    anchors,
+    context,
+  }
+}
+
+function resultSearchText(result={}) {
+  return normalize([
+    result.publication_title, result.section, result.text, result.label,
+    result.source_label, result.target_label, result.organisme_producteur, result.domaine
+  ].filter(Boolean).join(' '))
+}
+
+function resultMatchesScenarioTopic(result, anchors=[]) {
+  if (!anchors.length) return true
+  const words = resultSearchText(result).split(' ').filter(Boolean)
+  return anchors.some(anchor => {
+    const stem = simpleStem(anchor)
+    if (stem.length < 5) return words.includes(anchor)
+    return words.some(word => {
+      const wordStem = simpleStem(word)
+      return wordStem === stem || wordStem.startsWith(stem) || stem.startsWith(wordStem)
+    })
+  })
+}
+
+function tokenFamilyMatch(haystack, token) {
+  const normalizedHaystack = normalize(haystack)
+  const words = normalizedHaystack.split(' ').filter(Boolean)
+  const normalizedToken = normalize(token)
+  const stem = simpleStem(normalizedToken)
+
+  if (normalizedToken.startsWith('commun')) return words.some(word => word.startsWith('commun') || word.startsWith('municip'))
+  if (normalizedToken.startsWith('collectivit')) return words.some(word => word.startsWith('collectivit'))
+  if (normalizedToken.startsWith('francilien')) return /\bile de france\b/.test(normalizedHaystack) || words.some(word => word.startsWith('francilien'))
+
+  return words.some(word => {
+    const wordStem = simpleStem(word)
+    return wordStem === stem || wordStem.startsWith(stem) || stem.startsWith(wordStem)
+  })
+}
+
+function filterScenarioResults(results=[], anchors=[]) {
+  return results.filter(result => resultMatchesScenarioTopic(result, anchors))
+}
+
+function rankScenarioResults(results=[], anchors=[], context=[]) {
+  return [...results].sort((a, b) => {
+    const textA = resultSearchText(a)
+    const textB = resultSearchText(b)
+    const anchorA = anchors.filter(token => tokenFamilyMatch(textA, token)).length
+    const anchorB = anchors.filter(token => tokenFamilyMatch(textB, token)).length
+    const contextA = context.filter(token => tokenFamilyMatch(textA, token)).length
+    const contextB = context.filter(token => tokenFamilyMatch(textB, token)).length
+    const scoreA = contextA * 100 + anchorA * 20 + Number(a.score || 0)
+    const scoreB = contextB * 100 + anchorB * 20 + Number(b.score || 0)
+    return scoreB - scoreA
+  })
+}
+
 function normalize(value='') {
   return String(value)
     .toLowerCase()
@@ -201,23 +321,34 @@ export default function ScenarioWorkspace({ data, onBack }) {
   }), [])
 
   const runSearch = async () => {
-    const query = need.trim()
-    if (!query || loading) return
+    const userNeed = need.trim()
+    if (!userNeed || loading) return
+    const profile = extractScenarioSearchProfile(userNeed)
+    const query = profile.query || userNeed
     setLoading(true)
     setError('')
     setFinalized(false)
     try {
       const [general, nodes, trends, signals] = await Promise.all([
-        searchCorpus(query, { limit: 18, maxPerPublication: 3 }),
-        searchCorpus(query, { kinds: ['node'], limit: 36, maxPerPublication: 6 }),
-        searchCorpus(`${query} tendance évolution émergence`, { kinds: ['node', 'chunk'], limit: 30, maxPerPublication: 5 }),
-        searchCorpus(`${query} signal faible signe de changement`, { kinds: ['node', 'chunk'], limit: 30, maxPerPublication: 5 }),
+        searchCorpus(query, { limit: 24, maxPerPublication: 4 }),
+        searchCorpus(query, { kinds: ['node'], limit: 42, maxPerPublication: 6 }),
+        searchCorpus(`${query} tendance évolution émergence`, { kinds: ['node', 'chunk'], limit: 36, maxPerPublication: 5 }),
+        searchCorpus(`${query} signal faible signe de changement`, { kinds: ['node', 'chunk'], limit: 36, maxPerPublication: 5 }),
       ])
-      setGeneralResults(general?.results || [])
-      setNodeResults(nodes?.results || [])
-      setTrendResults(trends?.results || [])
-      setSignalResults(signals?.results || [])
-      setWorkingNeed(query)
+
+      // T06 applique un second garde-fou : un résultat doit réellement porter
+      // sur le sujet central du besoin. Les mots de contexte (commune, échelle,
+      // évolution...) ne suffisent jamais à eux seuls à rendre une source pertinente.
+      const filteredGeneral = rankScenarioResults(filterScenarioResults(general?.results || [], profile.anchors), profile.anchors, profile.context)
+      const filteredNodes = rankScenarioResults(filterScenarioResults(nodes?.results || [], profile.anchors), profile.anchors, profile.context)
+      const filteredTrends = rankScenarioResults(filterScenarioResults(trends?.results || [], profile.anchors), profile.anchors, profile.context)
+      const filteredSignals = rankScenarioResults(filterScenarioResults(signals?.results || [], profile.anchors), profile.anchors, profile.context)
+
+      setGeneralResults(filteredGeneral)
+      setNodeResults(filteredNodes)
+      setTrendResults(filteredTrends)
+      setSignalResults(filteredSignals)
+      setWorkingNeed(userNeed)
       setRetained(new Set())
       setDiscarded(new Set())
       setReformulationRefs(new Set())
@@ -230,13 +361,15 @@ export default function ScenarioWorkspace({ data, onBack }) {
     }
   }
 
-  const formulationItems = useMemo(() => {
+  const formulationCorpusItems = useMemo(() => {
     const priorityNodes = nodeResults
       .filter(r => ['acteur', 'expert_public', 'notion_idee', 'probleme', 'instrument_dispositif', 'action', 'localisation', 'tendance', 'signal_faible'].includes(r.node_type))
       .map(r => resultToItem(r))
     const docs = generalResults.map(r => resultToItem(r))
-    return [...dedupe([...priorityNodes, ...docs]).slice(0, 7), espasItem]
-  }, [nodeResults, generalResults, espasItem])
+    return dedupe([...priorityNodes, ...docs]).slice(0, 7)
+  }, [nodeResults, generalResults])
+
+  const formulationItems = useMemo(() => [...formulationCorpusItems, espasItem], [formulationCorpusItems, espasItem])
 
   const objectItems = useMemo(() => {
     const allowed = nodeResults
@@ -334,6 +467,10 @@ export default function ScenarioWorkspace({ data, onBack }) {
       {error && <p className="qvl-scn-error">{error}</p>}
       {searched && <>
         <div className="qvl-scn-section-title"><div><h2>Ce que le corpus met à disposition</h2><p>Ces éléments peuvent être retenus, écartés ou utilisés par vous pour ajuster votre formulation.</p></div></div>
+        {formulationCorpusItems.length === 0 && <div className="qvl-scn-no-match">
+          <strong>Aucun élément du corpus n'est suffisamment pertinent pour ce besoin.</strong>
+          <span>Quiritès préfère ne rien proposer plutôt que de faire remonter une source seulement proche par le vocabulaire.</span>
+        </div>}
         <div className="qvl-scn-grid">{formulationItems.map(item => <ProposalCard key={item.id} item={item} retained={retained.has(item.id)} discarded={discarded.has(item.id)} reformulation={reformulationRefs.has(item.id)} onRetain={toggleRetain} onDiscard={toggleDiscard} onReformulate={toggleReformulation}/>)}</div>
         {reformulationRefs.size > 0 && <div className="qvl-scn-reformulate">
           <label>Votre formulation de travail</label>
