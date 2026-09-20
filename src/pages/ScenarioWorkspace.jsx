@@ -414,6 +414,7 @@ function framingNotionToItem(notion={}) {
     limit: notion.limite || '',
     dimension: notion.dimension_eclairee || '',
     level: notion.niveau || '',
+    synthesized: true,
     source: sources[0] || {},
     sources,
     origin: 'corpus',
@@ -452,7 +453,7 @@ function ProposalCard({ item, retained, discarded, reformulation, onRetain, onDi
   return <article className={`qvl-scn-card qvl-scn-formulation-card ${retained ? 'retained' : ''} ${discarded ? 'discarded' : ''}`}>
     <div className="qvl-scn-card-top">
       <span className="qvl-scn-type">{item.category}</span>
-      <span className="qvl-scn-origin">Corpus</span>
+      <span className="qvl-scn-origin">{item.synthesized ? 'Synthèse du corpus' : 'Corpus'}</span>
     </div>
     <h3>{item.title}</h3>
     <div className="qvl-scn-why">
@@ -460,7 +461,7 @@ function ProposalCard({ item, retained, discarded, reformulation, onRetain, onDi
       <p>{item.why || 'Cette notion aide à préciser une dimension de votre besoin de veille.'}</p>
       {item.limit && <p className="qvl-scn-limit"><strong>Limite :</strong> {item.limit.replace(/^Limite\s*:\s*/i, '')}</p>}
     </div>
-    {sources.length > 0 && <details className="qvl-scn-detail"><summary>Voir les éléments documentaires ({sources.length})</summary>
+    {sources.length > 0 && <details className="qvl-scn-detail"><summary>Voir les matériaux sources ({sources.length})</summary>
       <div className="qvl-scn-source-list">{sources.map((source, index) => {
         const href = sourceUrl(source)
         return <div className="qvl-scn-source qvl-scn-source-item" key={`${source.material_id || source.publication_id || index}-${index}`}>
@@ -682,12 +683,12 @@ export default function ScenarioWorkspace({ data, onBack }) {
       </div>
       {error && <p className="qvl-scn-error">{error}</p>}
       {searched && <>
-        <div className="qvl-scn-section-title"><div><h2>Les notions du corpus qui peuvent préciser votre besoin</h2><p>À ce stade, Quiritès ne fait remonter que des notions de cadrage directement liées à votre demande. Chaque proposition est justifiée, sourcée et accompagnée de ses limites.</p></div></div>
+        <div className="qvl-scn-section-title"><div><h2>Les notions du corpus qui peuvent préciser votre besoin</h2><p>Quiritès peut regrouper plusieurs matériaux du corpus pour faire émerger une notion de cadrage utile. Chaque proposition est justifiée, sourcée et accompagnée de ses limites.</p></div></div>
         {formulationCorpusItems.length === 0 && <div className="qvl-scn-no-match">
           <strong>Aucune notion du corpus n’est suffisamment pertinente pour préciser ce besoin.</strong>
           <span>Quiritès préfère ne rien proposer plutôt que d’élargir artificiellement votre demande. Vous pourrez poursuivre avec votre formulation initiale.</span>
         </div>}
-        {framing?.limites_couverture?.length > 0 && <div className="qvl-scn-coverage"><strong>Dimensions encore peu couvertes dans les matériaux retrouvés</strong><span>{framing.limites_couverture.join(' · ')}</span></div>}
+        {framing?.limites_couverture?.length > 0 && <div className="qvl-scn-coverage"><strong>Dimensions encore peu couvertes dans les matériaux retrouvés</strong><ul>{framing.limites_couverture.map((limit, index) => <li key={`${index}-${limit}`}>{limit}</li>)}</ul></div>}
         <div className="qvl-scn-grid qvl-scn-notion-grid">{formulationItems.map(item => <ProposalCard key={item.id} item={item} retained={retained.has(item.id)} discarded={discarded.has(item.id)} reformulation={reformulationRefs.has(item.id)} onRetain={toggleRetain} onDiscard={toggleDiscard} onReformulate={toggleReformulation}/>)}</div>
         {reformulationRefs.size > 0 && <div className="qvl-scn-reformulate">
           <label>Préciser votre besoin à partir des éléments choisis</label>

@@ -80,3 +80,26 @@
 .qvl-scn-coverage span {
   line-height: 1.45;
 }
+
+/* T06 V0.6 — notions synthétisées + limites lisibles */
+.qvl-scn-coverage {
+  display: block;
+  padding: 13px 15px;
+}
+.qvl-scn-coverage strong {
+  display: block;
+  white-space: normal;
+  margin-bottom: 7px;
+}
+.qvl-scn-coverage ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 5px;
+}
+.qvl-scn-coverage li {
+  line-height: 1.45;
+}
+.qvl-scn-formulation-card .qvl-scn-origin {
+  white-space: nowrap;
+}
