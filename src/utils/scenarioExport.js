@@ -52,7 +52,7 @@ export function buildScenarioDocx(result){
     })
   }else paras.push(wPara(wText('Aucun axe retenu.')))
 
-  paras.push(wPara(wText('4. Grille de guet',true),'Heading1',45))
+  paras.push(wPara(wText('4. Objets de la veille',true),'Heading1',45))
   if(result?.watch?.length){
     result.watch.forEach(axis=>{
       paras.push(wPara(wText(axis.axis_title||'Axe',true),'Heading2',30))
@@ -61,23 +61,15 @@ export function buildScenarioDocx(result){
         axis.trends.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',20));if(item.synthese)paras.push(wPara(wText(item.synthese),'',20));if(item.limite)paras.push(wPara(wText(`Limite : ${item.limite}`,false,true,'8B4A4A'),'',25));addSourceParas(paras,item.sources||[],links)})
       }
       if(axis.watch_signs?.length){
-        paras.push(wPara(wText('Signes de changement à guetter — propositions IA à valider',true),'',25))
-        axis.watch_signs.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',15));if(item.pourquoi_guetter)paras.push(wPara(wText(`Pourquoi : ${item.pourquoi_guetter}`),'',15));if(item.ce_qui_confirmerait)paras.push(wPara(wText(`Ce qui renforcerait le signal : ${item.ce_qui_confirmerait}`),'',15));if(item.ce_qui_affaiblirait)paras.push(wPara(wText(`Ce qui l’affaiblirait : ${item.ce_qui_affaiblirait}`),'',20));addSourceParas(paras,item.sources||[],links)})
-      }
-      if(axis.cluster_hypotheses?.length){
-        paras.push(wPara(wText('Hypothèses de regroupement — propositions IA à valider',true),'',25))
-        axis.cluster_hypotheses.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',15));if(item.interpretation)paras.push(wPara(wText(item.interpretation),'',15));if(item.ce_qui_invaliderait)paras.push(wPara(wText(`Ce qui invaliderait l’hypothèse : ${item.ce_qui_invaliderait}`,false,true,'8B4A4A'),'',20))})
+        paras.push(wPara(wText('Signes de changement à guetter',true),'',25))
+        axis.watch_signs.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',15));addSourceParas(paras,item.sources||[],links)})
       }
       if(axis.sources_to_watch?.length){
         paras.push(wPara(wText('Sources à surveiller',true),'',25))
         axis.sources_to_watch.forEach(item=>{paras.push(wPara(wText(`• ${item.label}`,true),'',15));if(item.raison)paras.push(wPara(wText(item.raison),'',15));addSourceParas(paras,item.sources||[],links)})
       }
-      if(axis.blind_spots?.length){
-        paras.push(wPara(wText('Angles morts / points à instruire',true),'',25))
-        axis.blind_spots.forEach(x=>paras.push(wPara(wText(`• ${x}`),'',18)))
-      }
     })
-  }else paras.push(wPara(wText('Aucun élément de grille de guet retenu.')))
+  }else paras.push(wPara(wText('Aucun objet de veille retenu.')))
 
   if(result?.methodology){
     paras.push(wPara(wText('Repère méthodologique — enrichissement contrôlé',true),'Heading1',45))
@@ -107,9 +99,7 @@ export function buildScenarioXlsx(result){
   ;(result?.watch||[]).forEach(axis=>{
     ;(axis.trends||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Tendance documentée',axis.axis_title,'corpus','documente',i,s)))
     ;(axis.watch_signs||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Signe de changement à guetter',axis.axis_title,'proposition_ia','à valider',i,s)))
-    ;(axis.cluster_hypotheses||[]).forEach(i=>add('Hypothèse de regroupement',axis.axis_title,'proposition_ia','à valider',i,{}))
     ;(axis.sources_to_watch||[]).forEach(i=>(i.sources?.length?i.sources:[{}]).forEach(s=>add('Source à surveiller',axis.axis_title,i.origin||'proposition_ia','retenue',i,s)))
-    ;(axis.blind_spots||[]).forEach(x=>add('Angle mort / point à instruire',axis.axis_title,'corpus','limite',{title:x},{}))
   })
   if(result?.methodology)add('Repère méthodologique','','enrichissement_controle','', {title:result.methodology.label,description:result.methodology.usage}, {url:result.methodology.url})
   const xmlRows=[`<row r="1">${headers.map((h,i)=>xCell(`${colName(i+1)}1`,h,'1')).join('')}</row>`]
