@@ -109,3 +109,167 @@
   .qvl-t06-axis-card-icon{grid-row:1;grid-column:2;justify-self:start}
   .qvl-t06-axis-card-body{grid-column:1/-1}
 }
+
+/* =====================================================
+   T06 — Sources visibles sous chaque objet
+   Fidèle à la maquette validée
+   ===================================================== */
+.qvl-t06-source-note{
+  margin:0 0 13px;
+  padding:9px 12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border-radius:9px;
+  background:#eef6ff;
+  color:#285d91;
+  font-size:12.5px;
+  font-weight:700;
+}
+
+.qvl-t06-object-item{
+  padding:10px 10px 9px;
+  margin:8px 0;
+  border:1px solid #dbe6f0;
+  border-radius:10px;
+  background:#fff;
+}
+.qvl-t06-object-column .qvl-t06-object-item:first-of-type{border-top:1px solid #dbe6f0}
+.qvl-t06-object-item.sign{border-color:#d5e8e2;background:#fcfffe}
+.qvl-t06-object-item.source{border-color:#e1dcf1;background:#fff}
+.qvl-t06-object-item.selected{box-shadow:0 0 0 1px rgba(23,102,193,.07)}
+
+.qvl-t06-object-toggle{
+  width:100%;
+  border:0;
+  background:transparent;
+  padding:0;
+  display:grid;
+  grid-template-columns:26px minmax(0,1fr);
+  gap:9px;
+  text-align:left;
+  color:#234d75;
+  cursor:pointer;
+  align-items:start;
+}
+.qvl-t06-object-icon{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#e8f3ff;
+  color:#1766c1;
+  font-size:12px;
+  font-weight:900;
+  margin-top:1px;
+}
+.qvl-t06-object-item.sign .qvl-t06-object-icon{background:#e6f7f1;color:#16846c}
+.qvl-t06-object-item.source .qvl-t06-object-icon{background:#f0edff;color:#644bb6}
+.qvl-t06-object-item:not(.selected) .qvl-t06-object-icon{background:#f4f6f9;color:#90a2b4}
+.qvl-t06-object-copy strong{
+  display:block;
+  font-size:13.5px;
+  line-height:1.34;
+  color:#183f6d;
+}
+.qvl-t06-object-copy small{
+  display:block;
+  margin-top:4px;
+  font-size:11.8px;
+  line-height:1.38;
+  color:#607891;
+}
+
+.qvl-t06-source-access-list{
+  display:grid;
+  gap:6px;
+  margin-top:9px;
+}
+.qvl-t06-source-access{
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr) auto;
+  gap:8px;
+  align-items:center;
+  padding:7px 8px;
+  border:1px solid #dbe6f1;
+  border-radius:8px;
+  background:#f8fbff;
+}
+.qvl-t06-object-item.sign .qvl-t06-source-access{background:#f7fcfa;border-color:#d9e9e4}
+.qvl-t06-object-item.source .qvl-t06-source-access{background:#fbfaff;border-color:#e5e0f3}
+.qvl-t06-source-access.unavailable{background:#fafbfd;border-style:dashed}
+.qvl-t06-source-access-icon{
+  width:22px;
+  height:22px;
+  border-radius:6px;
+  display:grid;
+  place-items:center;
+  background:#edf4fc;
+  color:#1766c1;
+  font-size:13px;
+  font-weight:900;
+}
+.qvl-t06-source-access-copy{min-width:0}
+.qvl-t06-source-access-copy strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#315a82;
+  font-size:11.5px;
+  line-height:1.3;
+}
+.qvl-t06-source-access-copy small{
+  display:block;
+  margin-top:1px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#74889d;
+  font-size:10.5px;
+  font-style:italic;
+}
+.qvl-t06-source-open{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-height:29px;
+  padding:5px 8px;
+  border:1px solid #7bb0e7;
+  border-radius:7px;
+  background:#fff;
+  color:#1766c1;
+  font-size:10.8px;
+  font-weight:900;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.qvl-t06-source-open:hover{background:#eef6ff}
+.qvl-t06-source-access-disabled{
+  padding:5px 7px;
+  border-radius:7px;
+  background:#f0f3f6;
+  color:#7d8fa1;
+  font-size:10.5px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.qvl-t06-preview-object .qvl-t06-source-access-list,
+.qvl-t06-preview-axis .qvl-t06-source-access-list{margin-top:6px}
+.qvl-t06-object-generation-error{
+  padding:13px 14px;
+  border:1px solid #efc3be;
+  border-radius:10px;
+  background:#fff5f4;
+  color:#8f3d35;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.45;
+}
+
+@media(max-width:900px){
+  .qvl-t06-source-access{grid-template-columns:24px minmax(0,1fr)}
+  .qvl-t06-source-open,.qvl-t06-source-access-disabled{grid-column:2;justify-self:start}
+}
