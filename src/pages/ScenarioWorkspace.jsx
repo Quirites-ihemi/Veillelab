@@ -6,10 +6,10 @@ import scenarioHero from '../header-corpus-securite.png'
 import './scenario-workspace.css'
 
 const STEPS = [
-  { id: 1, label: 'Cadrer le besoin' },
+  { id: 1, label: 'Formuler le besoin' },
   { id: 2, label: 'Choisir des axes de veille' },
-  { id: 3, label: 'Construire la grille de guet' },
-  { id: 4, label: 'Prévisualiser et générer' },
+  { id: 3, label: 'Objets de la veille' },
+  { id: 4, label: 'Finaliser le scénario' },
 ]
 
 const clip = (value, max = 420) => {
@@ -43,6 +43,7 @@ function sourceUrl(source = {}) {
 
 function sourceLabel(source = {}) {
   return [
+    source.publication_id,
     source.titre || source.title,
     source.organisme_producteur || source.organisation,
     source.annee_publication || source.year,
@@ -53,7 +54,7 @@ function sourceLabel(source = {}) {
 function SourceList({ sources = [], compact = false }) {
   if (!sources.length) return null
   return <details className={`qvl-t06-sources ${compact ? 'compact' : ''}`}>
-    <summary>{sources.length === 1 ? 'Voir la source' : `Voir les ${sources.length} sources`}</summary>
+    <summary>{sources.length === 1 ? 'Source' : `Sources (${sources.length})`}</summary>
     <div className="qvl-t06-source-list">
       {sources.map((source, index) => {
         const href = sourceUrl(source)
@@ -96,7 +97,7 @@ function CoverageOverview({ coverage }) {
     </div>
     {!!coverage.sources?.length && <div className="qvl-t06-coverage-sources">
       <strong>Quelques sources déjà présentes dans le corpus</strong>
-      <div>{coverage.sources.slice(0, 3).map((source, i) => <span key={`${source.publication_id}-${i}`}>{source.titre || source.publication_id}</span>)}</div>
+      <SourceList sources={coverage.sources.slice(0, 3)} compact />
     </div>}
   </div>
 }
@@ -158,32 +159,27 @@ function StructureCard({ structure, selected, selectedAxisIds, onChoose, onAxisT
 
 function WatchItem({ type, item, selected, onToggle }) {
   const isTrend = type === 'trend'
-  const isSign = type === 'sign'
-  const title = isTrend ? 'Tendance documentée' : isSign ? 'Signe de changement à guetter' : 'Hypothèse de regroupement'
-  return <article className={`qvl-t06-watch-card ${type} ${selected ? 'selected' : ''}`}>
-    <div className="qvl-t06-watch-top"><span>{title}</span><OriginBadge origin={isTrend ? 'corpus' : 'proposition_ia'}/></div>
-    <h4>{item.label}</h4>
-    {isTrend && item.synthese && <p>{item.synthese}</p>}
-    {isTrend && item.limite && <p className="limit"><strong>Limite :</strong> {item.limite}</p>}
-    {isSign && <>
-      {item.pourquoi_guetter && <p><strong>Pourquoi le guetter :</strong> {item.pourquoi_guetter}</p>}
-      {item.ce_qui_confirmerait && <p className="watch-detail"><strong>Ce qui renforcerait le signal :</strong> {item.ce_qui_confirmerait}</p>}
-      {item.ce_qui_affaiblirait && <p className="watch-detail"><strong>Ce qui l’affaiblirait :</strong> {item.ce_qui_affaiblirait}</p>}
-    </>}
-    {!isTrend && !isSign && <>
-      {item.interpretation && <p>{item.interpretation}</p>}
-      {item.ce_qui_invaliderait && <p className="watch-detail"><strong>Ce qui invaliderait l’hypothèse :</strong> {item.ce_qui_invaliderait}</p>}
-    </>}
+  const icon = isTrend ? '✓' : '◉'
+  return <article className={`qvl-t06-object-item ${type} ${selected ? 'selected' : ''}`}>
+    <button type="button" className="qvl-t06-object-toggle" onClick={onToggle} aria-pressed={selected} aria-label={`${selected ? 'Retirer' : 'Retenir'} ${item.label}`}>
+      <span className="qvl-t06-object-icon" aria-hidden="true">{selected ? icon : '○'}</span>
+      <span className="qvl-t06-object-copy">
+        <strong>{item.label}</strong>
+        {isTrend && item.synthese && <small>{clip(item.synthese, 170)}</small>}
+        {!isTrend && item.pourquoi_guetter && <small>{clip(item.pourquoi_guetter, 150)}</small>}
+      </span>
+    </button>
     <SourceList sources={item.sources || []} compact />
-    <ToggleButton active={selected} onClick={onToggle}/>
   </article>
 }
 
 function WatchSource({ item, selected, onToggle }) {
-  return <article className={`qvl-t06-watch-source ${selected ? 'selected' : ''}`}>
-    <div><OriginBadge origin={item.origin || 'proposition_ia'}/><strong>{item.label}</strong><p>{item.raison}</p></div>
+  return <article className={`qvl-t06-object-item source ${selected ? 'selected' : ''}`}>
+    <button type="button" className="qvl-t06-object-toggle" onClick={onToggle} aria-pressed={selected} aria-label={`${selected ? 'Retirer' : 'Retenir'} ${item.label}`}>
+      <span className="qvl-t06-object-icon" aria-hidden="true">{selected ? '↗' : '○'}</span>
+      <span className="qvl-t06-object-copy"><strong>{item.label}</strong>{item.raison && <small>{clip(item.raison, 150)}</small>}</span>
+    </button>
     <SourceList sources={item.sources || []} compact />
-    <ToggleButton active={selected} onClick={onToggle}/>
   </article>
 }
 
@@ -322,7 +318,6 @@ export default function ScenarioWorkspace({ onBack }) {
       const next = new Set(prev)
       ;(axis.tendances || []).forEach(x => next.add(`trend:${x.trend_id}`))
       ;(axis.signes_a_guetter || []).forEach(x => next.add(`sign:${x.sign_id}`))
-      ;(axis.hypotheses_regroupement || []).forEach(x => next.add(`hyp:${x.hypothesis_id}`))
       ;(axis.sources_a_surveiller || []).forEach(x => next.add(`src:${x.source_watch_id}`))
       return next
     })
@@ -335,9 +330,7 @@ export default function ScenarioWorkspace({ onBack }) {
       axis_title: axis.titre,
       trends: (axis.tendances || []).filter(x => selectedWatch.has(`trend:${x.trend_id}`)),
       watch_signs: (axis.signes_a_guetter || []).filter(x => selectedWatch.has(`sign:${x.sign_id}`)),
-      cluster_hypotheses: (axis.hypotheses_regroupement || []).filter(x => selectedWatch.has(`hyp:${x.hypothesis_id}`)),
       sources_to_watch: (axis.sources_a_surveiller || []).filter(x => selectedWatch.has(`src:${x.source_watch_id}`)),
-      blind_spots: axis.angles_morts || [],
     }))
     return {
       need_original: need.trim(),
@@ -408,35 +401,42 @@ export default function ScenarioWorkspace({ onBack }) {
       <div className="qvl-t06-structures">{axesData.structurations.map(structure => <StructureCard key={structure.structure_id} structure={structure} selected={selectedStructureId === structure.structure_id} selectedAxisIds={selectedAxisIds} onChoose={() => chooseStructure(structure)} onAxisToggle={toggleAxis}/>)}</div>
       <div className="qvl-t06-custom-axis"><label>Ajouter votre propre axe</label><div><input value={customAxisText} onChange={e => setCustomAxisText(e.target.value)} placeholder="Ex. suivre les écarts entre mesure et perception locale"/><button type="button" onClick={addCustomAxis}>Ajouter</button></div>{customAxes.map(a => <span key={a.axis_id}>+ {a.titre}</span>)}</div>
       <ReflexiveLine>Le meilleur axe n’est pas forcément celui que le corpus documente le mieux. Demandez-vous surtout : si cet axe évolue, cela changera-t-il votre lecture ou votre décision ?</ReflexiveLine>
-      <div className="qvl-t06-next"><button type="button" className="qvl-t06-secondary" onClick={() => setStep(1)}><Icon name="back" size={16}/> Étape précédente</button><button type="button" className="qvl-t06-primary" onClick={buildWatch} disabled={!selectedAxes.length || loading}>Construire la grille de guet <Icon name="chevron" size={16}/></button></div>
+      <div className="qvl-t06-next"><button type="button" className="qvl-t06-secondary" onClick={() => setStep(1)}><Icon name="back" size={16}/> Étape précédente</button><button type="button" className="qvl-t06-primary" onClick={buildWatch} disabled={!selectedAxes.length || loading}>Construire les objets de la veille <Icon name="chevron" size={16}/></button></div>
     </section>}
 
-    {step === 3 && dynamicsData && <section className="qvl-t06-section">
-      <div className="qvl-t06-section-head"><div><h2>3. Construire la grille de guet</h2><p>Pour chaque axe retenu, distinguez ce que le corpus documente déjà de ce que l’IA vous propose de surveiller.</p></div></div>
-      {dynamicsData.methodological_reference && <div className="qvl-t06-method"><div><OriginBadge origin="enrichissement_controle"/><strong>{dynamicsData.methodological_reference.label}</strong></div><p>{dynamicsData.methodological_reference.usage}</p><a href={dynamicsData.methodological_reference.url} target="_blank" rel="noreferrer">Voir ESPAS Horizon <Icon name="external" size={14}/></a></div>}
+    {step === 3 && dynamicsData && <section className="qvl-t06-section qvl-t06-objects-section">
+      <div className="qvl-t06-section-head"><div><h2>3. Objets de la veille</h2><p>Le corpus apporte des repères utiles pour chaque axe, sous une forme volontairement synthétique.</p></div></div>
+      <div className="qvl-t06-current-need qvl-t06-current-need-objects"><strong>Besoin de veille</strong><span>{need}</span></div>
       <div className="qvl-t06-watch-axes">
-        {(dynamicsData.axes || []).map(axis => <section className="qvl-t06-watch-axis" key={axis.axis_id}>
-          <div className="qvl-t06-watch-axis-head"><div><span>{statusLabel(axis.corpus_status)}</span><h3>{axis.titre}</h3><p>{axis.objectif_surveillance}</p></div><button type="button" onClick={() => retainAllAxisWatch(axis)}>Tout retenir pour cet axe</button></div>
-          <div className="qvl-t06-watch-grid">
-            <div><h4>Tendances documentées</h4>{axis.tendances?.length ? axis.tendances.map(item => <WatchItem key={item.trend_id} type="trend" item={item} selected={selectedWatch.has(`trend:${item.trend_id}`)} onToggle={() => toggleSetKey(`trend:${item.trend_id}`)}/>) : <div className="qvl-t06-empty">Aucune tendance suffisamment étayée par plusieurs publications.</div>}</div>
-            <div><h4>Signes de changement à guetter</h4>{axis.signes_a_guetter?.length ? axis.signes_a_guetter.map(item => <WatchItem key={item.sign_id} type="sign" item={item} selected={selectedWatch.has(`sign:${item.sign_id}`)} onToggle={() => toggleSetKey(`sign:${item.sign_id}`)}/>) : <div className="qvl-t06-empty">Aucun signe proposé pour cet axe.</div>}</div>
-            <div><h4>Hypothèses de regroupement</h4>{axis.hypotheses_regroupement?.length ? axis.hypotheses_regroupement.map(item => <WatchItem key={item.hypothesis_id} type="hyp" item={item} selected={selectedWatch.has(`hyp:${item.hypothesis_id}`)} onToggle={() => toggleSetKey(`hyp:${item.hypothesis_id}`)}/>) : <div className="qvl-t06-empty">Aucun regroupement suffisamment cohérent n’est proposé à ce stade.</div>}</div>
+        {(dynamicsData.axes || []).map((axis, axisIndex) => <section className="qvl-t06-watch-axis qvl-t06-object-axis" key={axis.axis_id}>
+          <div className="qvl-t06-watch-axis-head qvl-t06-object-axis-head"><div><span>Axe {axisIndex + 1}</span><h3>{axis.titre}</h3><p>{axis.objectif_surveillance}</p></div><button type="button" onClick={() => retainAllAxisWatch(axis)}>Tout retenir pour cet axe</button></div>
+          <div className="qvl-t06-objects-grid">
+            <div className="qvl-t06-object-column trend">
+              <h4><span aria-hidden="true">▤</span> Tendances documentées</h4>
+              {axis.tendances?.length ? axis.tendances.map(item => <WatchItem key={item.trend_id} type="trend" item={item} selected={selectedWatch.has(`trend:${item.trend_id}`)} onToggle={() => toggleSetKey(`trend:${item.trend_id}`)}/>) : <div className="qvl-t06-empty">Aucune tendance suffisamment étayée par plusieurs publications.</div>}
+            </div>
+            <div className="qvl-t06-object-column sign">
+              <h4><span aria-hidden="true">◉</span> Signes de changement à guetter</h4>
+              {axis.signes_a_guetter?.length ? axis.signes_a_guetter.map(item => <WatchItem key={item.sign_id} type="sign" item={item} selected={selectedWatch.has(`sign:${item.sign_id}`)} onToggle={() => toggleSetKey(`sign:${item.sign_id}`)}/>) : <div className="qvl-t06-empty">Aucun signe proposé pour cet axe.</div>}
+            </div>
+            <div className="qvl-t06-object-column source">
+              <h4><span aria-hidden="true">↗</span> Sources à surveiller</h4>
+              {axis.sources_a_surveiller?.length ? axis.sources_a_surveiller.map(item => <WatchSource key={item.source_watch_id} item={item} selected={selectedWatch.has(`src:${item.source_watch_id}`)} onToggle={() => toggleSetKey(`src:${item.source_watch_id}`)}/>) : <div className="qvl-t06-empty">Aucune source supplémentaire proposée pour cet axe.</div>}
+            </div>
           </div>
-          {!!axis.sources_a_surveiller?.length && <div className="qvl-t06-sources-watch"><h4>Sources à surveiller</h4>{axis.sources_a_surveiller.map(item => <WatchSource key={item.source_watch_id} item={item} selected={selectedWatch.has(`src:${item.source_watch_id}`)} onToggle={() => toggleSetKey(`src:${item.source_watch_id}`)}/>)}</div>}
-          {!!axis.angles_morts?.length && <div className="qvl-t06-blindspots"><strong>Angles morts / points à instruire</strong><ul>{axis.angles_morts.map((x, i) => <li key={`${axis.axis_id}-gap-${i}`}>{x}</li>)}</ul></div>}
-          <ReflexiveLine>Qu’est-ce qui vous ferait changer d’avis sur cet axe ? Une bonne grille de guet doit aussi dire ce qui affaiblirait l’hypothèse.</ReflexiveLine>
         </section>)}
       </div>
-      <div className="qvl-t06-next"><button type="button" className="qvl-t06-secondary" onClick={() => setStep(2)}><Icon name="back" size={16}/> Étape précédente</button><button type="button" className="qvl-t06-primary" onClick={() => setStep(4)}>Prévisualiser le scénario <Icon name="chevron" size={16}/></button></div>
+      <ReflexiveLine>Ces objets de veille visent à nourrir le travail du veilleur, sans se substituer à son analyse.</ReflexiveLine>
+      <div className="qvl-t06-next"><button type="button" className="qvl-t06-secondary" onClick={() => setStep(2)}><Icon name="back" size={16}/> Étape précédente</button><button type="button" className="qvl-t06-primary" onClick={() => setStep(4)}>Poursuivre vers le scénario <Icon name="chevron" size={16}/></button></div>
     </section>}
 
     {step === 4 && preview && <section className="qvl-t06-section">
-      <div className="qvl-t06-section-head"><div><h2>4. Prévisualiser et générer</h2><p>Cette page assemble uniquement les choix effectués dans les étapes précédentes. Aucun nouveau contenu n’est généré ici.</p></div></div>
+      <div className="qvl-t06-section-head"><div><h2>4. Finaliser le scénario</h2><p>Cette page assemble uniquement les choix effectués dans les étapes précédentes. Aucun nouveau contenu n’est généré ici.</p></div></div>
       <div className="qvl-t06-preview">
         <PreviewBlock title="Besoin de veille"><p>{preview.need_original}</p>{!!preview.clarifications.length && <ul>{preview.clarifications.map(a => <li key={a.question_id}><strong>{a.question}</strong><br/>{a.answer}</li>)}</ul>}</PreviewBlock>
         <PreviewBlock title="Structuration retenue">{preview.structure ? <><p><strong>{preview.structure.title}</strong></p><p>{preview.structure.logic}</p></> : <p>Axes ajoutés directement par le veilleur.</p>}</PreviewBlock>
         <PreviewBlock title="Axes de veille">{preview.axes.map(axis => <div className="qvl-t06-preview-axis" key={axis.axis_id}><div><OriginBadge origin={axis.origin}/><span className={`qvl-t06-status ${statusClass(axis.corpus_status)}`}>{statusLabel(axis.corpus_status)}</span></div><strong>{axis.title}</strong><p>{axis.objective}</p>{axis.questions?.length > 0 && <ul>{axis.questions.map((q, i) => <li key={`${axis.axis_id}-pq-${i}`}>{q}</li>)}</ul>}<SourceList sources={axis.sources || []} compact/></div>)}</PreviewBlock>
-        <PreviewBlock title="Grille de guet">{preview.watch.map(axis => <div className="qvl-t06-preview-watch" key={axis.axis_id}><h4>{axis.axis_title}</h4>{axis.trends.map(x => <p key={x.trend_id}><OriginBadge origin="corpus"/> <strong>{x.label}</strong> — {x.synthese}</p>)}{axis.watch_signs.map(x => <p key={x.sign_id}><OriginBadge origin="proposition_ia"/> <strong>{x.label}</strong></p>)}{axis.cluster_hypotheses.map(x => <p key={x.hypothesis_id}><OriginBadge origin="proposition_ia"/> <strong>{x.label}</strong> — {x.interpretation}</p>)}{axis.sources_to_watch.map(x => <p key={x.source_watch_id}><OriginBadge origin={x.origin}/> <strong>Source à suivre :</strong> {x.label}</p>)}{axis.blind_spots.length > 0 && <ul>{axis.blind_spots.map((x, i) => <li key={`${axis.axis_id}-bs-${i}`}>{x}</li>)}</ul>}</div>)}</PreviewBlock>
+        <PreviewBlock title="Objets de la veille">{preview.watch.map(axis => <div className="qvl-t06-preview-watch" key={axis.axis_id}><h4>{axis.axis_title}</h4>{axis.trends.map(x => <div className="qvl-t06-preview-object" key={x.trend_id}><p><strong>Tendance :</strong> {x.label}</p><SourceList sources={x.sources || []} compact/></div>)}{axis.watch_signs.map(x => <div className="qvl-t06-preview-object" key={x.sign_id}><p><strong>Signe à guetter :</strong> {x.label}</p><SourceList sources={x.sources || []} compact/></div>)}{axis.sources_to_watch.map(x => <div className="qvl-t06-preview-object" key={x.source_watch_id}><p><strong>Source à surveiller :</strong> {x.label}</p><SourceList sources={x.sources || []} compact/></div>)}</div>)}</PreviewBlock>
       </div>
       <ReflexiveLine>Avant l’export : ce scénario correspond-il encore à votre besoin initial ? Les axes « à instruire » sont-ils assumés comme tels ? Les propositions IA vous paraissent-elles réellement observables ?</ReflexiveLine>
       <div className="qvl-t06-next"><button type="button" className="qvl-t06-secondary" onClick={() => setStep(3)}><Icon name="back" size={16}/> Étape précédente</button>{!finalized ? <button type="button" className="qvl-t06-primary" onClick={() => setFinalized(true)}><Icon name="spark" size={16}/> Générer le livrable</button> : <><button type="button" className="qvl-t06-secondary" onClick={() => exportScenarioWord(preview)}><Icon name="file" size={16}/> Exporter Word</button><button type="button" className="qvl-t06-secondary" onClick={() => exportScenarioExcel(preview)}><Icon name="layers" size={16}/> Exporter les données</button></>}</div>
