@@ -34,3 +34,7 @@ export function searchCorpus(query, options = {}) {
   if (options.organisme) body.organisme = options.organisme
   return postJson('/corpus-search', body)
 }
+
+export function analyzeScenarioFraming(need) {
+  return postJson('/scenario-framing', { need })
+}
