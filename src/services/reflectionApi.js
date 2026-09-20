@@ -38,3 +38,11 @@ export function searchCorpus(query, options = {}) {
 export function analyzeScenarioFraming(need) {
   return postJson('/scenario-framing', { need })
 }
+
+export function analyzeScenarioAxes(need, notions = []) {
+  return postJson('/scenario-axes', { need, notions })
+}
+
+export function analyzeScenarioDynamics(need, axes = []) {
+  return postJson('/scenario-dynamics', { need, axes })
+}
