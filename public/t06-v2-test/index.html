@@ -25,7 +25,7 @@
   <main>
     <section class="hero">
       <div>
-        <div class="eyebrow">VERSION DE TEST ISOLÉE — GITHUB PAGES + CLOUD RUN</div>
+        <div class="eyebrow">VALIDATION T06 V2 DANS LE LAB EXISTANT</div>
         <h1>Scénario de veille</h1>
         <p>Le corpus est filtré avant la proposition des axes. Chaque axe et chaque objet doivent conserver un ancrage documentaire vérifiable.</p>
       </div>
@@ -33,7 +33,7 @@
     </section>
 
     <div class="isolation-note">
-      <strong>Test isolé.</strong> Cette page n’écrase aucune page existante du Lab et appelle uniquement le backend Cloud Run T06 V2 de test.
+      <strong>Test isolé.</strong> Cette page n’écrase aucune page existante du Lab et appelle uniquement le backend principal Quiritès avec routes T06 V2.
     </div>
 
     <div class="steps">
@@ -45,10 +45,10 @@
 
     <section class="backend-config card compact-card">
       <div>
-        <strong>Backend T06 V2 de test</strong>
-        <small>Backend T06 V2 de test : <code>https://eillelab-t06-v2-test-633342872265.europe-west9.run.app</code>.</small>
+        <strong>Backend principal Quiritès</strong>
+        <small>Backend principal Quiritès : <code>https://veillelab-cloud-backend2-633342872265.europe-west9.run.app</code>.</small>
       </div>
-      <input id="backendUrl" type="url" placeholder="https://veillelab-t06-v2-test-....run.app">
+      <input id="backendUrl" type="url" placeholder="https://veillelab-cloud-backend2-633342872265.europe-west9.run.app">
       <button class="secondary" id="connectBackendBtn">Connecter</button>
     </section>
 
@@ -134,7 +134,7 @@
   </template>
 
   <script>
-    window.T06_BACKEND = "https://eillelab-t06-v2-test-633342872265.europe-west9.run.app";
+    window.T06_BACKEND = "https://veillelab-cloud-backend2-633342872265.europe-west9.run.app";
   </script>
   <script src="app.js"></script>
 </body>
