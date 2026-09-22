@@ -43,33 +43,59 @@ function gotoStep(n) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// ---------- Rendu des sources (provenance exacte + chunk visible) ----------
+// ---------- Rendu des sources (provenance lisible, preuve à la demande) ----------
 function formatRepere(value = "") {
   const raw = String(value || "").trim();
   if (!raw) return "";
-  if (/^\d+(?:\s*[;,]\s*\d+)*$/.test(raw)) {
-    const pages = raw.split(/[;,]/).map(x => x.trim()).filter(Boolean);
-    return `p. ${pages.join(pages.length > 1 ? " et " : "")}`;
+  // Dans T06, les repères numériques à deux bornes correspondent à page_debut/page_fin.
+  if (/^\d+\s*[;,]\s*\d+$/.test(raw)) {
+    const [a, b] = raw.split(/[;,]/).map(x => x.trim());
+    return a === b ? `p. ${a}` : `p. ${a}–${b}`;
   }
-  if (/^\d+\s*[-–]\s*\d+$/.test(raw)) return `p. ${raw.replace(/\s*-\s*/, "–")}`;
+  if (/^\d+\s*[-–]\s*\d+$/.test(raw)) {
+    const [a, b] = raw.split(/[-–]/).map(x => x.trim());
+    return a === b ? `p. ${a}` : `p. ${a}–${b}`;
+  }
+  if (/^\d+$/.test(raw)) return `p. ${raw}`;
   return `repère ${raw}`;
 }
 function refOf(s) {
   return [s.publication_id, formatRepere(s.repere)].filter(Boolean).join(" · ") || "Source du corpus";
 }
+function sourcePageLabel(s) { return formatRepere(s?.repere || "") || "page indiquée"; }
+function isTableMaterial(s) {
+  const t = String(s?.extrait || "").trim();
+  if (!t) return false;
+  const pipes = (t.match(/\|/g) || []).length;
+  const compact = t.replace(/\s+/g, "");
+  return pipes >= 8 && pipes / Math.max(compact.length, 1) > 0.025;
+}
 function chunkHtml(s) {
   const chunk = String(s.extrait || "").replace(/\s+/g, " ").trim();
-  if (!chunk) return `<div class="chunk-missing">Extrait du corpus non renvoyé par le backend.</div>`;
-  return `<div class="chunk-box"><strong>Extrait du corpus</strong><p>« ${esc(clip(chunk, 900))} »</p></div>`;
+  if (isTableMaterial(s)) {
+    const link = s.url ? `<a class="table-open" href="${esc(s.url)}" target="_blank" rel="noreferrer">Voir le tableau — ${esc(sourcePageLabel(s))} ↗</a>` : `<span class="table-open disabled">Tableau source — ${esc(sourcePageLabel(s))}</span>`;
+    return `<div class="table-source-note">${link}</div>`;
+  }
+  if (!chunk) return `<div class="chunk-missing">Passage indexé non renvoyé par le backend.</div>`;
+  return `<details class="proof-details"><summary>Voir la preuve</summary><div class="chunk-box"><strong>Synthèse du passage indexé</strong><p>« ${esc(clip(chunk, 900))} »</p></div></details>`;
 }
 function sourceHtml(s) {
-  const link = s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noreferrer">Ouvrir la source ↗</a>` : "";
+  const link = s.url && !isTableMaterial(s) ? `<a href="${esc(s.url)}" target="_blank" rel="noreferrer">Ouvrir la source ↗</a>` : "";
   const why = s.raison_pertinence ? `<div class="why-box"><strong>Pourquoi ce matériau a été retenu</strong><p>${esc(clip(s.raison_pertinence, 220))}</p></div>` : "";
   return `<div class="source-mini"><strong>${esc(refOf(s))}</strong><small>${esc(s.titre || "")}</small>${chunkHtml(s)}${why}${link}</div>`;
 }
 function sourceStripHtml(s) {
-  return `<div class="source-strip"><div class="source-main"><strong class="source-ref">${esc(refOf(s))}</strong><small class="source-title">${esc(s.titre || "")}</small>${chunkHtml(s)}</div>` +
-    (s.url ? `<a class="source-open" href="${esc(s.url)}" target="_blank" rel="noreferrer">Ouvrir la source ↗</a>` : `<span class="source-open disabled">Lien indisponible</span>`) + `</div>`;
+  const table = isTableMaterial(s);
+  const action = table
+    ? (s.url ? `<a class="source-open" href="${esc(s.url)}" target="_blank" rel="noreferrer">Voir le tableau — ${esc(sourcePageLabel(s))} ↗</a>` : `<span class="source-open disabled">Tableau — ${esc(sourcePageLabel(s))}</span>`)
+    : (s.url ? `<a class="source-open" href="${esc(s.url)}" target="_blank" rel="noreferrer">Ouvrir la source ↗</a>` : `<span class="source-open disabled">Lien indisponible</span>`);
+  const proof = table ? "" : chunkHtml(s);
+  return `<div class="source-strip"><div class="source-main"><strong class="source-ref">${esc(refOf(s))}</strong><small class="source-title">${esc(s.titre || "")}</small>${proof}</div>${action}</div>`;
+}
+function compactSourceHtml(s) {
+  const table = isTableMaterial(s);
+  const label = table ? `Voir le tableau — ${sourcePageLabel(s)}` : refOf(s);
+  return `<div class="final-source-ref"><span>${esc(label)}</span>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noreferrer">Source ↗</a>` : ""}</div>`;
 }
 const MOTIFS = {
   hors_sujet: "hors sujet", hors_axe: "hors axe", extrait_introuvable: "justification non vérifiable dans le texte", non_evalue: "non évalué par le filtre"
@@ -170,12 +196,15 @@ async function buildObjects() {
 
 function itemHtml(item, kind) {
   const desc = kind === "trend" ? item.synthese : kind === "sign" ? item.pourquoi_guetter : item.raison;
-  const extra = kind === "trend" && item.limite ? `<p><em>Limite : ${esc(clip(item.limite, 220))}</em></p>`
-    : kind === "sign" && item.extrait_appui ? `<p><em>Appui : « ${esc(clip(item.extrait_appui, 220))} »</em></p>`
-    : kind === "source" ? `<p><em>${esc(item.type_source || "")} — « ${esc(clip(item.indice_recurrence || "", 200))} »</em></p>` : "";
-  return `<div class="object-item"><strong>${esc(item.label || "")}</strong>${desc ? `<p>${esc(clip(desc, 260))}</p>` : ""}${extra}${(item.sources || []).map(sourceStripHtml).join("")}</div>`;
+  const extra = kind === "trend" && item.limite ? `<p class="object-limit"><em>Limite : ${esc(clip(item.limite, 220))}</em></p>`
+    : kind === "sign" && item.extrait_appui ? `<p class="object-appui"><em>Appui documentaire : « ${esc(clip(item.extrait_appui, 220))} »</em></p>`
+    : kind === "source" ? `<p class="object-appui"><em>${esc(item.type_source || "")}${item.indice_recurrence ? ` — « ${esc(clip(item.indice_recurrence, 200))} »` : ""}</em></p>` : "";
+  const sources = item.sources || [];
+  const provenance = sources.length ? `<div class="object-provenance">${sources.map(s => `<span>${esc(refOf(s))}</span>`).join("")}</div>` : "";
+  const proof = sources.length ? `<details class="object-proof"><summary>Voir la preuve et la provenance</summary>${sources.map(sourceStripHtml).join("")}</details>` : "";
+  return `<div class="object-item"><strong>${esc(item.label || "")}</strong>${desc ? `<p>${esc(clip(desc, 320))}</p>` : ""}${extra}${provenance}${proof}</div>`;
 }
-function emptyCol(title, why) { return `<div class="object-item"><strong>${esc(title)}</strong><p>${esc(why)}</p></div>`; }
+function emptyCol(title, why) { return `<div class="object-empty"><strong>${esc(title)}</strong><p>${esc(why)}</p></div>`; }
 
 function renderStep3() {
   $("#needRecap3").textContent = state.need;
@@ -191,12 +220,12 @@ function renderStep3() {
       : `<div class="objects-grid">
         <div class="object-col trend"><h4>▤ Tendances documentées</h4>${a.tendances.length ? a.tendances.map(x => itemHtml(x, "trend")).join("")
           : emptyCol("Aucune tendance", nPub < 2 ? `Une seule publication pertinente (${nPub}) : une tendance exige au moins deux publications convergentes.` : "Les matériaux validés ne décrivent pas d’évolution commune à deux publications.")}</div>
-        <div class="object-col sign"><h4>◉ Signes de changement à guetter</h4>${a.signes_a_guetter.length ? a.signes_a_guetter.map(x => itemHtml(x, "sign")).join("")
-          : emptyCol("Aucun signe", "Aucun élément observable n’a pu être ancré par un extrait vérifié.")}</div>
+        <div class="object-col sign"><h4>◉ Éléments à surveiller</h4>${a.signes_a_guetter.length ? a.signes_a_guetter.map(x => itemHtml(x, "sign")).join("")
+          : emptyCol("Aucun élément à surveiller", "Aucun élément observable n’a pu être ancré dans les matériaux validés.")}</div>
         <div class="object-col source"><h4>↗ Sources à surveiller</h4>${a.sources_a_surveiller.length ? a.sources_a_surveiller.map(x => itemHtml(x, "source")).join("")
           : emptyCol("Aucune source récurrente identifiée", "Les matériaux validés ne permettent pas d’établir une source suivable dans le temps (série, observatoire, bulletin…).")}</div>
       </div>`;
-    const angles = (a.angles_morts || []).length ? `<p class="why"><strong>Angles morts :</strong> ${a.angles_morts.map(esc).join(" · ")}</p>` : "";
+    const angles = (a.angles_morts || []).length ? `<div class="points-doc"><strong>Points à documenter</strong><ul>${a.angles_morts.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
     return `<section class="object-axis">${head}
       <p class="why"><small>Requête : « ${esc(d.requete_axe || "")} » — ${d.candidats_evalues ?? 0} évalués, ${d.materiaux_valides ?? 0} retenus, ${nPub} publication(s)${d.ancres_attendues ? ` — ancres retrouvées ${d.ancres_retrouvees}/${d.ancres_attendues}` : ""}</small></p>
       ${cols}${angles}
@@ -207,20 +236,108 @@ function renderStep3() {
 }
 
 // ---------- Étape 4 ----------
+function finalItemsSection(title, items, kind, emptyText) {
+  const body = items.length ? items.map(item => {
+    const desc = kind === "trend" ? item.synthese : kind === "sign" ? item.pourquoi_guetter : item.raison;
+    const refs = (item.sources || []).map(compactSourceHtml).join("");
+    return `<article class="final-object"><strong>${esc(item.label || "")}</strong>${desc ? `<p>${esc(clip(desc, 300))}</p>` : ""}${refs}</article>`;
+  }).join("") : `<div class="final-empty">${esc(emptyText)}</div>`;
+  return `<section class="final-group"><h4>${esc(title)}</h4>${body}</section>`;
+}
 function renderFinal() {
-  $("#finalPreview").innerHTML = `<div class="need-recap"><b>Besoin</b><span>${esc(state.need)}</span></div>` +
-    state.objects.map(o => {
-      if (o.statut !== "ok") return `<section class="final-axis"><h3>${esc(o.titre)}</h3><p class="axis-failure">${esc(o.statut === "erreur_technique" ? "Erreur technique." : (o.message || "Aucun objet fondé."))}</p></section>`;
-      const li = [
-        ...o.tendances.map(x => `<li>Tendance — ${esc(x.label)}</li>`),
-        ...o.signes_a_guetter.map(x => `<li>Signe à guetter — ${esc(x.label)}</li>`),
-        ...o.sources_a_surveiller.map(x => `<li>Source à surveiller — ${esc(x.label)}</li>`)
-      ].join("");
-      return `<section class="final-axis"><h3>${esc(o.titre)}</h3><p>${esc(o.objectif_surveillance || "")}</p><ul>${li || "<li>Aucun objet suffisamment sourcé.</li>"}</ul></section>`;
-    }).join("");
+  const intro = `<div class="final-title-block"><div><span class="final-kicker">SCÉNARIO DE VEILLE</span><h3>${esc(state.need)}</h3></div><div class="final-date">${new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date())}</div></div>`;
+  const axes = state.objects.map(o => {
+    if (o.statut !== "ok") return `<section class="final-axis-card"><h3>${esc(o.titre)}</h3><p class="axis-failure">${esc(o.statut === "erreur_technique" ? "Erreur technique." : (o.message || "Aucun objet fondé."))}</p></section>`;
+    const points = (o.angles_morts || []).length ? `<section class="final-group points"><h4>Points à documenter</h4><ul>${o.angles_morts.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>` : "";
+    return `<section class="final-axis-card"><div class="final-axis-heading"><h3>${esc(o.titre)}</h3><p>${esc(o.objectif_surveillance || "")}</p></div><div class="final-groups">${finalItemsSection("Tendances documentées", o.tendances || [], "trend", "Aucune tendance suffisamment documentée.")}${finalItemsSection("Éléments à surveiller", o.signes_a_guetter || [], "sign", "Aucun élément suffisamment sourcé.")}${finalItemsSection("Sources à surveiller", o.sources_a_surveiller || [], "source", "Aucune source récurrente identifiée.")}</div>${points}</section>`;
+  }).join("");
+  $("#finalPreview").innerHTML = intro + axes;
 }
 
-function download() {
+
+// ---------- Export Word (.docx) autonome, sans dépendance externe ----------
+function xmlEsc(s = "") { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c])); }
+function docxRun(text, opts = {}) {
+  const rPr = `${opts.bold ? "<w:b/>" : ""}${opts.italic ? "<w:i/>" : ""}${opts.color ? `<w:color w:val="${opts.color}"/>` : ""}${opts.size ? `<w:sz w:val="${opts.size}"/><w:szCs w:val="${opts.size}"/>` : ""}`;
+  return `<w:r>${rPr ? `<w:rPr>${rPr}</w:rPr>` : ""}<w:t xml:space="preserve">${xmlEsc(text)}</w:t></w:r>`;
+}
+function docxP(text = "", style = "Normal", opts = {}) {
+  const pPr = `<w:pPr><w:pStyle w:val="${style}"/>${opts.spacingAfter ? `<w:spacing w:after="${opts.spacingAfter}"/>` : ""}</w:pPr>`;
+  return `<w:p>${pPr}${docxRun(text, opts)}</w:p>`;
+}
+function docxBullet(text) { return `<w:p><w:pPr><w:pStyle w:val="Normal"/><w:ind w:left="360" w:hanging="180"/></w:pPr>${docxRun("• " + text)}</w:p>`; }
+function docxHyperlink(label, url, rels) {
+  const id = `rId${rels.length + 2}`;
+  rels.push({ id, url });
+  return `<w:p><w:pPr><w:pStyle w:val="Source"/></w:pPr><w:hyperlink r:id="${id}" w:history="1"><w:r><w:rPr><w:color w:val="0563C1"/><w:u w:val="single"/></w:rPr><w:t>${xmlEsc(label)}</w:t></w:r></w:hyperlink></w:p>`;
+}
+function docxObject(item, kind, rels) {
+  const desc = kind === "trend" ? item.synthese : kind === "sign" ? item.pourquoi_guetter : item.raison;
+  let x = docxP(item.label || "", "ObjectTitle", { bold: true });
+  if (desc) x += docxP(desc, "Normal");
+  for (const s of (item.sources || [])) {
+    const label = `${s.publication_id || "Source"}${formatRepere(s.repere) ? " — " + formatRepere(s.repere) : ""}${s.titre ? " — " + s.titre : ""}`;
+    x += docxP(label, "Source");
+    if (s.url) x += docxHyperlink(isTableMaterial(s) ? `Voir le tableau — ${sourcePageLabel(s)}` : "Ouvrir la source", s.url, rels);
+  }
+  return x;
+}
+function crc32(bytes) {
+  let table = crc32.table;
+  if (!table) {
+    table = crc32.table = new Uint32Array(256);
+    for (let n=0;n<256;n++) { let c=n; for (let k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); table[n]=c>>>0; }
+  }
+  let c=0xFFFFFFFF; for (const b of bytes) c=table[(c^b)&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0;
+}
+function u16(n){ return [n&255,(n>>>8)&255]; } function u32(n){ return [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]; }
+function zipStore(files) {
+  const te = new TextEncoder(); const chunks=[]; const central=[]; let offset=0;
+  for (const f of files) {
+    const name=te.encode(f.name), data=typeof f.data === "string" ? te.encode(f.data) : f.data, crc=crc32(data);
+    const local=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...name]);
+    chunks.push(local,data);
+    const cen=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset),...name]);
+    central.push(cen); offset += local.length + data.length;
+  }
+  const centralSize=central.reduce((a,b)=>a+b.length,0), centralOffset=offset;
+  const end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(centralSize),...u32(centralOffset),...u16(0)]);
+  return new Blob([...chunks,...central,end], {type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+}
+function buildDocxBlob() {
+  const rels=[];
+  let body = docxP("Scénario de veille", "Title") + docxP(`Besoin : ${state.need}`, "Subtitle") + docxP(`Généré le ${new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date())}`, "Meta");
+  for (const o of state.objects) {
+    body += docxP(o.titre || "Axe", "Heading1");
+    if (o.objectif_surveillance) body += docxP(o.objectif_surveillance, "AxisObjective");
+    if (o.statut !== "ok") { body += docxP(o.message || "Aucun objet suffisamment fondé.", "Normal"); continue; }
+    const groups = [
+      ["Tendances documentées", o.tendances || [], "trend", "Aucune tendance suffisamment documentée."],
+      ["Éléments à surveiller", o.signes_a_guetter || [], "sign", "Aucun élément suffisamment sourcé."],
+      ["Sources à surveiller", o.sources_a_surveiller || [], "source", "Aucune source récurrente identifiée."]
+    ];
+    for (const [title, items, kind, empty] of groups) {
+      body += docxP(title, "Heading2");
+      if (!items.length) body += docxP(empty, "Empty"); else for (const item of items) body += docxObject(item, kind, rels);
+    }
+    body += docxP("Points à documenter", "Heading2");
+    if ((o.angles_morts || []).length) for (const x of o.angles_morts) body += docxBullet(x); else body += docxP("Aucun point supplémentaire identifié.", "Empty");
+  }
+  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Aptos" w:hAnsi="Aptos"/><w:sz w:val="22"/><w:lang w:val="fr-FR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:rPr><w:rFonts w:ascii="Georgia" w:hAnsi="Georgia"/><w:b/><w:color w:val="082653"/><w:sz w:val="40"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Subtitle"><w:name w:val="Subtitle"/><w:basedOn w:val="Normal"/><w:rPr><w:color w:val="315F8F"/><w:sz w:val="24"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Meta"><w:name w:val="Meta"/><w:basedOn w:val="Normal"/><w:rPr><w:color w:val="71869A"/><w:sz w:val="18"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:rFonts w:ascii="Georgia" w:hAnsi="Georgia"/><w:b/><w:color w:val="0B315E"/><w:sz w:val="30"/></w:rPr><w:pPr><w:keepNext/><w:spacing w:before="300" w:after="120"/></w:pPr></w:style><w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:color w:val="1768C4"/><w:sz w:val="24"/></w:rPr><w:pPr><w:keepNext/><w:spacing w:before="220" w:after="100"/></w:pPr></w:style><w:style w:type="paragraph" w:styleId="AxisObjective"><w:name w:val="Axis Objective"/><w:basedOn w:val="Normal"/><w:rPr><w:color w:val="456784"/><w:i/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="ObjectTitle"><w:name w:val="Object Title"/><w:basedOn w:val="Normal"/><w:rPr><w:b/><w:color w:val="17466F"/></w:rPr><w:pPr><w:keepNext/><w:spacing w:before="120" w:after="60"/></w:pPr></w:style><w:style w:type="paragraph" w:styleId="Source"><w:name w:val="Source"/><w:basedOn w:val="Normal"/><w:rPr><w:color w:val="58738F"/><w:sz w:val="18"/></w:rPr><w:pPr><w:spacing w:after="50"/></w:pPr></w:style><w:style w:type="paragraph" w:styleId="Empty"><w:name w:val="Empty"/><w:basedOn w:val="Normal"/><w:rPr><w:color w:val="71869A"/><w:i/></w:rPr></w:style></w:styles>`;
+  const docRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>${rels.map(x => `<Relationship Id="${x.id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="${xmlEsc(x.url)}" TargetMode="External"/>`).join("")}</Relationships>`;
+  const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`;
+  const types = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`;
+  const now = new Date().toISOString();
+  const core = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>Scénario de veille</dc:title><dc:creator>Quiritès Veille Lab</dc:creator><cp:lastModifiedBy>Quiritès Veille Lab</cp:lastModifiedBy><dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified></cp:coreProperties>`;
+  const appXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Quiritès Veille Lab</Application></Properties>`;
+  return zipStore([{name:"[Content_Types].xml",data:types},{name:"_rels/.rels",data:rootRels},{name:"word/document.xml",data:documentXml},{name:"word/styles.xml",data:stylesXml},{name:"word/_rels/document.xml.rels",data:docRels},{name:"docProps/core.xml",data:core},{name:"docProps/app.xml",data:appXml}]);
+}
+function downloadDocx() {
+  const blob = buildDocxBlob();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "scenario-de-veille-quirites.docx"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+function downloadJson() {
   const payload = {
     generated_at: new Date().toISOString(),
     mode: "T06-v2-github-test-filtered",
@@ -273,6 +390,17 @@ $("#demoBtn").onclick = () => { $("#need").value = "Je veux faire une veille sur
 $("#analyseBtn").onclick = analyze;
 $("#objectsBtn").onclick = buildObjects;
 $("#finalBtn").onclick = () => { renderFinal(); gotoStep(4); };
-$("#downloadBtn").onclick = download;
+
+const wordBtn = $("#downloadBtn");
+if (wordBtn) {
+  wordBtn.textContent = "Télécharger le scénario (.docx)";
+  wordBtn.onclick = downloadDocx;
+  const jsonBtn = document.createElement("button");
+  jsonBtn.className = "secondary export-json-btn";
+  jsonBtn.textContent = "Export technique (.json)";
+  jsonBtn.onclick = downloadJson;
+  wordBtn.parentElement.insertBefore(jsonBtn, wordBtn);
+}
+
 $$("[data-back]").forEach(b => b.onclick = () => gotoStep(+b.dataset.back));
 checkHealth();
