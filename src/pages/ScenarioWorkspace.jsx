@@ -1,788 +1,134 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
-import {
-  analyzeScenarioFraming,
-  analyzeScenarioAxes,
-  analyzeScenarioAxisSupport,
-  analyzeScenarioDynamics,
-} from '../services/reflectionApi.js'
-import { exportScenarioWord, exportScenarioExcel } from '../utils/scenarioExport.js'
-import scenarioHero from '../header-corpus-securite.png'
+import { analyzeScenarioV2Axes, analyzeScenarioV2AxisObjects } from '../services/reflectionApi.js'
+import { exportScenarioWord } from '../utils/scenarioExport.js'
 import './scenario-workspace.css'
 
-const STEPS = [
-  { id: 1, label: 'Formuler le besoin' },
-  { id: 2, label: 'Choisir des axes de veille' },
-  { id: 3, label: 'Objets de la veille' },
-  { id: 4, label: 'Finaliser le scénario' },
+const STEPS=[
+  {id:1,label:'Formuler le besoin'},
+  {id:2,label:'Axes issus du corpus'},
+  {id:3,label:'Objets de la veille'},
+  {id:4,label:'Finaliser'},
 ]
 
-const clip = (value, max = 420) => {
-  const text = String(value || '').replace(/\s+/g, ' ').trim()
-  return text.length <= max ? text : `${text.slice(0, max).replace(/\s+\S*$/, '')}…`
+const clip=(v,max=900)=>{const s=String(v||'').replace(/\s+/g,' ').trim();return s.length<=max?s:`${s.slice(0,max).replace(/\s+\S*$/,'')}…`}
+const cleanVisibleText=(v='')=>String(v||'')
+  .replace(/\bM\d+\b(?:\s*(?:,|et|ou)\s*M\d+\b)*/gi,'les matériaux retenus')
+  .replace(/les matériaux\s+les matériaux retenus/gi,'les matériaux retenus')
+  .replace(/\s+/g,' ').trim()
+
+function formatRepere(value=''){
+  const raw=String(value||'').trim(); if(!raw)return''
+  if(/^\d+\s*[;,]\s*\d+$/.test(raw)){const[a,b]=raw.split(/[;,]/).map(x=>x.trim());return a===b?`p. ${a}`:`p. ${a}–${b}`}
+  if(/^\d+\s*[-–]\s*\d+$/.test(raw)){const[a,b]=raw.split(/[-–]/).map(x=>x.trim());return a===b?`p. ${a}`:`p. ${a}–${b}`}
+  if(/^\d+$/.test(raw))return `p. ${raw}`
+  return `repère ${raw}`
 }
-
-const statusLabel = status => ({
-  non_evalue: 'Documentation après choix',
-  documente: 'Corpus · plusieurs sources',
-  partiellement_documente: 'Corpus · couverture partielle',
-  a_instruire: 'À instruire',
-  indisponible: 'Documentation indisponible',
-}[status] || 'Documentation après choix')
-
-const statusClass = status => ({
-  non_evalue: 'pending',
-  documente: 'documented',
-  partiellement_documente: 'partial',
-  a_instruire: 'investigate',
-  indisponible: 'unavailable',
-}[status] || 'pending')
-
-const normalizeTitle = value => String(value || '').trim().toLowerCase()
-
-function sourceUrl(source = {}) {
-  const raw = String(source.url || '').trim()
-  if (!raw) return ''
-  const locator = String(source.repere || source.locator || '').trim()
-  if (/\.pdf(?:$|[?#])/i.test(raw) && /^\d+$/.test(locator)) {
-    return `${raw.split('#')[0]}#page=${locator}`
-  }
+function sourceUrl(s={}){
+  const raw=String(s.url||'').trim(); if(!raw)return''
+  const rep=String(s.repere||'').trim(); const first=(rep.match(/\d+/)||[])[0]
+  if(/\.pdf(?:$|[?#])/i.test(raw)&&first)return `${raw.split('#')[0]}#page=${first}`
   return raw
 }
-
-function sourceShortRef(source = {}) {
-  const publicationId = String(source.publication_id || '').trim()
-  const locator = String(source.repere || source.locator || '').trim()
-  if (publicationId && locator) return `${publicationId} — ${locator}`
-  if (publicationId) return publicationId
-  if (locator) return locator
-  return source.organisme_producteur || source.organisation || 'Source du corpus'
+function isTableMaterial(s={}){
+  const t=String(s.extrait||'').trim(); if(!t)return false
+  const pipes=(t.match(/\|/g)||[]).length, compact=t.replace(/\s+/g,'')
+  return pipes>=8 && pipes/Math.max(compact.length,1)>0.025
 }
-
-function sourceSecondaryLabel(source = {}) {
-  return [
-    source.titre || source.title,
-    source.organisme_producteur || source.organisation,
-    source.annee_publication || source.year,
-  ].filter(Boolean).join(' · ')
-}
-
-function SourceAccess({ sources = [], fallbackLabel = '' }) {
-  if (!sources.length) {
-    if (!fallbackLabel) return null
-    return (
-      <div className="qvl-t06-source-access unavailable">
-        <span className="qvl-t06-source-access-icon" aria-hidden="true">▧</span>
-        <span className="qvl-t06-source-access-copy">
-          <strong>{fallbackLabel}</strong>
-          <small>Accès direct non disponible dans le corpus.</small>
-        </span>
-        <span className="qvl-t06-source-access-disabled">Lien indisponible</span>
-      </div>
-    )
-  }
-
-  return (
-    <div className="qvl-t06-source-access-list">
-      {sources.map((source, index) => {
-        const href = sourceUrl(source)
-        return (
-          <div
-            className="qvl-t06-source-access"
-            key={`${source.material_id || source.publication_id || index}-${index}`}
-          >
-            <span className="qvl-t06-source-access-icon" aria-hidden="true">▧</span>
-            <span className="qvl-t06-source-access-copy">
-              <strong>{sourceShortRef(source)}</strong>
-              {sourceSecondaryLabel(source) && <small>{sourceSecondaryLabel(source)}</small>}
-            </span>
-            {href ? (
-              <a className="qvl-t06-source-open" href={href} target="_blank" rel="noreferrer">
-                <Icon name="external" size={13}/> Ouvrir la source
-              </a>
-            ) : (
-              <span className="qvl-t06-source-access-disabled">Lien indisponible</span>
-            )}
-          </div>
-        )
-      })}
+function SourceProof({source,compact=false}){
+  const href=sourceUrl(source), rep=formatRepere(source.repere), table=isTableMaterial(source)
+  const ref=[source.publication_id,rep].filter(Boolean).join(' · ')||'Source du corpus'
+  return <div className={`qvl-t06-source ${compact?'compact':''}`}>
+    <div className="qvl-t06-source-main">
+      <strong>{ref}</strong>
+      {source.titre&&<small>{source.titre}</small>}
+      {!compact&&!table&&source.extrait&&<details className="qvl-t06-proof"><summary>Voir la preuve et la provenance</summary><div className="qvl-t06-proof-box"><b>Synthèse du passage indexé</b><p>« {clip(source.extrait)} »</p>{source.raison_pertinence&&<p className="qvl-t06-why"><b>Pourquoi ce matériau a été retenu :</b> {cleanVisibleText(source.raison_pertinence)}</p>}</div></details>}
     </div>
-  )
+    {table?(
+      href?<a className="qvl-t06-source-link" href={href} target="_blank" rel="noreferrer">Voir le tableau — {rep||'page indiquée'} ↗</a>:<span className="qvl-t06-source-link disabled">Tableau — {rep||'page indiquée'}</span>
+    ):(href?<a className="qvl-t06-source-link" href={href} target="_blank" rel="noreferrer">Ouvrir la source ↗</a>:null)}
+  </div>
 }
 
-function OriginBadge({ origin }) {
-  if (origin === 'corpus') return <span className="qvl-t06-origin corpus">Corpus</span>
-  if (origin === 'enrichissement_controle') return <span className="qvl-t06-origin enrichment">Enrichissement contrôlé</span>
-  if (origin === 'utilisateur') return <span className="qvl-t06-origin user">Votre choix</span>
-  return <span className="qvl-t06-origin ai">Proposition IA à valider</span>
+function ObjectCard({item,type}){
+  const description= type==='trend'?item.synthese : type==='watch'?item.pourquoi_guetter : item.raison
+  return <article className="qvl-t06-object-card">
+    <strong>{item.label}</strong>
+    {description&&<p>{cleanVisibleText(description)}</p>}
+    {type==='trend'&&item.limite&&<p className="qvl-t06-limit"><b>Limite :</b> {cleanVisibleText(item.limite)}</p>}
+    {(item.sources||[]).map((s,i)=><SourceProof key={`${s.material_id||s.publication_id||i}-${i}`} source={s} compact/>)}
+  </article>
 }
 
-function ReflexiveLine({ children }) {
-  return (
-    <div className="qvl-t06-reflexive">
-      <Icon name="info" size={17}/>
-      <span>{children}</span>
-    </div>
-  )
-}
+export default function ScenarioWorkspace({initialNeed='',onBack}){
+  const[step,setStep]=useState(1),[need,setNeed]=useState(initialNeed||''),[anchor,setAnchor]=useState(null),[axes,setAxes]=useState([]),[objects,setObjects]=useState([]),[loading,setLoading]=useState(false),[error,setError]=useState('')
+  const selectedAxes=useMemo(()=>axes.filter(a=>a.selected),[axes])
 
-function flattenStructurationAxes(structurations = []) {
-  const seen = new Set()
-  const flattened = []
-
-  structurations.forEach(structure => {
-    ;(structure.axes || []).forEach(axis => {
-      const key = normalizeTitle(axis.titre)
-      if (!key || seen.has(key)) return
-      seen.add(key)
-      flattened.push({
-        ...axis,
-        structure_id: structure.structure_id,
-        structure_title: structure.titre,
-      })
-    })
-  })
-
-  return flattened
-}
-
-function axisIcon(axis = {}) {
-  const text = `${axis.titre || ''} ${axis.objectif_surveillance || ''}`.toLowerCase()
-  if (text.includes('territ')) return '⌖'
-  if (text.includes('socio') || text.includes('acteur') || text.includes('réponse')) return '◉'
-  if (text.includes('numér') || text.includes('technolog')) return '⌘'
-  if (text.includes('intens') || text.includes('trajectoire')) return '◎'
-  if (text.includes('rupture')) return '↯'
-  return '▥'
-}
-
-function WorkflowPanel() {
-  const items = [
-    {
-      id: 1,
-      icon: '🗎',
-      title: 'Vous formulez votre besoin',
-      text: 'Vous décrivez le sujet ou la question que vous souhaitez suivre.',
-    },
-    {
-      id: 2,
-      icon: '▥',
-      title: 'Quiritès propose des axes de veille',
-      text: 'Les axes de veille sont des angles de lecture du besoin. Ils servent à structurer la veille.',
-    },
-    {
-      id: 3,
-      icon: '◫',
-      title: 'Le corpus documente des objets de veille',
-      text: 'Pour chaque axe retenu, le corpus apporte des tendances, des signes de changement et des sources.',
-    },
-    {
-      id: 4,
-      icon: '✓',
-      title: 'Vous finalisez votre scénario',
-      text: 'Vous retenez les axes et objets utiles, puis vous obtenez un scénario de veille.',
-    },
-  ]
-
-  return (
-    <section className="qvl-t06-dispositif">
-      <div className="qvl-t06-dispositif-head">
-        <div className="qvl-t06-dispositif-icon">⚙</div>
-        <div>
-          <h3>Comment fonctionne le dispositif ?</h3>
-          <p>En quelques étapes, de votre besoin à un scénario de veille adapté.</p>
-        </div>
-      </div>
-      <div className="qvl-t06-mini-steps">
-        {items.map((item, index) => (
-          <React.Fragment key={item.id}>
-            <article className="qvl-t06-mini-step">
-              <div className="qvl-t06-mini-step-number">{item.id}</div>
-              <div className="qvl-t06-mini-step-icon" aria-hidden="true">{item.icon}</div>
-              <div>
-                <strong>{item.title}</strong>
-                <p>{item.text}</p>
-              </div>
-            </article>
-            {index < items.length - 1 && <div className="qvl-t06-mini-arrow" aria-hidden="true">→</div>}
-          </React.Fragment>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function DefinitionsPanel() {
-  return (
-    <div className="qvl-t06-definitions-grid">
-      <article className="qvl-t06-definition-card axis">
-        <div className="qvl-t06-definition-icon" aria-hidden="true">▥</div>
-        <div>
-          <h3>Axe de veille</h3>
-          <p>Un axe de veille est un angle de lecture du besoin. Il sert à structurer la veille.</p>
-          <span>Exemple : dynamiques territoriales</span>
-        </div>
-      </article>
-      <article className="qvl-t06-definition-card object">
-        <div className="qvl-t06-definition-icon" aria-hidden="true">◫</div>
-        <div>
-          <h3>Objet de veille</h3>
-          <p>Un objet de veille est un élément concret à suivre dans un axe retenu. Il est documenté par le corpus.</p>
-          <span>Exemple : concentration locale de certains faits</span>
-        </div>
-      </article>
-    </div>
-  )
-}
-
-function AxisCard({ axis, checked, onToggle }) {
-  return (
-    <article className={`qvl-t06-axis-card ${checked ? 'selected' : ''}`}>
-      <button
-        type="button"
-        className="qvl-t06-axis-card-check"
-        onClick={onToggle}
-        aria-pressed={checked}
-        aria-label={`${checked ? 'Retirer' : 'Retenir'} ${axis.titre}`}
-      >
-        {checked ? '✓' : '○'}
-      </button>
-      <div className="qvl-t06-axis-card-icon" aria-hidden="true">{axisIcon(axis)}</div>
-      <div className="qvl-t06-axis-card-body">
-        <div className="qvl-t06-axis-card-head">
-          <h4>{axis.titre}</h4>
-          <span className={`qvl-t06-status ${statusClass(axis.corpus_status)}`}>
-            {statusLabel(axis.corpus_status)}
-          </span>
-        </div>
-        <p className="qvl-t06-axis-card-objective">{axis.objectif_surveillance}</p>
-        <p className="qvl-t06-axis-card-why">
-          <strong>Pourquoi le proposer :</strong> {axis.pourquoi}
-        </p>
-      </div>
-    </article>
-  )
-}
-
-function WatchItem({ type, item, selected, onToggle }) {
-  const isTrend = type === 'trend'
-  const icon = isTrend ? '▥' : '◉'
-
-  return (
-    <article className={`qvl-t06-object-item ${type} ${selected ? 'selected' : ''}`}>
-      <button
-        type="button"
-        className="qvl-t06-object-toggle"
-        onClick={onToggle}
-        aria-pressed={selected}
-        aria-label={`${selected ? 'Retirer' : 'Retenir'} ${item.label}`}
-      >
-        <span className="qvl-t06-object-icon" aria-hidden="true">{selected ? icon : '○'}</span>
-        <span className="qvl-t06-object-copy">
-          <strong>{item.label}</strong>
-          {isTrend && item.synthese && <small>{clip(item.synthese, 230)}</small>}
-          {!isTrend && item.pourquoi_guetter && <small>{clip(item.pourquoi_guetter, 220)}</small>}
-        </span>
-      </button>
-      <SourceAccess
-        sources={item.sources || []}
-        fallbackLabel="Référence non associée à cet objet"
-      />
-    </article>
-  )
-}
-
-function WatchSource({ item, selected, onToggle }) {
-  return (
-    <article className={`qvl-t06-object-item source ${selected ? 'selected' : ''}`}>
-      <button
-        type="button"
-        className="qvl-t06-object-toggle"
-        onClick={onToggle}
-        aria-pressed={selected}
-        aria-label={`${selected ? 'Retirer' : 'Retenir'} ${item.label}`}
-      >
-        <span className="qvl-t06-object-icon" aria-hidden="true">{selected ? '↗' : '○'}</span>
-        <span className="qvl-t06-object-copy">
-          <strong>{item.label}</strong>
-          {item.raison && <small>{clip(item.raison, 220)}</small>}
-        </span>
-      </button>
-      <SourceAccess sources={item.sources || []} fallbackLabel="Source suggérée" />
-    </article>
-  )
-}
-
-function PreviewBlock({ title, children }) {
-  return <section className="qvl-t06-preview-block"><h3>{title}</h3>{children}</section>
-}
-
-export default function ScenarioWorkspace({ onBack }) {
-  const [step, setStep] = useState(1)
-  const [need, setNeed] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [framing, setFraming] = useState(null)
-  const [axesMeta, setAxesMeta] = useState(null)
-  const [axesList, setAxesList] = useState([])
-  const [selectedAxisIds, setSelectedAxisIds] = useState(new Set())
-  const [dynamicsData, setDynamicsData] = useState(null)
-  const [selectedWatch, setSelectedWatch] = useState(new Set())
-  const [finalized, setFinalized] = useState(false)
-
-  const selectedAxes = useMemo(
-    () => axesList.filter(axis => selectedAxisIds.has(axis.axis_id)),
-    [axesList, selectedAxisIds],
-  )
-
-  const clearAfterNeed = value => {
-    setNeed(value)
-    setFraming(null)
-    setAxesMeta(null)
-    setAxesList([])
-    setSelectedAxisIds(new Set())
-    setDynamicsData(null)
-    setSelectedWatch(new Set())
-    setFinalized(false)
-    setStep(1)
-    setError('')
+  async function buildAxes(){
+    const value=need.trim(); if(!value){setError('Saisissez d’abord votre besoin de veille.');return}
+    setError('');setLoading(true);setObjects([])
+    try{const r=await analyzeScenarioV2Axes(value);setAnchor(r);setAxes((r.axes||[]).map(a=>({...a,selected:true})));setStep(2)}
+    catch(e){setError(e.message||String(e))}finally{setLoading(false)}
   }
-
-  const toggleSetKey = key => setSelectedWatch(prev => {
-    const next = new Set(prev)
-    if (next.has(key)) next.delete(key)
-    else next.add(key)
-    return next
-  })
-
-  const runNeedAnalysis = async () => {
-    if (!need.trim() || loading) return
-    setLoading(true)
-    setError('')
-    setFinalized(false)
-
-    try {
-      const framingResult = await analyzeScenarioFraming(need.trim())
-      const axesResult = await analyzeScenarioAxes(need.trim(), framingResult, [])
-      const flatAxes = flattenStructurationAxes(axesResult?.structurations || [])
-
-      setFraming(framingResult)
-      setAxesMeta(axesResult)
-      setAxesList(flatAxes)
-      setSelectedAxisIds(new Set(flatAxes.map(axis => axis.axis_id)))
-      setDynamicsData(null)
-      setSelectedWatch(new Set())
-      setStep(2)
-    } catch (e) {
-      setError(e.message || 'Impossible d’analyser ce besoin pour le moment.')
-    } finally {
-      setLoading(false)
-    }
+  async function buildObjects(){
+    if(!selectedAxes.length){setError('Sélectionnez au moins un axe.');return}
+    setError('');setLoading(true)
+    try{const rows=[];for(const axis of selectedAxes){rows.push(await analyzeScenarioV2AxisObjects(need,anchor?.subject_query||'',axis))}setObjects(rows);setStep(3)}
+    catch(e){setError(e.message||String(e))}finally{setLoading(false)}
   }
+  function exportWord(){exportScenarioWord({need,subject_query:anchor?.subject_query||'',axes:selectedAxes,objects})}
 
-  const toggleAxis = axisId => setSelectedAxisIds(prev => {
-    const next = new Set(prev)
-    if (next.has(axisId)) next.delete(axisId)
-    else next.add(axisId)
-    return next
-  })
+  return <main className="page qvl-t06-page">
+    <div className="qvl-t06-topline"><button className="qvl-t06-back" onClick={onBack}>← Atelier de veille</button><span>Scénario de veille</span></div>
+    <section className="qvl-t06-hero"><div><span className="qvl-t06-kicker">ATELIER DE VEILLE</span><h1>Construire un scénario de veille avec le corpus</h1><p>Le corpus est filtré avant la proposition des axes. Chaque résultat conserve une provenance vérifiable.</p></div><div className="qvl-t06-hero-mark">Corpus → axes → objets sourcés</div></section>
 
-  const buildWatch = async () => {
-    if (!selectedAxes.length || loading) return
-    setLoading(true)
-    setError('')
+    <nav className="qvl-t06-steps">{STEPS.map(s=><button key={s.id} className={`${step===s.id?'active':''} ${step>s.id?'done':''}`} onClick={()=>s.id<step&&setStep(s.id)}><b>{s.id}</b><span>{s.label}</span></button>)}</nav>
+    {error&&<div className="qvl-t06-alert">{error}</div>}
+    {loading&&<div className="qvl-t06-loading"><span/><div><b>Traitement en cours…</b><small>Le corpus est interrogé et filtré. Une absence de résultat reste une réponse possible.</small></div></div>}
 
-    try {
-      const support = await analyzeScenarioAxisSupport(need.trim(), framing, [], selectedAxes)
-      const documentedAxes = Array.isArray(support?.axes) ? support.axes : []
+    {step===1&&<section className="qvl-t06-panel">
+      <div className="qvl-t06-section-head"><div><h2>1. Formuler le besoin</h2><p>Une phrase suffit. Les axes seront proposés uniquement à partir des matériaux validés du corpus.</p></div><span className="qvl-t06-pill">Votre besoin</span></div>
+      <label>Votre besoin de veille</label><textarea value={need} onChange={e=>setNeed(e.target.value)} maxLength={1800} placeholder="Ex. Je veux faire une veille sur l’évolution des menaces en matière de cybercriminalité"/>
+      <div className="qvl-t06-actions"><button className="primary" onClick={buildAxes} disabled={loading}>Chercher dans le corpus et faire émerger les axes →</button></div>
+      <p className="qvl-t06-principle"><Icon name="info" size={15}/> Aucun axe n’est affiché sans appui documentaire. Une case vide n’est jamais remplie artificiellement.</p>
+    </section>}
 
-      setAxesList(prev => prev.map(
-        axis => documentedAxes.find(item => item.axis_id === axis.axis_id) || axis,
-      ))
+    {step===2&&<section className="qvl-t06-panel">
+      <div className="qvl-t06-section-head"><div><h2>2. Choisir des axes de veille</h2><p>Les axes ci-dessous émergent des seuls matériaux jugés pertinents pour votre besoin.</p></div><span className="qvl-t06-pill corpus">Corpus d’abord</span></div>
+      <div className="qvl-t06-need"><b>Besoin</b><span>{need}</span></div>
+      <div className="qvl-t06-metrics"><div><strong>{anchor?.diagnostic?.candidats_evalues??0}</strong><small>matériaux évalués</small></div><div><strong>{anchor?.diagnostic?.materiaux_valides??0}</strong><small>matériaux pertinents</small></div><div><strong>{anchor?.diagnostic?.publications_validees??0}</strong><small>publications pertinentes</small></div></div>
+      <div className="qvl-t06-axis-grid">{axes.map((a,i)=><article key={a.axis_id||i} className={`qvl-t06-axis ${a.selected?'selected':''}`}>
+        <div className="qvl-t06-axis-head"><button className="qvl-t06-check" onClick={()=>setAxes(v=>v.map((x,j)=>j===i?{...x,selected:!x.selected}:x))}>{a.selected?'✓':'○'}</button><h3>{a.titre}</h3><span>{a.publication_count||0} publication{a.publication_count>1?'s':''}</span></div>
+        {a.objectif_surveillance&&<p>{a.objectif_surveillance}</p>}{a.question_veille&&<p><b>Question :</b> {a.question_veille}</p>}{a.justification&&<p className="qvl-t06-foundation"><b>Fondement :</b> {cleanVisibleText(a.justification)}</p>}
+        {a.statut_documentaire==='appui_publication_unique'&&<p className="qvl-t06-limit"><b>Limite :</b> axe appuyé sur une seule publication.</p>}
+        {!!a.sources?.length&&<details><summary>Matériaux qui fondent cet axe ({a.sources.length})</summary>{a.sources.map((s,k)=><SourceProof key={k} source={s}/>)}</details>}
+      </article>)}</div>
+      {!!anchor?.materiaux_ecartes?.length&&<details className="qvl-t06-audit"><summary>Matériaux écartés par le filtre ({anchor.materiaux_ecartes.length})</summary>{anchor.materiaux_ecartes.map((s,i)=><div className="qvl-t06-audit-row" key={i}><b>{[s.publication_id,formatRepere(s.repere)].filter(Boolean).join(' · ')}</b><span>{s.titre}</span><small>{s.raison||s.motif}</small></div>)}</details>}
+      <div className="qvl-t06-actions split"><button onClick={()=>setStep(1)}>← Modifier le besoin</button><button className="primary" onClick={buildObjects} disabled={loading||!selectedAxes.length}>Construire les objets des axes retenus →</button></div>
+    </section>}
 
-      if (support?.documentation_available === false) {
-        setError('La documentation du corpus n’a pas pu être établie pour au moins un axe en raison d’une indisponibilité technique. Ce message ne signifie pas que le corpus est lacunaire. Vous pouvez relancer la construction des objets de veille.')
-        return
-      }
+    {step===3&&<><section className="qvl-t06-panel compact"><div className="qvl-t06-section-head"><div><h2>3. Objets de la veille</h2><p>Les preuves restent accessibles à la demande. Le résultat de veille est affiché en premier.</p></div><span className="qvl-t06-pill ai">Synthèse sourcée</span></div><div className="qvl-t06-need"><b>Besoin</b><span>{need}</span></div></section>
+      {objects.map((o,i)=><section className="qvl-t06-axis-result" key={o.axis_id||i}>
+        <div className="qvl-t06-result-head"><span>Axe {i+1}</span><h3>{o.titre}</h3>{o.objectif_surveillance&&<p>{o.objectif_surveillance}</p>}</div>
+        {o.statut!=='ok'?<div className="qvl-t06-empty-wide">{o.message||'Aucun objet suffisamment sourcé.'}</div>:<div className="qvl-t06-object-grid">
+          <div className="qvl-t06-object-col trend"><h4>▤ Tendances documentées</h4>{o.tendances?.length?o.tendances.map((x,k)=><ObjectCard key={k} item={x} type="trend"/>):<div className="qvl-t06-empty"><b>Aucune tendance</b><p>Une tendance exige au moins deux publications convergentes.</p></div>}</div>
+          <div className="qvl-t06-object-col watch"><h4>◎ Éléments à surveiller</h4>{o.signes_a_guetter?.length?o.signes_a_guetter.map((x,k)=><ObjectCard key={k} item={x} type="watch"/>):<div className="qvl-t06-empty"><b>Aucun élément suffisamment sourcé</b></div>}</div>
+          <div className="qvl-t06-object-col source"><h4>↗ Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><ObjectCard key={k} item={x} type="source"/>):<div className="qvl-t06-empty"><b>Aucune source récurrente identifiée</b><p>Le corpus ne permet pas d’établir une source suivable dans le temps.</p></div>}</div>
+        </div>}
+        {!!o.angles_morts?.length&&<div className="qvl-t06-points"><b>Points à documenter</b><ul>{o.angles_morts.map((x,k)=><li key={k}>{cleanVisibleText(x)}</li>)}</ul></div>}
+      </section>)}
+      <div className="qvl-t06-panel qvl-t06-actions split"><button onClick={()=>setStep(2)}>← Revenir aux axes</button><button className="primary" onClick={()=>setStep(4)}>Prévisualiser le scénario →</button></div>
+    </>}
 
-      const result = await analyzeScenarioDynamics(need.trim(), framing, [], documentedAxes)
-      setDynamicsData(result)
-      setSelectedWatch(new Set())
-      setStep(3)
-    } catch (e) {
-      setError(e.message || 'Impossible de construire les objets de veille.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const retainAllAxisWatch = axis => {
-    setSelectedWatch(prev => {
-      const next = new Set(prev)
-      ;(axis.tendances || []).forEach(x => next.add(`trend:${x.trend_id}`))
-      ;(axis.signes_a_guetter || []).forEach(x => next.add(`sign:${x.sign_id}`))
-      ;(axis.sources_a_surveiller || []).forEach(x => next.add(`src:${x.source_watch_id}`))
-      return next
-    })
-  }
-
-  const preview = useMemo(() => {
-    if (!axesMeta) return null
-
-    const watchAxes = (dynamicsData?.axes || []).map(axis => ({
-      axis_id: axis.axis_id,
-      axis_title: axis.titre,
-      trends: (axis.tendances || []).filter(x => selectedWatch.has(`trend:${x.trend_id}`)),
-      watch_signs: (axis.signes_a_guetter || []).filter(x => selectedWatch.has(`sign:${x.sign_id}`)),
-      sources_to_watch: (axis.sources_a_surveiller || []).filter(x => selectedWatch.has(`src:${x.source_watch_id}`)),
-    }))
-
-    return {
-      need_original: need.trim(),
-      clarifications: [],
-      structure: null,
-      axes: selectedAxes.map(axis => ({
-        axis_id: axis.axis_id,
-        title: axis.titre,
-        objective: axis.objectif_surveillance,
-        why: axis.pourquoi,
-        questions: [],
-        corpus_status: axis.corpus_status,
-        origin: axis.origin || 'proposition_ia',
-        corpus_contribution: axis.apport_corpus || '',
-        corpus_limit: axis.limite_corpus || '',
-        sources: axis.sources || [],
-      })),
-      watch: watchAxes,
-      methodology: dynamicsData?.methodological_reference || null,
-      generated_at: new Date().toISOString(),
-      traceability: {
-        framing_engine: framing?.engine || '',
-        axes_engine: axesMeta?.engine || '',
-        watch_engine: dynamicsData?.engine || '',
-      },
-    }
-  }, [axesMeta, dynamicsData, selectedAxes, selectedWatch, need, framing])
-
-  return (
-    <div className="qvl-t06-page">
-      <button type="button" className="qvl-t06-back" onClick={onBack}>
-        <Icon name="back" size={16}/> Retour à l’atelier
-      </button>
-
-      <header className="qvl-t06-hero">
-        <div>
-          <span>ATELIER DE VEILLE</span>
-          <h1>Scénario de veille</h1>
-          <p>Du besoin exprimé par le veilleur à un dispositif de veille structuré, sourcé et exportable.</p>
-        </div>
-        <img src={scenarioHero} alt="Bibliothèque documentaire de Quiritès Veille Lab"/>
-      </header>
-
-      <nav className="qvl-t06-steps" aria-label="Étapes du scénario de veille">
-        {STEPS.map(item => (
-          <div
-            key={item.id}
-            className={`${step === item.id ? 'active' : ''} ${step > item.id ? 'done' : ''}`}
-          >
-            <span>{item.id}</span>
-            <strong>{item.label}</strong>
-          </div>
-        ))}
-      </nav>
-
-      {error && <div className="qvl-t06-error">{error}</div>}
-      {loading && (
-        <div className="qvl-t06-loading">
-          <span className="qvl-t06-spinner"/> Quiritès prépare cette étape…
-        </div>
-      )}
-
-      {step === 1 && (
-        <section className="qvl-t06-section qvl-t06-step1">
-          <div className="qvl-t06-section-head">
-            <div>
-              <h2>1. Formuler le besoin</h2>
-              <p>Présentez votre besoin. Quiritès vous proposera ensuite des axes de veille, puis des objets de veille à suivre.</p>
-            </div>
-          </div>
-
-          <WorkflowPanel/>
-          <DefinitionsPanel/>
-
-          <section className="qvl-t06-need-panel">
-            <div className="qvl-t06-need-panel-head">
-              <div className="qvl-t06-need-panel-title">
-                <div className="qvl-t06-need-panel-icon" aria-hidden="true">🗎</div>
-                <div>
-                  <h3>Votre besoin de veille</h3>
-                  <p>Décrivez en quelques phrases le sujet de votre veille.</p>
-                </div>
-              </div>
-              <span className="qvl-t06-counter">{need.length} / 2000</span>
-            </div>
-            <textarea
-              value={need}
-              maxLength={2000}
-              onChange={e => clearAfterNeed(e.target.value)}
-              placeholder="Décrivez ici le sujet ou la question que vous souhaitez suivre…"
-            />
-          </section>
-
-          <div className="qvl-t06-step1-actions">
-            <button type="button" className="qvl-t06-secondary"><span aria-hidden="true">◔</span> Voir un exemple</button>
-            <button
-              type="button"
-              className="qvl-t06-primary"
-              onClick={runNeedAnalysis}
-              disabled={!need.trim() || loading}
-            >
-              Analyser mon besoin <Icon name="chevron" size={16}/>
-            </button>
-          </div>
-
-          <ReflexiveLine>Le corpus n’analyse pas à votre place : il aide à documenter les objets de veille retenus.</ReflexiveLine>
-        </section>
-      )}
-
-      {step === 2 && axesMeta && (
-        <section className="qvl-t06-section qvl-t06-step2">
-          <div className="qvl-t06-section-head">
-            <div>
-              <h2>2. Choisir des axes de veille</h2>
-              <p>Quiritès propose des axes de veille à partir de votre besoin. Un axe structure la veille ; les objets de veille seront proposés ensuite.</p>
-            </div>
-            <OriginBadge origin="proposition_ia"/>
-          </div>
-
-          <div className="qvl-t06-current-need">
-            <strong>Besoin de veille</strong>
-            <span>{need}</span>
-          </div>
-
-          <div className="qvl-t06-axes-grid">
-            {axesList.map(axis => (
-              <AxisCard
-                key={axis.axis_id}
-                axis={axis}
-                checked={selectedAxisIds.has(axis.axis_id)}
-                onToggle={() => toggleAxis(axis.axis_id)}
-              />
-            ))}
-          </div>
-
-          <ReflexiveLine>À cette étape, vous choisissez des axes de veille. Les objets de veille — tendances, signes de changement et sources à surveiller — seront proposés à l’étape suivante pour les seuls axes retenus.</ReflexiveLine>
-
-          <div className="qvl-t06-next">
-            <button type="button" className="qvl-t06-secondary" onClick={() => setStep(1)}>
-              <Icon name="back" size={16}/> Retour au besoin
-            </button>
-            <button
-              type="button"
-              className="qvl-t06-primary"
-              onClick={buildWatch}
-              disabled={!selectedAxes.length || loading}
-            >
-              Construire les objets de veille <Icon name="chevron" size={16}/>
-            </button>
-          </div>
-        </section>
-      )}
-
-      {step === 3 && dynamicsData && (
-        <section className="qvl-t06-section qvl-t06-objects-section">
-          <div className="qvl-t06-section-head">
-            <div>
-              <h2>3. Objets de la veille</h2>
-              <p>Le corpus apporte des repères utiles pour chaque axe, sous une forme volontairement synthétique.</p>
-            </div>
-          </div>
-
-          <div className="qvl-t06-current-need qvl-t06-current-need-objects">
-            <strong>Besoin de veille</strong>
-            <span>{need}</span>
-          </div>
-
-          <div className="qvl-t06-watch-axes">
-            {(dynamicsData.axes || []).map((axis, axisIndex) => (
-              <section className="qvl-t06-watch-axis qvl-t06-object-axis" key={axis.axis_id}>
-                <div className="qvl-t06-watch-axis-head qvl-t06-object-axis-head">
-                  <div>
-                    <span>Axe {axisIndex + 1}</span>
-                    <h3>{axis.titre}</h3>
-                    <p>{axis.objectif_surveillance}</p>
-                  </div>
-                  <button type="button" onClick={() => retainAllAxisWatch(axis)}>
-                    Tout retenir pour cet axe
-                  </button>
-                </div>
-
-                <div className="qvl-t06-source-note">
-                  <Icon name="info" size={15}/>
-                  Chaque objet est associé à sa source et, lorsqu’un lien est disponible, à un accès direct.
-                </div>
-
-                {axis.object_generation_status === 'indisponible' ? (
-                  <div className="qvl-t06-object-generation-error">
-                    Les objets de veille n’ont pas pu être générés pour cet axe. Ce message ne signifie pas que le corpus ne contient aucun matériau pertinent.
-                  </div>
-                ) : (
-                  <div className="qvl-t06-objects-grid">
-                    <div className="qvl-t06-object-column trend">
-                      <h4><span aria-hidden="true">▤</span> Tendances documentées</h4>
-                      {axis.tendances?.length ? (
-                        axis.tendances.map(item => (
-                          <WatchItem
-                            key={item.trend_id}
-                            type="trend"
-                            item={item}
-                            selected={selectedWatch.has(`trend:${item.trend_id}`)}
-                            onToggle={() => toggleSetKey(`trend:${item.trend_id}`)}
-                          />
-                        ))
-                      ) : (
-                        <div className="qvl-t06-empty">Aucune tendance suffisamment étayée par plusieurs publications.</div>
-                      )}
-                    </div>
-
-                    <div className="qvl-t06-object-column sign">
-                      <h4><span aria-hidden="true">◉</span> Signes de changement à guetter</h4>
-                      {axis.signes_a_guetter?.length ? (
-                        axis.signes_a_guetter.map(item => (
-                          <WatchItem
-                            key={item.sign_id}
-                            type="sign"
-                            item={item}
-                            selected={selectedWatch.has(`sign:${item.sign_id}`)}
-                            onToggle={() => toggleSetKey(`sign:${item.sign_id}`)}
-                          />
-                        ))
-                      ) : (
-                        <div className="qvl-t06-empty">Aucun signe proposé pour cet axe.</div>
-                      )}
-                    </div>
-
-                    <div className="qvl-t06-object-column source">
-                      <h4><span aria-hidden="true">↗</span> Sources à surveiller</h4>
-                      {axis.sources_a_surveiller?.length ? (
-                        axis.sources_a_surveiller.map(item => (
-                          <WatchSource
-                            key={item.source_watch_id}
-                            item={item}
-                            selected={selectedWatch.has(`src:${item.source_watch_id}`)}
-                            onToggle={() => toggleSetKey(`src:${item.source_watch_id}`)}
-                          />
-                        ))
-                      ) : (
-                        <div className="qvl-t06-empty">Aucune source supplémentaire proposée pour cet axe.</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </section>
-            ))}
-          </div>
-
-          <ReflexiveLine>Ces objets de veille visent à nourrir le travail du veilleur, sans se substituer à son analyse.</ReflexiveLine>
-
-          <div className="qvl-t06-next">
-            <button type="button" className="qvl-t06-secondary" onClick={() => setStep(2)}>
-              <Icon name="back" size={16}/> Axe précédent
-            </button>
-            <button type="button" className="qvl-t06-primary" onClick={() => setStep(4)}>
-              Poursuivre vers le scénario <Icon name="chevron" size={16}/>
-            </button>
-          </div>
-        </section>
-      )}
-
-      {step === 4 && preview && (
-        <section className="qvl-t06-section">
-          <div className="qvl-t06-section-head">
-            <div>
-              <h2>4. Finaliser le scénario</h2>
-              <p>Cette page assemble uniquement les choix effectués dans les étapes précédentes. Aucun nouveau contenu n’est généré ici.</p>
-            </div>
-          </div>
-
-          <div className="qvl-t06-preview">
-            <PreviewBlock title="Besoin de veille">
-              <p>{preview.need_original}</p>
-            </PreviewBlock>
-
-            <PreviewBlock title="Axes de veille">
-              {preview.axes.map(axis => (
-                <div className="qvl-t06-preview-axis" key={axis.axis_id}>
-                  <div>
-                    <OriginBadge origin={axis.origin}/>
-                    <span className={`qvl-t06-status ${statusClass(axis.corpus_status)}`}>
-                      {statusLabel(axis.corpus_status)}
-                    </span>
-                  </div>
-                  <strong>{axis.title}</strong>
-                  <p>{axis.objective}</p>
-                  <p><strong>Pourquoi le proposer :</strong> {axis.why}</p>
-                  <SourceAccess sources={axis.sources || []}/>
-                </div>
-              ))}
-            </PreviewBlock>
-
-            <PreviewBlock title="Objets de la veille">
-              {preview.watch.map(axis => (
-                <div className="qvl-t06-preview-watch" key={axis.axis_id}>
-                  <h4>{axis.axis_title}</h4>
-                  {axis.trends.map(item => (
-                    <div className="qvl-t06-preview-object" key={item.trend_id}>
-                      <p><strong>Tendance :</strong> {item.label}</p>
-                      <SourceAccess sources={item.sources || []}/>
-                    </div>
-                  ))}
-                  {axis.watch_signs.map(item => (
-                    <div className="qvl-t06-preview-object" key={item.sign_id}>
-                      <p><strong>Signe à guetter :</strong> {item.label}</p>
-                      <SourceAccess sources={item.sources || []}/>
-                    </div>
-                  ))}
-                  {axis.sources_to_watch.map(item => (
-                    <div className="qvl-t06-preview-object" key={item.source_watch_id}>
-                      <p><strong>Source à surveiller :</strong> {item.label}</p>
-                      <SourceAccess sources={item.sources || []} fallbackLabel="Source suggérée"/>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </PreviewBlock>
-          </div>
-
-          <ReflexiveLine>Avant l’export : ce scénario correspond-il encore à votre besoin initial ? Les sources associées vous paraissent-elles suffisantes pour l’usage visé ?</ReflexiveLine>
-
-          <div className="qvl-t06-next">
-            <button type="button" className="qvl-t06-secondary" onClick={() => setStep(3)}>
-              <Icon name="back" size={16}/> Étape précédente
-            </button>
-            {!finalized ? (
-              <button type="button" className="qvl-t06-primary" onClick={() => setFinalized(true)}>
-                <Icon name="spark" size={16}/> Générer le livrable
-              </button>
-            ) : (
-              <>
-                <button type="button" className="qvl-t06-secondary" onClick={() => exportScenarioWord(preview)}>
-                  <Icon name="file" size={16}/> Exporter Word
-                </button>
-                <button type="button" className="qvl-t06-secondary" onClick={() => exportScenarioExcel(preview)}>
-                  <Icon name="layers" size={16}/> Exporter les données
-                </button>
-              </>
-            )}
-          </div>
-
-          {finalized && (
-            <div className="qvl-t06-final">
-              Le livrable reprend uniquement les éléments que vous avez retenus. La provenance et le statut de chaque proposition sont conservés dans les exports.
-            </div>
-          )}
-        </section>
-      )}
-    </div>
-  )
+    {step===4&&<section className="qvl-t06-panel">
+      <div className="qvl-t06-section-head"><div><h2>4. Finaliser</h2><p>Le scénario reprend uniquement les axes retenus et les objets validés. Aucun nouvel appel IA.</p></div><span className="qvl-t06-pill">Prêt à exporter</span></div>
+      <div className="qvl-t06-final-cover"><span>SCÉNARIO DE VEILLE</span><h3>{need}</h3><small>{new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date())}</small></div>
+      {objects.map((o,i)=><article className="qvl-t06-final-axis" key={o.axis_id||i}><div><span>Axe {i+1}</span><h3>{o.titre}</h3><p>{o.objectif_surveillance}</p></div><div className="qvl-t06-final-groups">
+        <div><h4>Tendances documentées</h4>{o.tendances?.length?o.tendances.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.synthese}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact/>)}</div>):<em>Aucune tendance suffisamment documentée.</em>}</div>
+        <div><h4>Éléments à surveiller</h4>{o.signes_a_guetter?.length?o.signes_a_guetter.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.pourquoi_guetter}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact/>)}</div>):<em>Aucun élément suffisamment sourcé.</em>}</div>
+        <div><h4>Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.raison}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact/>)}</div>):<em>Aucune source récurrente identifiée.</em>}</div>
+      </div>{!!o.angles_morts?.length&&<div className="qvl-t06-points"><b>Points à documenter</b><ul>{o.angles_morts.map((x,k)=><li key={k}>{cleanVisibleText(x)}</li>)}</ul></div>}</article>)}
+      <div className="qvl-t06-actions split"><button onClick={()=>setStep(3)}>← Revenir aux objets</button><button className="primary word" onClick={exportWord}>Télécharger le scénario (.docx)</button></div>
+    </section>}
+  </main>
 }
