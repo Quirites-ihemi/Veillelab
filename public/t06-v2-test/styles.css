@@ -48,3 +48,37 @@ label{display:block;margin:20px 0 9px;font-weight:900}textarea{width:100%;min-he
   line-height:1.45;
 }
 .isolation-note strong{color:#174d7c}
+
+
+/* Correctif minimal : affichage du chunk sans changer la logique ni les axes */
+.chunk-box{
+  margin-top:8px;
+  padding:9px 11px;
+  border-left:3px solid #7eaed8;
+  background:#f7fbff;
+  border-radius:6px;
+}
+.chunk-box strong,
+.why-box strong{
+  display:block;
+  margin-bottom:4px;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+  color:#496b89;
+}
+.chunk-box p,
+.why-box p{
+  margin:0;
+  font-size:12.5px;
+  line-height:1.45;
+  color:#244c70;
+}
+.why-box{margin-top:7px}
+.why-box p{font-style:italic;color:#52718b}
+.chunk-missing{
+  margin-top:8px;
+  font-size:12px;
+  font-style:italic;
+  color:#8a5b00;
+}
