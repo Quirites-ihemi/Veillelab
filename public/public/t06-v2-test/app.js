@@ -43,36 +43,32 @@ function gotoStep(n) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// ---------- Rendu des sources (provenance exacte + extrait contrôlable) ----------
+// ---------- Rendu des sources (provenance exacte + chunk visible) ----------
 function formatRepere(value = "") {
   const raw = String(value || "").trim();
   if (!raw) return "";
-  // Les localisateurs purement numériques correspondent ici aux pages du PDF.
-  // Ex. "88;91" -> "p. 88 et 91". Les timecodes/autres repères restent génériques.
   if (/^\d+(?:\s*[;,]\s*\d+)*$/.test(raw)) {
     const pages = raw.split(/[;,]/).map(x => x.trim()).filter(Boolean);
     return `p. ${pages.join(pages.length > 1 ? " et " : "")}`;
   }
   if (/^\d+\s*[-–]\s*\d+$/.test(raw)) return `p. ${raw.replace(/\s*-\s*/, "–")}`;
-  if (/^\d+$/.test(raw)) return `p. ${raw}`;
   return `repère ${raw}`;
 }
 function refOf(s) {
   return [s.publication_id, formatRepere(s.repere)].filter(Boolean).join(" · ") || "Source du corpus";
 }
-function excerptHtml(s, compact = false) {
-  const excerpt = String(s.extrait || "").replace(/\s+/g, " ").trim();
-  if (!excerpt) return "";
-  const shown = compact ? clip(excerpt, 420) : clip(excerpt, 900);
-  return `<div class="source-excerpt"><span>Extrait du corpus</span><p>« ${esc(shown)} »</p></div>`;
+function chunkHtml(s) {
+  const chunk = String(s.extrait || "").replace(/\s+/g, " ").trim();
+  if (!chunk) return `<div class="chunk-missing">Extrait du corpus non renvoyé par le backend.</div>`;
+  return `<div class="chunk-box"><strong>Extrait du corpus</strong><p>« ${esc(clip(chunk, 900))} »</p></div>`;
 }
 function sourceHtml(s) {
   const link = s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noreferrer">Ouvrir la source ↗</a>` : "";
-  const why = s.raison_pertinence ? `<div class="source-filter-reason"><span>Pourquoi ce matériau a été retenu</span><p>${esc(clip(s.raison_pertinence, 220))}</p></div>` : "";
-  return `<div class="source-mini"><strong>${esc(refOf(s))}</strong><small>${esc(s.titre || "")}</small>${excerptHtml(s)}${why}${link}</div>`;
+  const why = s.raison_pertinence ? `<div class="why-box"><strong>Pourquoi ce matériau a été retenu</strong><p>${esc(clip(s.raison_pertinence, 220))}</p></div>` : "";
+  return `<div class="source-mini"><strong>${esc(refOf(s))}</strong><small>${esc(s.titre || "")}</small>${chunkHtml(s)}${why}${link}</div>`;
 }
 function sourceStripHtml(s) {
-  return `<div class="source-strip"><div class="source-main"><strong class="source-ref">${esc(refOf(s))}</strong><small class="source-title">${esc(s.titre || "")}</small>${excerptHtml(s, true)}</div>` +
+  return `<div class="source-strip"><div class="source-main"><strong class="source-ref">${esc(refOf(s))}</strong><small class="source-title">${esc(s.titre || "")}</small>${chunkHtml(s)}</div>` +
     (s.url ? `<a class="source-open" href="${esc(s.url)}" target="_blank" rel="noreferrer">Ouvrir la source ↗</a>` : `<span class="source-open disabled">Lien indisponible</span>`) + `</div>`;
 }
 const MOTIFS = {
@@ -81,7 +77,7 @@ const MOTIFS = {
 function excludedHtml(list = []) {
   if (!list.length) return "";
   return `<details class="raw-materials"><summary>Matériaux écartés par le filtre (${list.length})</summary>` +
-    list.map(x => `<div class="source-mini"><strong>${esc(refOf(x))} — ${esc(MOTIFS[x.motif] || x.motif)}</strong><small>${esc(x.titre || "")}</small>${excerptHtml(x)}${x.raison ? `<div class="source-filter-reason"><span>Motif du filtre</span><p>${esc(clip(x.raison, 220))}</p></div>` : ""}</div>`).join("") +
+    list.map(x => `<div class="source-mini"><strong>${esc(refOf(x))} — ${esc(MOTIFS[x.motif] || x.motif)}</strong><small>${esc(x.titre || "")}</small>${x.raison ? `<small><em>${esc(clip(x.raison, 200))}</em></small>` : ""}</div>`).join("") +
     `</details>`;
 }
 function rejetsHtml(list = []) {

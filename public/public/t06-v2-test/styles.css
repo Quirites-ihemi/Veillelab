@@ -50,39 +50,35 @@ label{display:block;margin:20px 0 9px;font-weight:900}textarea{width:100%;min-he
 .isolation-note strong{color:#174d7c}
 
 
-/* T06 V2 — contrôle documentaire : extrait exact du matériau */
-.source-excerpt{
+/* Correctif minimal : affichage du chunk sans changer la logique ni les axes */
+.chunk-box{
   margin-top:8px;
   padding:9px 11px;
   border-left:3px solid #7eaed8;
   background:#f7fbff;
   border-radius:6px;
 }
-.source-excerpt span,
-.source-filter-reason span{
+.chunk-box strong,
+.why-box strong{
   display:block;
   margin-bottom:4px;
   font-size:11px;
-  font-weight:800;
-  letter-spacing:.02em;
   text-transform:uppercase;
+  letter-spacing:.02em;
   color:#496b89;
 }
-.source-excerpt p,
-.source-filter-reason p{
+.chunk-box p,
+.why-box p{
   margin:0;
   font-size:12.5px;
   line-height:1.45;
   color:#244c70;
 }
-.source-filter-reason{
-  margin-top:7px;
-}
-.source-filter-reason p{
+.why-box{margin-top:7px}
+.why-box p{font-style:italic;color:#52718b}
+.chunk-missing{
+  margin-top:8px;
+  font-size:12px;
   font-style:italic;
-  color:#52718b;
-}
-.source-strip .source-excerpt{
-  margin-top:7px;
-  max-width:760px;
+  color:#8a5b00;
 }
