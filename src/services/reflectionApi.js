@@ -51,3 +51,11 @@ export function analyzeScenarioAxisSupport(need, framing = {}, answers = [], axe
 export function analyzeScenarioDynamics(need, framing = {}, answers = [], axes = []) {
   return postJson('/scenario-dynamics', { need, cadrage: framing, reponses: answers, axes })
 }
+
+export function analyzeScenarioV2Axes(need) {
+  return postJson('/scenario-v2/axes', { need })
+}
+
+export function analyzeScenarioV2AxisObjects(need, subjectQuery, axis) {
+  return postJson('/scenario-v2/axis-objects', { need, subject_query: subjectQuery, axis })
+}
