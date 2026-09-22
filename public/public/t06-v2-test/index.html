@@ -1,1 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Quiritès — T06 V2 TEST</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="eye">◉</div>
+      <div><strong>Quiritès</strong> <span>Veille Lab</span></div>
+    </div>
+    <nav>
+      <span>Expertises ministérielles</span>
+      <span>Explorer une publication</span>
+      <span class="active">Atelier de veille — V2 TEST</span>
+      <span>La veille à l’IHEMI</span>
+    </nav>
+    <div class="backend-state" id="backendState">Vérification…</div>
+  </header>
 
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">VALIDATION T06 V2 DANS LE LAB EXISTANT</div>
+        <h1>Scénario de veille</h1>
+        <p>Le corpus est filtré avant la proposition des axes. Chaque axe et chaque objet doivent conserver un ancrage documentaire vérifiable.</p>
+      </div>
+      <div class="hero-badge">Corpus filtré → axes → objets sourcés</div>
+    </section>
+
+    <div class="isolation-note">
+      <strong>Test isolé.</strong> Cette page n’écrase aucune page existante du Lab et appelle uniquement le backend principal Quiritès avec routes T06 V2.
+    </div>
+
+    <div class="steps">
+      <button class="step active" data-step="1"><b>1</b><span>Formuler le besoin</span></button>
+      <button class="step" data-step="2"><b>2</b><span>Axes issus du corpus</span></button>
+      <button class="step" data-step="3"><b>3</b><span>Objets de la veille</span></button>
+      <button class="step" data-step="4"><b>4</b><span>Finaliser</span></button>
+    </div>
+
+    <section class="backend-config card compact-card">
+      <div>
+        <strong>Backend principal Quiritès</strong>
+        <small>Backend principal Quiritès : <code>https://veillelab-cloud-backend2-633342872265.europe-west9.run.app</code>.</small>
+      </div>
+      <input id="backendUrl" type="url" placeholder="https://veillelab-cloud-backend2-633342872265.europe-west9.run.app">
+      <button class="secondary" id="connectBackendBtn">Connecter</button>
+    </section>
+
+    <div id="alert" class="alert hidden"></div>
+    <div id="loading" class="loading hidden"><span></span><div><strong id="loadingTitle">Traitement en cours…</strong><small id="loadingDetail"></small></div></div>
+
+    <section id="view1" class="view card">
+      <div class="section-head">
+        <div>
+          <h2>1. Formuler le besoin</h2>
+          <p>Une phrase suffit. Le backend retrouve les candidats, vérifie leur pertinence puis fait émerger les axes à partir des seuls matériaux validés.</p>
+        </div>
+        <span class="pill user">Votre besoin</span>
+      </div>
+      <label for="need">Votre besoin de veille</label>
+      <textarea id="need" maxlength="1800" placeholder="Ex. Je veux faire une veille sur les évolutions de la pédocriminalité"></textarea>
+      <div class="actions">
+        <button class="secondary" id="demoBtn">Insérer l’exemple pédocriminalité</button>
+        <button class="primary" id="analyseBtn">Chercher dans le corpus et faire émerger les axes →</button>
+      </div>
+      <div class="principle">Principe : aucun axe n’est affiché sans recherche corpus associée. Une panne technique est signalée comme telle, jamais comme une absence documentaire.</div>
+    </section>
+
+    <section id="view2" class="view card hidden">
+      <div class="section-head">
+        <div>
+          <h2>2. Choisir des axes de veille</h2>
+          <p>Les axes sont générés uniquement à partir des matériaux jugés pertinents pour le besoin. Les matériaux rejetés restent consultables pour audit.</p>
+        </div>
+        <span class="pill corpus">Corpus d’abord</span>
+      </div>
+      <div class="need-recap"><b>Besoin</b><span id="needRecap2"></span></div>
+      <div id="coverage" class="coverage"></div>
+      <div id="axesGrid" class="axes-grid"></div>
+      <div class="actions split">
+        <button class="secondary" data-back="1">← Modifier le besoin</button>
+        <button class="primary" id="objectsBtn">Construire les objets des axes retenus →</button>
+      </div>
+    </section>
+
+    <section id="view3" class="view hidden">
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <h2>3. Objets de la veille</h2>
+            <p>Chaque axe est recherché et filtré séparément. Une case peut rester vide si le corpus ne permet pas de produire un objet suffisamment étayé.</p>
+          </div>
+          <span class="pill ai">Synthèse IA sourcée</span>
+        </div>
+        <div class="need-recap"><b>Besoin</b><span id="needRecap3"></span></div>
+      </div>
+      <div id="objectsContainer"></div>
+      <div class="card actions split">
+        <button class="secondary" data-back="2">← Revenir aux axes</button>
+        <button class="primary" id="finalBtn">Prévisualiser le scénario →</button>
+      </div>
+    </section>
+
+    <section id="view4" class="view card hidden">
+      <div class="section-head">
+        <div>
+          <h2>4. Finaliser</h2>
+          <p>Cette vue assemble le besoin, les axes retenus et les objets générés. Aucun nouvel appel IA.</p>
+        </div>
+        <span class="pill user">Version GitHub de test</span>
+      </div>
+      <div id="finalPreview"></div>
+      <div class="actions split">
+        <button class="secondary" data-back="3">← Revenir aux objets</button>
+        <button class="primary" id="downloadBtn">Télécharger le scénario (.json)</button>
+      </div>
+    </section>
+  </main>
+
+  <template id="sourceTpl">
+    <div class="source-strip">
+      <div class="source-main">
+        <strong class="source-ref"></strong>
+        <small class="source-title"></small>
+      </div>
+      <a class="source-open" target="_blank" rel="noreferrer">Ouvrir la source ↗</a>
+    </div>
+  </template>
+
+  <script>
+    window.T06_BACKEND = "https://veillelab-cloud-backend2-633342872265.europe-west9.run.app";
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
