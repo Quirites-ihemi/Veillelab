@@ -747,7 +747,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         <div className="qvl-hero-text">
           <h1>Avancer avec le corpus</h1>
           <p>Une bibliothèque à portée de main pour explorer, documenter et relier les éléments utiles à votre travail.</p>
-          <span>Les résultats reflètent uniquement les sujets et publications présents dans le corpus actif.</span>
+          <span><strong>Périmètre :</strong> l’outil travaille uniquement à partir des publications du bulletin Quiritès intégrées au corpus actif. Il ne complète pas les résultats avec le Web ni avec des connaissances extérieures au corpus et peut donc ne pas pouvoir répondre à certaines questions.</span>
         </div>
         <div className="qvl-hero-visual" aria-hidden="true">
           <img src={heroImage} alt=""/>
@@ -775,7 +775,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
               </button>
             })}
           </div>
-          <div className="qvl-scope-note"><Icon name="info" size={15}/><span>Ces fonctions portent uniquement sur les sujets effectivement couverts par le corpus actif.</span></div>
+          <div className="qvl-scope-note"><Icon name="info" size={15}/><span><strong>Corpus du bulletin uniquement.</strong> Ces fonctions portent sur les publications Quiritès présentes dans le corpus actif, pas sur l’ensemble des connaissances disponibles sur un sujet.</span></div>
         </>}
       </aside>
 
@@ -892,8 +892,10 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         {rightCollapsed ? <div className="qvl-collapsed-label">Corpus</div> : <>
           <header className="qvl-side-heading corpus">
             <span className="qvl-side-icon"><Icon name="file" size={19}/></span>
-            <div><h2>Ce que le corpus apporte</h2><p>Explorez le corpus et ajoutez les éléments utiles à votre canevas.</p></div>
+            <div><h2>Ce que le corpus Quiritès apporte</h2><p>Résultats fondés sur les publications du bulletin présentes dans le corpus actif.</p></div>
           </header>
+
+          <div className="qvl-corpus-boundary"><Icon name="info" size={17}/><div><strong>Périmètre du bot</strong><p>Il répond uniquement à partir des publications du bulletin Quiritès intégrées au corpus actif. Une absence ou une faible couverture ici ne signifie pas que le sujet est absent de la littérature ou des connaissances disponibles en dehors du bulletin.</p></div></div>
 
           {searchContext?.source === 'canvas' && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Recherche à partir du canevas</strong><span>{searchResult?.interpretation?.context_used ? `Contexte utilisé : ${searchResult.interpretation.context_subject || searchResult.interpretation.subject_query}` : searchResult?.interpretation?.subject_query ? `Sujet interprété : ${searchResult.interpretation.subject_query}` : 'Le besoin sélectionné est appliqué au post-it actif et au contexte utile du canevas.'}</span></div></div>}
           {searchContext?.source === 'manual' && searchResult?.interpretation?.context_used && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Contexte du canevas utilisé</strong><span>{searchResult.interpretation.context_subject || searchResult.interpretation.subject_query}</span></div></div>}
@@ -907,7 +909,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
           <div className={`qvl-free-search ${freeSearchOpen ? 'open' : ''}`}>
             <button type="button" className="qvl-free-search-toggle" onClick={() => { setFreeSearchOpen(value => !value); window.setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0) }}>
-              <Icon name="search" size={16}/><span><strong>Question libre au corpus</strong><small>Pour une recherche qui ne part pas d’un post-it.</small></span><span aria-hidden="true">{freeSearchOpen ? '−' : '+'}</span>
+              <Icon name="search" size={16}/><span><strong>Question libre au corpus du bulletin</strong><small>Le bot n’utilise que les publications intégrées au corpus actif.</small></span><span aria-hidden="true">{freeSearchOpen ? '−' : '+'}</span>
             </button>
             {freeSearchOpen && <form onSubmit={runManualSearch}>
               <textarea ref={searchInputRef} maxLength={500} value={manualQuery} onChange={event => setManualQuery(event.target.value)} placeholder="Posez directement une question au corpus…"/>
@@ -939,7 +941,7 @@ function NeedResults({ need, result, materials, onAdd, onProof }) {
       <div><strong>{domains.length}</strong><span>domaine{domains.length > 1 ? 's' : ''}</span></div>
     </div>}
     <div className="qvl-result-heading"><div><strong>{materials.length} résultat{materials.length > 1 ? 's' : ''}</strong><span>{need.id === 'overview' ? 'pour construire une première vue du thème' : 'correspondant à ce besoin documentaire'}</span></div>{all.length !== materials.length && <small>{all.length - materials.length} autre{all.length - materials.length > 1 ? 's' : ''} résultat{all.length - materials.length > 1 ? 's' : ''} écarté{all.length - materials.length > 1 ? 's' : ''} car hors de cette catégorie</small>}</div>
-    {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Aucun élément suffisamment ciblé n’a été repéré pour cette catégorie.</strong><p>Essayez une formulation plus précise ou revenez à « Comprendre rapidement ce que le corpus contient sur un thème » pour élargir l’exploration.</p></div>}
+    {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Le corpus actif ne permet pas de répondre suffisamment à ce besoin.</strong><p>Aucun élément suffisamment ciblé n’a été repéré dans les publications du bulletin présentes dans le corpus. Cela ne signifie pas que le sujet est peu documenté en dehors du bulletin. Vous pouvez préciser la formulation ou revenir à « Comprendre rapidement ce que le corpus contient sur un thème ».</p></div>}
   </section>
 }
 
