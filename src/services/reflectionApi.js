@@ -50,6 +50,8 @@ export function searchReflectionCorpus(query, options = {}) {
   if (Array.isArray(options.provenanceLevels) && options.provenanceLevels.length) body.provenance_levels = options.provenanceLevels
   if (options.domaine) body.domaine = options.domaine
   if (options.organisme) body.organisme = options.organisme
+  if (options.contextSubject) body.context_subject = options.contextSubject
+  if (Array.isArray(options.canvasContext) && options.canvasContext.length) body.canvas_context = options.canvasContext
   return postJson('/reflection-search', body)
 }
 
