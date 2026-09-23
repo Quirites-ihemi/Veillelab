@@ -20,6 +20,7 @@ function resultExcerpt(result){
   if(result?.kind==='chunk') return String(result.text||'').trim()
   if(result?.kind==='node') return String(result.label||'').trim()
   if(result?.kind==='relation') return [result.source_label,result.relation_type,result.target_label].filter(Boolean).join(' — ')
+  if(result?.kind==='expertise') return [result.label,result.definition].filter(Boolean).join(' — ')
   return ''
 }
 function normalizeText(value){
@@ -71,23 +72,20 @@ export default function ExpertsWorkspace({data,onBack}){
   const [selected,setSelected]=useState(null)
   const [loading,setLoading]=useState(false)
   const [error,setError]=useState('')
+  const [searchMeta,setSearchMeta]=useState(null)
 
   const baseList=results??allExperts
   const filtered=useMemo(()=>{
-    const q=normalizeText(query)
-    let list=baseList.filter(e=>(!organisation||e.organisations.includes(organisation))&&(!domain||e.domains.includes(domain)))
-    if(results===null&&q){
-      list=list.filter(e=>normalizeText(`${e.name} ${e.organisations.join(' ')} ${e.domains.join(' ')} ${e.publications.map(p=>p.titre).join(' ')}`).includes(q))
-    }
+    const list=baseList.filter(e=>(!organisation||e.organisations.includes(organisation))&&(!domain||e.domains.includes(domain)))
     return [...list].sort((a,b)=>results?(b.score-a.score||a.name.localeCompare(b.name,'fr')):a.name.localeCompare(b.name,'fr'))
-  },[baseList,organisation,domain,query,results])
+  },[baseList,organisation,domain,results])
 
   const runSearch=async()=>{
     const q=query.trim()
-    if(!q){setResults(null);setSelected(null);setError('');return}
-    setLoading(true);setError('')
+    if(!q){setResults(null);setSelected(null);setSearchMeta(null);setError('');return}
+    setLoading(true);setError('');setSearchMeta(null)
     try{
-      const response=await searchExperts(q)
+      const response=await searchExperts(q,{organisme:organisation,domaine:domain})
       const experts=(response.experts||[]).map(e=>({
         ...e,
         organisations:Array.isArray(e.organisations)?e.organisations:[],
@@ -96,11 +94,12 @@ export default function ExpertsWorkspace({data,onBack}){
         matches:Array.isArray(e.matches)?e.matches:[],
         score:(e.matches||[]).reduce((sum,m)=>sum+(Number(m.score)||0),0)
       }))
+      setSearchMeta({status:response.status||'ok',message:response.message||'',selected_expertises:response.selected_expertises||[],stats:response.stats||{}})
       setResults(experts)
       setSelected(experts[0]||null)
-    }catch(e){setError(e?.message||String(e));setResults([]);setSelected(null)}finally{setLoading(false)}
+    }catch(e){setError(e?.message||String(e));setSearchMeta(null);setResults([]);setSelected(null)}finally{setLoading(false)}
   }
-  const reset=()=>{setQuery('');setOrganisation('');setDomain('');setResults(null);setSelected(null);setError('')}
+  const reset=()=>{setQuery('');setOrganisation('');setDomain('');setResults(null);setSelected(null);setSearchMeta(null);setError('')}
   const activeExpert=selected&&filtered.some(e=>e.name===selected.name)?filtered.find(e=>e.name===selected.name):filtered[0]||null
   const exportPayload={query:query.trim(),experts:filtered,generated_at:new Date().toISOString(),method_note:'La recherche thématique est effectuée par le moteur dédié Experts ministériels à partir du référentiel fermé de micro-expertises validées. Une signature ou une simple proximité lexicale ne suffit pas à qualifier un expert sur le sujet.'}
 
@@ -113,7 +112,7 @@ export default function ExpertsWorkspace({data,onBack}){
 
     <section className="qvl-experts-search-card">
       <div className="qvl-experts-search-grid">
-        <div className="qvl-experts-field topic"><label>Sujet ou thème <span>facultatif</span></label><div className="qvl-experts-query"><Icon name="search" size={18}/><input value={query} onChange={e=>{setQuery(e.target.value);if(results!==null)setResults(null)}} onKeyDown={e=>{if(e.key==='Enter')runSearch()}} placeholder="Ex. cybercriminalité, violences contre les élus, intelligence artificielle…"/></div></div>
+        <div className="qvl-experts-field topic"><label>Sujet ou thème <span>facultatif</span></label><div className="qvl-experts-query"><Icon name="search" size={18}/><input value={query} onChange={e=>{setQuery(e.target.value);if(results!==null){setResults(null);setSelected(null);setSearchMeta(null)}}} onKeyDown={e=>{if(e.key==='Enter')runSearch()}} placeholder="Ex. cybercriminalité, violences contre les élus, intelligence artificielle…"/></div></div>
         <div className="qvl-experts-field"><label>Organisme</label><select value={organisation} onChange={e=>setOrganisation(e.target.value)}><option value="">Tous les organismes</option>{organisations.map(o=><option key={o}>{o}</option>)}</select></div>
         <div className="qvl-experts-field"><label>Domaine</label><select value={domain} onChange={e=>setDomain(e.target.value)}><option value="">Tous les domaines</option>{domains.map(d=><option key={d}>{d}</option>)}</select></div>
       </div>
@@ -121,13 +120,14 @@ export default function ExpertsWorkspace({data,onBack}){
     </section>
 
     {error&&<div className="qvl-experts-error">{error}</div>}
+    {!error&&searchMeta&&searchMeta.status!=='ok'&&<div className="qvl-experts-error"><strong>{searchMeta.status==='insufficient_query'?'Recherche à préciser':'Aucun rattachement suffisamment établi'}</strong><br/>{searchMeta.message}</div>}
 
     <div className="qvl-experts-result-bar">
       <div><strong>{filtered.length} expert{filtered.length>1?'s':''}</strong><span>{results===null?'dans le répertoire ministériel du corpus':query.trim()?`repéré${filtered.length>1?'s':''} sur « ${query.trim()} »`:'dans le corpus'}</span></div>
       <div className="qvl-experts-export"><button disabled={!filtered.length} onClick={()=>exportExpertsWord(exportPayload)}><Icon name="file" size={16}/>Exporter Word</button><button disabled={!filtered.length} onClick={()=>exportExpertsExcel(exportPayload)}><Icon name="layers" size={16}/>Exporter les données</button></div>
     </div>
 
-    {!filtered.length?<section className="qvl-experts-empty"><div><Icon name="search" size={32}/><h2>Aucun expert ministériel repéré</h2><p>Le corpus ne rattache aucun auteur ministériel aux publications retrouvées pour ce sujet. Cela ne signifie pas qu’aucun expert n’existe en dehors du corpus.</p></div></section>:<div className="qvl-experts-layout">
+    {!filtered.length?<section className="qvl-experts-empty"><div><Icon name="search" size={32}/><h2>{searchMeta?.status==='insufficient_query'?'Précisez votre recherche':'Aucun expert ministériel suffisamment documenté'}</h2><p>{searchMeta?.message||'Le corpus ne permet pas de rattacher de façon suffisamment solide un expert ministériel à ce sujet. Cela ne signifie pas qu’aucun expert n’existe en dehors du corpus.'}</p></div></section>:<div className="qvl-experts-layout">
       <section className="qvl-experts-list">{filtered.map(expert=><button key={expert.name} type="button" className={`qvl-expert-card ${activeExpert?.name===expert.name?'selected':''}`} onClick={()=>setSelected(expert)}><div className="qvl-expert-avatar">{expert.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()}</div><div className="qvl-expert-card-main"><h3>{expert.name}</h3><p>{expert.organisations.join(' · ')}</p><div className="qvl-expert-chips">{expert.domains.map(d=><span key={d}>{d}</span>)}</div></div><div className="qvl-expert-card-meta"><b>{expert.publications.length}</b><span>publication{expert.publications.length>1?'s':''}</span>{results!==null&&<small>{expert.matches.length} élément{expert.matches.length>1?'s':''} pertinent{expert.matches.length>1?'s':''}</small>}</div><Icon name="chevron" size={18}/></button>)}</section>
 
       <aside className="qvl-expert-detail">{activeExpert&&<><div className="qvl-expert-detail-head"><div className="qvl-expert-avatar large">{activeExpert.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()}</div><div><span>Expert ministériel recensé</span><h2>{activeExpert.name}</h2></div></div><div className="qvl-expert-detail-body">
