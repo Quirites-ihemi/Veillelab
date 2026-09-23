@@ -207,7 +207,28 @@ function normalizeProofText(text) {
     paragraph.push(line)
   })
   flushParagraph()
-  return blocks
+
+  // Deuxième passe : certains PDF insèrent des lignes blanches au milieu d'une
+  // même phrase. On ne fusionne que les fragments dont la continuité est sûre
+  // (ponctuation non terminale, phrase manifestement inachevée ou reprise en
+  // minuscule). Le texte lui-même n'est jamais réécrit.
+  const readable = []
+  const shouldMerge = (previous, next) => {
+    if (!previous || !next || previous.type !== 'paragraph' || next.type !== 'paragraph') return false
+    const a = previous.text.trim()
+    const b = next.text.trim()
+    if (!a || !b) return false
+    if (/[,;:–—-]$/.test(a)) return true
+    if (!/[.!?…»)”']$/.test(a)) return true
+    if (/^[a-zàâäçéèêëîïôöùûü]/.test(b)) return true
+    return false
+  }
+  blocks.forEach(block => {
+    const previous = readable[readable.length - 1]
+    if (shouldMerge(previous, block)) previous.text = `${previous.text} ${block.text}`.replace(/\s+/g, ' ').trim()
+    else readable.push({ ...block })
+  })
+  return readable
 }
 
 function ProofText({ text }) {
@@ -984,21 +1005,15 @@ function ProofModal({ state, onClose }) {
   return <div className="qvl-proof-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
     <section className="qvl-proof-modal" role="dialog" aria-modal="true" aria-label="Preuve complète">
       <header>
-        <div><span>Preuve complète</span><h2>{meta.title || meta.id || 'Publication source'}</h2></div>
+        <div className="qvl-proof-title-block">
+          <span>Preuve complète</span>
+          <h2>{meta.title || meta.id || 'Publication source'}</h2>
+          <p className="qvl-proof-header-meta">{[meta.organisation, meta.year, meta.id].filter(Boolean).join(' · ')}</p>
+        </div>
         <button type="button" onClick={onClose} aria-label="Fermer la preuve complète"><Icon name="close" size={18}/></button>
       </header>
 
       <div className="qvl-proof-body">
-        <section className="qvl-proof-section qvl-proof-source-summary">
-          <h3>Source</h3>
-          <div className="qvl-proof-source-grid">
-            {meta.organisation && <div><span>Organisme</span><strong>{meta.organisation}</strong></div>}
-            {meta.year && <div><span>Année</span><strong>{meta.year}</strong></div>}
-            {meta.id && <div><span>Publication</span><strong>{meta.id}</strong></div>}
-            {sourceLocator && <div><span>Repère</span><strong>{String(sourceLocator).replace(/^repère\s+/i, '')}</strong></div>}
-            {level && <div><span>Niveau de provenance</span><strong>{level}</strong></div>}
-          </div>
-        </section>
 
         {state.loading && <div className="qvl-proof-loading"><span>✦</span>Recherche de la preuve exacte…</div>}
         {state.error && <div className="qvl-proof-error"><strong>La preuve n’a pas pu être chargée.</strong><span>{state.error}</span></div>}
@@ -1023,11 +1038,11 @@ function ProofModal({ state, onClose }) {
 
         <section className="qvl-proof-section qvl-proof-provenance">
           <h3>Provenance</h3>
-          <p>Cette fenêtre restitue le texte disponible dans le corpus sans modifier la source documentaire. Les retours à la ligne purement techniques sont neutralisés à l’affichage ; les paragraphes et listes distincts sont conservés.</p>
           <div className="qvl-proof-provenance-line">
             <strong>{meta.title || meta.id || 'Publication source'}</strong>
-            <span>{[meta.organisation, meta.year, sourceLocator ? `repère ${String(sourceLocator).replace(/^repère\s+/i, '')}` : '', level ? `provenance ${level}` : ''].filter(Boolean).join(' · ')}</span>
+            <span>{[meta.organisation, meta.year, meta.id, sourceLocator ? `repère ${String(sourceLocator).replace(/^repère\s+/i, '')}` : '', level ? `provenance ${level}` : ''].filter(Boolean).join(' · ')}</span>
           </div>
+          <p>Texte restitué sans reformulation. Seuls les retours à la ligne purement techniques sont neutralisés à l’affichage.</p>
         </section>
       </div>
 

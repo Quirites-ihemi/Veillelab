@@ -901,3 +901,185 @@
 .qvl-corpus-boundary p{margin:3px 0 0;font-size:11.6px;line-height:1.45}
 .qvl-no-result strong{font-size:11px;line-height:1.35}
 .qvl-no-result p{font-size:10.2px;line-height:1.5}
+
+/* ==========================================================
+   V1.4 — « Preuve complète » comme objet de lecture
+   ========================================================== */
+.qvl-proof-modal{
+  width:min(900px,94vw);
+  max-height:91vh;
+}
+.qvl-proof-modal>header{
+  padding:13px 18px 11px!important;
+  align-items:flex-start!important;
+  gap:12px;
+}
+.qvl-proof-title-block{
+  min-width:0;
+  max-width:780px;
+}
+.qvl-proof-modal>header span{
+  font-size:9.5px!important;
+  letter-spacing:.10em!important;
+  line-height:1.2;
+}
+.qvl-proof-modal>header h2{
+  margin:3px 0 0!important;
+  font-size:18px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  color:#21486f!important;
+}
+.qvl-proof-header-meta{
+  margin:4px 0 0;
+  color:#6f8194;
+  font-size:11px;
+  line-height:1.35;
+  font-weight:600;
+}
+.qvl-proof-modal>header button{
+  width:31px!important;
+  height:31px!important;
+  margin-top:0;
+}
+.qvl-proof-body{
+  padding:17px 22px 7px!important;
+}
+.qvl-proof-body>*{
+  width:min(100%,760px);
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.qvl-proof-section{
+  margin-bottom:18px!important;
+}
+.qvl-proof-section>h3{
+  margin:0 0 8px!important;
+  font-size:13px!important;
+  line-height:1.3!important;
+  letter-spacing:.015em;
+}
+.qvl-proof-loading,
+.qvl-proof-error,
+.qvl-proof-message{
+  margin-bottom:16px!important;
+  padding:10px 12px!important;
+  border-radius:8px!important;
+}
+.qvl-proof-message strong,
+.qvl-proof-error strong{
+  font-size:11.5px!important;
+}
+.qvl-proof-message span,
+.qvl-proof-error span{
+  font-size:11.5px!important;
+}
+.qvl-proof-excerpts article{
+  margin:0 0 16px!important;
+  border-radius:10px!important;
+  border-color:#dbe4ec!important;
+  box-shadow:0 1px 2px rgba(28,49,69,.025);
+}
+.qvl-proof-excerpt-head{
+  padding:10px 13px!important;
+  gap:12px!important;
+  background:#f8fafc!important;
+}
+.qvl-proof-excerpt-head strong{
+  font-size:13px!important;
+  line-height:1.3!important;
+}
+.qvl-proof-excerpt-head small{
+  margin-top:1px;
+  font-size:9.5px!important;
+  color:#8190a0!important;
+}
+.qvl-proof-excerpt-head>span{
+  padding:3px 7px!important;
+  font-size:10px!important;
+}
+.qvl-proof-text{
+  padding:16px 18px 18px!important;
+}
+.qvl-proof-text p{
+  max-width:70ch;
+  margin:0 auto 12px!important;
+  color:#24435f!important;
+  font-size:15.5px!important;
+  line-height:1.72!important;
+  font-weight:400!important;
+}
+.qvl-proof-text p:last-child{
+  margin-bottom:0!important;
+}
+.qvl-proof-text h4{
+  max-width:70ch;
+  margin:18px auto 7px!important;
+  color:#254f74!important;
+  font-size:13.5px!important;
+  line-height:1.35!important;
+}
+.qvl-proof-text h4:first-child{
+  margin-top:0!important;
+}
+.qvl-proof-list{
+  max-width:70ch;
+  margin:7px auto 13px!important;
+  padding-left:23px!important;
+}
+.qvl-proof-list li{
+  margin:5px 0!important;
+  font-size:15px!important;
+  line-height:1.65!important;
+}
+.qvl-proof-availability{
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+.qvl-proof-provenance{
+  margin-top:4px!important;
+  margin-bottom:8px!important;
+  padding:12px 14px!important;
+  border-radius:9px!important;
+  background:#f8fafc!important;
+}
+.qvl-proof-provenance>h3{
+  margin-bottom:7px!important;
+}
+.qvl-proof-provenance-line{
+  padding-top:0!important;
+  border-top:0!important;
+}
+.qvl-proof-provenance-line strong{
+  font-size:11.5px!important;
+  line-height:1.35!important;
+}
+.qvl-proof-provenance-line span{
+  margin-top:2px!important;
+  font-size:10.5px!important;
+  line-height:1.4!important;
+}
+.qvl-proof-provenance>p{
+  margin:7px 0 0!important;
+  padding-top:7px;
+  border-top:1px solid #e3eaf0;
+  color:#718193!important;
+  font-size:10.5px!important;
+  line-height:1.4!important;
+}
+.qvl-proof-modal>footer{
+  padding:10px 18px 12px!important;
+}
+.qvl-proof-modal>footer a,
+.qvl-proof-modal>footer button{
+  height:34px!important;
+  font-size:11px!important;
+}
+@media(max-width:760px){
+  .qvl-proof-modal>header{padding:12px 14px 10px!important}
+  .qvl-proof-modal>header h2{font-size:16.5px!important}
+  .qvl-proof-header-meta{font-size:10.5px}
+  .qvl-proof-body{padding:14px 12px 5px!important}
+  .qvl-proof-text{padding:14px!important}
+  .qvl-proof-text p{font-size:14.5px!important;line-height:1.68!important}
+}
