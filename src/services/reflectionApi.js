@@ -36,6 +36,23 @@ export function searchCorpus(query, options = {}) {
 }
 
 
+
+export function searchReflectionCorpus(query, options = {}) {
+  const body = {
+    query,
+    need_id: options.needId || 'overview',
+    limit: options.limit || 12,
+    max_per_publication: options.maxPerPublication || 3,
+    diversify_by_publication: options.diversifyByPublication !== false,
+  }
+  if (Array.isArray(options.kinds) && options.kinds.length) body.kinds = options.kinds
+  if (Array.isArray(options.publicationIds) && options.publicationIds.length) body.publication_ids = options.publicationIds
+  if (Array.isArray(options.provenanceLevels) && options.provenanceLevels.length) body.provenance_levels = options.provenanceLevels
+  if (options.domaine) body.domaine = options.domaine
+  if (options.organisme) body.organisme = options.organisme
+  return postJson('/reflection-search', body)
+}
+
 export function searchExperts(query, options = {}) {
   const body = { query }
   if (options.organisme) body.organisme = options.organisme
