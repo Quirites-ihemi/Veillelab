@@ -124,7 +124,7 @@ export default function ExpertsWorkspace({data,onBack}){
 
     <div className="qvl-experts-result-bar">
       <div><strong>{filtered.length} expert{filtered.length>1?'s':''}</strong><span>{results===null?'dans le répertoire ministériel du corpus':query.trim()?`repéré${filtered.length>1?'s':''} sur « ${query.trim()} »`:'dans le corpus'}</span></div>
-      <div className="qvl-experts-export"><button disabled={!filtered.length} onClick={()=>exportExpertsWord(exportPayload)}><Icon name="file" size={16}/>Exporter Word</button><button disabled={!filtered.length} onClick={()=>exportExpertsExcel(exportPayload)}><Icon name="layers" size={16}/>Exporter les données</button></div>
+      <div className="qvl-experts-export"><button disabled={results===null||loading||!filtered.length} onClick={()=>exportExpertsWord(exportPayload)}><Icon name="file" size={16}/>Exporter Word</button><button disabled={results===null||loading||!filtered.length} onClick={()=>exportExpertsExcel(exportPayload)}><Icon name="layers" size={16}/>Exporter les données</button></div>
     </div>
 
     {!filtered.length?<section className="qvl-experts-empty"><div><Icon name="search" size={32}/><h2>{searchMeta?.status==='insufficient_query'?'Précisez votre recherche':'Aucun expert ministériel suffisamment documenté'}</h2><p>{searchMeta?.message||'Le corpus ne permet pas de rattacher de façon suffisamment solide un expert ministériel à ce sujet. Cela ne signifie pas qu’aucun expert n’existe en dehors du corpus.'}</p></div></section>:<div className="qvl-experts-layout">
