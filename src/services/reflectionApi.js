@@ -35,6 +35,14 @@ export function searchCorpus(query, options = {}) {
   return postJson('/corpus-search', body)
 }
 
+
+export function searchExperts(query, options = {}) {
+  const body = { query }
+  if (options.organisme) body.organisme = options.organisme
+  if (options.domaine) body.domaine = options.domaine
+  return postJson('/expert-search', body)
+}
+
 export function analyzeScenarioFraming(need) {
   return postJson('/scenario-framing', { need })
 }
