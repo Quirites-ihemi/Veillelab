@@ -520,3 +520,352 @@
 .qvl-card-title-input{display:block;width:100%;box-sizing:border-box;height:30px;margin:-1px 0 8px;border:1px solid rgba(73,100,129,.20);border-radius:7px;padding:0 8px;font-size:12.2px;font-weight:800;color:#274e73;background:rgba(255,255,255,.48)}
 .qvl-card-title-input::placeholder{font-weight:600;color:#8392a4}
 @media (max-width:1050px){.qvl-canvas-composer{grid-template-columns:1fr}.qvl-composer-actions{grid-template-columns:1fr 1fr}.qvl-reset-button{margin-left:0}}
+
+/* =====================================================
+   AVANCER AVEC LE CORPUS — V1.2
+   Post-it modifiables + « Preuve complète » lisible
+   ===================================================== */
+
+/* Édition explicite des post-it */
+.qvl-card-controls .qvl-edit-glyph{
+  font-size:13px;
+  line-height:1;
+  transform:translateY(-.5px);
+}
+.qvl-canvas-card.editing{
+  z-index:12;
+  cursor:default;
+  min-height:220px;
+  box-shadow:0 0 0 2px rgba(58,101,143,.18),0 14px 32px rgba(34,58,86,.18);
+}
+.qvl-card-title-display{
+  display:block;
+  margin:0 0 7px;
+  color:#274e73;
+  font-size:13px;
+  line-height:1.25;
+  font-weight:800;
+}
+.qvl-card-editor{
+  display:grid;
+  gap:7px;
+}
+.qvl-card-editor input,
+.qvl-card-editor textarea{
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid rgba(73,100,129,.28);
+  border-radius:8px;
+  background:rgba(255,255,255,.88);
+  color:#244665;
+  font:inherit;
+  outline:0;
+}
+.qvl-card-editor input{
+  height:32px;
+  padding:0 9px;
+  font-size:12px;
+  font-weight:750;
+}
+.qvl-card-editor textarea{
+  min-height:104px;
+  padding:9px 10px;
+  resize:vertical;
+  font-size:14px;
+  line-height:1.42;
+}
+.qvl-card-editor input:focus,
+.qvl-card-editor textarea:focus{
+  border-color:#708fad;
+  box-shadow:0 0 0 3px rgba(83,111,144,.10);
+}
+.qvl-card-edit-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:6px;
+}
+.qvl-card-edit-actions button{
+  min-width:78px;
+  height:31px;
+  border:1px solid #c7d4df;
+  border-radius:8px;
+  background:#fff;
+  color:#526d87;
+  font-size:11px;
+  font-weight:750;
+  cursor:pointer;
+}
+.qvl-card-edit-actions button.primary{
+  border-color:#3f6186;
+  background:#3f6186;
+  color:#fff;
+}
+.qvl-card-edit-actions button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.qvl-canvas-card.user-edited{
+  box-shadow:0 0 0 1px rgba(88,104,132,.20),0 9px 23px rgba(37,55,76,.13);
+}
+.qvl-card-edit-note{
+  margin-top:4px;
+  padding-top:5px;
+  border-top:1px dashed rgba(74,98,122,.20);
+  color:#5c6e83!important;
+  font-weight:700;
+}
+
+/* « Preuve complète » : lecture documentaire structurée */
+.qvl-proof-backdrop{
+  padding:28px;
+  background:rgba(19,34,53,.54);
+}
+.qvl-proof-modal{
+  width:min(940px,95vw);
+  max-height:90vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  border-radius:17px;
+}
+.qvl-proof-modal>header{
+  flex:none;
+  padding:20px 24px 17px;
+  align-items:flex-start;
+  background:#f8fafc;
+}
+.qvl-proof-modal>header span{
+  font-size:11px!important;
+  font-weight:850;
+  letter-spacing:.09em;
+}
+.qvl-proof-modal>header h2{
+  margin-top:5px;
+  font-family:inherit;
+  font-size:24px!important;
+  line-height:1.22;
+  font-weight:800;
+  color:#21486f;
+}
+.qvl-proof-modal>header button{
+  width:34px;
+  height:34px;
+}
+.qvl-proof-body{
+  min-height:0;
+  overflow:auto;
+  padding:20px 26px 8px;
+  background:#fff;
+}
+.qvl-proof-section{
+  margin:0 0 22px;
+}
+.qvl-proof-section>h3{
+  margin:0 0 10px;
+  color:#214c76;
+  font-size:15px;
+  line-height:1.25;
+  font-weight:850;
+  letter-spacing:.01em;
+}
+.qvl-proof-source-summary{
+  padding-bottom:17px;
+  border-bottom:1px solid #e7edf3;
+}
+.qvl-proof-source-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+}
+.qvl-proof-source-grid>div{
+  min-width:0;
+  padding:10px 11px;
+  border:1px solid #dfe7ef;
+  border-radius:9px;
+  background:#f9fbfd;
+}
+.qvl-proof-source-grid span{
+  display:block;
+  margin-bottom:3px;
+  color:#708298;
+  font-size:10.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.qvl-proof-source-grid strong{
+  display:block;
+  color:#345775;
+  font-size:12.5px;
+  line-height:1.35;
+  font-weight:800;
+  overflow-wrap:anywhere;
+}
+.qvl-proof-loading,
+.qvl-proof-error,
+.qvl-proof-message{
+  margin:0 0 20px;
+  padding:13px 14px;
+  font-size:13px!important;
+  line-height:1.5;
+}
+.qvl-proof-error,
+.qvl-proof-message{
+  display:grid;
+  gap:3px;
+}
+.qvl-proof-error strong,
+.qvl-proof-message strong{
+  font-size:12.5px;
+}
+.qvl-proof-error span,
+.qvl-proof-message span{
+  font-size:12.5px;
+}
+.qvl-proof-excerpts{
+  padding:0;
+}
+.qvl-proof-excerpts article{
+  margin:0 0 14px;
+  padding:0;
+  overflow:hidden;
+  border:1px solid #dce5ed;
+  border-radius:11px;
+  background:#fff;
+}
+.qvl-proof-excerpt-head{
+  display:flex!important;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  padding:12px 14px;
+  border-bottom:1px solid #e8eef4;
+  background:#f8fafc;
+  color:#5f738a!important;
+  font-size:12px!important;
+}
+.qvl-proof-excerpt-head>div{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+.qvl-proof-excerpt-head strong{
+  color:#2b557b!important;
+  font-size:13.5px;
+  line-height:1.3;
+  font-weight:850;
+}
+.qvl-proof-excerpt-head small{
+  color:#7b8b9d;
+  font-size:10.5px;
+  font-weight:650;
+}
+.qvl-proof-excerpt-head>span{
+  flex:none;
+  border-radius:999px;
+  padding:4px 8px;
+  background:#edf3f8;
+  color:#57718b;
+  font-size:11px;
+  font-weight:750;
+}
+.qvl-proof-text{
+  padding:14px 16px 16px;
+}
+.qvl-proof-text p{
+  margin:0 0 11px!important;
+  color:#264662!important;
+  font-family:inherit!important;
+  font-size:15.5px!important;
+  line-height:1.68!important;
+  font-weight:400!important;
+  white-space:normal!important;
+}
+.qvl-proof-text p:last-child{
+  margin-bottom:0!important;
+}
+.qvl-proof-text h4{
+  margin:15px 0 7px;
+  color:#2b5478;
+  font-size:13.5px;
+  line-height:1.35;
+  font-weight:850;
+}
+.qvl-proof-text h4:first-child{
+  margin-top:0;
+}
+.qvl-proof-list{
+  margin:6px 0 12px;
+  padding-left:22px;
+  color:#264662;
+}
+.qvl-proof-list li{
+  margin:5px 0;
+  padding-left:2px;
+  font-size:15px;
+  line-height:1.58;
+}
+.qvl-proof-fallback-text{
+  border:1px solid #e0e7ee;
+  border-radius:10px;
+  background:#fbfcfd;
+}
+.qvl-proof-availability{
+  margin:0 0 10px;
+  color:#66798d;
+  font-size:13px;
+  line-height:1.5;
+}
+.qvl-proof-provenance{
+  margin-bottom:8px;
+  padding:16px;
+  border:1px solid #dce5ed;
+  border-radius:11px;
+  background:#f7fafc;
+}
+.qvl-proof-provenance>p{
+  margin:0 0 11px;
+  color:#526b82;
+  font-size:12.5px;
+  line-height:1.5;
+}
+.qvl-proof-provenance-line{
+  padding-top:10px;
+  border-top:1px solid #e0e8ef;
+}
+.qvl-proof-provenance-line strong{
+  display:block;
+  color:#315775;
+  font-size:12.5px;
+  line-height:1.4;
+}
+.qvl-proof-provenance-line span{
+  display:block;
+  margin-top:3px;
+  color:#6c7f93;
+  font-size:11.5px;
+  line-height:1.4;
+}
+.qvl-proof-modal>footer{
+  flex:none;
+  padding:13px 24px 16px;
+  background:#f8fafc;
+}
+.qvl-proof-modal>footer a,
+.qvl-proof-modal>footer button{
+  height:37px!important;
+  padding:0 13px;
+  font-size:12px!important;
+}
+
+@media(max-width:760px){
+  .qvl-proof-backdrop{padding:10px}
+  .qvl-proof-modal{width:100%;max-height:94vh}
+  .qvl-proof-body{padding:16px 16px 6px}
+  .qvl-proof-modal>header{padding:17px 17px 14px}
+  .qvl-proof-modal>header h2{font-size:20px!important}
+  .qvl-proof-source-grid{grid-template-columns:1fr 1fr}
+  .qvl-proof-text{padding:12px}
+  .qvl-proof-text p{font-size:14.5px!important}
+}

@@ -157,6 +157,82 @@ function shortText(text, max = 290) {
   return value.length > max ? `${value.slice(0, max).trim()}…` : value
 }
 
+
+function normalizeProofText(text) {
+  const raw = String(text || '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[\t\f\v]+/g, ' ')
+    .trim()
+  if (!raw) return []
+
+  const lines = raw.split('\n').map(line => line.replace(/[ ]{2,}/g, ' ').trim())
+  const blocks = []
+  let paragraph = []
+  let activeBulletIndex = -1
+
+  const flushParagraph = () => {
+    const value = paragraph.join(' ').replace(/\s+/g, ' ').trim()
+    if (value) blocks.push({ type: 'paragraph', text: value })
+    paragraph = []
+  }
+  const isBullet = line => /^(?:[•▪◦‣–—-]|\d+[.)])\s+/.test(line)
+  const looksLikeHeading = line => {
+    if (!line || line.length > 120) return false
+    if (/^[A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜ0-9][A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜ0-9 '\-–—,:;()]{5,}$/.test(line) && /[A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜ]/.test(line)) return true
+    return /^(?:introduction|conclusion|constat|constats|enjeu|enjeux|méthode|méthodologie|résultat|résultats|recommandation|recommandations|proposition|propositions|synthèse|focus|encadré)\s*:?$/i.test(line)
+  }
+
+  lines.forEach(line => {
+    if (!line) {
+      flushParagraph()
+      activeBulletIndex = -1
+      return
+    }
+    if (isBullet(line)) {
+      flushParagraph()
+      blocks.push({ type: 'bullet', text: line.replace(/^(?:[•▪◦‣–—-]|\d+[.)])\s+/, '').trim() })
+      activeBulletIndex = blocks.length - 1
+      return
+    }
+    if (looksLikeHeading(line)) {
+      flushParagraph()
+      activeBulletIndex = -1
+      blocks.push({ type: 'heading', text: line })
+      return
+    }
+    if (activeBulletIndex >= 0 && blocks[activeBulletIndex]?.type === 'bullet') {
+      blocks[activeBulletIndex].text = `${blocks[activeBulletIndex].text} ${line}`.replace(/\s+/g, ' ').trim()
+      return
+    }
+    paragraph.push(line)
+  })
+  flushParagraph()
+  return blocks
+}
+
+function ProofText({ text }) {
+  const blocks = normalizeProofText(text)
+  if (!blocks.length) return null
+  const items = []
+  let bulletGroup = []
+  const flushBullets = key => {
+    if (!bulletGroup.length) return
+    items.push(<ul key={`proof-list-${key}`} className="qvl-proof-list">{bulletGroup.map((value, index) => <li key={`${key}-${index}`}>{value}</li>)}</ul>)
+    bulletGroup = []
+  }
+  blocks.forEach((block, index) => {
+    if (block.type === 'bullet') {
+      bulletGroup.push(block.text)
+      return
+    }
+    flushBullets(index)
+    if (block.type === 'heading') items.push(<h4 key={`proof-heading-${index}`}>{block.text}</h4>)
+    else items.push(<p key={`proof-paragraph-${index}`}>{block.text}</p>)
+  })
+  flushBullets('end')
+  return <div className="qvl-proof-text">{items}</div>
+}
+
 function isPdfUrl(url) {
   return /\.pdf(?:$|[?#])/i.test(String(url || ''))
 }
@@ -340,7 +416,10 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [linkLabel, setLinkLabel] = useState('est lié à')
   const [showLinks, setShowLinks] = useState(false)
   const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
+  const [editingCardId, setEditingCardId] = useState(null)
+  const [editDraft, setEditDraft] = useState({ title: '', text: '' })
   const canvasRef = useRef(null)
+  const cardEditRef = useRef(null)
   const dragRef = useRef(null)
   const searchInputRef = useRef(null)
   const searchRequestRef = useRef(0)
@@ -523,14 +602,43 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setCards(list => list.filter(card => card.id !== id))
     setSelectedIds(ids => ids.filter(value => value !== id))
     setLinks(list => list.filter(link => link.source !== id && link.target !== id))
+    if (editingCardId === id) cancelCardEdit()
   }
 
   const toggleCardCollapsed = id => {
     setCards(list => list.map(card => card.id === id ? { ...card, collapsed: !card.collapsed } : card))
   }
 
-  const updateCardTitle = (id, title) => {
-    setCards(list => list.map(card => card.id === id ? { ...card, title } : card))
+  const beginCardEdit = card => {
+    setEditingCardId(card.id)
+    setEditDraft({ title: String(card.title || ''), text: String(card.text || '') })
+    setLinkMode(false)
+    setSelectedIds([card.id])
+    if (card.collapsed) setCards(list => list.map(item => item.id === card.id ? { ...item, collapsed: false } : item))
+    window.setTimeout(() => cardEditRef.current?.focus(), 0)
+  }
+
+  const cancelCardEdit = () => {
+    setEditingCardId(null)
+    setEditDraft({ title: '', text: '' })
+  }
+
+  const saveCardEdit = id => {
+    const cleanText = String(editDraft.text || '').trim()
+    if (!cleanText) return
+    const cleanTitle = String(editDraft.title || '').trim()
+    setCards(list => list.map(card => {
+      if (card.id !== id) return card
+      const originalText = card.materialId ? String(card.originalText ?? card.text ?? '') : null
+      const next = { ...card, title: cleanTitle, text: cleanText }
+      if (card.materialId) {
+        next.originalText = originalText
+        next.userEdited = cleanText !== originalText
+      }
+      return next
+    }))
+    setEditingCardId(null)
+    setEditDraft({ title: '', text: '' })
   }
 
   const resetCanvas = () => {
@@ -552,6 +660,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setComposer(null)
     setDraft('')
     setDraftTitle('')
+    setEditingCardId(null)
+    setEditDraft({ title: '', text: '' })
     setLinkMode(false)
     setLinkLabel('est lié à')
     setShowLinks(false)
@@ -743,23 +853,30 @@ export default function ReflectionWorkspaceV1({ onBack }) {
               const linkIndex = linkMode ? selectedIds.indexOf(card.id) + 1 : 0
               const meta = card.material ? publicationMeta(card.material) : null
               const locator = card.material ? locatorOf(card.material) : null
-              return <article key={card.id} className={`qvl-canvas-card ${card.tone} ${selected ? 'selected' : ''} ${linkIndex ? 'link-selected' : ''} ${card.materialId ? 'corpus-card' : ''} ${card.collapsed ? 'collapsed' : ''}`} style={{ left: card.x, top: card.y }} onClick={event => { event.stopPropagation(); toggleSelection(card, event) }} onPointerDown={event => startDrag(event, card)}>
+              const editing = editingCardId === card.id
+              return <article key={card.id} className={`qvl-canvas-card ${card.tone} ${selected ? 'selected' : ''} ${linkIndex ? 'link-selected' : ''} ${card.materialId ? 'corpus-card' : ''} ${card.userEdited ? 'user-edited' : ''} ${editing ? 'editing' : ''} ${card.collapsed ? 'collapsed' : ''}`} style={{ left: card.x, top: card.y }} onClick={event => { event.stopPropagation(); if (!editing) toggleSelection(card, event) }} onPointerDown={event => startDrag(event, card)}>
                 {linkIndex > 0 && <span className="qvl-link-order" aria-hidden="true">{linkIndex}</span>}
                 <header>
-                  <span>{card.kind}</span>
+                  <span>{card.kind}{card.userEdited ? ' · modifié' : ''}</span>
                   <div className="qvl-card-controls">
-                    <button type="button" aria-label={card.collapsed ? 'Déployer la carte' : 'Réduire la carte'} title={card.collapsed ? 'Déployer' : 'Réduire'} onClick={event => { event.stopPropagation(); toggleCardCollapsed(card.id) }}><Icon name={card.collapsed ? 'plus' : 'minus'} size={13}/></button>
+                    <button type="button" aria-label="Modifier la carte" title="Modifier" onClick={event => { event.stopPropagation(); beginCardEdit(card) }}><span className="qvl-edit-glyph" aria-hidden="true">✎</span></button>
+                    <button type="button" aria-label={card.collapsed ? 'Déployer la carte' : 'Réduire la carte'} title={card.collapsed ? 'Déployer' : 'Réduire'} onClick={event => { event.stopPropagation(); if (editing) cancelCardEdit(); toggleCardCollapsed(card.id) }}><Icon name={card.collapsed ? 'plus' : 'minus'} size={13}/></button>
                     <button type="button" aria-label="Supprimer la carte" title="Supprimer" onClick={event => { event.stopPropagation(); deleteCard(card.id) }}><Icon name="close" size={13}/></button>
                   </div>
                 </header>
-                {card.collapsed ? <p>{shortText(card.title || card.text, 72)}</p> : <>
-                  {(selected || card.title) && <input className="qvl-card-title-input" maxLength={120} value={card.title || ''} onChange={event => updateCardTitle(card.id, event.target.value)} onClick={event => event.stopPropagation()} onPointerDown={event => event.stopPropagation()} placeholder="Titre du post-it (facultatif)"/>}
+                {card.collapsed ? <p>{shortText(card.title || card.text, 72)}</p> : editing ? <div className="qvl-card-editor" onClick={event => event.stopPropagation()} onPointerDown={event => event.stopPropagation()}>
+                  <input maxLength={120} value={editDraft.title} onChange={event => setEditDraft(value => ({ ...value, title: event.target.value }))} placeholder="Titre du post-it (facultatif)"/>
+                  <textarea ref={cardEditRef} value={editDraft.text} onChange={event => setEditDraft(value => ({ ...value, text: event.target.value }))} onKeyDown={event => { if (event.key === 'Escape') cancelCardEdit(); if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') saveCardEdit(card.id) }} aria-label="Texte du post-it"/>
+                  <div className="qvl-card-edit-actions"><button type="button" onClick={cancelCardEdit}>Annuler</button><button type="button" className="primary" disabled={!editDraft.text.trim()} onClick={() => saveCardEdit(card.id)}>Enregistrer</button></div>
+                </div> : <>
+                  {card.title && <strong className="qvl-card-title-display">{card.title}</strong>}
                   <p>{card.text}</p>
                 </>}
                 {!card.collapsed && card.material && <footer>
                   <strong>{meta?.title || meta?.id}</strong>
                   <span>{[meta?.organisation, meta?.year].filter(Boolean).join(' · ')}</span>
                   <span>{[locator?.label, provenanceLevelOf(card.material) ? `provenance ${provenanceLevelOf(card.material)}` : ''].filter(Boolean).join(' · ')}</span>
+                  {card.userEdited && <span className="qvl-card-edit-note">Texte modifié dans le canevas · preuve source inchangée</span>}
                 </footer>}
               </article>
             })}
@@ -855,16 +972,67 @@ function ProofModal({ state, onClose }) {
   const fallbackUrl = sourceUrlOf(material)
   const publicationUrl = result?.publication?.url_contenu || result?.publication?.url_source || fallbackUrl
   const proofs = result?.proofs || []
+  const sourceLocator = result?.provenance?.source_locator || locatorOf(material)?.label || ''
+  const level = result?.provenance?.level || provenanceLevelOf(material)
+  const materialValue = materialText(material)
+  const sourceHref = publicationUrl && isPdfUrl(publicationUrl) && result?.provenance?.source_locator && /^\d/.test(result.provenance.source_locator)
+    ? `${publicationUrl.replace(/#.*$/, '')}#page=${result.provenance.source_locator.split(';')[0]}`
+    : publicationUrl
+
   return <div className="qvl-proof-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
     <section className="qvl-proof-modal" role="dialog" aria-modal="true" aria-label="Preuve complète">
-      <header><div><span>Preuve complète</span><h2>{meta.title || meta.id || 'Publication source'}</h2></div><button type="button" onClick={onClose}><Icon name="close" size={18}/></button></header>
-      <div className="qvl-proof-source-line"><strong>{[meta.organisation, meta.year].filter(Boolean).join(' · ') || 'Source identifiée dans le corpus'}</strong>{result?.provenance?.level && <span>Provenance {result.provenance.level}</span>}{result?.provenance?.source_locator && <span>Repère {result.provenance.source_locator}</span>}</div>
-      {state.loading && <div className="qvl-proof-loading"><span>✦</span>Recherche de la preuve exacte…</div>}
-      {state.error && <div className="qvl-proof-error">{state.error}</div>}
-      {!state.loading && !state.error && result?.provenance?.message && <p className="qvl-proof-message">{result.provenance.message}</p>}
-      {!state.loading && !state.error && proofs.length > 0 && <div className="qvl-proof-excerpts">{proofs.map((proof, index) => <article key={proof.proof_id || index}><div><strong>{proof.proof_id || `Extrait ${index + 1}`}</strong>{proof.locator && <span>{/^\d/.test(String(proof.locator)) ? `p. ${String(proof.locator).replaceAll(';', ', ')}` : proof.locator}</span>}</div><p>{proof.text}</p></article>)}</div>}
-      {!state.loading && !state.error && !proofs.length && <div className="qvl-proof-no-excerpt"><p>{result ? 'Aucun extrait fin supplémentaire n’est disponible pour ce matériau.' : materialText(material)}</p></div>}
-      <footer>{publicationUrl && <a href={isPdfUrl(publicationUrl) && result?.provenance?.source_locator && /^\d/.test(result.provenance.source_locator) ? `${publicationUrl.replace(/#.*$/, '')}#page=${result.provenance.source_locator.split(';')[0]}` : publicationUrl} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Ouvrir la source</a>}<button type="button" onClick={onClose}>Fermer</button></footer>
+      <header>
+        <div><span>Preuve complète</span><h2>{meta.title || meta.id || 'Publication source'}</h2></div>
+        <button type="button" onClick={onClose} aria-label="Fermer la preuve complète"><Icon name="close" size={18}/></button>
+      </header>
+
+      <div className="qvl-proof-body">
+        <section className="qvl-proof-section qvl-proof-source-summary">
+          <h3>Source</h3>
+          <div className="qvl-proof-source-grid">
+            {meta.organisation && <div><span>Organisme</span><strong>{meta.organisation}</strong></div>}
+            {meta.year && <div><span>Année</span><strong>{meta.year}</strong></div>}
+            {meta.id && <div><span>Publication</span><strong>{meta.id}</strong></div>}
+            {sourceLocator && <div><span>Repère</span><strong>{String(sourceLocator).replace(/^repère\s+/i, '')}</strong></div>}
+            {level && <div><span>Niveau de provenance</span><strong>{level}</strong></div>}
+          </div>
+        </section>
+
+        {state.loading && <div className="qvl-proof-loading"><span>✦</span>Recherche de la preuve exacte…</div>}
+        {state.error && <div className="qvl-proof-error"><strong>La preuve n’a pas pu être chargée.</strong><span>{state.error}</span></div>}
+        {!state.loading && !state.error && result?.provenance?.message && <div className="qvl-proof-message"><strong>Statut de la preuve</strong><span>{result.provenance.message}</span></div>}
+
+        {!state.loading && !state.error && proofs.length > 0 && <section className="qvl-proof-section">
+          <h3>Éléments de preuve</h3>
+          <div className="qvl-proof-excerpts">{proofs.map((proof, index) => <article key={proof.proof_id || index}>
+            <div className="qvl-proof-excerpt-head">
+              <div><strong>{proof.section || `Extrait source ${index + 1}`}</strong>{proof.proof_id && <small>{proof.proof_id}</small>}</div>
+              {proof.locator && <span>{/^\d/.test(String(proof.locator)) ? `p. ${String(proof.locator).replaceAll(';', ', ')}` : proof.locator}</span>}
+            </div>
+            <ProofText text={proof.text}/>
+          </article>)}</div>
+        </section>}
+
+        {!state.loading && !state.error && !proofs.length && <section className="qvl-proof-section">
+          <h3>{result ? 'Élément documenté' : 'Élément sélectionné'}</h3>
+          {result && <p className="qvl-proof-availability">Aucun extrait fin supplémentaire n’est disponible pour ce matériau.</p>}
+          {materialValue ? <div className="qvl-proof-fallback-text"><ProofText text={materialValue}/></div> : <p className="qvl-proof-availability">Aucun texte n’est disponible pour cet élément.</p>}
+        </section>}
+
+        <section className="qvl-proof-section qvl-proof-provenance">
+          <h3>Provenance</h3>
+          <p>Cette fenêtre restitue le texte disponible dans le corpus sans modifier la source documentaire. Les retours à la ligne purement techniques sont neutralisés à l’affichage ; les paragraphes et listes distincts sont conservés.</p>
+          <div className="qvl-proof-provenance-line">
+            <strong>{meta.title || meta.id || 'Publication source'}</strong>
+            <span>{[meta.organisation, meta.year, sourceLocator ? `repère ${String(sourceLocator).replace(/^repère\s+/i, '')}` : '', level ? `provenance ${level}` : ''].filter(Boolean).join(' · ')}</span>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        {sourceHref && <a href={sourceHref} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Ouvrir la source</a>}
+        <button type="button" onClick={onClose}>Fermer</button>
+      </footer>
     </section>
   </div>
 }
