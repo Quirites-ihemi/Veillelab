@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
-import { runReflectionAction, searchCorpus } from '../services/reflectionApi.js'
+import { runReflectionAction, searchReflectionCorpus } from '../services/reflectionApi.js'
 import './reflection-workspace.css'
 import heroImage from '../header-corpus-securite.png'
 
@@ -382,7 +382,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setSearchResult(null)
     try {
       const config = needSearchConfig(needId, clean)
-      const result = await searchCorpus(config.query, config.options)
+      const result = await searchReflectionCorpus(config.query, { ...config.options, needId })
       if (requestId === searchRequestRef.current) setSearchResult(result)
     } catch (error) {
       if (requestId === searchRequestRef.current) setSearchError(error?.message || String(error))
