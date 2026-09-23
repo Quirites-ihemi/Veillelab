@@ -4,6 +4,9 @@ import { searchCorpus } from '../services/reflectionApi.js'
 import { exportExpertsWord, exportExpertsExcel } from '../utils/expertExport.js'
 import './experts-workspace.css'
 
+function cleanAuthors(value){
+  return String(value||'').split(/[;,]/).map(x=>x.trim()).filter(x=>x&&!/^PUB\d+\.png$/i.test(x))
+}
 function splitDomains(value){
   return String(value||'').split(/[;|,]/).map(x=>x.trim()).filter(Boolean)
 }
@@ -17,6 +20,7 @@ function resultExcerpt(result){
   if(result?.kind==='chunk') return String(result.text||'').trim()
   if(result?.kind==='node') return String(result.label||'').trim()
   if(result?.kind==='relation') return [result.source_label,result.relation_type,result.target_label].filter(Boolean).join(' — ')
+  if(result?.kind==='expertise') return [result.label,result.definition].filter(Boolean).join(' — ')
   return ''
 }
 function normalizeText(value){
@@ -34,9 +38,9 @@ const GENERIC_POLICY_TERMS = new Set([
 ].map(normalizeText))
 
 const SUBJECT_ALIASES = {
-  immigration:['immigration','migration','migrations','migratoire','migratoires'],
-  migration:['migration','migrations','immigration','migratoire','migratoires'],
-  migrations:['migration','migrations','immigration','migratoire','migratoires'],
+  immigration:['immigration','migration','migrations','migratoire','migratoires','immigre','immigres','integration'],
+  migration:['migration','migrations','immigration','migratoire','migratoires','immigre','immigres','integration'],
+  migrations:['migration','migrations','immigration','migratoire','migratoires','immigre','immigres','integration'],
   delinquance:['delinquance','delinquant','delinquants','delinquante','delinquantes'],
   cybercriminalite:['cybercriminalite','cybercrime','cybercriminel','cybercriminels','cybercriminelle','cybercriminelles'],
   pedocriminalite:['pedocriminalite','pedocriminel','pedocriminels','pedocriminelle','pedocriminelles'],
@@ -46,42 +50,89 @@ const SUBJECT_ALIASES = {
   stupefiants:['stupefiant','stupefiants','drogue','drogues','narcotrafic','cocaine']
 }
 
+const POLICY_MARKERS = [
+  'politique publique','politiques publiques','action publique','strategie publique','gouvernance','pilotage',
+  'mise en oeuvre','dispositif','dispositifs','programme','programmes','plan','plans','mesure','mesures',
+  'prevention','reponse publique','intervention publique','audit interministeriel'
+].map(normalizeText)
+
+const FIGHT_MARKERS = [
+  'lutte','prevention','repression','combat','strategie','dispositif','programme','plan','action publique',
+  'politique publique','reponse','prise en charge','controle','enquete','intervention'
+].map(normalizeText)
+
 function queryTokens(value){
   return normalizeText(value).split(/\s+/).filter(Boolean)
 }
 function cleanExpertQuery(value){
-  const tokens=queryTokens(value).filter(t=>!QUERY_NOISE.has(t))
-  return tokens.join(' ').trim()
+  return queryTokens(value).filter(t=>!QUERY_NOISE.has(t)).join(' ').trim()
 }
-function subjectTerms(value){
-  const cleanTokens=queryTokens(cleanExpertQuery(value))
-  let core=cleanTokens.filter(t=>!GENERIC_POLICY_TERMS.has(t))
-  if(!core.length) core=cleanTokens
-  const expanded=[]
+function queryProfile(value){
+  const cleaned=cleanExpertQuery(value)
+  const tokens=queryTokens(cleaned)
+  const normalized=normalizeText(cleaned)
+  const hasPublicPolicy=((tokens.includes('politique')||tokens.includes('politiques'))&&(tokens.includes('publique')||tokens.includes('publiques')||tokens.includes('public')))||normalized.includes('action publique')
+  const hasFight=tokens.includes('lutte')||tokens.includes('prevention')||tokens.includes('repression')
+  const generic=new Set([...GENERIC_POLICY_TERMS])
+  let core=tokens.filter(t=>!generic.has(t))
+  if(!core.length) core=tokens
+  const groups=[]
   for(const token of core){
-    expanded.push(token)
-    const aliases=SUBJECT_ALIASES[token]
-    if(aliases) expanded.push(...aliases.map(normalizeText))
+    groups.push([...new Set((SUBJECT_ALIASES[token]||[token]).map(normalizeText))])
   }
-  return [...new Set(expanded.filter(t=>t.length>=3))]
+  return {cleaned,tokens,groups,hasPublicPolicy,hasFight}
 }
 function expandedSearchQuery(value){
-  const cleaned=cleanExpertQuery(value)
-  const terms=subjectTerms(value)
-  const additions=[]
-  for(const term of terms){
-    const aliases=SUBJECT_ALIASES[term]
-    if(aliases) additions.push(...aliases)
-  }
-  return [...new Set([...queryTokens(cleaned),...additions.map(normalizeText)])].join(' ').trim() || cleaned
+  const profile=queryProfile(value)
+  return [...new Set([...queryTokens(profile.cleaned),...profile.groups.flat()])].join(' ').trim() || profile.cleaned
 }
-function matchesSubject(result,pub,terms){
-  if(!terms.length)return true
-  const haystack=normalizeText([
-    resultExcerpt(result),result?.section,result?.label,result?.publication_title,
-    pub?.titre,pub?.domaine
-  ].filter(Boolean).join(' '))
-  return terms.some(term=>haystack.includes(term))
+function includesAny(haystack,values){
+  return values.some(v=>v&&haystack.includes(v))
+}
+function textMatchesProfile(text,profile,{requireQualifiers=true}={}){
+  const haystack=normalizeText(text)
+  if(!haystack)return false
+  if(profile.groups.length&&!profile.groups.every(group=>includesAny(haystack,group))) return false
+  if(requireQualifiers&&profile.hasPublicPolicy&&!includesAny(haystack,POLICY_MARKERS)) return false
+  if(requireQualifiers&&profile.hasFight&&!includesAny(haystack,FIGHT_MARKERS)) return false
+  return true
+}
+function resultMatchesProfile(result,pub,profile){
+  return textMatchesProfile([
+    resultExcerpt(result),result?.section,result?.label,result?.publication_title,pub?.titre,pub?.domaine
+  ].filter(Boolean).join(' '),profile)
+}
+function expertiseText(expertise){
+  return [expertise?.label,expertise?.definition,expertise?.family].filter(Boolean).join(' ')
+}
+function expertiseMatchesProfile(expertise,profile){
+  return textMatchesProfile(expertiseText(expertise),profile)
+}
+function publicationExpertises(expertiseNodes=[]){
+  const byPub=new Map()
+  for(const expertise of expertiseNodes){
+    for(const pub of expertise?.publications||[]){
+      const pid=pub?.publication_id
+      if(!pid)continue
+      if(!byPub.has(pid))byPub.set(pid,[])
+      byPub.get(pid).push(expertise)
+    }
+  }
+  return byPub
+}
+function syntheticExpertiseMatch(expertise,pub){
+  return {
+    result_id:`expertise:${expertise.id}:${pub.publication_id}`,
+    kind:'expertise',
+    score:100,
+    publication_id:pub.publication_id,
+    publication_title:pub.titre,
+    organisme_producteur:pub.organisme_producteur,
+    locator:'',
+    label:expertise.label,
+    definition:expertise.definition||'',
+    expertise_id:expertise.id
+  }
 }
 function chunkIds(node){
   return String(node?.chunk_id_source||'').split(';').map(x=>x.trim()).filter(Boolean)
@@ -102,35 +153,53 @@ function hasSubstantiveExpertEvidence(node,contentsById){
   return chunks.some(chunk=>!isCreditLikeChunk(chunk))
 }
 
-function buildExperts(publications,nodes=[],contents=[],searchResults=[],subject=[]){
+function buildExperts(publications,expertiseNodes=[],searchResults=[],profile=null){
   const pubsById=new Map(publications.map(p=>[p.publication_id,p]))
-  const contentsById=new Map(contents.map(c=>[c.chunk_id,c]))
-  const matchesByPub=new Map()
+  const expertisesByPub=publicationExpertises(expertiseNodes)
+  const corpusMatchesByPub=new Map()
   for(const r of searchResults){
     if(!r?.publication_id)continue
     const pub=pubsById.get(r.publication_id)||{}
-    if(subject.length&&!matchesSubject(r,pub,subject))continue
-    if(!matchesByPub.has(r.publication_id))matchesByPub.set(r.publication_id,[])
-    matchesByPub.get(r.publication_id).push(r)
+    if(profile&&!resultMatchesProfile(r,pub,profile))continue
+    if(!corpusMatchesByPub.has(r.publication_id))corpusMatchesByPub.set(r.publication_id,[])
+    corpusMatchesByPub.get(r.publication_id).push(r)
   }
 
-  const expertNodes=nodes.filter(n=>normalizeText(n?.type_noeud)==='expert_public')
   const map=new Map()
-  for(const node of expertNodes){
-    const name=String(node?.libelle||'').trim()
-    const pub=pubsById.get(node?.publication_id)
-    if(!name||!pub)continue
-    const key=normalizeText(name)
-    if(!map.has(key))map.set(key,{name,organisations:new Set(),domains:new Set(),publications:[],matches:[],score:0,expertNodes:[],hasSubstantiveEvidence:false})
-    const e=map.get(key)
-    e.expertNodes.push(node)
-    if(hasSubstantiveExpertEvidence(node,contentsById))e.hasSubstantiveEvidence=true
-    if(pub.organisme_producteur)e.organisations.add(pub.organisme_producteur)
-    splitDomains(pub.domaine).forEach(d=>e.domains.add(d))
-    if(!e.publications.some(p=>p.publication_id===pub.publication_id))e.publications.push(pub)
-    const pubMatches=matchesByPub.get(pub.publication_id)||[]
-    e.matches.push(...pubMatches)
-    if(pubMatches.length)e.score+=Math.max(...pubMatches.map(r=>Number(r.score)||0))+Math.min(pubMatches.length,3)
+  for(const pub of publications){
+    const names=cleanAuthors(pub?.auteurs_MI)
+    if(!names.length)continue
+    const linkedExpertises=expertisesByPub.get(pub.publication_id)||[]
+    const matchedExpertises=profile?linkedExpertises.filter(x=>expertiseMatchesProfile(x,profile)):linkedExpertises
+    const corpusMatches=corpusMatchesByPub.get(pub.publication_id)||[]
+
+    // Priorité absolue au référentiel de micro-expertises validé.
+    // Lorsqu'une publication possède des micro-expertises, une recherche thématique ne peut
+    // retenir ses auteurs que si ces micro-expertises correspondent elles-mêmes à la demande.
+    // Le moteur de corpus n'est utilisé en repli que pour les publications encore non décrites
+    // dans le référentiel de micro-expertises.
+    const hasStructuredExpertise=linkedExpertises.length>0
+    const usableMatches=profile
+      ? (hasStructuredExpertise
+          ? matchedExpertises.map(x=>syntheticExpertiseMatch(x,pub))
+          : corpusMatches)
+      : []
+
+    for(const name of names){
+      const key=normalizeText(name)
+      if(!map.has(key))map.set(key,{name,organisations:new Set(),domains:new Set(),publications:[],matches:[],score:0,expertises:[]})
+      const e=map.get(key)
+      if(pub.organisme_producteur)e.organisations.add(pub.organisme_producteur)
+      splitDomains(pub.domaine).forEach(d=>e.domains.add(d))
+      if(!e.publications.some(p=>p.publication_id===pub.publication_id))e.publications.push(pub)
+      for(const ex of linkedExpertises){
+        if(!e.expertises.some(x=>x.id===ex.id))e.expertises.push(ex)
+      }
+      if(usableMatches.length){
+        e.matches.push(...usableMatches)
+        e.score+=usableMatches.reduce((sum,r)=>sum+(Number(r.score)||1),0)
+      }
+    }
   }
 
   return [...map.values()].map(e=>({
@@ -144,9 +213,8 @@ function buildExperts(publications,nodes=[],contents=[],searchResults=[],subject
 
 export default function ExpertsWorkspace({data,onBack}){
   const publications=useMemo(()=>data?.publications||[],[data])
-  const nodes=useMemo(()=>data?.nodes||[],[data])
-  const contents=useMemo(()=>data?.contents||[],[data])
-  const allExperts=useMemo(()=>buildExperts(publications,nodes,contents),[publications,nodes,contents])
+  const expertiseNodes=useMemo(()=>data?.expertise_nodes||[],[data])
+  const allExperts=useMemo(()=>buildExperts(publications,expertiseNodes),[publications,expertiseNodes])
   const publicationCount=useMemo(()=>new Set(allExperts.flatMap(e=>e.publications.map(p=>p.publication_id))).size,[allExperts])
   const organisations=useMemo(()=>[...new Set(allExperts.flatMap(e=>e.organisations))].sort((a,b)=>a.localeCompare(b,'fr')),[allExperts])
   const domains=useMemo(()=>[...new Set(allExperts.flatMap(e=>e.domains))].sort((a,b)=>a.localeCompare(b,'fr')),[allExperts])
@@ -171,27 +239,26 @@ export default function ExpertsWorkspace({data,onBack}){
   const runSearch=async()=>{
     const raw=query.trim()
     if(!raw){setResults(null);setSelected(null);setError('');return}
-    const cleaned=cleanExpertQuery(raw)
-    const terms=subjectTerms(raw)
+    const profile=queryProfile(raw)
     const searchQuery=expandedSearchQuery(raw)
-    if(!cleaned){setResults([]);setSelected(null);setError('La requête ne contient pas de sujet exploitable après retrait des formulations génériques.');return}
+    if(!profile.cleaned){setResults([]);setSelected(null);setError('La requête ne contient pas de sujet exploitable après retrait des formulations génériques.');return}
     setLoading(true);setError('')
     try{
       const response=await searchCorpus(searchQuery,{limit:30,maxPerPublication:3,diversifyByPublication:true})
-      const experts=buildExperts(publications,nodes,contents,response.results||[],terms)
-        .filter(e=>e.hasSubstantiveEvidence&&e.matches.length)
+      const experts=buildExperts(publications,expertiseNodes,response.results||[],profile)
+        .filter(e=>e.matches.length)
       setResults(experts)
       setSelected(experts[0]||null)
     }catch(e){setError(e?.message||String(e));setResults([]);setSelected(null)}finally{setLoading(false)}
   }
   const reset=()=>{setQuery('');setOrganisation('');setDomain('');setResults(null);setSelected(null);setError('')}
   const activeExpert=selected&&filtered.some(e=>e.name===selected.name)?filtered.find(e=>e.name===selected.name):filtered[0]||null
-  const exportPayload={query:query.trim(),experts:filtered,generated_at:new Date().toISOString(),method_note:'Avec une requête, une personne n’est retenue que si elle dispose d’un nœud expert_public dans le corpus, d’une provenance substantielle qui ne se limite pas aux crédits ou à la liste des auteurs, et d’au moins un matériau correspondant au sujet demandé.'}
+  const exportPayload={query:query.trim(),experts:filtered,generated_at:new Date().toISOString(),method_note:'Les personnes sont repérées dans auteurs_MI, puis qualifiées par les micro-expertises validées de leurs publications. Lorsqu’une publication n’a pas encore de micro-expertise structurée, la recherche corpus sert uniquement de repli. Une publication statistique sur un phénomène ne suffit donc pas, à elle seule, à établir une expertise en politique publique sur ce phénomène.'}
 
   return <main className="page qvl-experts-v01">
     <button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button>
     <header className="qvl-experts-head">
-      <div><div className="qvl-experts-title-row"><h1>Experts ministériels</h1><span className="regime extract">Extraction stricte</span></div><p>Repérez les experts ministériels dont la contribution sur un sujet est effectivement documentée dans le corpus.</p></div>
+      <div><div className="qvl-experts-title-row"><h1>Experts ministériels</h1><span className="regime extract">Extraction stricte</span></div><p>Repérez les auteurs ministériels dont les expertises documentées correspondent réellement au sujet recherché.</p></div>
       <div className="qvl-experts-kpis"><span><b>{allExperts.length}</b> experts</span><span><b>{publicationCount}</b> publications</span></div>
     </header>
 
@@ -201,7 +268,7 @@ export default function ExpertsWorkspace({data,onBack}){
         <div className="qvl-experts-field"><label>Organisme</label><select value={organisation} onChange={e=>setOrganisation(e.target.value)}><option value="">Tous les organismes</option>{organisations.map(o=><option key={o}>{o}</option>)}</select></div>
         <div className="qvl-experts-field"><label>Domaine</label><select value={domain} onChange={e=>setDomain(e.target.value)}><option value="">Tous les domaines</option>{domains.map(d=><option key={d}>{d}</option>)}</select></div>
       </div>
-      <div className="qvl-experts-actions"><button className="qvl-experts-primary" onClick={runSearch} disabled={loading}>{loading?'Recherche…':'Rechercher dans le corpus'}</button><button className="qvl-experts-secondary" onClick={reset}>Réinitialiser</button><div className="qvl-experts-method"><Icon name="info" size={16}/><span>Une signature ne suffit pas à établir une expertise. Avec une requête, le sujet est isolé de la formulation (« je cherche un expert… »), puis seuls les experts disposant d’une contribution substantielle et d’une preuve correspondant réellement au sujet sont retenus.</span></div></div>
+      <div className="qvl-experts-actions"><button className="qvl-experts-primary" onClick={runSearch} disabled={loading}>{loading?'Recherche…':'Rechercher dans le corpus'}</button><button className="qvl-experts-secondary" onClick={reset}>Réinitialiser</button><div className="qvl-experts-method"><Icon name="info" size={16}/><span>Une signature ne suffit pas. La recherche s’appuie d’abord sur les micro-expertises validées associées aux publications de l’auteur ; la recherche plein corpus n’intervient qu’en repli pour les publications non encore décrites dans ce référentiel.</span></div></div>
     </section>
 
     {error&&<div className="qvl-experts-error">{error}</div>}
@@ -219,7 +286,7 @@ export default function ExpertsWorkspace({data,onBack}){
         <section><h3>Domaines documentés par ses publications</h3><div className="qvl-expert-domain-list">{activeExpert.domains.map(d=><span key={d}>{d}</span>)}</div></section>
         {results!==null&&activeExpert.matches.length>0&&<section><h3>Pourquoi cet expert ressort sur ce sujet</h3><div className="qvl-expert-evidence-list">{activeExpert.matches.slice(0,4).map((r,i)=>{const pub=activeExpert.publications.find(p=>p.publication_id===r.publication_id)||{};return <article key={`${r.result_id}-${i}`}><div className="qvl-expert-evidence-top"><strong>{r.publication_id} · {r.publication_title}</strong><span>{r.locator?`repère ${r.locator}`:'source'}</span></div><p>{resultExcerpt(r).slice(0,420)}{resultExcerpt(r).length>420?'…':''}</p><a href={sourceUrl(pub,r.locator)} target="_blank" rel="noreferrer"><Icon name="external" size={14}/>Ouvrir la source</a></article>})}</div></section>}
         <section><h3>Publications associées</h3><div className="qvl-expert-publications">{activeExpert.publications.map(pub=><article key={pub.publication_id}><div><b>{pub.publication_id}</b><strong>{pub.titre}</strong><span>{pub.organisme_producteur}{pub.année_publication?` · ${pub.année_publication}`:''}</span></div><a href={sourceUrl(pub)} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Source</a></article>)}</div></section>
-        <div className="qvl-expert-note"><Icon name="info" size={16}/><span>La présence d’un nom dans les crédits ou dans <b>auteurs_MI</b> n’est pas utilisée, à elle seule, comme preuve d’expertise sur le sujet recherché.</span></div>
+        <div className="qvl-expert-note"><Icon name="info" size={16}/><span>La présence dans <b>auteurs_MI</b> constitue le point de départ du répertoire, mais la correspondance avec le sujet recherché est établie par les micro-expertises documentées de la publication, ou à défaut par un matériau explicite du corpus.</span></div>
       </div></> }</aside>
     </div>}
   </main>
