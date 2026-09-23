@@ -505,3 +505,18 @@
   .qvl-link-builder{grid-template-columns:1fr 130px 100px 66px}
   .qvl-link-builder span{font-size:10.8px}
 }
+
+/* =====================================================
+   AVANCER AVEC LE CORPUS — V1.1
+   Titres de post-it + réinitialisation explicite
+   ===================================================== */
+.qvl-reset-button{white-space:nowrap}
+.qvl-reset-button:disabled{opacity:.42!important;cursor:not-allowed!important;background:#f7f8fa;color:#8a98a8}
+.qvl-composer-fields{display:grid;grid-template-rows:auto 1fr;gap:6px;min-width:0}
+.qvl-composer-fields input,.qvl-card-title-input{font:inherit;outline:0;background:rgba(255,255,255,.9);color:#284a6e}
+.qvl-composer-fields input{height:31px;border:1px solid #cfdbe6;border-radius:8px;padding:0 8px;font-size:11.5px}
+.qvl-composer-fields input:focus,.qvl-card-title-input:focus{border-color:#809fbe;box-shadow:0 0 0 3px rgba(83,111,144,.08)}
+.qvl-composer-fields textarea{width:100%;box-sizing:border-box}
+.qvl-card-title-input{display:block;width:100%;box-sizing:border-box;height:30px;margin:-1px 0 8px;border:1px solid rgba(73,100,129,.20);border-radius:7px;padding:0 8px;font-size:12.2px;font-weight:800;color:#274e73;background:rgba(255,255,255,.48)}
+.qvl-card-title-input::placeholder{font-weight:600;color:#8392a4}
+@media (max-width:1050px){.qvl-canvas-composer{grid-template-columns:1fr}.qvl-composer-actions{grid-template-columns:1fr 1fr}.qvl-reset-button{margin-left:0}}

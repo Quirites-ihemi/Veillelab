@@ -178,11 +178,12 @@ function sourceButtonLabel(material) {
   return isPdfUrl(meta.urlContent) ? 'Ouvrir le document' : 'Ouvrir la source'
 }
 
-function makeCanvasCard({ kind = 'Note', text = '', tone = 'lilac', material = null, x = null, y = null }) {
+function makeCanvasCard({ kind = 'Note', title = '', text = '', tone = 'lilac', material = null, x = null, y = null }) {
   const now = Date.now()
   return {
     id: `card-${now}-${Math.random().toString(36).slice(2, 7)}`,
     kind,
+    title,
     text,
     tone,
     material,
@@ -198,12 +199,33 @@ function restoreWorkspace() {
   try {
     const current = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null')
     if (current && Array.isArray(current.cards)) {
-      return { cards: current.cards.map(card => ({ ...card, collapsed: Boolean(card.collapsed) })), links: Array.isArray(current.links) ? current.links : [] }
+      return {
+        cards: current.cards.map(card => ({ ...card, title: String(card?.title || ''), collapsed: Boolean(card.collapsed) })),
+        links: Array.isArray(current.links) ? current.links : [],
+        activeSubject: String(current.activeSubject || ''),
+      }
     }
     const legacy = JSON.parse(sessionStorage.getItem(LEGACY_STORAGE_KEY) || 'null')
-    if (Array.isArray(legacy)) return { cards: legacy.map(card => ({ ...card, collapsed: false })), links: [] }
+    if (Array.isArray(legacy)) return { cards: legacy.map(card => ({ ...card, title: String(card?.title || ''), collapsed: false })), links: [], activeSubject: '' }
   } catch {}
-  return { cards: [], links: [] }
+  return { cards: [], links: [], activeSubject: '' }
+}
+
+function buildCanvasContext(cards, selectedIds = []) {
+  const selected = new Set(selectedIds || [])
+  return (cards || [])
+    .filter(card => !card?.materialId)
+    .map(card => ({
+      title: String(card?.title || '').trim(),
+      kind: String(card?.kind || '').trim(),
+      text: String(card?.text || '').replace(/\s+/g, ' ').trim().slice(0, 420),
+      selected: selected.has(card.id),
+      createdAt: Number(card?.createdAt || 0),
+    }))
+    .filter(card => card.title || card.text)
+    .sort((a, b) => Number(b.selected) - Number(a.selected) || b.createdAt - a.createdAt)
+    .slice(0, 10)
+    .map(({ createdAt, ...card }) => card)
 }
 
 function needSearchConfig(needId, query) {
@@ -291,7 +313,7 @@ function visibleResultsForNeed(needId, result) {
 
 function cardCenter(card) {
   const width = 260
-  const height = card.collapsed ? 68 : 164
+  const height = card.collapsed ? 68 : (card.title ? 198 : 176)
   return { x: Number(card.x || 0) + width / 2, y: Number(card.y || 0) + height / 2 }
 }
 
@@ -299,6 +321,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const initial = useMemo(restoreWorkspace, [])
   const [cards, setCards] = useState(initial.cards)
   const [links, setLinks] = useState(initial.links)
+  const [activeSubject, setActiveSubject] = useState(initial.activeSubject || '')
   const [selectedIds, setSelectedIds] = useState([])
   const [activeNeedId, setActiveNeedId] = useState('overview')
   const [resultNeedId, setResultNeedId] = useState('overview')
@@ -310,6 +333,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [searchError, setSearchError] = useState('')
   const [composer, setComposer] = useState(null)
   const [draft, setDraft] = useState('')
+  const [draftTitle, setDraftTitle] = useState('')
   const [leftCollapsed, setLeftCollapsed] = useState(false)
   const [rightCollapsed, setRightCollapsed] = useState(false)
   const [linkMode, setLinkMode] = useState(false)
@@ -327,8 +351,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const visibleResults = useMemo(() => visibleResultsForNeed(resultNeedId, searchResult), [resultNeedId, searchResult])
 
   useEffect(() => {
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links })) } catch {}
-  }, [cards, links])
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
+  }, [cards, links, activeSubject])
 
   useEffect(() => {
     if (searchContext?.source !== 'canvas') return
@@ -382,8 +406,17 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setSearchResult(null)
     try {
       const config = needSearchConfig(needId, clean)
-      const result = await searchReflectionCorpus(config.query, { ...config.options, needId })
-      if (requestId === searchRequestRef.current) setSearchResult(result)
+      const result = await searchReflectionCorpus(config.query, {
+        ...config.options,
+        needId,
+        contextSubject: activeSubject,
+        canvasContext: buildCanvasContext(cards, context.cardIds || selectedIds),
+      })
+      if (requestId === searchRequestRef.current) {
+        setSearchResult(result)
+        const resolvedSubject = String(result?.interpretation?.subject_query || '').trim()
+        if (resolvedSubject) setActiveSubject(resolvedSubject)
+      }
     } catch (error) {
       if (requestId === searchRequestRef.current) setSearchError(error?.message || String(error))
     } finally {
@@ -407,7 +440,11 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     if (!selectedCards.length && cards.length === 1) setSelectedIds([cards[0].id])
 
     const canvasQuery = cardsToUse
-      .map(card => String(card?.text || '').trim())
+      .map(card => {
+        const title = String(card?.title || '').trim()
+        const text = String(card?.text || '').trim()
+        return [title, text].filter(Boolean).join(' — ')
+      })
       .filter(Boolean)
       .slice(0, 2)
       .join(' ; ')
@@ -444,6 +481,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     if (!cardType) return
     setComposer(cardType)
     setDraft('')
+    setDraftTitle('')
     setTimeout(() => document.querySelector('.qvl-canvas-composer textarea')?.focus(), 0)
   }
 
@@ -452,6 +490,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     const index = cards.length
     const card = makeCanvasCard({
       kind: composer.label,
+      title: draftTitle.trim(),
       text: draft.trim(),
       tone: composer.tone,
       x: 58 + (index % 3) * 276,
@@ -461,6 +500,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setSelectedIds([card.id])
     setComposer(null)
     setDraft('')
+    setDraftTitle('')
   }
 
   const addMaterialToCanvas = material => {
@@ -487,6 +527,38 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
   const toggleCardCollapsed = id => {
     setCards(list => list.map(card => card.id === id ? { ...card, collapsed: !card.collapsed } : card))
+  }
+
+  const updateCardTitle = (id, title) => {
+    setCards(list => list.map(card => card.id === id ? { ...card, title } : card))
+  }
+
+  const resetCanvas = () => {
+    if (!window.confirm('Réinitialiser ce canevas ? Les post-it, les liens et le contexte actif seront supprimés.')) return
+    searchRequestRef.current += 1
+    dragRef.current = null
+    setCards([])
+    setLinks([])
+    setSelectedIds([])
+    setActiveSubject('')
+    setActiveNeedId('overview')
+    setResultNeedId('overview')
+    setSearchContext(null)
+    setSearchResult(null)
+    setSearchLoading(false)
+    setSearchError('')
+    setManualQuery('')
+    setFreeSearchOpen(false)
+    setComposer(null)
+    setDraft('')
+    setDraftTitle('')
+    setLinkMode(false)
+    setLinkLabel('est lié à')
+    setShowLinks(false)
+    try {
+      sessionStorage.removeItem(STORAGE_KEY)
+      sessionStorage.removeItem(LEGACY_STORAGE_KEY)
+    } catch {}
   }
 
   const toggleSelection = (card, event) => {
@@ -607,12 +679,13 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             <div className="qvl-link-tools">
               <button type="button" className={`qvl-link-button ${linkMode ? 'active' : ''}`} onClick={toggleLinkMode}><Icon name="link" size={16}/>{linkMode ? 'Annuler la liaison' : 'Relier des cartes'}</button>
               {links.length > 0 && <button type="button" className="qvl-link-count" onClick={() => setShowLinks(value => !value)}>Liens ({links.length})</button>}
+              <button type="button" className="qvl-link-button qvl-reset-button" onClick={resetCanvas} disabled={!cards.length && !links.length && !activeSubject}><Icon name="close" size={14}/>Réinitialiser</button>
               {showLinks && links.length > 0 && <div className="qvl-link-list-popover">
                 <strong>Liens du canevas</strong>
                 {links.map(link => {
                   const source = cards.find(card => card.id === link.source)
                   const target = cards.find(card => card.id === link.target)
-                  return <div key={link.id}><span>{shortText(source?.text, 26)} {link.label || '—'} {shortText(target?.text, 26)}</span><button type="button" onClick={() => removeLink(link.id)}>×</button></div>
+                  return <div key={link.id}><span>{shortText(source?.title || source?.text, 26)} {link.label || '—'} {shortText(target?.title || target?.text, 26)}</span><button type="button" onClick={() => removeLink(link.id)}>×</button></div>
                 })}
               </div>}
             </div>
@@ -631,9 +704,12 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         </header>
 
         {composer && <div className={`qvl-canvas-composer ${composer.tone}`}>
-          <div><strong>{composer.label}</strong><span>Écrivez avec vos mots. Vous pourrez déplacer et replier cette carte ensuite.</span></div>
-          <textarea value={draft} onChange={event => setDraft(event.target.value)} placeholder={composer.placeholder} onKeyDown={event => { if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') addDraft() }}/>
-          <div className="qvl-composer-actions"><button type="button" onClick={() => { setComposer(null); setDraft('') }}>Annuler</button><button type="button" className="primary" disabled={!draft.trim()} onClick={addDraft}>Ajouter au canevas</button></div>
+          <div><strong>{composer.label}</strong><span>Le titre est facultatif. Il peut aussi aider à garder le sujet du canevas explicite.</span></div>
+          <div className="qvl-composer-fields">
+            <input maxLength={120} value={draftTitle} onChange={event => setDraftTitle(event.target.value)} placeholder="Titre du post-it (facultatif)"/>
+            <textarea value={draft} onChange={event => setDraft(event.target.value)} placeholder={composer.placeholder} onKeyDown={event => { if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') addDraft() }}/>
+          </div>
+          <div className="qvl-composer-actions"><button type="button" onClick={() => { setComposer(null); setDraft(''); setDraftTitle('') }}>Annuler</button><button type="button" className="primary" disabled={!draft.trim()} onClick={addDraft}>Ajouter au canevas</button></div>
         </div>}
 
         <div className="qvl-canvas-stage">
@@ -676,7 +752,10 @@ export default function ReflectionWorkspaceV1({ onBack }) {
                     <button type="button" aria-label="Supprimer la carte" title="Supprimer" onClick={event => { event.stopPropagation(); deleteCard(card.id) }}><Icon name="close" size={13}/></button>
                   </div>
                 </header>
-                <p>{card.collapsed ? shortText(card.text, 72) : card.text}</p>
+                {card.collapsed ? <p>{shortText(card.title || card.text, 72)}</p> : <>
+                  {(selected || card.title) && <input className="qvl-card-title-input" maxLength={120} value={card.title || ''} onChange={event => updateCardTitle(card.id, event.target.value)} onClick={event => event.stopPropagation()} onPointerDown={event => event.stopPropagation()} placeholder="Titre du post-it (facultatif)"/>}
+                  <p>{card.text}</p>
+                </>}
                 {!card.collapsed && card.material && <footer>
                   <strong>{meta?.title || meta?.id}</strong>
                   <span>{[meta?.organisation, meta?.year].filter(Boolean).join(' · ')}</span>
@@ -699,7 +778,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             <div><h2>Ce que le corpus apporte</h2><p>Explorez le corpus et ajoutez les éléments utiles à votre canevas.</p></div>
           </header>
 
-          {searchContext?.source === 'canvas' && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Recherche à partir du canevas</strong><span>Le besoin sélectionné est appliqué au post-it actif, sans recopier son texte dans un champ de saisie.</span></div></div>}
+          {searchContext?.source === 'canvas' && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Recherche à partir du canevas</strong><span>{searchResult?.interpretation?.context_used ? `Contexte utilisé : ${searchResult.interpretation.context_subject || searchResult.interpretation.subject_query}` : searchResult?.interpretation?.subject_query ? `Sujet interprété : ${searchResult.interpretation.subject_query}` : 'Le besoin sélectionné est appliqué au post-it actif et au contexte utile du canevas.'}</span></div></div>}
+          {searchContext?.source === 'manual' && searchResult?.interpretation?.context_used && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Contexte du canevas utilisé</strong><span>{searchResult.interpretation.context_subject || searchResult.interpretation.subject_query}</span></div></div>}
 
           {searchContext?.source !== 'manual' && <div className="qvl-general-advice"><Icon name="info" size={16}/><div><strong>Repère</strong><p>{activeNeed.advice}</p></div></div>}
 
