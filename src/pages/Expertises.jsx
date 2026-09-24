@@ -1,16 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ExpertiseConstellation from '../components/ExpertiseConstellation.jsx'
-import Eclaireur from '../components/Eclaireur.jsx'
-import {
-  ECLAIREUR_OVERVIEW_LAST_STEP,
-  ECLAIREUR_SESSION_KEYS,
-  ECLAIREUR_STATES,
-  getEclaireurContent,
-  getEntryState,
-} from '../lib/eclaireurRules.js'
 import { normalize, sentenceCase } from '../lib/text.js'
 import '../expertises-fenetres-originales.css'
+import '../eclaireur.css'
 
 const familyColor = {
   'Instrument / dispositif': '#7258d9',
@@ -87,16 +80,12 @@ const EXPERTISE_INTRO_STYLES = `
 }
 `
 
-function Accordion({ title, children, onOpen }) {
+function Accordion({ title, children }) {
   const [open, setOpen] = useState(false)
 
   return (
     <div className={`ui-accordion ${open ? 'open' : ''}`}>
-      <button onClick={() => setOpen(v => {
-        const next = !v
-        if (next) onOpen?.()
-        return next
-      })}>
+      <button onClick={() => setOpen(v => !v)}>
         <span>{title}</span>
         <span>{open ? '⌃' : '⌄'}</span>
       </button>
@@ -139,133 +128,144 @@ function ExpertiseIntroBanner() {
   )
 }
 
+
+function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }) {
+  if (!open) {
+    return (
+      <button
+        type="button"
+        className="eclaireur-help-button eclaireur-help-button-expertise"
+        onClick={onRestart}
+        aria-label="Ouvrir L’Éclaireur"
+      >
+        <span aria-hidden="true">✦</span>
+        L’Éclaireur
+      </button>
+    )
+  }
+
+  const content = {
+    1: {
+      title: 'Explorez la carte des expertises',
+      body: (
+        <>
+          <p>
+            La carte regroupe les expertises mobilisées dans les publications du ministère.
+            Les couleurs distinguent les grandes familles d’expertise.
+          </p>
+          <p className="eclaireur-prompt">
+            Cliquez sur une expertise pour ouvrir sa fiche détaillée.
+          </p>
+        </>
+      ),
+      cue: 'Explorez le graphe ici',
+    },
+    2: {
+      title: 'Affinez votre exploration',
+      body: (
+        <>
+          <p>
+            Utilisez le volet de gauche pour <strong>rechercher</strong> une expertise ou filtrer
+            par <strong>entité</strong> et par <strong>type d’expertise</strong>.
+          </p>
+          <p className="eclaireur-prompt">
+            Les filtres modifient uniquement ce qui est affiché dans la carte.
+          </p>
+        </>
+      ),
+      cue: 'Recherchez et filtrez ici',
+    },
+    3: {
+      title: selected ? 'Lisez la fiche de l’expertise' : 'Ouvrez la fiche d’une expertise',
+      body: selected ? (
+        <>
+          <p>
+            La fiche ouverte à droite rassemble la définition, les entités et les publications
+            associées à cette expertise.
+          </p>
+          <p className="eclaireur-prompt">
+            Descendez dans le volet pour voir aussi les expertises associées et les domaines mobilisés.
+          </p>
+        </>
+      ) : (
+        <>
+          <p>
+            Cliquez sur une expertise du graphe : sa fiche s’ouvrira dans le volet de droite.
+          </p>
+          <p className="eclaireur-prompt">
+            Vous pourrez ensuite parcourir ses publications, ses expertises associées et ses domaines.
+          </p>
+        </>
+      ),
+      cue: 'La fiche apparaît ici',
+    },
+  }[step]
+
+  return (
+    <section
+      className={`eclaireur-card eclaireur-expertise eclaireur-expertise-step-${step}`}
+      aria-live="polite"
+      aria-label={`L’Éclaireur, étape ${step} sur 3`}
+    >
+      <header className="eclaireur-expertise-header">
+        <div className="eclaireur-expertise-brand">
+          <span className="eclaireur-expertise-compass" aria-hidden="true">✦</span>
+          <div>
+            <strong>L’Éclaireur</strong>
+            <small>VOTRE GUIDE DANS CET ESPACE</small>
+          </div>
+        </div>
+
+        <div className="eclaireur-expertise-header-actions">
+          <span>{step}/3</span>
+          <button type="button" className="eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
+        </div>
+
+        <div className="eclaireur-lighthouse" aria-hidden="true">
+          <span className="eclaireur-lighthouse-light" />
+          <span className="eclaireur-lighthouse-top" />
+          <span className="eclaireur-lighthouse-body" />
+          <span className="eclaireur-lighthouse-base" />
+        </div>
+      </header>
+
+      <div className="eclaireur-expertise-body">
+        <h3>{content.title}</h3>
+        {content.body}
+
+        <div className="eclaireur-expertise-footer">
+          <div className="eclaireur-dots" aria-hidden="true">
+            {[1, 2, 3].map(n => <i key={n} className={n === step ? 'active' : ''} />)}
+          </div>
+
+          <button type="button" className="eclaireur-action eclaireur-next" onClick={onNext}>
+            {step < 3 ? 'Suivant' : 'Compris'} <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="eclaireur-direction" aria-hidden="true">
+        <span>{content.cue}</span>
+        <b>➜</b>
+      </div>
+    </section>
+  )
+}
+
 export default function Expertises({ data }) {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
   const [entity, setEntity] = useState('Toutes les entités')
   const [family, setFamily] = useState('Tous')
   const [introExpanded, setIntroExpanded] = useState(true)
+  const [readingOpen, setReadingOpen] = useState(false)
+  const [eclaireurOpen, setEclaireurOpen] = useState(true)
+  const [eclaireurStep, setEclaireurStep] = useState(1)
 
   const [nodeSize, setNodeSize] = useState(2.45)
   const [linkDensity, setLinkDensity] = useState(1)
   const [resetToken, setResetToken] = useState(0)
   const [fitToken, setFitToken] = useState(0)
-
-  const sessionHas = key => {
-    if (typeof window === 'undefined') return false
-    return window.sessionStorage.getItem(key) === '1'
-  }
-
-  const sessionMark = key => {
-    if (typeof window === 'undefined') return
-    window.sessionStorage.setItem(key, '1')
-  }
-
-  const [activeClusterMeta, setActiveClusterMeta] = useState(null)
-  const [overviewGuideStep, setOverviewGuideStep] = useState(0)
-  const [overviewGuidePaused, setOverviewGuidePaused] = useState(false)
-  const [eclaireurState, setEclaireurState] = useState(() =>
-    sessionHas(ECLAIREUR_SESSION_KEYS.welcome) ? null : getEntryState()
-  )
-
-  const eclaireurContent = getEclaireurContent(eclaireurState, {
-    selectedLabel: selected?.label || null,
-    clusterLabel: activeClusterMeta?.label || null,
-    overviewStep: overviewGuideStep,
-  })
-
-  const markCurrentEclaireurSeen = state => {
-    if (state === ECLAIREUR_STATES.BULLETIN || state === ECLAIREUR_STATES.DIRECT) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.welcome)
-    }
-    if (state === ECLAIREUR_STATES.OVERVIEW) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.overview)
-    }
-    if (state === ECLAIREUR_STATES.CLUSTER) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.cluster)
-    }
-    if (state === ECLAIREUR_STATES.EXPERTISE) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.expertise)
-    }
-  }
-
-  const dismissEclaireur = () => {
-    markCurrentEclaireurSeen(eclaireurState)
-    setEclaireurState(null)
-  }
-
-  const handleEclaireurAction = () => {
-    if (
-      eclaireurState === ECLAIREUR_STATES.BULLETIN ||
-      eclaireurState === ECLAIREUR_STATES.DIRECT
-    ) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.welcome)
-      setOverviewGuideStep(0)
-      setOverviewGuidePaused(false)
-      setEclaireurState(ECLAIREUR_STATES.OVERVIEW)
-      return
-    }
-
-    if (eclaireurState === ECLAIREUR_STATES.OVERVIEW) {
-      sessionMark(ECLAIREUR_SESSION_KEYS.overview)
-      setEclaireurState(null)
-      return
-    }
-
-    dismissEclaireur()
-  }
-
-  const showHelp = () => setEclaireurState(ECLAIREUR_STATES.HELP)
-
-  useEffect(() => {
-    if (eclaireurState !== ECLAIREUR_STATES.OVERVIEW) return undefined
-    if (overviewGuidePaused) return undefined
-    if (overviewGuideStep >= ECLAIREUR_OVERVIEW_LAST_STEP) return undefined
-
-    const timer = window.setTimeout(() => {
-      setOverviewGuideStep(step =>
-        Math.min(step + 1, ECLAIREUR_OVERVIEW_LAST_STEP)
-      )
-    }, 15000)
-
-    return () => window.clearTimeout(timer)
-  }, [eclaireurState, overviewGuideStep, overviewGuidePaused])
-
-  const handleClusterChange = cluster => {
-    setActiveClusterMeta(cluster)
-
-    if (!cluster) {
-      setEclaireurState(null)
-      return
-    }
-
-    sessionMark(ECLAIREUR_SESSION_KEYS.overview)
-
-    if (!sessionHas(ECLAIREUR_SESSION_KEYS.cluster)) {
-      setEclaireurState(ECLAIREUR_STATES.CLUSTER)
-    } else {
-      setEclaireurState(null)
-    }
-  }
-
-  const selectExpertise = node => {
-    setSelected(node)
-    if (!node) return
-
-    sessionMark(ECLAIREUR_SESSION_KEYS.cluster)
-    if (!sessionHas(ECLAIREUR_SESSION_KEYS.expertise)) {
-      setEclaireurState(ECLAIREUR_STATES.EXPERTISE)
-    } else {
-      setEclaireurState(null)
-    }
-  }
-
-  const acknowledgeExpertiseGuide = () => {
-    sessionMark(ECLAIREUR_SESSION_KEYS.expertise)
-    if (eclaireurState === ECLAIREUR_STATES.EXPERTISE) {
-      setEclaireurState(null)
-    }
-  }
 
   const entities = useMemo(
     () => [
@@ -317,13 +317,32 @@ export default function Expertises({ data }) {
     )
   }, [filtered, data])
 
+
+  const openExpertise = node => {
+    setSelected(node)
+    setEclaireurStep(3)
+    setEclaireurOpen(true)
+  }
+
+  const nextEclaireur = () => {
+    if (eclaireurStep < 3) {
+      setEclaireurStep(step => step + 1)
+    } else {
+      setEclaireurOpen(false)
+    }
+  }
+
+  const restartEclaireur = () => {
+    setEclaireurStep(1)
+    setEclaireurOpen(true)
+  }
+
   const clear = () => {
     setSelected(null)
     setSearch('')
     setEntity('Toutes les entités')
     setFamily('Tous')
-    setActiveClusterMeta(null)
-    setEclaireurState(null)
+    setReadingOpen(false)
     setResetToken(x => x + 1)
   }
 
@@ -331,10 +350,6 @@ export default function Expertises({ data }) {
     <main
       className={`screen graph-screen expertise-screen ${
         selected ? 'has-drawer' : ''
-      } ${
-        eclaireurState === ECLAIREUR_STATES.OVERVIEW && overviewGuidePaused
-          ? 'eclaireur-sequence-paused'
-          : ''
       }`}
     >
       <style>{EXPERTISE_INTRO_STYLES}</style>
@@ -422,7 +437,7 @@ export default function Expertises({ data }) {
                 <button
                   key={n.id}
                   onClick={() => {
-                    selectExpertise(n)
+                    openExpertise(n)
                     setSearch('')
                   }}
                 >
@@ -466,8 +481,6 @@ export default function Expertises({ data }) {
             onChange={e => {
               setEntity(e.target.value)
               setSelected(null)
-              setActiveClusterMeta(null)
-              setEclaireurState(null)
             }}
           >
             {entities.map(x => (
@@ -486,8 +499,6 @@ export default function Expertises({ data }) {
             onChange={e => {
               setFamily(e.target.value)
               setSelected(null)
-              setActiveClusterMeta(null)
-              setEclaireurState(null)
             }}
           >
             <option>Tous</option>
@@ -600,48 +611,27 @@ export default function Expertises({ data }) {
           nodes={filtered}
           edges={visibleEdges}
           selected={selected}
-          onSelect={selectExpertise}
-          onClusterChange={handleClusterChange}
-          guideOverviewStep={
-            eclaireurState === ECLAIREUR_STATES.OVERVIEW
-              ? overviewGuideStep
-              : null
-          }
-          guidePulseNode={eclaireurState === ECLAIREUR_STATES.CLUSTER}
+          onSelect={openExpertise}
           nodeSize={nodeSize}
           linkDensity={linkDensity}
           resetToken={resetToken}
           fitToken={fitToken}
+          readingOpen={readingOpen}
+          onToggleReading={() => {
+            setSelected(null)
+            setReadingOpen(open => !open)
+          }}
+          onCloseReading={() => setReadingOpen(false)}
         />
 
       </section>
-
-      <Eclaireur
-        state={eclaireurState}
-        content={eclaireurContent}
-        contentKey={
-          eclaireurState === ECLAIREUR_STATES.OVERVIEW
-            ? `overview-${overviewGuideStep}`
-            : eclaireurState
-        }
-        onAction={handleEclaireurAction}
-        onDismiss={dismissEclaireur}
-        onHelp={showHelp}
-        paused={
-          eclaireurState === ECLAIREUR_STATES.OVERVIEW && overviewGuidePaused
-        }
-        onTogglePause={() => setOverviewGuidePaused(value => !value)}
-      />
 
       {selected && (
         <aside className="detail-drawer">
 
           <button
             className="drawer-close"
-            onClick={() => {
-              setSelected(null)
-              setEclaireurState(null)
-            }}
+            onClick={() => setSelected(null)}
           >
             <Icon name="close" />
           </button>
@@ -728,10 +718,7 @@ export default function Expertises({ data }) {
               })}
           </div>
 
-          <Accordion
-            title="Expertises directement associées"
-            onOpen={acknowledgeExpertiseGuide}
-          >
+          <Accordion title="Expertises directement associées">
             <div className="chips">
 
               {(selected.associated || [])
@@ -745,7 +732,7 @@ export default function Expertises({ data }) {
                     <button
                       className="chip clickable"
                       key={a.id}
-                      onClick={() => selectExpertise(n)}
+                      onClick={() => openExpertise(n)}
                     >
                       {n.label}
                     </button>
@@ -755,10 +742,7 @@ export default function Expertises({ data }) {
             </div>
           </Accordion>
 
-          <Accordion
-            title="Domaines mobilisés"
-            onOpen={acknowledgeExpertiseGuide}
-          >
+          <Accordion title="Domaines mobilisés">
             <div className="chips">
 
               {(selected.domains || []).map(x => (
@@ -775,6 +759,15 @@ export default function Expertises({ data }) {
 
         </aside>
       )}
+
+      <ExpertiseEclaireur
+        step={eclaireurStep}
+        open={eclaireurOpen}
+        selected={selected}
+        onNext={nextEclaireur}
+        onClose={() => setEclaireurOpen(false)}
+        onRestart={restartEclaireur}
+      />
 
     </main>
   )
