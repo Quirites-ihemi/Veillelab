@@ -379,7 +379,7 @@
 }
 
 
-/* V2.4 — besoins documentaires réellement actionnables */
+/* V2.4 — besoins informationnels réellement actionnables */
 .qvl-need-card{position:relative}
 .qvl-need-card.active{
   border-color:#3f6f9f;
@@ -1083,3 +1083,49 @@
   .qvl-proof-text{padding:14px!important}
   .qvl-proof-text p{font-size:14.5px!important;line-height:1.68!important}
 }
+
+/* V2.9 — L’Éclaireur : guidage visuel compact de l’espace « Avancer avec le corpus » */
+.qvl-eclaireur-help{
+  position:fixed;right:18px;bottom:16px;z-index:84;
+  display:inline-flex;align-items:center;gap:6px;
+  min-height:31px;padding:0 10px;border:1px solid #c9d7e7;border-radius:999px;
+  background:rgba(255,255,255,.96);color:#315d95;
+  box-shadow:0 6px 18px rgba(25,47,78,.11);
+  font:800 10.5px/1 "Source Sans 3",Inter,ui-sans-serif,system-ui,sans-serif;
+  cursor:pointer;backdrop-filter:blur(6px)
+}
+.qvl-eclaireur-help span{font-size:12px;color:#6d5da6}.qvl-eclaireur-help:hover{background:#f6f9fd;border-color:#9cb5d4}
+
+.qvl-eclaireur-guide{
+  position:fixed;z-index:85;width:min(304px,calc(100vw - 28px));box-sizing:border-box;
+  padding:11px 12px 12px;border:1px solid rgba(74,101,139,.27);border-radius:12px;
+  background:rgba(255,255,255,.985);box-shadow:0 13px 30px rgba(25,47,78,.15),0 2px 7px rgba(25,47,78,.06);
+  color:#405875;font-family:"Source Sans 3",Inter,ui-sans-serif,system-ui,sans-serif;
+  animation:qvl-eclaireur-enter .28s ease-out both
+}
+.qvl-eclaireur-guide.intro{right:18px;bottom:58px}
+.qvl-eclaireur-guide.cards{left:50%;top:178px;transform:translateX(-50%)}
+.qvl-eclaireur-guide.needs{left:18px;top:176px;width:min(286px,calc(100vw - 28px))}
+.qvl-eclaireur-guide.results{right:18px;top:176px;width:min(292px,calc(100vw - 28px))}
+.qvl-eclaireur-heading{display:flex;align-items:center;gap:6px;margin:0 26px 7px 0;color:#355e96;font-size:10.3px;line-height:1;font-weight:850;letter-spacing:.045em;text-transform:uppercase}
+.qvl-eclaireur-mark{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(145deg,#eaf2ff,#f4ecff);color:#5c55a6;font-size:12px;box-shadow:inset 0 0 0 1px rgba(82,96,160,.14)}
+.qvl-eclaireur-heading>button{position:absolute;right:8px;top:7px;width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:#8290a2;font:500 19px/1 inherit;cursor:pointer}.qvl-eclaireur-heading>button:hover{background:#f1f5fa;color:#274c7d}
+.qvl-eclaireur-guide p{margin:0 0 7px;font-size:11.1px;line-height:1.4;color:#526b84}
+.qvl-eclaireur-guide p strong{color:#294f79}.qvl-eclaireur-guide .qvl-eclaireur-lead{font-size:12.1px;line-height:1.32;font-weight:800;color:#17385f;margin-bottom:7px}
+.qvl-eclaireur-section{padding:7px 8px;margin-top:6px;border:1px solid #e1e8f0;border-radius:8px;background:#f8fafc}.qvl-eclaireur-section strong{display:block;font-size:10.7px;color:#315878}.qvl-eclaireur-section span{display:block;margin-top:2px;font-size:10.3px;line-height:1.36;color:#677b90}
+.qvl-eclaireur-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.qvl-eclaireur-guide>button,.qvl-eclaireur-actions button{min-height:29px;padding:0 9px;border:1px solid #b9cce4;border-radius:8px;background:#f5f8fd;color:#315d95;font:800 10.3px/1.15 inherit;cursor:pointer}.qvl-eclaireur-guide>button:hover,.qvl-eclaireur-actions button:hover{border-color:#8faed2;background:#edf4fd}
+.qvl-eclaireur-scroll span{display:inline-block;margin-left:4px;color:#315d95;font-size:16px;font-weight:900;animation:qvl-eclaireur-down 1s ease-in-out infinite}
+
+.qvl-eclaireur-target{box-shadow:0 0 0 3px rgba(74,113,160,.22),0 10px 25px rgba(34,58,85,.08)!important;transition:box-shadow .2s ease}
+.qvl-canvas-toolbar.qvl-eclaireur-target{border-radius:10px;padding:4px;margin-left:-4px;margin-right:-4px}
+
+@keyframes qvl-eclaireur-enter{from{opacity:0;transform:translateY(5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes qvl-eclaireur-down{0%,100%{transform:translateY(-1px);opacity:.65}50%{transform:translateY(3px);opacity:1}}
+.qvl-eclaireur-guide.cards{animation:qvl-eclaireur-enter-cards .28s ease-out both}
+@keyframes qvl-eclaireur-enter-cards{from{opacity:0;transform:translate(-50%,5px) scale(.985)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+
+@media(max-width:1040px){
+  .qvl-eclaireur-guide.intro,.qvl-eclaireur-guide.cards,.qvl-eclaireur-guide.needs,.qvl-eclaireur-guide.results{left:14px;right:14px;top:auto;bottom:56px;width:auto;max-width:360px;margin:0 auto;transform:none}
+  .qvl-eclaireur-guide.cards{animation:qvl-eclaireur-enter .28s ease-out both}
+}
+@media(prefers-reduced-motion:reduce){.qvl-eclaireur-guide,.qvl-eclaireur-scroll span{animation:none!important}.qvl-eclaireur-target{transition:none}}

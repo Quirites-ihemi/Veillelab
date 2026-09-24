@@ -67,6 +67,7 @@ const CARD_TYPES = [
 const LINK_LABELS = ['est lié à', 'appuie', 'nuance', 'questionne', '']
 const STORAGE_KEY = 'quirites:reflection-workspace:v2'
 const LEGACY_STORAGE_KEY = 'quirites:reflection-canvas:v1'
+const ECLAIREUR_IDLE_MS = 30000
 
 function normalizeMaterialId(value) {
   const text = String(value || '').trim()
@@ -439,11 +440,13 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
   const [editingCardId, setEditingCardId] = useState(null)
   const [editDraft, setEditDraft] = useState({ title: '', text: '' })
+  const [eclaireur, setEclaireur] = useState({ open: false, step: null })
   const canvasRef = useRef(null)
   const cardEditRef = useRef(null)
   const dragRef = useRef(null)
   const searchInputRef = useRef(null)
   const searchRequestRef = useRef(0)
+  const eclaireurIdleRef = useRef(null)
 
   const activeNeed = NEEDS.find(item => item.id === activeNeedId) || NEEDS[0]
   const resultNeed = NEEDS.find(item => item.id === resultNeedId) || NEEDS[0]
@@ -453,6 +456,27 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   useEffect(() => {
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
   }, [cards, links, activeSubject])
+
+  useEffect(() => {
+    let listening = true
+    const stopListening = () => {
+      if (!listening) return
+      listening = false
+      if (eclaireurIdleRef.current) {
+        window.clearTimeout(eclaireurIdleRef.current)
+        eclaireurIdleRef.current = null
+      }
+      ;['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(name => window.removeEventListener(name, onActivity))
+    }
+    const onActivity = () => stopListening()
+    ;['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(name => window.addEventListener(name, onActivity, { passive: true }))
+    eclaireurIdleRef.current = window.setTimeout(() => {
+      if (!listening) return
+      setEclaireur({ open: true, step: 'intro' })
+      stopListening()
+    }, ECLAIREUR_IDLE_MS)
+    return stopListening
+  }, [])
 
   useEffect(() => {
     if (searchContext?.source !== 'canvas') return
@@ -490,6 +514,18 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     }
   }, [])
 
+  const closeEclaireur = () => setEclaireur({ open: false, step: null })
+
+  const guideTo = step => {
+    if (step === 'needs') setLeftCollapsed(false)
+    if (step === 'results') setRightCollapsed(false)
+    setEclaireur({ open: true, step })
+    window.setTimeout(() => {
+      const selector = step === 'cards' ? '.qvl-canvas-toolbar' : step === 'needs' ? '.qvl-reflection-left' : step === 'results' ? '.qvl-reflection-right' : null
+      if (selector) document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }, 30)
+  }
+
   const executeNeedSearch = async (needId, rawQuery, context = {}) => {
     const clean = String(rawQuery || '').trim()
     if (!clean) return
@@ -514,6 +550,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       })
       if (requestId === searchRequestRef.current) {
         setSearchResult(result)
+        setRightCollapsed(false)
+        setEclaireur({ open: true, step: 'results' })
         const resolvedSubject = String(result?.interpretation?.subject_query || '').trim()
         if (resolvedSubject) setActiveSubject(resolvedSubject)
       }
@@ -528,10 +566,11 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setActiveNeedId(id)
     setSearchError('')
     setRightCollapsed(false)
+    setEclaireur({ open: true, step: 'results' })
     setFreeSearchOpen(false)
     setManualQuery('')
 
-    // Le besoin documentaire travaille d'abord à partir du canevas courant.
+    // Le besoin informationnel travaille d'abord à partir du canevas courant.
     // Une ancienne question libre ne doit jamais prendre le pas sur le post-it sélectionné.
     const cardsToUse = selectedCards.length
       ? selectedCards
@@ -567,10 +606,12 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     event?.preventDefault()
     const clean = manualQuery.trim()
     if (!clean || searchLoading) return
+    setEclaireur({ open: true, step: 'results' })
     executeNeedSearch('precise', clean, { source: 'manual', cardIds: [] })
   }
 
   const beginComposer = type => {
+    closeEclaireur()
     if (type === 'corpus') {
       setRightCollapsed(false)
       setFreeSearchOpen(true)
@@ -601,6 +642,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setComposer(null)
     setDraft('')
     setDraftTitle('')
+    window.setTimeout(() => guideTo('needs'), 80)
   }
 
   const addMaterialToCanvas = material => {
@@ -686,6 +728,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setLinkMode(false)
     setLinkLabel('est lié à')
     setShowLinks(false)
+    setEclaireur({ open: false, step: null })
     try {
       sessionStorage.removeItem(STORAGE_KEY)
       sessionStorage.removeItem(LEGACY_STORAGE_KEY)
@@ -744,6 +787,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const removeLink = id => setLinks(list => list.filter(link => link.id !== id))
 
   const showProof = async material => {
+    closeEclaireur()
     const materialId = materialIdOf(material)
     setProofState({ open: true, loading: true, error: '', material, result: null })
     if (!materialId) {
@@ -777,14 +821,14 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     </section>
 
     <div className={shellClass}>
-      <aside className="qvl-reflection-left">
-        <button className="qvl-panel-toggle left" type="button" onClick={() => setLeftCollapsed(value => !value)} aria-label={leftCollapsed ? 'Déployer les besoins documentaires' : 'Replier les besoins documentaires'}>
+      <aside className={`qvl-reflection-left ${eclaireur.open && eclaireur.step === 'needs' ? 'qvl-eclaireur-target' : ''}`}>
+        <button className="qvl-panel-toggle left" type="button" onClick={() => setLeftCollapsed(value => !value)} aria-label={leftCollapsed ? 'Déployer les besoins informationnels' : 'Replier les besoins informationnels'}>
           {leftCollapsed ? '›' : '‹'}
         </button>
-        {leftCollapsed ? <div className="qvl-collapsed-label">Besoins documentaires</div> : <>
+        {leftCollapsed ? <div className="qvl-collapsed-label">Besoins informationnels</div> : <>
           <header className="qvl-side-heading">
             <span className="qvl-side-icon"><Icon name="book" size={19}/></span>
-            <div><h2>Besoins documentaires</h2><p>Choisissez ce que vous cherchez à faire avec le corpus.</p></div>
+            <div><h2>Besoins informationnels</h2><p>Choisissez ce que vous cherchez à faire avec le corpus.</p></div>
           </header>
           <div className="qvl-need-list">
             {NEEDS.map(need => {
@@ -803,7 +847,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
           <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2><p>Posez une question, formulez une idée, ajoutez une note ou conservez un élément du corpus. Déplacez les cartes, rapprochez-les et reliez-les pour faire apparaître progressivement votre raisonnement.</p></div></div>
-          <div className="qvl-canvas-toolbar">
+          <div className={`qvl-canvas-toolbar ${eclaireur.open && eclaireur.step === 'cards' ? 'qvl-eclaireur-target' : ''}`}>
             {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
             <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
             <span className="qvl-toolbar-spacer"/>
@@ -906,7 +950,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         <div className={`qvl-canvas-help ${linkMode ? 'link-mode' : ''}`}><span>{linkMode ? `Mode liaison : sélectionnez deux cartes (${selectedCards.length}/2).` : selectedCards.length ? `${selectedCards.length} carte${selectedCards.length > 1 ? 's' : ''} sélectionnée${selectedCards.length > 1 ? 's' : ''}` : 'Cliquez sur une carte pour la sélectionner.'}</span><span>{linkMode ? 'Cliquez simplement sur deux post-it, puis qualifiez le lien.' : 'Les volets peuvent être repliés pour agrandir le canevas · Chaque post-it peut être réduit.'}</span></div>
       </section>
 
-      <aside className="qvl-reflection-right">
+      <aside className={`qvl-reflection-right ${eclaireur.open && eclaireur.step === 'results' ? 'qvl-eclaireur-target' : ''}`}>
         <button className="qvl-panel-toggle right" type="button" onClick={() => setRightCollapsed(value => !value)} aria-label={rightCollapsed ? 'Déployer le corpus' : 'Replier le corpus'}>
           {rightCollapsed ? '‹' : '›'}
         </button>
@@ -926,7 +970,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
           {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
           {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans le corpus actif…</strong></div>}
           {!searchLoading && searchResult && <NeedResults need={resultNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
-          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>{searchContext?.source === 'awaiting-card' ? 'Choisissez le point de départ.' : 'Votre bibliothèque est prête.'}</strong><p>{searchContext?.source === 'awaiting-card' ? 'Sélectionnez un post-it dans le canevas, puis cliquez sur l’un des besoins documentaires à gauche.' : 'Sélectionnez un post-it puis un besoin documentaire. Les résultats apparaîtront ici avec leur provenance.'}</p></div>}
+          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>{searchContext?.source === 'awaiting-card' ? 'Choisissez le point de départ.' : 'Votre bibliothèque est prête.'}</strong><p>{searchContext?.source === 'awaiting-card' ? 'Sélectionnez un post-it dans le canevas, puis cliquez sur l’un des besoins informationnels à gauche.' : 'Sélectionnez un post-it puis un besoin informationnel. Les résultats apparaîtront ici avec leur provenance.'}</p></div>}
 
           <div className={`qvl-free-search ${freeSearchOpen ? 'open' : ''}`}>
             <button type="button" className="qvl-free-search-toggle" onClick={() => { setFreeSearchOpen(value => !value); window.setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0) }}>
@@ -942,8 +986,44 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       </aside>
     </div>
 
+    {eclaireur.open && <EclaireurGuide
+      step={eclaireur.step}
+      resultCount={visibleResults.length}
+      loading={searchLoading}
+      awaitingCard={searchContext?.source === 'awaiting-card'}
+      onClose={closeEclaireur}
+      onCards={() => guideTo('cards')}
+      onNeeds={() => guideTo('needs')}
+      onResults={() => guideTo('results')}
+    />}
+    {!eclaireur.open && <button type="button" className="qvl-eclaireur-help" onClick={() => setEclaireur({ open: true, step: 'intro' })}><span aria-hidden="true">✦</span>L’Éclaireur</button>}
+
     {proofState.open && <ProofModal state={proofState} onClose={() => setProofState({ open: false, loading: false, error: '', material: null, result: null })}/>} 
   </main>
+}
+
+function EclaireurGuide({ step, resultCount, loading, awaitingCard, onClose, onCards, onNeeds, onResults }) {
+  const multiple = resultCount > 1
+  if (step === 'cards') return <aside className="qvl-eclaireur-guide cards" aria-live="polite">
+    <EclaireurHeader onClose={onClose}/><p className="qvl-eclaireur-lead">Commencez par une carte.</p><p>Les boutons <strong>Question</strong>, <strong>Idée / hypothèse</strong>, <strong>Note</strong> et <strong>Point à vérifier</strong> sont juste au-dessus du canevas.</p><button type="button" onClick={onNeeds}>Puis voir les besoins informationnels →</button>
+  </aside>
+  if (step === 'needs') return <aside className="qvl-eclaireur-guide needs" aria-live="polite">
+    <EclaireurHeader onClose={onClose}/><p className="qvl-eclaireur-lead">Choisissez maintenant votre besoin informationnel.</p><p>Le volet de gauche détermine la manière dont le corpus sera interrogé à partir de votre carte.</p><button type="button" onClick={onResults}>Où apparaîtront les résultats ? →</button>
+  </aside>
+  if (step === 'results') return <aside className="qvl-eclaireur-guide results" aria-live="polite">
+    <EclaireurHeader onClose={onClose}/><p className="qvl-eclaireur-lead">Les résultats apparaissent ici, dans le volet de droite.</p>
+    {awaitingCard ? <p>Sélectionnez d’abord une carte dans le canevas : le besoin choisi sera appliqué à ce point de départ.</p> : loading ? <p>La recherche est en cours. Les éléments trouvés vont s’afficher dans cette colonne.</p> : resultCount === 0 ? <p>Si le corpus ne fournit pas de résultat suffisant, le message de limite s’affichera au même endroit.</p> : multiple ? <p className="qvl-eclaireur-scroll">Plusieurs résultats sont disponibles : <strong>faites bien descendre l’ascenseur de cette colonne jusqu’en bas</strong> pour tous les voir. <span aria-hidden="true">↓</span></p> : <p>Le résultat est affiché dans cette colonne avec sa provenance et sa preuve.</p>}
+  </aside>
+  return <aside className="qvl-eclaireur-guide intro" aria-live="polite">
+    <EclaireurHeader onClose={onClose}/><p className="qvl-eclaireur-lead">Vous pouvez avancer de deux façons complémentaires.</p>
+    <div className="qvl-eclaireur-section"><strong>Démarches dans le canevas</strong><span>Question · Idée / hypothèse · Note · Point à vérifier</span></div>
+    <div className="qvl-eclaireur-section"><strong>Besoins informationnels</strong><span>Comprendre un thème · Trouver une information précise · Voir ce qui évolue · Identifier les acteurs · Explorer les réponses d’action publique</span></div>
+    <div className="qvl-eclaireur-actions"><button type="button" onClick={onCards}>Voir les démarches</button><button type="button" onClick={onNeeds}>Voir les besoins</button></div>
+  </aside>
+}
+
+function EclaireurHeader({ onClose }) {
+  return <div className="qvl-eclaireur-heading"><span className="qvl-eclaireur-mark">✦</span><strong>L’Éclaireur</strong><button type="button" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button></div>
 }
 
 function NeedResults({ need, result, materials, onAdd, onProof }) {
@@ -961,7 +1041,7 @@ function NeedResults({ need, result, materials, onAdd, onProof }) {
       <div><strong>{materials.length}</strong><span>élément{materials.length > 1 ? 's' : ''}</span></div>
       <div><strong>{domains.length}</strong><span>domaine{domains.length > 1 ? 's' : ''}</span></div>
     </div>}
-    <div className="qvl-result-heading"><div><strong>{materials.length} résultat{materials.length > 1 ? 's' : ''}</strong><span>{need.id === 'overview' ? 'pour construire une première vue du thème' : 'correspondant à ce besoin documentaire'}</span></div>{all.length !== materials.length && <small>{all.length - materials.length} autre{all.length - materials.length > 1 ? 's' : ''} résultat{all.length - materials.length > 1 ? 's' : ''} écarté{all.length - materials.length > 1 ? 's' : ''} car hors de cette catégorie</small>}</div>
+    <div className="qvl-result-heading"><div><strong>{materials.length} résultat{materials.length > 1 ? 's' : ''}</strong><span>{need.id === 'overview' ? 'pour construire une première vue du thème' : 'correspondant à ce besoin informationnel'}</span></div>{all.length !== materials.length && <small>{all.length - materials.length} autre{all.length - materials.length > 1 ? 's' : ''} résultat{all.length - materials.length > 1 ? 's' : ''} écarté{all.length - materials.length > 1 ? 's' : ''} car hors de cette catégorie</small>}</div>
     {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Le corpus actif ne permet pas de répondre suffisamment à ce besoin.</strong><p>Aucun élément suffisamment ciblé n’a été repéré dans les publications du bulletin présentes dans le corpus. Cela ne signifie pas que le sujet est peu documenté en dehors du bulletin. Vous pouvez préciser la formulation ou revenir à « Comprendre rapidement ce que le corpus contient sur un thème ».</p></div>}
   </section>
 }
