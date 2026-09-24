@@ -67,7 +67,6 @@ const CARD_TYPES = [
 const LINK_LABELS = ['est lié à', 'appuie', 'nuance', 'questionne', '']
 const STORAGE_KEY = 'quirites:reflection-workspace:v2'
 const LEGACY_STORAGE_KEY = 'quirites:reflection-canvas:v1'
-const ECLAIREUR_IDLE_MS = 30000
 
 function normalizeMaterialId(value) {
   const text = String(value || '').trim()
@@ -440,13 +439,12 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
   const [editingCardId, setEditingCardId] = useState(null)
   const [editDraft, setEditDraft] = useState({ title: '', text: '' })
-  const [eclaireur, setEclaireur] = useState({ open: false, step: null })
+  const [eclaireur, setEclaireur] = useState({ open: true, step: 'intro' })
   const canvasRef = useRef(null)
   const cardEditRef = useRef(null)
   const dragRef = useRef(null)
   const searchInputRef = useRef(null)
   const searchRequestRef = useRef(0)
-  const eclaireurIdleRef = useRef(null)
 
   const activeNeed = NEEDS.find(item => item.id === activeNeedId) || NEEDS[0]
   const resultNeed = NEEDS.find(item => item.id === resultNeedId) || NEEDS[0]
@@ -456,27 +454,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   useEffect(() => {
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
   }, [cards, links, activeSubject])
-
-  useEffect(() => {
-    let listening = true
-    const stopListening = () => {
-      if (!listening) return
-      listening = false
-      if (eclaireurIdleRef.current) {
-        window.clearTimeout(eclaireurIdleRef.current)
-        eclaireurIdleRef.current = null
-      }
-      ;['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(name => window.removeEventListener(name, onActivity))
-    }
-    const onActivity = () => stopListening()
-    ;['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(name => window.addEventListener(name, onActivity, { passive: true }))
-    eclaireurIdleRef.current = window.setTimeout(() => {
-      if (!listening) return
-      setEclaireur({ open: true, step: 'intro' })
-      stopListening()
-    }, ECLAIREUR_IDLE_MS)
-    return stopListening
-  }, [])
 
   useEffect(() => {
     if (searchContext?.source !== 'canvas') return
@@ -566,7 +543,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setActiveNeedId(id)
     setSearchError('')
     setRightCollapsed(false)
-    setEclaireur({ open: true, step: 'results' })
     setFreeSearchOpen(false)
     setManualQuery('')
 
@@ -606,7 +582,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     event?.preventDefault()
     const clean = manualQuery.trim()
     if (!clean || searchLoading) return
-    setEclaireur({ open: true, step: 'results' })
     executeNeedSearch('precise', clean, { source: 'manual', cardIds: [] })
   }
 
@@ -1005,7 +980,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 function EclaireurGuide({ step, resultCount, loading, awaitingCard, onClose, onCards, onNeeds, onResults }) {
   const multiple = resultCount > 1
   if (step === 'cards') return <aside className="qvl-eclaireur-guide cards" aria-live="polite">
-    <EclaireurHeader onClose={onClose}/><p className="qvl-eclaireur-lead">Commencez par une carte.</p><p>Les boutons <strong>Question</strong>, <strong>Idée / hypothèse</strong>, <strong>Note</strong> et <strong>Point à vérifier</strong> sont juste au-dessus du canevas.</p><button type="button" onClick={onNeeds}>Puis voir les besoins informationnels →</button>
+    <EclaireurHeader onClose={onClose}/><p className="qvl-eclaireur-lead">Commencez par une carte.</p><p>Les boutons <strong>Question</strong>, <strong>Idée / hypothèse</strong>, <strong>Note</strong> et <strong>Point à vérifier</strong> sont juste au-dessus du canevas.</p><p className="qvl-eclaireur-tip">Pour agrandir le canevas, vous pouvez <strong>replier les deux volets latéraux</strong> avec les chevrons.</p><button type="button" onClick={onNeeds}>Puis voir les besoins informationnels →</button>
   </aside>
   if (step === 'needs') return <aside className="qvl-eclaireur-guide needs" aria-live="polite">
     <EclaireurHeader onClose={onClose}/><p className="qvl-eclaireur-lead">Choisissez maintenant votre besoin informationnel.</p><p>Le volet de gauche détermine la manière dont le corpus sera interrogé à partir de votre carte.</p><button type="button" onClick={onResults}>Où apparaîtront les résultats ? →</button>
