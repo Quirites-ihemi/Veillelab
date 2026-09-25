@@ -129,14 +129,16 @@ function ExpertiseIntroBanner() {
 }
 
 
-function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }) {
-  if (!open) {
+function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose, onMinimize, onRestore }) {
+  const side = step === 3 && selected ? 'left' : 'right'
+
+  if (mode === 'closed') {
     return (
       <button
         type="button"
-        className="eclaireur-help-button eclaireur-help-button-expertise"
-        onClick={onRestart}
-        aria-label="Ouvrir L’Éclaireur"
+        className={`eclaireur-help-button eclaireur-help-button-expertise eclaireur-side-${side}`}
+        onClick={onRestore}
+        aria-label="Rouvrir L’Éclaireur"
       >
         <span aria-hidden="true">✦</span>
         L’Éclaireur
@@ -144,17 +146,29 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
     )
   }
 
+  if (mode === 'minimized') {
+    return (
+      <div className={`eclaireur-expertise-minimized eclaireur-side-${side}`} aria-label={`L’Éclaireur, étape ${step} sur 3, réduit`}>
+        <button type="button" className="eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer L’Éclaireur">
+          <span aria-hidden="true">✦</span>
+          <strong>L’Éclaireur</strong>
+          <small>{step}/3</small>
+        </button>
+        <button type="button" className="eclaireur-minimized-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
+      </div>
+    )
+  }
+
   const content = {
     1: {
-      title: 'Explorez la carte des expertises',
+      title: 'Commencez par le sens de la carte',
       body: (
         <>
           <p>
-            La carte regroupe les expertises mobilisées dans les publications du ministère.
-            Les couleurs distinguent les grandes familles d’expertise.
+            Le bloc <strong>« Des publications aux savoir-faire du ministère »</strong> explique ce que représente cette carte et comment la lire.
           </p>
           <p className="eclaireur-prompt">
-            Cliquez sur une expertise pour ouvrir sa fiche détaillée.
+            Cette zone clignote pour vous indiquer où commencer.
           </p>
         </>
       ),
@@ -164,11 +178,10 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
       body: (
         <>
           <p>
-            Utilisez le volet de gauche pour <strong>rechercher</strong> une expertise ou filtrer
-            par <strong>entité</strong> et par <strong>type d’expertise</strong>.
+            Utilisez le volet de gauche pour <strong>rechercher</strong> une expertise ou filtrer par <strong>entité</strong> et par <strong>type d’expertise</strong>.
           </p>
           <p className="eclaireur-prompt">
-            Les filtres modifient uniquement ce qui est affiché dans la carte.
+            Les zones utiles clignotent brièvement pour attirer votre attention.
           </p>
         </>
       ),
@@ -178,8 +191,7 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
       body: selected ? (
         <>
           <p>
-            La fiche ouverte à droite rassemble la définition, les entités et les publications
-            associées à cette expertise.
+            La fiche ouverte à droite rassemble la définition, les entités et les publications associées à cette expertise.
           </p>
           <p className="eclaireur-prompt">
             Descendez dans le volet pour voir aussi les expertises associées et les domaines mobilisés.
@@ -191,7 +203,7 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
             Cliquez sur une expertise du graphe : sa fiche s’ouvrira dans le volet de droite.
           </p>
           <p className="eclaireur-prompt">
-            Vous pourrez ensuite parcourir ses publications, ses expertises associées et ses domaines.
+            Le graphe clignote brièvement pour vous montrer la zone à utiliser.
           </p>
         </>
       ),
@@ -200,7 +212,7 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
 
   return (
     <section
-      className={`eclaireur-card eclaireur-expertise eclaireur-expertise-step-${step}`}
+      className={`eclaireur-card eclaireur-expertise eclaireur-expertise-step-${step} eclaireur-side-${side}`}
       aria-live="polite"
       aria-label={`L’Éclaireur, étape ${step} sur 3`}
     >
@@ -215,6 +227,7 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
 
         <div className="eclaireur-expertise-header-actions">
           <span>{step}/3</span>
+          <button type="button" className="eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button>
           <button type="button" className="eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
         </div>
 
@@ -235,12 +248,18 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
             {[1, 2, 3].map(n => <i key={n} className={n === step ? 'active' : ''} />)}
           </div>
 
-          <button type="button" className="eclaireur-action eclaireur-next" onClick={onNext}>
-            {step < 3 ? 'Suivant' : 'Compris'}
-          </button>
+          <div className="eclaireur-nav-actions">
+            {step > 1 && (
+              <button type="button" className="eclaireur-action eclaireur-prev" onClick={onPrevious}>
+                Précédent
+              </button>
+            )}
+            <button type="button" className="eclaireur-action eclaireur-next" onClick={onNext}>
+              {step < 3 ? 'Suivant' : 'Compris'}
+            </button>
+          </div>
         </div>
       </div>
-
     </section>
   )
 }
@@ -252,7 +271,7 @@ export default function Expertises({ data }) {
   const [family, setFamily] = useState('Tous')
   const [introExpanded, setIntroExpanded] = useState(true)
   const [readingOpen, setReadingOpen] = useState(false)
-  const [eclaireurOpen, setEclaireurOpen] = useState(true)
+  const [eclaireurMode, setEclaireurMode] = useState('open')
   const [eclaireurStep, setEclaireurStep] = useState(1)
 
   const [nodeSize, setNodeSize] = useState(2.45)
@@ -314,21 +333,25 @@ export default function Expertises({ data }) {
   const openExpertise = node => {
     setSelected(node)
     setEclaireurStep(3)
-    setEclaireurOpen(true)
+    setEclaireurMode('open')
   }
 
   const nextEclaireur = () => {
     if (eclaireurStep < 3) {
       setEclaireurStep(step => step + 1)
     } else {
-      setEclaireurOpen(false)
+      setEclaireurMode('minimized')
     }
   }
 
-  const restartEclaireur = () => {
-    setEclaireurStep(1)
-    setEclaireurOpen(true)
+  const previousEclaireur = () => {
+    setEclaireurStep(step => Math.max(1, step - 1))
+    setEclaireurMode('open')
   }
+
+  const restoreEclaireur = () => setEclaireurMode('open')
+  const minimizeEclaireur = () => setEclaireurMode('minimized')
+  const closeEclaireur = () => setEclaireurMode('closed')
 
   const clear = () => {
     setSelected(null)
@@ -349,7 +372,7 @@ export default function Expertises({ data }) {
 
       <aside className="left-rail">
 
-        <section className={`rail-section expertise-intro ${eclaireurOpen && eclaireurStep === 1 ? 'expertise-eclaireur-target' : ''}`}>
+        <section className={`rail-section expertise-intro ${eclaireurMode === 'open' && eclaireurStep === 1 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>Pourquoi cette carte ?</h3>
 
           <img
@@ -409,7 +432,7 @@ export default function Expertises({ data }) {
           </button>
         </section>
 
-        <section className={`rail-section ${eclaireurOpen && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
+        <section className={`rail-section ${eclaireurMode === 'open' && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>
             <Icon name="search" size={19} />
             Rechercher
@@ -466,7 +489,7 @@ export default function Expertises({ data }) {
           </label>
         </section>
 
-        <section className={`rail-section ${eclaireurOpen && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
+        <section className={`rail-section ${eclaireurMode === 'open' && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>Entité(s)</h3>
 
           <select
@@ -484,7 +507,7 @@ export default function Expertises({ data }) {
           </select>
         </section>
 
-        <section className={`rail-section ${eclaireurOpen && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
+        <section className={`rail-section ${eclaireurMode === 'open' && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>Type d’expertise</h3>
 
           <select
@@ -547,7 +570,7 @@ export default function Expertises({ data }) {
 
       </aside>
 
-      <section className={`graph-workspace ${eclaireurOpen && eclaireurStep === 3 && !selected ? 'expertise-eclaireur-target expertise-eclaireur-graph-target' : ''}`}>
+      <section className={`graph-workspace ${eclaireurMode === 'open' && eclaireurStep === 3 && !selected ? 'expertise-eclaireur-target expertise-eclaireur-graph-target' : ''}`}>
 
         <div className="workspace-toolbar">
 
@@ -620,7 +643,7 @@ export default function Expertises({ data }) {
       </section>
 
       {selected && (
-        <aside className={`detail-drawer ${eclaireurOpen && eclaireurStep === 3 ? 'expertise-eclaireur-target' : ''}`}>
+        <aside className={`detail-drawer ${eclaireurMode === 'open' && eclaireurStep === 3 ? 'expertise-eclaireur-target' : ''}`}>
 
           <button
             className="drawer-close"
@@ -755,11 +778,13 @@ export default function Expertises({ data }) {
 
       <ExpertiseEclaireur
         step={eclaireurStep}
-        open={eclaireurOpen}
+        mode={eclaireurMode}
         selected={selected}
         onNext={nextEclaireur}
-        onClose={() => setEclaireurOpen(false)}
-        onRestart={restartEclaireur}
+        onPrevious={previousEclaireur}
+        onClose={closeEclaireur}
+        onMinimize={minimizeEclaireur}
+        onRestore={restoreEclaireur}
       />
 
     </main>
