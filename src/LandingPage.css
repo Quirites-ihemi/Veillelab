@@ -1,8 +1,7 @@
 /* =========================================================
    QUIRITÈS VEILLE LAB — LANDING RADAR / CARTE ENTIÈRE
-   La carte occupe un panneau visuel autonome à droite.
-   Le visuel est dimensionné par sa HAUTEUR : la France, le radar
-   et les cartouches latéraux restent visibles intégralement.
+   Le panneau radar utilise un asset dédié qui ne contient que la carte.
+   L'asset est toujours affiché EN ENTIER : aucun crop, aucun cover.
    Aucun style des onglets n'est modifié.
    ========================================================= */
 
@@ -21,54 +20,49 @@
   position:absolute;
   z-index:0;
   inset:0 0 0 auto;
-  width:64%;
+  width:63%;
   height:100%;
   overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
   background:#03162e;
 }
 
-/* IMPORTANT : hauteur contrainte, largeur automatique.
-   L'image déborde volontairement à GAUCHE du panneau : cela masque
-   la partie éditoriale présente dans le visuel source, sans jamais
-   couper la carte ni les cartouches situés autour du radar. */
-.qlab-radar-landing__visual>img{
-  position:absolute;
-  z-index:0;
-  top:50%;
-  right:0;
-  height:94%;
-  width:auto;
-  max-width:none;
+/* Le frame reprend exactement le ratio de l'asset 1112 x 870.
+   Il se dimensionne d'abord selon l'espace disponible, puis conserve
+   l'intégralité de l'image à l'intérieur. */
+.qlab-radar-landing__visual-frame{
+  position:relative;
+  flex:0 0 auto;
+  width:min(100%, calc(100svh * 1.27816092));
+  aspect-ratio:1112 / 870;
+  max-height:100%;
+}
+
+.qlab-radar-landing__visual-frame>img{
+  display:block;
+  width:100%;
+  height:100%;
   object-fit:contain;
-  transform:translateY(-50%);
-  filter:saturate(.98) contrast(1.02) brightness(.96);
+  object-position:center center;
+  filter:saturate(.98) contrast(1.02) brightness(.97);
   user-select:none;
   pointer-events:none;
 }
 
-/* Transition douce entre le texte réel à gauche et le visuel à droite. */
+/* Le fondu ne couvre plus la carte : il adoucit seulement la jonction
+   sur une bande très étroite à gauche. */
 .qlab-radar-landing__visual-fade{
-  position:absolute;
-  z-index:1;
-  inset:0;
-  pointer-events:none;
-  background:linear-gradient(
-    90deg,
-    #03162e 0%,
-    rgba(3,22,46,.99) 5%,
-    rgba(3,22,46,.88) 10%,
-    rgba(3,22,46,.45) 17%,
-    rgba(3,22,46,.10) 25%,
-    transparent 34%
-  );
+  display:none;
 }
 
 .qlab-radar-landing__content{
   position:relative;
-  z-index:3;
+  z-index:4;
   height:100%;
   display:grid;
-  grid-template-columns:minmax(500px,42%) minmax(0,58%);
+  grid-template-columns:minmax(500px,39%) minmax(0,61%);
 }
 
 .qlab-radar-landing__copy{
@@ -107,7 +101,7 @@
 .qlab-radar-landing h1>span{
   display:block;
   color:#f7f9fd;
-  font-size:clamp(46px,4.05vw,68px);
+  font-size:clamp(44px,3.55vw,60px);
   font-weight:300;
 }
 
@@ -115,7 +109,8 @@
   display:block;
   margin-top:7px;
   color:#f7f9fd;
-  font-size:clamp(51px,4.45vw,75px);
+  font-size:clamp(48px,3.8vw,64px);
+  white-space:nowrap;
   font-weight:350;
 }
 
@@ -245,9 +240,9 @@
 .qlab-radar-landing__radar-sweep{
   position:absolute;
   z-index:2;
-  left:58%;
-  top:50%;
-  width:min(43vw,690px);
+  left:47.2%;
+  top:47.8%;
+  width:68%;
   aspect-ratio:1;
   transform:translate(-50%,-50%);
   transform-origin:center;
@@ -276,8 +271,8 @@
 .qlab-radar-landing__pulse{
   position:absolute;
   z-index:2;
-  left:58%;
-  top:50%;
+  left:47.2%;
+  top:47.8%;
   width:12px;
   height:12px;
   border:2px solid rgba(116,225,255,.55);
@@ -383,15 +378,14 @@
   cursor:pointer;
 }
 
-/* Écrans plus étroits : on garde d'abord toute la carte, quitte à la réduire. */
+/* Écrans plus étroits : on réduit la carte, on ne la recadre jamais. */
 @media(max-width:1220px){
-  .qlab-radar-landing__visual{width:61%}
-  .qlab-radar-landing__visual>img{height:88%}
-  .qlab-radar-landing__content{grid-template-columns:minmax(460px,44%) minmax(0,56%)}
+  .qlab-radar-landing__visual{width:62%}
+  .qlab-radar-landing__content{grid-template-columns:minmax(460px,42%) minmax(0,58%)}
   .qlab-radar-landing__copy{padding-left:36px;padding-right:16px}
   .qlab-radar-landing__logo{width:215px;margin-bottom:24px}
-  .qlab-radar-landing h1>span{font-size:43px}
-  .qlab-radar-landing h1>strong{font-size:49px}
+  .qlab-radar-landing h1>span{font-size:40px}
+  .qlab-radar-landing h1>strong{font-size:44px;white-space:normal}
   .qlab-radar-landing__lead{font-size:20px}
   .qlab-radar-landing__intro{font-size:15.5px;margin-top:21px}
 }
@@ -401,31 +395,12 @@
     height:auto;
     min-height:100svh;
     overflow:auto;
+    display:flex;
+    flex-direction:column;
   }
-
-  .qlab-radar-landing__visual{
-    position:relative;
-    width:100%;
-    height:620px;
-    margin-top:0;
-    overflow:hidden;
-  }
-
-  .qlab-radar-landing__visual>img{
-    top:50%;
-    right:50%;
-    height:auto;
-    width:100%;
-    max-width:100%;
-    transform:translate(50%,-50%);
-    object-fit:contain;
-  }
-
-  .qlab-radar-landing__visual-fade,
-  .qlab-radar-landing__radar-sweep,
-  .qlab-radar-landing__pulse{display:none}
 
   .qlab-radar-landing__content{
+    order:1;
     height:auto;
     display:block;
   }
@@ -433,6 +408,25 @@
   .qlab-radar-landing__copy{
     padding:36px 28px 30px;
   }
+
+  .qlab-radar-landing__visual{
+    order:2;
+    position:relative;
+    width:100%;
+    height:auto;
+    min-height:0;
+    overflow:hidden;
+    justify-content:center;
+  }
+
+  .qlab-radar-landing__visual-frame{
+    width:100%;
+    max-width:1112px;
+    aspect-ratio:1112 / 870;
+  }
+
+  .qlab-radar-landing__radar-sweep,
+  .qlab-radar-landing__pulse{display:none}
 }
 
 @media(max-width:620px){
