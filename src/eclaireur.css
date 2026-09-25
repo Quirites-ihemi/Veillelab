@@ -972,3 +972,56 @@
 @media(prefers-reduced-motion:reduce){
   .expertise-screen .expertise-eclaireur-target{animation:none!important;box-shadow:0 0 0 3px rgba(255,190,58,.52)!important}
 }
+
+/* -------------------------------------------------------------------------
+   ONGLET 1 — L’ÉCLAIREUR V1.4
+   Ajustement demandé : même design, même position, mêmes contrôles ;
+   fenêtre légèrement agrandie pour améliorer la lisibilité.
+   ------------------------------------------------------------------------- */
+.expertise-screen .eclaireur-expertise{
+  width:min(320px,calc(100vw - 28px))!important;
+  max-width:320px!important;
+}
+.expertise-screen .eclaireur-expertise-header{
+  min-height:64px!important;
+  padding:10px 12px!important;
+}
+.expertise-screen .eclaireur-expertise-brand{gap:8px!important}
+.expertise-screen .eclaireur-expertise-brand strong{font-size:16px!important}
+.expertise-screen .eclaireur-expertise-brand small{font-size:8px!important}
+.expertise-screen .eclaireur-expertise-compass{
+  width:31px!important;
+  height:31px!important;
+  flex-basis:31px!important;
+  font-size:18px!important;
+}
+.expertise-screen .eclaireur-expertise-header-actions{font-size:9.5px!important}
+.expertise-screen .eclaireur-lighthouse{
+  right:9px!important;
+  width:30px!important;
+  height:45px!important;
+}
+.expertise-screen .eclaireur-expertise-body{padding:11px 14px 10px!important}
+.expertise-screen .eclaireur-expertise-body h3{
+  font-size:13.4px!important;
+  line-height:1.28!important;
+  margin-bottom:6px!important;
+}
+.expertise-screen .eclaireur-expertise-body p{
+  font-size:11.5px!important;
+  line-height:1.42!important;
+  margin-bottom:6px!important;
+}
+.expertise-screen .eclaireur-prev,
+.expertise-screen .eclaireur-next{
+  padding:7px 10px!important;
+  font-size:10.5px!important;
+  min-height:30px!important;
+}
+.expertise-screen .eclaireur-expertise-minimized{width:220px!important;height:40px!important}
+@media(max-width:1020px){
+  .expertise-screen .eclaireur-expertise{
+    width:min(310px,calc(100vw - 24px))!important;
+    max-width:310px!important;
+  }
+}
