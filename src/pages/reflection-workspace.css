@@ -1615,3 +1615,83 @@
 .qvl-reflection-page .qvl-eclaireur-minimized-main strong{font-size:12.5px!important}
 .qvl-reflection-page .qvl-eclaireur-minimized-main small{font-size:10px!important}
 .qvl-reflection-page .qvl-eclaireur-help{font-size:12px!important}
+
+/* -------------------------------------------------------------------------
+   ONGLET 3 — L’ÉCLAIREUR V2.1
+   Lisibilité renforcée : fenêtre et typographie agrandies.
+   Parcours et comportement inchangés.
+   ------------------------------------------------------------------------- */
+.qvl-reflection-page .qvl-eclaireur-guide{
+  width:min(370px,calc(100vw - 28px))!important;
+  max-width:370px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-visual-header{
+  min-height:70px!important;
+  padding:12px 14px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-brand{gap:9px!important}
+.qvl-reflection-page .qvl-eclaireur-brand strong{font-size:18px!important}
+.qvl-reflection-page .qvl-eclaireur-brand small{font-size:10px!important;line-height:1.12!important}
+.qvl-reflection-page .qvl-eclaireur-compass{
+  width:34px!important;
+  height:34px!important;
+  flex-basis:34px!important;
+  font-size:20px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-header-actions{
+  margin-right:36px!important;
+  font-size:11.5px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-header-actions .qvl-eclaireur-minimize,
+.qvl-reflection-page .qvl-eclaireur-header-actions .qvl-eclaireur-close{
+  width:27px!important;
+  height:27px!important;
+  font-size:18px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-lighthouse{
+  right:10px!important;
+  width:33px!important;
+  height:49px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-body{padding:14px 16px 12px!important}
+.qvl-reflection-page .qvl-eclaireur-body h3{
+  font-size:16px!important;
+  line-height:1.32!important;
+  margin-bottom:8px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-body p{
+  font-size:14.3px!important;
+  line-height:1.5!important;
+  margin-bottom:8px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-section{
+  padding:9px 10px!important;
+  margin-top:8px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-section strong{font-size:13.4px!important;line-height:1.3!important}
+.qvl-reflection-page .qvl-eclaireur-section span{font-size:12.6px!important;line-height:1.45!important}
+.qvl-reflection-page .qvl-eclaireur-tip{padding:9px 10px!important}
+.qvl-reflection-page .qvl-eclaireur-footer{margin-top:6px!important;padding-top:9px!important}
+.qvl-reflection-page .qvl-eclaireur-dots i{width:7px!important;height:7px!important}
+.qvl-reflection-page .qvl-eclaireur-action{
+  min-height:32px!important;
+  padding:8px 11px!important;
+  font-size:12.3px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-minimized{
+  width:240px!important;
+  height:42px!important;
+}
+.qvl-reflection-page .qvl-eclaireur-minimized-main strong{font-size:13.5px!important}
+.qvl-reflection-page .qvl-eclaireur-minimized-main small{font-size:10.5px!important}
+.qvl-reflection-page .qvl-eclaireur-help{
+  min-height:38px!important;
+  padding:0 13px!important;
+  font-size:13px!important;
+}
+@media(max-width:1020px){
+  .qvl-reflection-page .qvl-eclaireur-guide{
+    width:min(345px,calc(100vw - 24px))!important;
+    max-width:345px!important;
+  }
+}
