@@ -1130,3 +1130,77 @@
   .qvl-eclaireur-guide.cards{animation:qvl-eclaireur-enter .28s ease-out both}
 }
 @media(prefers-reduced-motion:reduce){.qvl-eclaireur-guide,.qvl-eclaireur-scroll span{animation:none!important}.qvl-eclaireur-target{transition:none}}
+
+
+/* -------------------------------------------------------------------------
+   V2.10 — L’ÉCLAIREUR : guidage latéral haut + repères clignotants
+   La fenêtre ne recouvre plus le canevas. Les flèches sont supprimées :
+   c’est la zone concernée qui attire brièvement l’attention.
+   ------------------------------------------------------------------------- */
+.qvl-eclaireur-guide{
+  width:min(286px,calc(100vw - 28px));
+}
+.qvl-eclaireur-guide.intro,
+.qvl-eclaireur-guide.cards,
+.qvl-eclaireur-guide.needs{
+  top:92px;
+  right:14px;
+  bottom:auto;
+  left:auto;
+  transform:none;
+}
+.qvl-eclaireur-guide.results{
+  top:92px;
+  left:14px;
+  right:auto;
+  bottom:auto;
+  transform:none;
+}
+.qvl-eclaireur-guide.cards{animation:qvl-eclaireur-enter .28s ease-out both}
+
+/* Repère visuel : le clignotement remplace les flèches de guidage. */
+.qvl-eclaireur-target{
+  animation:qvl-eclaireur-focus .92s ease-in-out 5;
+  transition:none!important;
+}
+.qvl-canvas-toolbar.qvl-eclaireur-target{
+  border-radius:10px;
+  padding:4px;
+  margin-left:-4px;
+  margin-right:-4px;
+}
+@keyframes qvl-eclaireur-focus{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,188,68,0),0 0 0 0 rgba(65,99,181,0)}
+  50%{box-shadow:0 0 0 4px rgba(255,188,68,.58),0 0 22px 7px rgba(65,99,181,.18)}
+}
+
+/* L’indication textuelle suffit pour l’ascenseur : pas de flèche animée. */
+.qvl-eclaireur-scroll span{display:none!important}
+
+@media(max-width:1040px){
+  .qvl-eclaireur-guide.intro,
+  .qvl-eclaireur-guide.cards,
+  .qvl-eclaireur-guide.needs{
+    top:84px!important;
+    right:12px!important;
+    bottom:auto!important;
+    left:auto!important;
+    width:min(280px,calc(100vw - 24px));
+    max-width:none;
+    margin:0;
+    transform:none;
+  }
+  .qvl-eclaireur-guide.results{
+    top:84px!important;
+    left:12px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:min(280px,calc(100vw - 24px));
+    max-width:none;
+    margin:0;
+    transform:none;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .qvl-eclaireur-target{animation:none!important;box-shadow:0 0 0 3px rgba(255,188,68,.48)!important}
+}
