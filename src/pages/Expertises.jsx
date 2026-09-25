@@ -158,7 +158,6 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
           </p>
         </>
       ),
-      cue: 'Explorez le graphe ici',
     },
     2: {
       title: 'Affinez votre exploration',
@@ -173,7 +172,6 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
           </p>
         </>
       ),
-      cue: 'Recherchez et filtrez ici',
     },
     3: {
       title: selected ? 'Lisez la fiche de l’expertise' : 'Ouvrez la fiche d’une expertise',
@@ -197,7 +195,6 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
           </p>
         </>
       ),
-      cue: 'La fiche apparaît ici',
     },
   }[step]
 
@@ -239,15 +236,11 @@ function ExpertiseEclaireur({ step, open, selected, onNext, onClose, onRestart }
           </div>
 
           <button type="button" className="eclaireur-action eclaireur-next" onClick={onNext}>
-            {step < 3 ? 'Suivant' : 'Compris'} <span aria-hidden="true">→</span>
+            {step < 3 ? 'Suivant' : 'Compris'}
           </button>
         </div>
       </div>
 
-      <div className="eclaireur-direction" aria-hidden="true">
-        <span>{content.cue}</span>
-        <b>➜</b>
-      </div>
     </section>
   )
 }
@@ -356,7 +349,7 @@ export default function Expertises({ data }) {
 
       <aside className="left-rail">
 
-        <section className="rail-section expertise-intro">
+        <section className={`rail-section expertise-intro ${eclaireurOpen && eclaireurStep === 1 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>Pourquoi cette carte ?</h3>
 
           <img
@@ -416,7 +409,7 @@ export default function Expertises({ data }) {
           </button>
         </section>
 
-        <section className="rail-section">
+        <section className={`rail-section ${eclaireurOpen && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>
             <Icon name="search" size={19} />
             Rechercher
@@ -473,7 +466,7 @@ export default function Expertises({ data }) {
           </label>
         </section>
 
-        <section className="rail-section">
+        <section className={`rail-section ${eclaireurOpen && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>Entité(s)</h3>
 
           <select
@@ -491,7 +484,7 @@ export default function Expertises({ data }) {
           </select>
         </section>
 
-        <section className="rail-section">
+        <section className={`rail-section ${eclaireurOpen && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
           <h3>Type d’expertise</h3>
 
           <select
@@ -554,7 +547,7 @@ export default function Expertises({ data }) {
 
       </aside>
 
-      <section className="graph-workspace">
+      <section className={`graph-workspace ${eclaireurOpen && eclaireurStep === 3 && !selected ? 'expertise-eclaireur-target expertise-eclaireur-graph-target' : ''}`}>
 
         <div className="workspace-toolbar">
 
@@ -627,7 +620,7 @@ export default function Expertises({ data }) {
       </section>
 
       {selected && (
-        <aside className="detail-drawer">
+        <aside className={`detail-drawer ${eclaireurOpen && eclaireurStep === 3 ? 'expertise-eclaireur-target' : ''}`}>
 
           <button
             className="drawer-close"
