@@ -1025,3 +1025,28 @@
     max-width:310px!important;
   }
 }
+
+
+/* -------------------------------------------------------------------------
+   ONGLET 1 — L’ÉCLAIREUR V1.5
+   Lisibilité : typographie augmentée uniquement. Le design, le positionnement
+   et le comportement V1.4 restent inchangés.
+   ------------------------------------------------------------------------- */
+.expertise-screen .eclaireur-expertise-brand strong{font-size:17px!important}
+.expertise-screen .eclaireur-expertise-brand small{font-size:9.2px!important;line-height:1.1!important}
+.expertise-screen .eclaireur-expertise-header-actions{font-size:10.5px!important}
+.expertise-screen .eclaireur-expertise-body h3{
+  font-size:14.6px!important;
+  line-height:1.3!important;
+}
+.expertise-screen .eclaireur-expertise-body p{
+  font-size:13.2px!important;
+  line-height:1.46!important;
+}
+.expertise-screen .eclaireur-prev,
+.expertise-screen .eclaireur-next{
+  font-size:11.5px!important;
+}
+.expertise-screen .eclaireur-minimized-main strong{font-size:12.5px!important}
+.expertise-screen .eclaireur-minimized-main small{font-size:10px!important}
+.expertise-screen .eclaireur-help-button-expertise{font-size:12px!important}
