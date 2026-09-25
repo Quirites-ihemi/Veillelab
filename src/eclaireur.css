@@ -1050,3 +1050,78 @@
 .expertise-screen .eclaireur-minimized-main strong{font-size:12.5px!important}
 .expertise-screen .eclaireur-minimized-main small{font-size:10px!important}
 .expertise-screen .eclaireur-help-button-expertise{font-size:12px!important}
+
+/* -------------------------------------------------------------------------
+   ONGLET 1 — L’ÉCLAIREUR V1.6
+   Lisibilité renforcée : fenêtre et typographie agrandies.
+   Design, positionnement et comportement inchangés.
+   ------------------------------------------------------------------------- */
+.expertise-screen .eclaireur-expertise{
+  width:min(370px,calc(100vw - 28px))!important;
+  max-width:370px!important;
+}
+.expertise-screen .eclaireur-expertise-header{
+  min-height:70px!important;
+  padding:12px 14px!important;
+}
+.expertise-screen .eclaireur-expertise-brand{gap:9px!important}
+.expertise-screen .eclaireur-expertise-brand strong{font-size:18px!important}
+.expertise-screen .eclaireur-expertise-brand small{font-size:10px!important;line-height:1.12!important}
+.expertise-screen .eclaireur-expertise-compass{
+  width:34px!important;
+  height:34px!important;
+  flex-basis:34px!important;
+  font-size:20px!important;
+}
+.expertise-screen .eclaireur-expertise-header-actions{
+  margin-right:36px!important;
+  font-size:11.5px!important;
+}
+.expertise-screen .eclaireur-expertise-header-actions .eclaireur-minimize,
+.expertise-screen .eclaireur-expertise-header-actions .eclaireur-close{
+  width:27px!important;
+  height:27px!important;
+  font-size:18px!important;
+}
+.expertise-screen .eclaireur-lighthouse{
+  right:10px!important;
+  width:33px!important;
+  height:49px!important;
+}
+.expertise-screen .eclaireur-expertise-body{padding:14px 16px 12px!important}
+.expertise-screen .eclaireur-expertise-body h3{
+  font-size:16px!important;
+  line-height:1.32!important;
+  margin-bottom:8px!important;
+}
+.expertise-screen .eclaireur-expertise-body p{
+  font-size:14.3px!important;
+  line-height:1.5!important;
+  margin-bottom:8px!important;
+}
+.expertise-screen .eclaireur-expertise-body .eclaireur-prompt{margin-bottom:9px!important}
+.expertise-screen .eclaireur-expertise-footer{margin-top:5px!important;padding-top:9px!important}
+.expertise-screen .eclaireur-dots i{width:7px!important;height:7px!important}
+.expertise-screen .eclaireur-prev,
+.expertise-screen .eclaireur-next{
+  min-height:32px!important;
+  padding:8px 11px!important;
+  font-size:12.3px!important;
+}
+.expertise-screen .eclaireur-expertise-minimized{
+  width:240px!important;
+  height:42px!important;
+}
+.expertise-screen .eclaireur-minimized-main strong{font-size:13.5px!important}
+.expertise-screen .eclaireur-minimized-main small{font-size:10.5px!important}
+.expertise-screen .eclaireur-help-button-expertise{
+  min-height:38px!important;
+  padding:0 13px!important;
+  font-size:13px!important;
+}
+@media(max-width:1020px){
+  .expertise-screen .eclaireur-expertise{
+    width:min(345px,calc(100vw - 24px))!important;
+    max-width:345px!important;
+  }
+}
