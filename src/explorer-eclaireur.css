@@ -495,3 +495,272 @@
   .explorer-eclaireur{width:min(310px,calc(100vw - 24px))!important;max-width:310px!important}
   .explorer-eclaireur-recall{top:86px!important;right:12px!important;left:auto!important;bottom:auto!important}
 }
+
+/* =========================================================
+   ONGLET 2 — ÉCLAIREUR V4
+   Composant réellement utilisé + même langage visuel que l’onglet 1.
+   Fenêtre et typographie agrandies pour la lisibilité.
+   Logique des 7 étapes et déclenchements inchangée.
+   ========================================================= */
+.explorer-eclaireur{
+  position:fixed!important;
+  top:96px!important;
+  bottom:auto!important;
+  z-index:160!important;
+  width:min(370px,calc(100vw - 28px))!important;
+  max-width:370px!important;
+  padding:0!important;
+  margin:0!important;
+  transform:none!important;
+  border:1px solid rgba(31,105,149,.38)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 18px 46px rgba(18,55,92,.22),0 3px 10px rgba(18,55,92,.09)!important;
+  overflow:hidden!important;
+  color:#324a69!important;
+  font-family:inherit!important;
+}
+.explorer-v02-shell>.explorer-eclaireur[data-guide-step="1"],
+.publication-workspace>.explorer-eclaireur,
+.explorer-eclaireur-points,
+.explorer-eclaireur-links,
+.explorer-eclaireur-path,
+.explorer-eclaireur-viewpoint,
+.explorer-eclaireur-free{
+  top:96px!important;
+  right:14px!important;
+  bottom:auto!important;
+  left:auto!important;
+}
+.explorer-eclaireur-proof{
+  top:96px!important;
+  left:14px!important;
+  right:auto!important;
+  bottom:auto!important;
+}
+.explorer-eclaireur-proof::before,
+.explorer-eclaireur-proof::after{display:none!important;content:none!important}
+
+.explorer-eclaireur-head{
+  position:relative!important;
+  min-height:70px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:12px 14px!important;
+  border:0!important;
+  border-radius:15px 15px 0 0!important;
+  overflow:hidden!important;
+  color:#fff!important;
+  background:linear-gradient(110deg,#0b2c53 0%,#075f8d 58%,#0e86aa 100%)!important;
+}
+.explorer-eclaireur-head::after{
+  display:block!important;
+  content:''!important;
+  position:absolute!important;
+  right:58px!important;
+  top:27px!important;
+  width:130px!important;
+  height:36px!important;
+  background:linear-gradient(90deg,rgba(255,199,78,0),rgba(255,199,78,.22))!important;
+  clip-path:polygon(0 42%,100% 0,100% 100%,0 58%)!important;
+  pointer-events:none!important;
+}
+.explorer-eclaireur-brand{
+  position:relative!important;
+  z-index:3!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:9px!important;
+  min-width:0!important;
+}
+.explorer-eclaireur-brand>div{
+  display:block!important;
+  flex-direction:initial!important;
+  gap:0!important;
+}
+.explorer-eclaireur-brand strong{
+  display:block!important;
+  color:#fff!important;
+  font-size:18px!important;
+  line-height:1.05!important;
+  font-weight:850!important;
+  letter-spacing:-.2px!important;
+}
+.explorer-eclaireur-brand small{
+  display:block!important;
+  margin-top:4px!important;
+  color:#bfe0ef!important;
+  font-size:10px!important;
+  line-height:1.12!important;
+  font-weight:800!important;
+  letter-spacing:.075em!important;
+}
+.explorer-eclaireur-compass{
+  display:grid!important;
+  place-items:center!important;
+  width:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
+  border:2px solid #ffc653!important;
+  border-radius:50%!important;
+  color:#ffc653!important;
+  background:transparent!important;
+  font-size:20px!important;
+  box-shadow:0 0 0 3px rgba(255,198,83,.10)!important;
+}
+.explorer-eclaireur-head-actions{
+  position:relative!important;
+  z-index:4!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:5px!important;
+  margin-left:auto!important;
+  margin-right:36px!important;
+  padding:0!important;
+  color:#d8edf6!important;
+  font-size:11.5px!important;
+  font-weight:800!important;
+}
+.explorer-eclaireur-close{
+  position:static!important;
+  display:grid!important;
+  place-items:center!important;
+  width:27px!important;
+  height:27px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.10)!important;
+  color:#fff!important;
+  font:700 18px/1 inherit!important;
+  cursor:pointer!important;
+}
+.explorer-eclaireur-close:hover{background:rgba(255,255,255,.22)!important;color:#fff!important}
+.explorer-eclaireur-lighthouse{
+  display:block!important;
+  position:absolute!important;
+  z-index:2!important;
+  right:10px!important;
+  bottom:0!important;
+  width:33px!important;
+  height:49px!important;
+  pointer-events:none!important;
+  opacity:.94!important;
+}
+.explorer-eclaireur-lighthouse-light{right:7px!important;top:4px!important;width:16px!important;height:8px!important}
+.explorer-eclaireur-lighthouse-top{right:5px!important;top:0!important;width:20px!important;height:7px!important}
+.explorer-eclaireur-lighthouse-body{right:8px!important;bottom:7px!important;width:16px!important;height:34px!important}
+.explorer-eclaireur-lighthouse-body::after{left:5px!important;top:15px!important;width:5px!important;height:7px!important}
+.explorer-eclaireur-lighthouse-base{right:1px!important;bottom:0!important;width:29px!important;height:9px!important}
+
+.explorer-eclaireur-copy{
+  padding:14px 16px 12px!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)!important;
+  border-radius:0 0 15px 15px!important;
+}
+.explorer-eclaireur-copy h3{
+  margin:0 0 8px!important;
+  color:#0e2748!important;
+  font-size:16px!important;
+  line-height:1.32!important;
+  font-weight:850!important;
+}
+.explorer-eclaireur-copy p{
+  margin:0 0 8px!important;
+  color:#344f6f!important;
+  font-size:14.3px!important;
+  line-height:1.5!important;
+}
+.explorer-eclaireur-copy strong{color:#173d69!important;font-weight:850!important}
+.explorer-eclaireur-controls{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin:10px 0 0!important;
+  padding:10px 0 0!important;
+  border-top:1px solid #e2e9f1!important;
+  background:transparent!important;
+  border-radius:0!important;
+}
+.explorer-eclaireur-controls span{
+  font-size:12.3px!important;
+  line-height:1.4!important;
+  color:#718098!important;
+}
+.explorer-eclaireur-pause,
+.explorer-eclaireur-controls.final button{
+  flex:0 0 auto!important;
+  min-height:32px!important;
+  padding:8px 11px!important;
+  border-radius:9px!important;
+  font-size:12.3px!important;
+  font-weight:800!important;
+}
+.explorer-eclaireur-controls.final{justify-content:flex-end!important}
+.explorer-eclaireur-controls.final button{
+  border:0!important;
+  background:linear-gradient(135deg,#ffd66b,#ffb43d)!important;
+  color:#132a45!important;
+  box-shadow:0 5px 12px rgba(211,139,37,.18)!important;
+}
+.explorer-eclaireur-footer{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  margin-top:10px!important;
+  padding-top:9px!important;
+  border-top:1px solid #e2e9f1!important;
+}
+.explorer-eclaireur-dots{display:flex!important;align-items:center!important;gap:5px!important}
+.explorer-eclaireur-dots i{width:7px!important;height:7px!important;border-radius:50%!important;background:#cbd5e1!important}
+.explorer-eclaireur-dots i.active{background:#133f6f!important}
+
+.explorer-eclaireur-recall{
+  position:fixed!important;
+  top:96px!important;
+  right:14px!important;
+  bottom:auto!important;
+  left:auto!important;
+  z-index:160!important;
+  min-height:38px!important;
+  padding:0 13px!important;
+  border:1px solid #77a8c4!important;
+  border-radius:999px!important;
+  background:linear-gradient(135deg,#0f426d,#0a7899)!important;
+  color:#fff!important;
+  box-shadow:0 8px 24px rgba(16,78,112,.22)!important;
+  font:800 13px/1 inherit!important;
+}
+.explorer-eclaireur-mini-compass{
+  display:grid!important;
+  place-items:center!important;
+  width:23px!important;
+  height:23px!important;
+  border:1.5px solid #ffd061!important;
+  border-radius:50%!important;
+  color:#ffd061!important;
+  font-size:13px!important;
+}
+.explorer-eclaireur-radar,.explorer-eclaireur-mini-radar{display:none!important}
+
+@media(max-width:1000px){
+  .explorer-eclaireur{
+    top:86px!important;
+    width:min(345px,calc(100vw - 24px))!important;
+    max-width:345px!important;
+  }
+  .explorer-v02-shell>.explorer-eclaireur[data-guide-step="1"],
+  .publication-workspace>.explorer-eclaireur,
+  .explorer-eclaireur-points,
+  .explorer-eclaireur-links,
+  .explorer-eclaireur-path,
+  .explorer-eclaireur-viewpoint,
+  .explorer-eclaireur-free{right:12px!important;left:auto!important}
+  .explorer-eclaireur-proof{left:12px!important;right:auto!important}
+  .explorer-eclaireur-recall{top:86px!important;right:12px!important}
+}
