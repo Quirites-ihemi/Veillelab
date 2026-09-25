@@ -1,59 +1,74 @@
 /* =========================================================
-   QUIRITÈS VEILLE LAB — LANDING RADAR
-   Landing autonome : aucun style des onglets n'est modifié.
+   QUIRITÈS VEILLE LAB — LANDING RADAR / CARTE ENTIÈRE
+   La carte occupe un panneau visuel autonome à droite.
+   Le visuel est dimensionné par sa HAUTEUR : la France, le radar
+   et les cartouches latéraux restent visibles intégralement.
+   Aucun style des onglets n'est modifié.
    ========================================================= */
 
 .qlab-radar-landing{
   position:relative;
-  min-height:100svh;
+  height:100svh;
+  min-height:680px;
   overflow:hidden;
-  background:#03152d;
+  background:#03162e;
   color:#f7fbff;
   font-family:"Aptos","Segoe UI",Arial,sans-serif;
 }
 
-.qlab-radar-landing__background{
+/* --- PANNEAU VISUEL DROIT --- */
+.qlab-radar-landing__visual{
   position:absolute;
-  inset:0;
-  overflow:hidden;
-  background:#03152d;
-}
-
-.qlab-radar-landing__background>img{
-  position:absolute;
-  inset:0;
-  width:100%;
+  z-index:0;
+  inset:0 0 0 auto;
+  width:64%;
   height:100%;
-  object-fit:contain;
-  object-position:center right;
-  filter:saturate(.98) contrast(1.03) brightness(.95);
+  overflow:hidden;
+  background:#03162e;
 }
 
-/* Le visuel source contient une composition complète.
-   Le masque de gauche recouvre uniquement cette partie pour laisser
-   place au contenu réel de la landing, sans recadrer la carte radar. */
-.qlab-radar-landing__background-mask{
+/* IMPORTANT : hauteur contrainte, largeur automatique.
+   L'image déborde volontairement à GAUCHE du panneau : cela masque
+   la partie éditoriale présente dans le visuel source, sans jamais
+   couper la carte ni les cartouches situés autour du radar. */
+.qlab-radar-landing__visual>img{
   position:absolute;
-  inset:0;
-  background:
-    linear-gradient(
-      90deg,
-      #03162e 0%,
-      #03162e 35%,
-      rgba(3,22,46,.98) 40%,
-      rgba(3,22,46,.86) 44%,
-      rgba(3,22,46,.36) 49%,
-      rgba(3,22,46,0) 57%
-    );
+  z-index:0;
+  top:50%;
+  right:0;
+  height:94%;
+  width:auto;
+  max-width:none;
+  object-fit:contain;
+  transform:translateY(-50%);
+  filter:saturate(.98) contrast(1.02) brightness(.96);
+  user-select:none;
   pointer-events:none;
+}
+
+/* Transition douce entre le texte réel à gauche et le visuel à droite. */
+.qlab-radar-landing__visual-fade{
+  position:absolute;
+  z-index:1;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(
+    90deg,
+    #03162e 0%,
+    rgba(3,22,46,.99) 5%,
+    rgba(3,22,46,.88) 10%,
+    rgba(3,22,46,.45) 17%,
+    rgba(3,22,46,.10) 25%,
+    transparent 34%
+  );
 }
 
 .qlab-radar-landing__content{
   position:relative;
   z-index:3;
-  min-height:100svh;
+  height:100%;
   display:grid;
-  grid-template-columns:minmax(520px,43%) minmax(0,57%);
+  grid-template-columns:minmax(500px,42%) minmax(0,58%);
 }
 
 .qlab-radar-landing__copy{
@@ -61,14 +76,14 @@
   flex-direction:column;
   justify-content:center;
   min-width:0;
-  padding:42px 34px 46px clamp(46px,4.4vw,76px);
+  padding:34px 26px 34px clamp(46px,4.3vw,72px);
 }
 
 .qlab-radar-landing__logo{
   display:block;
-  width:clamp(190px,17vw,280px);
+  width:clamp(190px,16.5vw,270px);
   height:auto;
-  margin:0 0 34px;
+  margin:0 0 30px;
   object-fit:contain;
   object-position:left center;
 }
@@ -92,7 +107,7 @@
 .qlab-radar-landing h1>span{
   display:block;
   color:#f7f9fd;
-  font-size:clamp(48px,4.25vw,72px);
+  font-size:clamp(46px,4.05vw,68px);
   font-weight:300;
 }
 
@@ -100,7 +115,7 @@
   display:block;
   margin-top:7px;
   color:#f7f9fd;
-  font-size:clamp(53px,4.7vw,80px);
+  font-size:clamp(51px,4.45vw,75px);
   font-weight:350;
 }
 
@@ -110,34 +125,34 @@
 }
 
 .qlab-radar-landing__lead{
-  max-width:690px;
-  margin:28px 0 0;
+  max-width:650px;
+  margin:26px 0 0;
   color:#e0e9f4;
-  font-size:clamp(21px,1.65vw,27px);
+  font-size:clamp(20px,1.55vw,25px);
   line-height:1.42;
   font-weight:400;
 }
 
 .qlab-radar-landing__intro{
-  max-width:680px;
-  margin:30px 0 0;
+  max-width:650px;
+  margin:26px 0 0;
   color:#c5d5e6;
-  font-size:17px;
-  line-height:1.58;
+  font-size:16.5px;
+  line-height:1.55;
 }
 
 .qlab-radar-landing__note{
-  max-width:680px;
-  margin:13px 0 0;
+  max-width:650px;
+  margin:12px 0 0;
   color:#7890aa;
-  font-size:14px;
+  font-size:13.5px;
   line-height:1.45;
 }
 
 .qlab-radar-landing__enter{
   width:min(100%,350px);
-  min-height:62px;
-  margin-top:28px;
+  min-height:60px;
+  margin-top:26px;
   border:1px solid rgba(99,229,249,.8);
   border-radius:12px;
   background:linear-gradient(135deg,#62def0 0%,#38c8df 100%);
@@ -176,7 +191,7 @@
   display:flex;
   align-items:center;
   gap:20px;
-  margin-top:17px;
+  margin-top:16px;
   flex-wrap:wrap;
   color:#d5e1ef;
   font-size:14px;
@@ -226,19 +241,19 @@
   cursor:pointer;
 }
 
-/* Animation discrète. Elle ne modifie pas le cadrage du visuel. */
+/* Animation limitée au panneau visuel. */
 .qlab-radar-landing__radar-sweep{
   position:absolute;
   z-index:2;
-  left:67.2%;
-  top:49.7%;
-  width:min(48vw,760px);
+  left:58%;
+  top:50%;
+  width:min(43vw,690px);
   aspect-ratio:1;
   transform:translate(-50%,-50%);
   transform-origin:center;
   border-radius:50%;
   pointer-events:none;
-  opacity:.55;
+  opacity:.42;
 }
 
 .qlab-radar-landing__radar-sweep::before{
@@ -248,51 +263,42 @@
   border-radius:50%;
   background:conic-gradient(
     from 0deg,
-    transparent 0deg 322deg,
-    rgba(70,218,255,.02) 326deg,
-    rgba(74,221,255,.17) 342deg,
-    rgba(222,251,255,.38) 354deg,
+    transparent 0deg 326deg,
+    rgba(70,218,255,.02) 330deg,
+    rgba(74,221,255,.13) 344deg,
+    rgba(222,251,255,.28) 355deg,
     transparent 360deg
   );
-  animation:qlab-radar-spin 9s linear infinite;
+  animation:qlab-radar-spin 10s linear infinite;
   mix-blend-mode:screen;
 }
 
 .qlab-radar-landing__pulse{
   position:absolute;
   z-index:2;
-  left:67.2%;
-  top:49.7%;
-  width:14px;
-  height:14px;
-  border:2px solid rgba(116,225,255,.68);
+  left:58%;
+  top:50%;
+  width:12px;
+  height:12px;
+  border:2px solid rgba(116,225,255,.55);
   border-radius:50%;
   transform:translate(-50%,-50%);
   pointer-events:none;
   opacity:0;
-  animation:qlab-radar-pulse 5s ease-out infinite;
+  animation:qlab-radar-pulse 5.5s ease-out infinite;
 }
 
-.qlab-radar-landing__pulse--two{animation-delay:2.5s}
+.qlab-radar-landing__pulse--two{animation-delay:2.75s}
 
-@keyframes qlab-radar-spin{
-  to{transform:rotate(360deg)}
-}
+@keyframes qlab-radar-spin{to{transform:rotate(360deg)}}
 
 @keyframes qlab-radar-pulse{
-  0%{
-    opacity:.55;
-    transform:translate(-50%,-50%) scale(1);
-    box-shadow:0 0 14px rgba(55,211,255,.28);
-  }
-  65%{opacity:.10}
-  100%{
-    opacity:0;
-    transform:translate(-50%,-50%) scale(42);
-  }
+  0%{opacity:.48;transform:translate(-50%,-50%) scale(1)}
+  70%{opacity:.08}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(38)}
 }
 
-/* CGU */
+/* --- CGU --- */
 .qlab-radar-landing__modal-backdrop{
   position:fixed;
   inset:0;
@@ -377,133 +383,70 @@
   cursor:pointer;
 }
 
-@media(max-width:1180px){
-  .qlab-radar-landing__content{
-    grid-template-columns:minmax(470px,47%) minmax(0,53%);
-  }
-
-  .qlab-radar-landing__copy{
-    padding-left:38px;
-    padding-right:20px;
-  }
-
-  .qlab-radar-landing__logo{
-    width:220px;
-    margin-bottom:28px;
-  }
-
-  .qlab-radar-landing__background-mask{
-    background:
-      linear-gradient(
-        90deg,
-        #03162e 0%,
-        #03162e 38%,
-        rgba(3,22,46,.96) 45%,
-        rgba(3,22,46,.45) 52%,
-        transparent 62%
-      );
-  }
+/* Écrans plus étroits : on garde d'abord toute la carte, quitte à la réduire. */
+@media(max-width:1220px){
+  .qlab-radar-landing__visual{width:61%}
+  .qlab-radar-landing__visual>img{height:88%}
+  .qlab-radar-landing__content{grid-template-columns:minmax(460px,44%) minmax(0,56%)}
+  .qlab-radar-landing__copy{padding-left:36px;padding-right:16px}
+  .qlab-radar-landing__logo{width:215px;margin-bottom:24px}
+  .qlab-radar-landing h1>span{font-size:43px}
+  .qlab-radar-landing h1>strong{font-size:49px}
+  .qlab-radar-landing__lead{font-size:20px}
+  .qlab-radar-landing__intro{font-size:15.5px;margin-top:21px}
 }
 
 @media(max-width:900px){
   .qlab-radar-landing{
+    height:auto;
+    min-height:100svh;
     overflow:auto;
   }
 
-  .qlab-radar-landing__background{
+  .qlab-radar-landing__visual{
     position:relative;
-    height:540px;
-    order:2;
+    width:100%;
+    height:620px;
+    margin-top:0;
+    overflow:hidden;
   }
 
-  .qlab-radar-landing__background>img{
+  .qlab-radar-landing__visual>img{
+    top:50%;
+    right:50%;
+    height:auto;
+    width:100%;
+    max-width:100%;
+    transform:translate(50%,-50%);
     object-fit:contain;
-    object-position:center center;
   }
 
-  .qlab-radar-landing__background-mask{
-    display:none;
-  }
+  .qlab-radar-landing__visual-fade,
+  .qlab-radar-landing__radar-sweep,
+  .qlab-radar-landing__pulse{display:none}
 
   .qlab-radar-landing__content{
-    min-height:auto;
+    height:auto;
     display:block;
   }
 
   .qlab-radar-landing__copy{
-    min-height:auto;
-    padding:38px 28px 32px;
-  }
-
-  .qlab-radar-landing__logo{
-    width:215px;
-    margin-bottom:24px;
-  }
-
-  .qlab-radar-landing__radar-sweep,
-  .qlab-radar-landing__pulse{
-    display:none;
-  }
-
-  .qlab-radar-landing h1>span{
-    font-size:44px;
-  }
-
-  .qlab-radar-landing h1>strong{
-    font-size:50px;
+    padding:36px 28px 30px;
   }
 }
 
 @media(max-width:620px){
-  .qlab-radar-landing__copy{
-    padding:30px 20px 28px;
-  }
-
-  .qlab-radar-landing__logo{
-    width:190px;
-  }
-
-  .qlab-radar-landing h1>span{
-    font-size:39px;
-  }
-
-  .qlab-radar-landing h1>strong{
-    font-size:43px;
-  }
-
-  .qlab-radar-landing__lead{
-    font-size:20px;
-  }
-
-  .qlab-radar-landing__intro{
-    font-size:16px;
-  }
-
-  .qlab-radar-landing__enter{
-    width:100%;
-    min-height:56px;
-    font-size:18px;
-  }
-
-  .qlab-radar-landing__cgu-row{
-    align-items:flex-start;
-    flex-direction:column;
-    gap:10px;
-  }
-
-  .qlab-radar-landing__cgu-row>button{
-    border-left:0;
-    padding-left:0;
-  }
-
-  .qlab-radar-landing__modal{
-    padding:30px 22px 24px;
-  }
+  .qlab-radar-landing__copy{padding:28px 20px}
+  .qlab-radar-landing__logo{width:190px}
+  .qlab-radar-landing h1>span{font-size:38px}
+  .qlab-radar-landing h1>strong{font-size:42px}
+  .qlab-radar-landing__enter{width:100%;min-height:56px;font-size:18px}
+  .qlab-radar-landing__cgu-row{align-items:flex-start;flex-direction:column;gap:10px}
+  .qlab-radar-landing__cgu-row>button{border-left:0;padding-left:0}
+  .qlab-radar-landing__modal{padding:30px 22px 24px}
 }
 
 @media(prefers-reduced-motion:reduce){
   .qlab-radar-landing__radar-sweep::before,
-  .qlab-radar-landing__pulse{
-    animation:none!important;
-  }
+  .qlab-radar-landing__pulse{animation:none!important}
 }

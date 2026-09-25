@@ -17,9 +17,9 @@ export default function LandingPage({ onEnter }) {
 
   return (
     <div className="qlab-radar-landing">
-      <div className="qlab-radar-landing__background" aria-hidden="true">
+      <div className="qlab-radar-landing__visual" aria-hidden="true">
         <img src={radarVisual} alt="" />
-        <div className="qlab-radar-landing__background-mask" />
+        <div className="qlab-radar-landing__visual-fade" />
         <div className="qlab-radar-landing__radar-sweep" />
         <div className="qlab-radar-landing__pulse qlab-radar-landing__pulse--one" />
         <div className="qlab-radar-landing__pulse qlab-radar-landing__pulse--two" />
