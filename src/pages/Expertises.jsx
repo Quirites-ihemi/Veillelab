@@ -577,16 +577,7 @@ export default function Expertises({ data }) {
           <div className="expertise-workspace-title">
             <h1>Expertises et savoir-faire du ministère de l’Intérieur</h1>
 
-            <p className="expertise-method-note">
-              <Icon name="info" size={16} />
-              <span>
-                Résultats fondés sur les publications du bulletin présentes dans le corpus actif qui ne donnent qu’une vision partielle.
-              </span>
-            </p>
-          </div>
-
-          <div className="expertise-workspace-side">
-            <div className="expertise-metrics" aria-label="Statistiques de la carte">
+            <div className="expertise-metrics expertise-metrics-under-title" aria-label="Statistiques de la carte">
               <div className="expertise-metric">
                 <span className="expertise-metric-icon"><Icon name="graph" size={21} /></span>
                 <span>
@@ -604,6 +595,15 @@ export default function Expertises({ data }) {
               </div>
             </div>
 
+            <p className="expertise-method-note">
+              <Icon name="info" size={16} />
+              <span>
+                Résultats fondés sur les publications du bulletin présentes dans le corpus actif qui ne donnent qu’une vision partielle.
+              </span>
+            </p>
+          </div>
+
+          <div className="expertise-workspace-side">
             <div className="toolbar-actions">
 
             <button onClick={clear}>
