@@ -433,6 +433,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [draftTitle, setDraftTitle] = useState('')
   const [leftCollapsed, setLeftCollapsed] = useState(false)
   const [rightCollapsed, setRightCollapsed] = useState(false)
+  const [resultTab, setResultTab] = useState('answer')
   const [linkMode, setLinkMode] = useState(false)
   const [linkLabel, setLinkLabel] = useState('est lié à')
   const [showLinks, setShowLinks] = useState(false)
@@ -518,6 +519,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     if (!clean) return
 
     const requestId = ++searchRequestRef.current
+    setResultTab('answer')
     setResultNeedId(needId)
     setSearchContext({
       source: context.source || 'guided',
@@ -797,7 +799,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         <div className="qvl-hero-text">
           <h1>Avancer avec le corpus</h1>
           <p>Une bibliothèque à portée de main pour explorer, documenter et relier les éléments utiles à votre travail.</p>
-          <span><strong>Périmètre :</strong> l’outil travaille uniquement à partir des publications du bulletin Quiritès intégrées au corpus actif. Il ne complète pas les résultats avec le Web ni avec des connaissances extérieures au corpus et peut donc ne pas pouvoir répondre à certaines questions.</span>
         </div>
         <div className="qvl-hero-visual" aria-hidden="true">
           <img src={heroImage} alt=""/>
@@ -831,7 +832,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
-          <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2><p>Posez une question, formulez une idée, ajoutez une note ou conservez un élément du corpus. Déplacez les cartes, rapprochez-les et reliez-les pour faire apparaître progressivement votre raisonnement.</p></div></div>
+          <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2></div></div>
           <div className={`qvl-canvas-toolbar ${eclaireur.mode === 'open' && (eclaireur.step === 'intro' || eclaireur.step === 'cards') ? 'qvl-eclaireur-target' : ''}`}>
             {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
             <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
@@ -939,23 +940,37 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         <button className="qvl-panel-toggle right" type="button" onClick={() => setRightCollapsed(value => !value)} aria-label={rightCollapsed ? 'Déployer le corpus' : 'Replier le corpus'}>
           {rightCollapsed ? '‹' : '›'}
         </button>
-        {rightCollapsed ? <div className="qvl-collapsed-label">Corpus</div> : <>
-          <header className="qvl-side-heading corpus">
+        {rightCollapsed ? <div className="qvl-collapsed-label">Résultats</div> : <>
+          <header className="qvl-side-heading corpus qvl-results-heading">
             <span className="qvl-side-icon"><Icon name="file" size={19}/></span>
-            <div><h2>Ce que le corpus Quiritès apporte</h2><p>Résultats fondés sur les publications du bulletin présentes dans le corpus actif.</p></div>
+            <div><h2>Résultats du corpus</h2><p>Éléments sourcés issus des publications présentes dans le corpus actif.</p></div>
           </header>
 
-          <div className="qvl-corpus-boundary"><Icon name="info" size={17}/><div><strong>Périmètre du bot</strong><p>Il répond uniquement à partir des publications du bulletin Quiritès intégrées au corpus actif. Une absence ou une faible couverture ici ne signifie pas que le sujet est absent de la littérature ou des connaissances disponibles en dehors du bulletin.</p></div></div>
+          <div className="qvl-results-tabs" role="tablist" aria-label="Vues des résultats">
+            <button type="button" role="tab" aria-selected={resultTab === 'answer'} className={resultTab === 'answer' ? 'active' : ''} onClick={() => setResultTab('answer')}>Réponse</button>
+            <button type="button" role="tab" aria-selected={resultTab === 'sources'} className={resultTab === 'sources' ? 'active' : ''} onClick={() => setResultTab('sources')}>Sources{visibleResults.length ? <span>{new Set(visibleResults.map(item => publicationMeta(item).id).filter(Boolean)).size}</span> : null}</button>
+            <button type="button" role="tab" aria-selected={resultTab === 'explore'} className={resultTab === 'explore' ? 'active' : ''} onClick={() => setResultTab('explore')}>À explorer</button>
+          </div>
 
-          {searchContext?.source === 'canvas' && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Recherche à partir du canevas</strong><span>{searchResult?.interpretation?.context_used ? `Contexte utilisé : ${searchResult.interpretation.context_subject || searchResult.interpretation.subject_query}` : searchResult?.interpretation?.subject_query ? `Sujet interprété : ${searchResult.interpretation.subject_query}` : 'Le besoin sélectionné est appliqué au post-it actif et au contexte utile du canevas.'}</span></div></div>}
-          {searchContext?.source === 'manual' && searchResult?.interpretation?.context_used && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Contexte du canevas utilisé</strong><span>{searchResult.interpretation.context_subject || searchResult.interpretation.subject_query}</span></div></div>}
+          <div className="qvl-results-tabpanel" role="tabpanel">
+            {resultTab === 'answer' && <>
+              {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
+              {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans le corpus actif…</strong></div>}
+              {!searchLoading && searchResult && <NeedResults need={resultNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
+              {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>{searchContext?.source === 'awaiting-card' ? 'Choisissez le point de départ.' : 'Votre bibliothèque est prête.'}</strong><p>{searchContext?.source === 'awaiting-card' ? 'Sélectionnez un post-it dans le canevas, puis cliquez sur l’un des besoins informationnels à gauche.' : 'Sélectionnez un post-it puis un besoin informationnel. Les résultats apparaîtront ici avec leur provenance.'}</p></div>}
+            </>}
 
-          {searchContext?.source !== 'manual' && <div className="qvl-general-advice"><Icon name="info" size={16}/><div><strong>Repère</strong><p>{activeNeed.advice}</p></div></div>}
+            {resultTab === 'sources' && <SourceResults materials={visibleResults} onProof={showProof}/>} 
 
-          {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
-          {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans le corpus actif…</strong></div>}
-          {!searchLoading && searchResult && <NeedResults need={resultNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
-          {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>{searchContext?.source === 'awaiting-card' ? 'Choisissez le point de départ.' : 'Votre bibliothèque est prête.'}</strong><p>{searchContext?.source === 'awaiting-card' ? 'Sélectionnez un post-it dans le canevas, puis cliquez sur l’un des besoins informationnels à gauche.' : 'Sélectionnez un post-it puis un besoin informationnel. Les résultats apparaîtront ici avec leur provenance.'}</p></div>}
+            {resultTab === 'explore' && <ExploreResults
+              need={resultNeed}
+              result={searchResult}
+              materials={visibleResults}
+              searchContext={searchContext}
+              onAdd={addMaterialToCanvas}
+              onProof={showProof}
+            />}
+          </div>
 
           <div className={`qvl-free-search ${freeSearchOpen ? 'open' : ''}`}>
             <button type="button" className="qvl-free-search-toggle" onClick={() => { setFreeSearchOpen(value => !value); window.setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0) }}>
@@ -1028,7 +1043,7 @@ function EclaireurGuide({ step = 'intro', mode = 'open', resultCount, loading, a
   } else if (step === 'results') {
     title = 'Consultez les résultats du corpus'
     body = <>
-      <p>Les résultats apparaissent dans le volet de droite avec leur provenance et leur preuve.</p>
+      <p>Le volet de droite organise les résultats en trois vues : <strong>Réponse</strong>, <strong>Sources</strong> et <strong>À explorer</strong>.</p>
       {awaitingCard ? <p>Sélectionnez d’abord une carte dans le canevas : le besoin choisi sera appliqué à ce point de départ.</p> : loading ? <p>La recherche est en cours. Les éléments trouvés vont s’afficher dans cette colonne.</p> : resultCount === 0 ? <p>Si le corpus ne fournit pas de résultat suffisant, le message de limite s’affichera au même endroit.</p> : multiple ? <p className="qvl-eclaireur-tip">Plusieurs résultats sont disponibles : <strong>faites bien descendre l’ascenseur de cette colonne jusqu’en bas</strong> pour tous les voir.</p> : <p>Le résultat est affiché dans cette colonne.</p>}
     </>
   }
@@ -1067,6 +1082,72 @@ function NeedResults({ need, result, materials, onAdd, onProof }) {
     </div>}
     <div className="qvl-result-heading"><div><strong>{materials.length} résultat{materials.length > 1 ? 's' : ''}</strong><span>{need.id === 'overview' ? 'pour construire une première vue du thème' : 'correspondant à ce besoin informationnel'}</span></div>{all.length !== materials.length && <small>{all.length - materials.length} autre{all.length - materials.length > 1 ? 's' : ''} résultat{all.length - materials.length > 1 ? 's' : ''} écarté{all.length - materials.length > 1 ? 's' : ''} car hors de cette catégorie</small>}</div>
     {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Le corpus actif ne permet pas de répondre suffisamment à ce besoin.</strong><p>Aucun élément suffisamment ciblé n’a été repéré dans les publications du bulletin présentes dans le corpus. Cela ne signifie pas que le sujet est peu documenté en dehors du bulletin. Vous pouvez préciser la formulation ou revenir à « Comprendre rapidement ce que le corpus contient sur un thème ».</p></div>}
+  </section>
+}
+
+function SourceResults({ materials, onProof }) {
+  const grouped = new Map()
+  ;(materials || []).forEach(material => {
+    const meta = publicationMeta(material)
+    const key = meta.id || meta.title || materialIdOf(material) || `source-${grouped.size}`
+    if (!grouped.has(key)) grouped.set(key, { meta, materials: [] })
+    grouped.get(key).materials.push(material)
+  })
+
+  const sources = [...grouped.values()]
+
+  if (!sources.length) {
+    return <div className="qvl-right-empty compact"><span className="qvl-round-book"><Icon name="file" size={25}/></span><strong>Aucune source à afficher.</strong><p>Lancez une recherche dans le corpus pour voir ici les publications mobilisées.</p></div>
+  }
+
+  return <section className="qvl-source-results">
+    <div className="qvl-source-summary"><strong>{sources.length} source{sources.length > 1 ? 's' : ''}</strong><span>mobilisée{sources.length > 1 ? 's' : ''} dans cette réponse</span></div>
+    <div className="qvl-source-list">
+      {sources.map((entry, index) => {
+        const { meta } = entry
+        const locators = [...new Set(entry.materials.map(item => locatorOf(item)?.label).filter(Boolean))]
+        const representative = entry.materials[0]
+        const href = sourceUrlOf(representative)
+        return <article key={meta.id || meta.title || index} className="qvl-source-card">
+          <div className="qvl-source-card-icon"><Icon name="file" size={17}/></div>
+          <div className="qvl-source-card-copy">
+            <strong>{meta.title || meta.id || 'Publication source'}</strong>
+            <span>{[meta.organisation, meta.year, meta.id].filter(Boolean).join(' · ')}</span>
+            {locators.length > 0 && <small>{locators.slice(0, 5).join(' · ')}</small>}
+          </div>
+          <div className="qvl-source-card-actions">
+            {href && <a href={href} target="_blank" rel="noreferrer" aria-label="Ouvrir la source"><Icon name="external" size={14}/></a>}
+            <button type="button" onClick={() => onProof(representative)} aria-label="Voir la preuve"><Icon name="file" size={14}/></button>
+          </div>
+        </article>
+      })}
+    </div>
+  </section>
+}
+
+function ExploreResults({ need, result, materials, searchContext, onAdd, onProof }) {
+  const all = Array.isArray(result?.results) ? result.results : (Array.isArray(result?.materials) ? result.materials : [])
+  const visibleIds = new Set((materials || []).map(item => materialIdOf(item)).filter(Boolean))
+  const extras = all.filter(item => {
+    const id = materialIdOf(item)
+    return id ? !visibleIds.has(id) : !(materials || []).includes(item)
+  }).slice(0, 6)
+
+  return <section className="qvl-explore-results">
+    {searchContext?.source === 'canvas' && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Recherche à partir du canevas</strong><span>{result?.interpretation?.context_used ? `Contexte utilisé : ${result.interpretation.context_subject || result.interpretation.subject_query}` : result?.interpretation?.subject_query ? `Sujet interprété : ${result.interpretation.subject_query}` : 'Le besoin sélectionné est appliqué au post-it actif et au contexte utile du canevas.'}</span></div></div>}
+    {searchContext?.source === 'manual' && result?.interpretation?.context_used && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Contexte du canevas utilisé</strong><span>{result.interpretation.context_subject || result.interpretation.subject_query}</span></div></div>}
+
+    <div className="qvl-general-advice qvl-explore-advice"><Icon name="info" size={16}/><div><strong>Point de vigilance</strong><p>{need?.advice}</p></div></div>
+
+    <div className="qvl-corpus-boundary qvl-explore-boundary"><Icon name="info" size={17}/><div><strong>Périmètre du bot</strong><p>Il répond uniquement à partir des publications du bulletin Quiritès intégrées au corpus actif. Une absence ou une faible couverture ici ne signifie pas que le sujet est absent de la littérature ou des connaissances disponibles en dehors du bulletin.</p></div></div>
+
+    {result && extras.length > 0 && <div className="qvl-explore-more">
+      <div className="qvl-explore-more-heading"><strong>Autres éléments trouvés par la recherche</strong><span>Ils n’entrent pas directement dans la catégorie sélectionnée, mais peuvent aider à élargir la lecture.</span></div>
+      <div className="qvl-explore-more-list">{extras.map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div>
+    </div>}
+
+    {!result && <div className="qvl-right-empty compact"><span className="qvl-round-book"><Icon name="target" size={25}/></span><strong>Des pistes apparaîtront ici.</strong><p>Lancez d’abord une recherche ou choisissez un besoin informationnel à gauche.</p></div>}
+    {result && extras.length === 0 && <div className="qvl-explore-empty"><strong>Aucun autre élément n’a été écarté de cette réponse.</strong><span>Utilisez les autres besoins informationnels ou reformulez votre question pour ouvrir un autre angle de lecture.</span></div>}
   </section>
 }
 

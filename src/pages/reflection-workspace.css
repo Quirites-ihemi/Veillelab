@@ -1695,3 +1695,400 @@
     max-width:345px!important;
   }
 }
+
+/* ==========================================================================
+   AVANCER AVEC LE CORPUS — V2.4
+   Allègement visuel + résultats en 3 onglets.
+   Aucun changement de moteur, de recherche ou de données.
+   ========================================================================== */
+.qvl-reflection-page{
+  background:#f7f9fc;
+}
+
+/* En-tête de page plus léger : on conserve le titre et la promesse, sans bandeau lourd. */
+.qvl-reflection-hero{
+  padding:12px 14px 14px;
+}
+.qvl-reflection-hero .qvl-hero-copy{
+  display:block!important;
+  min-height:0!important;
+  padding:3px 5px 5px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.qvl-reflection-hero .qvl-hero-text{
+  max-width:900px;
+}
+.qvl-reflection-hero .qvl-hero-copy h1{
+  margin:0 0 4px!important;
+  color:#102f55!important;
+  font-family:"Source Sans 3",Inter,ui-sans-serif,system-ui,sans-serif!important;
+  font-size:36px!important;
+  font-weight:800!important;
+  letter-spacing:-.025em!important;
+}
+.qvl-reflection-hero .qvl-hero-copy p{
+  margin:0!important;
+  color:#6b7f98!important;
+  font-size:15px!important;
+  line-height:1.42!important;
+}
+.qvl-reflection-hero .qvl-hero-visual{
+  display:none!important;
+}
+
+/* Trois zones mieux séparées, mais plus aérées. */
+.qvl-reflection-shell{
+  --left:292px;
+  --right:360px;
+  gap:12px!important;
+  padding:0 14px!important;
+}
+.qvl-reflection-left,
+.qvl-reflection-center,
+.qvl-reflection-right{
+  border-color:#e2e8f0!important;
+  border-radius:16px!important;
+  box-shadow:0 7px 24px rgba(31,55,84,.045)!important;
+}
+.qvl-reflection-left,
+.qvl-reflection-right{
+  background:#fff!important;
+}
+.qvl-reflection-shell.left-collapsed{--left:46px}
+.qvl-reflection-shell.right-collapsed{--right:46px}
+
+/* Boutons de repli plus visibles. */
+.qvl-panel-toggle{
+  width:32px!important;
+  height:32px!important;
+  border-radius:10px!important;
+  border-color:#d8e1eb!important;
+  color:#315b85!important;
+  background:#fff!important;
+  box-shadow:0 3px 10px rgba(31,55,84,.08)!important;
+}
+.qvl-panel-toggle:hover{
+  background:#edf5fd!important;
+  border-color:#a9bfd7!important;
+}
+.qvl-collapsed-label{
+  font-size:11px!important;
+  color:#617993!important;
+  letter-spacing:.09em!important;
+}
+
+/* Entêtes latéraux plus sobres. */
+.qvl-side-heading{
+  padding-bottom:11px!important;
+  border-bottom:1px solid #edf1f5!important;
+}
+.qvl-side-heading h2{
+  color:#173b64!important;
+  font-size:20px!important;
+}
+.qvl-side-heading p{
+  color:#7b8da1!important;
+  font-size:12px!important;
+}
+.qvl-side-icon{
+  background:#eef5fc!important;
+  color:#2d67a4!important;
+}
+
+/* Canevas : titre simple, sans paragraphe introductif. */
+.qvl-canvas-intro{
+  padding:13px 15px 10px!important;
+  background:#fff!important;
+  border-bottom:1px solid #edf1f5!important;
+}
+.qvl-canvas-title{
+  align-items:center!important;
+}
+.qvl-canvas-title h2{
+  margin:0!important;
+  color:#173b64!important;
+  font-size:23px!important;
+  font-weight:800!important;
+}
+.qvl-canvas-title-icon{
+  background:#edf4fb!important;
+  color:#2f68a1!important;
+}
+.qvl-canvas-toolbar{
+  margin-top:11px!important;
+}
+.qvl-postit-add,
+.qvl-link-button,
+.qvl-link-count{
+  box-shadow:none!important;
+}
+.qvl-canvas-stage{
+  background:#fbfcfe!important;
+}
+
+/* Colonne résultats : titre + onglets. */
+.qvl-reflection-right{
+  padding:13px 10px 12px!important;
+}
+.qvl-results-heading{
+  padding-left:34px!important;
+  margin-bottom:8px!important;
+}
+.qvl-results-heading h2{
+  font-size:20px!important;
+}
+.qvl-results-heading p{
+  font-size:11.5px!important;
+}
+.qvl-results-tabs{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:4px;
+  padding:4px;
+  margin:0 0 10px;
+  border:1px solid #e2e8ef;
+  border-radius:11px;
+  background:#f5f8fb;
+}
+.qvl-results-tabs button{
+  position:relative;
+  min-height:36px;
+  padding:0 8px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#6b7f95;
+  font-size:12px;
+  font-weight:750;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+.qvl-results-tabs button:hover{
+  background:#fff;
+  color:#244d78;
+}
+.qvl-results-tabs button.active{
+  background:#fff;
+  color:#175ec1;
+  box-shadow:0 2px 8px rgba(31,77,125,.10);
+}
+.qvl-results-tabs button.active::after{
+  content:"";
+  position:absolute;
+  left:22%;
+  right:22%;
+  bottom:-5px;
+  height:2px;
+  border-radius:999px;
+  background:#1d73e8;
+}
+.qvl-results-tabs button span{
+  min-width:18px;
+  height:18px;
+  border-radius:999px;
+  padding:0 5px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#e9f3ff;
+  color:#2b6db3;
+  font-size:9px;
+  font-weight:850;
+}
+.qvl-results-tabpanel{
+  min-height:230px;
+}
+
+/* La réponse garde les composants existants mais respire davantage. */
+.qvl-results-tabpanel .qvl-need-results{
+  margin-top:2px!important;
+}
+.qvl-results-tabpanel .qvl-result-list{
+  max-height:545px!important;
+  padding-right:3px;
+}
+.qvl-results-tabpanel .qvl-result-card{
+  border-color:#e0e7ef!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+.qvl-results-tabpanel .qvl-result-excerpt{
+  color:#294b6e!important;
+  font-size:13.5px!important;
+  line-height:1.5!important;
+}
+.qvl-results-tabpanel .qvl-result-source>strong{
+  font-size:12.2px!important;
+}
+
+/* Onglet Sources : index des publications déjà mobilisées par la recherche. */
+.qvl-source-results{
+  display:grid;
+  gap:9px;
+}
+.qvl-source-summary{
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+  padding:2px 2px 4px;
+}
+.qvl-source-summary strong{
+  color:#244d78;
+  font-size:13px;
+}
+.qvl-source-summary span{
+  color:#7c8da0;
+  font-size:11px;
+}
+.qvl-source-list{
+  display:grid;
+  gap:7px;
+  max-height:565px;
+  overflow:auto;
+  padding-right:2px;
+}
+.qvl-source-card{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) auto;
+  gap:9px;
+  align-items:start;
+  padding:10px;
+  border:1px solid #e0e8f0;
+  border-radius:11px;
+  background:#fff;
+}
+.qvl-source-card-icon{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:#edf5fe;
+  color:#2f6eaa;
+}
+.qvl-source-card-copy{
+  min-width:0;
+}
+.qvl-source-card-copy strong{
+  display:block;
+  color:#294d72;
+  font-size:12px;
+  line-height:1.35;
+}
+.qvl-source-card-copy span,
+.qvl-source-card-copy small{
+  display:block;
+  margin-top:3px;
+  color:#73859a;
+  font-size:10px;
+  line-height:1.35;
+}
+.qvl-source-card-actions{
+  display:flex;
+  gap:4px;
+}
+.qvl-source-card-actions a,
+.qvl-source-card-actions button{
+  width:29px;
+  height:29px;
+  border:1px solid #d4e0ec;
+  border-radius:8px;
+  background:#fff;
+  color:#4a6d91;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+.qvl-source-card-actions a:hover,
+.qvl-source-card-actions button:hover{
+  background:#eef5fb;
+}
+
+/* Onglet À explorer : uniquement des éléments déjà disponibles dans la recherche. */
+.qvl-explore-results{
+  display:grid;
+  gap:9px;
+}
+.qvl-explore-results .qvl-guided-status,
+.qvl-explore-results .qvl-general-advice,
+.qvl-explore-results .qvl-corpus-boundary{
+  margin-top:0!important;
+  border-radius:11px!important;
+}
+.qvl-explore-advice{
+  background:#f3f7fb!important;
+}
+.qvl-explore-boundary{
+  background:#fbfcfe!important;
+  border-color:#e3eaf1!important;
+}
+.qvl-explore-more-heading{
+  padding:3px 2px 5px;
+}
+.qvl-explore-more-heading strong{
+  display:block;
+  color:#244d78;
+  font-size:12.5px;
+}
+.qvl-explore-more-heading span{
+  display:block;
+  margin-top:2px;
+  color:#7b8ca0;
+  font-size:10.5px;
+  line-height:1.35;
+}
+.qvl-explore-more-list{
+  max-height:380px;
+  overflow:auto;
+  padding-right:2px;
+}
+.qvl-explore-more-list .qvl-result-card{
+  margin-bottom:7px!important;
+}
+.qvl-explore-empty{
+  padding:14px;
+  border:1px dashed #dbe4ed;
+  border-radius:11px;
+  background:#fbfcfe;
+  text-align:center;
+}
+.qvl-explore-empty strong{
+  display:block;
+  color:#4d6885;
+  font-size:12px;
+}
+.qvl-explore-empty span{
+  display:block;
+  margin-top:5px;
+  color:#7c8da0;
+  font-size:10.5px;
+  line-height:1.45;
+}
+.qvl-right-empty.compact{
+  min-height:210px!important;
+  margin-top:4px!important;
+}
+
+/* La question libre reste disponible, mais visuellement secondaire. */
+.qvl-free-search{
+  margin-top:12px!important;
+  padding-top:10px!important;
+  border-top:1px solid #edf1f5!important;
+}
+.qvl-free-search-toggle{
+  background:#fff!important;
+}
+
+@media(max-width:1450px){
+  .qvl-reflection-shell{
+    --left:276px;
+    --right:338px;
+  }
+  .qvl-reflection-hero .qvl-hero-copy h1{font-size:33px!important}
+}
