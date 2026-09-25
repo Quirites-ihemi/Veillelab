@@ -572,31 +572,39 @@ export default function Expertises({ data }) {
 
       <section className={`graph-workspace ${eclaireurMode === 'open' && eclaireurStep === 3 && !selected ? 'expertise-eclaireur-target expertise-eclaireur-graph-target' : ''}`}>
 
-        <div className="workspace-toolbar">
+        <div className="workspace-toolbar expertise-workspace-toolbar">
 
-          <div>
-            <h1>Carte des expertises ministérielles</h1>
+          <div className="expertise-workspace-title">
+            <h1>Expertises et savoir-faire du ministère de l’Intérieur</h1>
 
-            <p className="workspace-subtitle">
-              Explorez les expertises mobilisées par les entités du ministère
-              de l’Intérieur.
-            </p>
-
-            <div className="big-count">
-              <strong>{filtered.length}</strong>
-
+            <p className="expertise-method-note">
+              <Icon name="info" size={16} />
               <span>
-                nœuds · {visibleEdges.length} relations
+                Résultats fondés sur les publications du bulletin présentes dans le corpus actif qui ne donnent qu’une vision partielle.
               </span>
-
-              <Icon
-                name="info"
-                size={17}
-              />
-            </div>
+            </p>
           </div>
 
-          <div className="toolbar-actions">
+          <div className="expertise-workspace-side">
+            <div className="expertise-metrics" aria-label="Statistiques de la carte">
+              <div className="expertise-metric">
+                <span className="expertise-metric-icon"><Icon name="graph" size={21} /></span>
+                <span>
+                  <strong>{filtered.length}</strong>
+                  <small>nœuds</small>
+                </span>
+              </div>
+
+              <div className="expertise-metric">
+                <span className="expertise-metric-icon"><Icon name="link" size={21} /></span>
+                <span>
+                  <strong>{visibleEdges.length}</strong>
+                  <small>relations</small>
+                </span>
+              </div>
+            </div>
+
+            <div className="toolbar-actions">
 
             <button onClick={clear}>
               <Icon
@@ -619,6 +627,7 @@ export default function Expertises({ data }) {
             </button>
 
 
+            </div>
           </div>
 
         </div>
