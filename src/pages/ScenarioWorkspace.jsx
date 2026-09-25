@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import CorpusProofModal from '../components/CorpusProofModal.jsx'
 import { analyzeScenarioV2Axes, analyzeScenarioV2AxisObjects } from '../services/reflectionApi.js'
 import { exportScenarioWord } from '../utils/scenarioExport.js'
 import './scenario-workspace.css'
@@ -35,33 +36,36 @@ function isTableMaterial(s={}){
   const pipes=(t.match(/\|/g)||[]).length, compact=t.replace(/\s+/g,'')
   return pipes>=8 && pipes/Math.max(compact.length,1)>0.025
 }
-function SourceProof({source,compact=false}){
+function SourceProof({source,compact=false,onProof}){
   const href=sourceUrl(source), rep=formatRepere(source.repere), table=isTableMaterial(source)
   const ref=[source.publication_id,rep].filter(Boolean).join(' · ')||'Source du corpus'
   return <div className={`qvl-t06-source ${compact?'compact':''}`}>
     <div className="qvl-t06-source-main">
       <strong>{ref}</strong>
       {source.titre&&<small>{source.titre}</small>}
-      {!compact&&!table&&source.extrait&&<details className="qvl-t06-proof"><summary>Voir la preuve et la provenance</summary><div className="qvl-t06-proof-box"><b>Synthèse du passage indexé</b><p>« {clip(source.extrait)} »</p>{source.raison_pertinence&&<p className="qvl-t06-why"><b>Pourquoi ce matériau a été retenu :</b> {cleanVisibleText(source.raison_pertinence)}</p>}</div></details>}
     </div>
-    {table?(
-      href?<a className="qvl-t06-source-link" href={href} target="_blank" rel="noreferrer">Voir le tableau — {rep||'page indiquée'} ↗</a>:<span className="qvl-t06-source-link disabled">Tableau — {rep||'page indiquée'}</span>
-    ):(href?<a className="qvl-t06-source-link" href={href} target="_blank" rel="noreferrer">Ouvrir la source ↗</a>:null)}
+    <div className="qvl-t06-source-actions">
+      {source.extrait&&<button type="button" className="qvl-corpus-proof-trigger" onClick={()=>onProof?.(source)}><Icon name="file" size={14}/>Voir la preuve complète</button>}
+      {table?(
+        href?<a className="qvl-t06-source-link" href={href} target="_blank" rel="noreferrer">Voir le tableau — {rep||'page indiquée'} ↗</a>:<span className="qvl-t06-source-link disabled">Tableau — {rep||'page indiquée'}</span>
+      ):(href?<a className="qvl-t06-source-link" href={href} target="_blank" rel="noreferrer">Ouvrir la source ↗</a>:null)}
+    </div>
   </div>
 }
 
-function ObjectCard({item,type}){
+function ObjectCard({item,type,onProof}){
   const description= type==='trend'?item.synthese : type==='watch'?item.pourquoi_guetter : item.raison
   return <article className="qvl-t06-object-card">
     <strong>{item.label}</strong>
     {description&&<p>{cleanVisibleText(description)}</p>}
     {type==='trend'&&item.limite&&<p className="qvl-t06-limit"><b>Limite :</b> {cleanVisibleText(item.limite)}</p>}
-    {(item.sources||[]).map((s,i)=><SourceProof key={`${s.material_id||s.publication_id||i}-${i}`} source={s} compact/>)}
+    {(item.sources||[]).map((s,i)=><SourceProof key={`${s.material_id||s.publication_id||i}-${i}`} source={s} compact onProof={onProof}/>)}
   </article>
 }
 
 export default function ScenarioWorkspace({initialNeed='',onBack}){
   const[step,setStep]=useState(1),[need,setNeed]=useState(initialNeed||''),[anchor,setAnchor]=useState(null),[axes,setAxes]=useState([]),[objects,setObjects]=useState([]),[loading,setLoading]=useState(false),[error,setError]=useState('')
+  const[proofModal,setProofModal]=useState(null)
   const selectedAxes=useMemo(()=>axes.filter(a=>a.selected),[axes])
 
   async function buildAxes(){
@@ -103,9 +107,9 @@ export default function ScenarioWorkspace({initialNeed='',onBack}){
         <div className="qvl-t06-axis-head"><button className="qvl-t06-check" onClick={()=>setAxes(v=>v.map((x,j)=>j===i?{...x,selected:!x.selected}:x))}>{a.selected?'✓':'○'}</button><h3>{a.titre}</h3><span>{a.publication_count||0} publication{a.publication_count>1?'s':''}</span></div>
         {a.objectif_surveillance&&<p>{a.objectif_surveillance}</p>}{a.question_veille&&<p><b>Question :</b> {a.question_veille}</p>}{a.justification&&<p className="qvl-t06-foundation"><b>Fondement :</b> {cleanVisibleText(a.justification)}</p>}
         {a.statut_documentaire==='appui_publication_unique'&&<p className="qvl-t06-limit"><b>Limite :</b> axe appuyé sur une seule publication.</p>}
-        {!!a.sources?.length&&<details><summary>Matériaux qui fondent cet axe ({a.sources.length})</summary>{a.sources.map((s,k)=><SourceProof key={k} source={s}/>)}</details>}
+        {!!a.sources?.length&&<details><summary>Matériaux qui fondent cet axe ({a.sources.length})</summary>{a.sources.map((s,k)=><SourceProof key={k} source={s} onProof={setProofModal}/>)}</details>}
       </article>)}</div>
-      {!!anchor?.materiaux_valides?.length&&<details className="qvl-t06-relevant"><summary>Voir les matériaux jugés pertinents ({anchor.materiaux_valides.length})</summary><div className="qvl-t06-relevant-list">{anchor.materiaux_valides.map((s,k)=><SourceProof key={`${s.material_id||s.publication_id||k}-${k}`} source={s}/>)}</div></details>}
+      {!!anchor?.materiaux_valides?.length&&<details className="qvl-t06-relevant"><summary>Voir les matériaux jugés pertinents ({anchor.materiaux_valides.length})</summary><div className="qvl-t06-relevant-list">{anchor.materiaux_valides.map((s,k)=><SourceProof key={`${s.material_id||s.publication_id||k}-${k}`} source={s} onProof={setProofModal}/>)}</div></details>}
       {!!anchor?.materiaux_ecartes?.length&&<details className="qvl-t06-audit"><summary>Matériaux écartés par le filtre ({anchor.materiaux_ecartes.length})</summary>{anchor.materiaux_ecartes.map((s,i)=><div className="qvl-t06-audit-row" key={i}><b>{[s.publication_id,formatRepere(s.repere)].filter(Boolean).join(' · ')}</b><span>{s.titre}</span><small>{s.raison||s.motif}</small></div>)}</details>}
       <div className="qvl-t06-actions split"><button onClick={()=>setStep(1)}>← Modifier le besoin</button><button className="primary" onClick={buildObjects} disabled={loading||!selectedAxes.length}>Construire les objets des axes retenus →</button></div>
     </section>}
@@ -114,9 +118,9 @@ export default function ScenarioWorkspace({initialNeed='',onBack}){
       {objects.map((o,i)=><section className="qvl-t06-axis-result" key={o.axis_id||i}>
         <div className="qvl-t06-result-head"><span>Axe {i+1}</span><h3>{o.titre}</h3>{o.objectif_surveillance&&<p>{o.objectif_surveillance}</p>}</div>
         {o.statut!=='ok'?<div className="qvl-t06-empty-wide">{o.message||'Aucun objet suffisamment sourcé.'}</div>:<div className="qvl-t06-object-grid">
-          <div className="qvl-t06-object-col trend"><h4>▤ Tendances documentées</h4>{o.tendances?.length?o.tendances.map((x,k)=><ObjectCard key={k} item={x} type="trend"/>):<div className="qvl-t06-empty"><b>Aucune tendance</b><p>Une tendance exige au moins deux publications convergentes.</p></div>}</div>
-          <div className="qvl-t06-object-col watch"><h4>◎ Éléments à surveiller</h4>{o.signes_a_guetter?.length?o.signes_a_guetter.map((x,k)=><ObjectCard key={k} item={x} type="watch"/>):<div className="qvl-t06-empty"><b>Aucun élément suffisamment sourcé</b></div>}</div>
-          <div className="qvl-t06-object-col source"><h4>↗ Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><ObjectCard key={k} item={x} type="source"/>):<div className="qvl-t06-empty"><b>Aucune source récurrente identifiée</b><p>Le corpus ne permet pas d’établir une source suivable dans le temps.</p></div>}</div>
+          <div className="qvl-t06-object-col trend"><h4>▤ Tendances documentées</h4>{o.tendances?.length?o.tendances.map((x,k)=><ObjectCard key={k} item={x} type="trend" onProof={setProofModal}/>):<div className="qvl-t06-empty"><b>Aucune tendance</b><p>Une tendance exige au moins deux publications convergentes.</p></div>}</div>
+          <div className="qvl-t06-object-col watch"><h4>◎ Éléments à surveiller</h4>{o.signes_a_guetter?.length?o.signes_a_guetter.map((x,k)=><ObjectCard key={k} item={x} type="watch" onProof={setProofModal}/>):<div className="qvl-t06-empty"><b>Aucun élément suffisamment sourcé</b></div>}</div>
+          <div className="qvl-t06-object-col source"><h4>↗ Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><ObjectCard key={k} item={x} type="source" onProof={setProofModal}/>):<div className="qvl-t06-empty"><b>Aucune source récurrente identifiée</b><p>Le corpus ne permet pas d’établir une source suivable dans le temps.</p></div>}</div>
         </div>}
         {!!o.angles_morts?.length&&<div className="qvl-t06-points"><b>Points à documenter</b><ul>{o.angles_morts.map((x,k)=><li key={k}>{cleanVisibleText(x)}</li>)}</ul></div>}
       </section>)}
@@ -127,11 +131,12 @@ export default function ScenarioWorkspace({initialNeed='',onBack}){
       <div className="qvl-t06-section-head"><div><h2>4. Finaliser</h2><p>Le scénario reprend uniquement les axes retenus et les objets validés. Aucun nouvel appel IA.</p></div><span className="qvl-t06-pill">Prêt à exporter</span></div>
       <div className="qvl-t06-final-cover"><span>SCÉNARIO DE VEILLE</span><h3>{need}</h3><small>{new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date())}</small></div>
       {objects.map((o,i)=><article className="qvl-t06-final-axis" key={o.axis_id||i}><div><span>Axe {i+1}</span><h3>{o.titre}</h3><p>{o.objectif_surveillance}</p></div><div className="qvl-t06-final-groups">
-        <div><h4>Tendances documentées</h4>{o.tendances?.length?o.tendances.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.synthese}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact/>)}</div>):<em>Aucune tendance suffisamment documentée.</em>}</div>
-        <div><h4>Éléments à surveiller</h4>{o.signes_a_guetter?.length?o.signes_a_guetter.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.pourquoi_guetter}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact/>)}</div>):<em>Aucun élément suffisamment sourcé.</em>}</div>
-        <div><h4>Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.raison}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact/>)}</div>):<em>Aucune source récurrente identifiée.</em>}</div>
+        <div><h4>Tendances documentées</h4>{o.tendances?.length?o.tendances.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.synthese}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact onProof={setProofModal}/>)}</div>):<em>Aucune tendance suffisamment documentée.</em>}</div>
+        <div><h4>Éléments à surveiller</h4>{o.signes_a_guetter?.length?o.signes_a_guetter.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.pourquoi_guetter}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact onProof={setProofModal}/>)}</div>):<em>Aucun élément suffisamment sourcé.</em>}</div>
+        <div><h4>Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><div className="qvl-t06-final-item" key={k}><b>{x.label}</b><p>{x.raison}</p>{(x.sources||[]).map((s,j)=><SourceProof key={j} source={s} compact onProof={setProofModal}/>)}</div>):<em>Aucune source récurrente identifiée.</em>}</div>
       </div>{!!o.angles_morts?.length&&<div className="qvl-t06-points"><b>Points à documenter</b><ul>{o.angles_morts.map((x,k)=><li key={k}>{cleanVisibleText(x)}</li>)}</ul></div>}</article>)}
       <div className="qvl-t06-actions split"><button onClick={()=>setStep(3)}>← Revenir aux objets</button><button className="primary word" onClick={exportWord}>Télécharger le scénario (.docx)</button></div>
     </section>}
+    {proofModal&&<CorpusProofModal source={proofModal} contextLabel="Matériau du scénario" contextText={proofModal.titre||proofModal.publication_id||''} why={cleanVisibleText(proofModal.raison_pertinence||'')} onClose={()=>setProofModal(null)}/>}
   </main>
 }

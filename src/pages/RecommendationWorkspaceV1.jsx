@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import CorpusProofModal from '../components/CorpusProofModal.jsx'
 import { generateTreatment } from '../services/treatmentApi.js'
 import { exportRecommendationsWord, exportRecommendationsExcel } from '../utils/recommendationExport.js'
 import './recommendation-workspace.css'
@@ -39,6 +40,7 @@ export default function RecommendationWorkspaceV1({treatment,data,onBack}){
   const [loading,setLoading]=useState(false)
   const [error,setError]=useState('')
   const [resultSearch,setResultSearch]=useState('')
+  const [proofModal,setProofModal]=useState(null)
   const [typeFilter,setTypeFilter]=useState('all')
 
   const visiblePubs=useMemo(()=>{
@@ -162,12 +164,13 @@ export default function RecommendationWorkspaceV1({treatment,data,onBack}){
               const href=sourceHref(source)
               return <div className="qvl-rec-source" key={`${source.chunk_id}-${i}`}>
                 <div className="qvl-rec-source-main"><span className="qvl-rec-source-id">{source.chunk_id}</span><div><b>{source.titre||source.publication_id}</b><span>{source.organisme_producteur}{source.annee_publication?` · ${source.annee_publication}`:''}{source.repere?` · repère ${source.repere}`:' · repère indisponible'}</span></div></div>
-                <div className="qvl-rec-source-actions">{href&&<a href={href} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Ouvrir la source</a>}<details><summary>Voir l’extrait</summary><p>{source.extrait}</p></details></div>
+                <div className="qvl-rec-source-actions">{href&&<a href={href} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Ouvrir la source</a>}<button type="button" className="qvl-corpus-proof-trigger" onClick={()=>setProofModal({source,contextLabel:typeLabel(rec.type_prescription),contextText:rec.formulation})}><Icon name="file" size={14}/>Voir la preuve complète</button></div>
               </div>
             })}
           </div>
         </article>)}
       </div>
     </section>
+    {proofModal&&<CorpusProofModal source={proofModal.source} contextLabel={proofModal.contextLabel} contextText={proofModal.contextText} onClose={()=>setProofModal(null)}/>}
   </main>
 }
