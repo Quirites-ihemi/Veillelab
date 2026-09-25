@@ -1204,3 +1204,172 @@
 @media(prefers-reduced-motion:reduce){
   .qvl-eclaireur-target{animation:none!important;box-shadow:0 0 0 3px rgba(255,188,68,.48)!important}
 }
+
+/* -------------------------------------------------------------------------
+   V2.11 — L’ÉCLAIREUR : positionnement verrouillé sur les bords supérieurs
+   + réduire / fermer / rouvrir + navigation vers l’explication précédente.
+   Aucun changement du moteur ni des appels de recherche.
+   ------------------------------------------------------------------------- */
+.qvl-eclaireur-guide{
+  position:fixed!important;
+  top:92px!important;
+  bottom:auto!important;
+  width:min(278px,calc(100vw - 28px))!important;
+  max-width:278px!important;
+  margin:0!important;
+  transform:none!important;
+  z-index:170!important;
+  padding:10px 11px 11px!important;
+}
+.qvl-eclaireur-guide.qvl-eclaireur-side-right{
+  right:14px!important;
+  left:auto!important;
+}
+.qvl-eclaireur-guide.qvl-eclaireur-side-left{
+  left:14px!important;
+  right:auto!important;
+}
+.qvl-eclaireur-guide.intro,
+.qvl-eclaireur-guide.cards,
+.qvl-eclaireur-guide.needs,
+.qvl-eclaireur-guide.results{
+  top:92px!important;
+  bottom:auto!important;
+  transform:none!important;
+  animation:qvl-eclaireur-enter-v211 .24s ease-out both!important;
+}
+@keyframes qvl-eclaireur-enter-v211{
+  from{opacity:0;transform:translateY(-4px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.qvl-eclaireur-heading{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin:0 0 8px!important;
+  padding-right:64px!important;
+  min-height:26px!important;
+  font-size:11px!important;
+}
+.qvl-eclaireur-mark{width:22px!important;height:22px!important;font-size:13px!important}
+.qvl-eclaireur-step{margin-left:auto;color:#6c7f94;font-size:9.5px;font-weight:850;letter-spacing:0;text-transform:none}
+.qvl-eclaireur-window-actions{
+  position:absolute!important;
+  top:0!important;
+  right:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:2px!important;
+}
+.qvl-eclaireur-window-actions button{
+  width:24px!important;
+  height:24px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  color:#75869a!important;
+  font:700 17px/1 inherit!important;
+  cursor:pointer!important;
+}
+.qvl-eclaireur-window-actions button:hover{background:#eef3f9!important;color:#294f79!important}
+.qvl-eclaireur-guide p{font-size:12.1px!important;line-height:1.42!important;margin-bottom:7px!important}
+.qvl-eclaireur-guide .qvl-eclaireur-lead{font-size:13.2px!important;line-height:1.34!important;margin-bottom:7px!important}
+.qvl-eclaireur-section{padding:6px 7px!important;margin-top:5px!important}
+.qvl-eclaireur-section strong{font-size:11.4px!important}.qvl-eclaireur-section span{font-size:10.8px!important}
+.qvl-eclaireur-tip{padding:6px 7px!important;font-size:10.9px!important}
+.qvl-eclaireur-actions,.qvl-eclaireur-nav{display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important;margin-top:8px!important}
+.qvl-eclaireur-guide>button,
+.qvl-eclaireur-actions button,
+.qvl-eclaireur-nav button{
+  min-height:29px!important;
+  padding:0 9px!important;
+  border:1px solid #b9cce4!important;
+  border-radius:8px!important;
+  background:#f5f8fd!important;
+  color:#315d95!important;
+  font:800 10.8px/1.15 inherit!important;
+  cursor:pointer!important;
+}
+.qvl-eclaireur-nav .qvl-eclaireur-prev{background:#fff!important;color:#5c6f84!important}
+
+/* État réduit : petite barre, toujours sur le bord supérieur correspondant. */
+.qvl-eclaireur-minimized{
+  position:fixed!important;
+  top:92px!important;
+  z-index:170!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:2px!important;
+  width:205px!important;
+  height:38px!important;
+  padding:3px 4px!important;
+  border:1px solid #c7d6e7!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.98)!important;
+  box-shadow:0 8px 22px rgba(25,47,78,.14)!important;
+  backdrop-filter:blur(6px)!important;
+}
+.qvl-eclaireur-minimized.qvl-eclaireur-side-right{right:14px!important;left:auto!important}
+.qvl-eclaireur-minimized.qvl-eclaireur-side-left{left:14px!important;right:auto!important}
+.qvl-eclaireur-minimized-main{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  height:30px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:0 7px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#315d95!important;
+  font-family:inherit!important;
+  cursor:pointer!important;
+}
+.qvl-eclaireur-minimized-main span{color:#6d5da6;font-size:13px!important}
+.qvl-eclaireur-minimized-main strong{font-size:11.3px!important;white-space:nowrap}
+.qvl-eclaireur-minimized-main small{margin-left:auto;color:#728499;font-size:9px!important}
+.qvl-eclaireur-minimized-close{
+  width:27px!important;height:27px!important;padding:0!important;border:0!important;border-radius:50%!important;
+  background:transparent!important;color:#7b899a!important;font:700 17px/1 inherit!important;cursor:pointer!important;
+}
+.qvl-eclaireur-minimized-close:hover{background:#eef3f9!important;color:#294f79!important}
+
+/* État fermé : bouton de rappel, lui aussi en haut sur le bord. */
+.qvl-eclaireur-help{
+  position:fixed!important;
+  top:92px!important;
+  bottom:auto!important;
+  z-index:170!important;
+  min-height:33px!important;
+  padding:0 10px!important;
+}
+.qvl-eclaireur-help.qvl-eclaireur-side-right{right:14px!important;left:auto!important}
+.qvl-eclaireur-help.qvl-eclaireur-side-left{left:14px!important;right:auto!important}
+
+/* Le clignotement est désormais le seul repère spatial. */
+.qvl-eclaireur-target{
+  animation:qvl-eclaireur-focus-v211 .76s ease-in-out 5!important;
+  transition:none!important;
+}
+@keyframes qvl-eclaireur-focus-v211{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,188,68,0),0 0 0 0 rgba(65,99,181,0)}
+  50%{box-shadow:0 0 0 4px rgba(255,188,68,.70),0 0 24px 8px rgba(65,99,181,.19)}
+}
+.qvl-eclaireur-scroll span{display:none!important}
+
+@media(max-width:1040px){
+  .qvl-eclaireur-guide,
+  .qvl-eclaireur-minimized,
+  .qvl-eclaireur-help{top:82px!important}
+  .qvl-eclaireur-guide{width:min(268px,calc(100vw - 24px))!important;max-width:268px!important}
+  .qvl-eclaireur-guide.qvl-eclaireur-side-right{right:12px!important;left:auto!important}
+  .qvl-eclaireur-guide.qvl-eclaireur-side-left{left:12px!important;right:auto!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .qvl-eclaireur-guide{animation:none!important}
+  .qvl-eclaireur-target{animation:none!important;box-shadow:0 0 0 3px rgba(255,188,68,.50)!important}
+}
