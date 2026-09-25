@@ -1,0 +1,95 @@
+/* Preuve complète commune aux traitements de l'onglet Atelier.
+   Modèle visuel aligné sur Avancer avec le corpus. */
+.qvl-corpus-proof-backdrop{
+  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;
+  background:rgba(22,36,53,.46);backdrop-filter:blur(2px)
+}
+.qvl-corpus-proof-modal{
+  width:min(760px,94vw);max-height:86vh;overflow:hidden;display:flex;flex-direction:column;
+  border:1px solid #d4dfe9;border-radius:15px;background:#fff;
+  box-shadow:0 28px 70px rgba(17,32,50,.28);color:#223e5c
+}
+.qvl-corpus-proof-modal>header{
+  display:flex;justify-content:space-between;gap:15px;align-items:flex-start;
+  padding:14px 18px 12px;border-bottom:1px solid #e3e9ef;background:#f8fafc
+}
+.qvl-corpus-proof-title-block{min-width:0}
+.qvl-corpus-proof-title-block>span{
+  display:block;color:#6d86a1;font-size:10px;font-weight:850;letter-spacing:.65px;text-transform:uppercase
+}
+.qvl-corpus-proof-title-block h2{
+  margin:4px 0 0;color:#24496e;font-size:20px;line-height:1.28;font-weight:800
+}
+.qvl-corpus-proof-title-block p{
+  margin:5px 0 0;color:#7a8da1;font-size:11px;line-height:1.4
+}
+.qvl-corpus-proof-modal>header>button{
+  width:31px;height:31px;flex:none;border:0;border-radius:50%;display:grid;place-items:center;
+  background:#edf2f6;color:#63758a;cursor:pointer
+}
+.qvl-corpus-proof-body{overflow:auto;padding:16px 18px 8px}
+.qvl-corpus-proof-section{margin:0 0 16px}
+.qvl-corpus-proof-section>h3{
+  margin:0 0 9px;color:#345b80;font-size:11px;line-height:1.2;font-weight:850;
+  letter-spacing:.03em;text-transform:uppercase
+}
+.qvl-corpus-proof-context{
+  padding:12px 14px;border:1px solid #e2e9f0;border-radius:10px;background:#f8fafc
+}
+.qvl-corpus-proof-context p,.qvl-corpus-proof-why p{
+  margin:0;color:#304d6b;font-size:14px;line-height:1.58
+}
+.qvl-corpus-proof-excerpt{
+  margin:0;border:1px solid #dce5ed;border-radius:10px;padding:13px 14px;background:#fff
+}
+.qvl-corpus-proof-excerpt-head{
+  display:flex;justify-content:space-between;gap:10px;align-items:flex-start;color:#73849a;font-size:10px
+}
+.qvl-corpus-proof-excerpt-head>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.qvl-corpus-proof-excerpt-head strong{color:#4a6a89;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em}
+.qvl-corpus-proof-excerpt-head small{color:#8da0b4;font-size:9.5px}
+.qvl-corpus-proof-excerpt-head>span{
+  flex:none;border-radius:999px;background:#eef3f7;padding:4px 7px;color:#526f8d;font-size:10px;font-weight:800
+}
+.qvl-corpus-proof-excerpt>p{
+  margin:11px 0 0;color:#294b68;font-size:14.5px;line-height:1.68;white-space:pre-wrap
+}
+.qvl-corpus-proof-excerpt>p.qvl-corpus-proof-unavailable{color:#788ba0;font-style:italic}
+.qvl-corpus-proof-why{
+  padding:12px 14px;border-left:3px solid #8ab9df;border-radius:0 9px 9px 0;background:#f7fbff
+}
+.qvl-corpus-proof-provenance{
+  margin-bottom:5px;padding:13px 14px;border:1px solid #dce5ed;border-radius:10px;background:#f8fafc
+}
+.qvl-corpus-proof-provenance>div{display:flex;flex-direction:column;gap:4px}
+.qvl-corpus-proof-provenance strong{color:#345b80;font-size:12.5px;line-height:1.4}
+.qvl-corpus-proof-provenance span{color:#74879b;font-size:11px;line-height:1.45}
+.qvl-corpus-proof-provenance>p{margin:9px 0 0;color:#8494a6;font-size:10.5px;line-height:1.45}
+.qvl-corpus-proof-modal>footer{
+  display:flex;justify-content:flex-end;gap:8px;padding:12px 18px 15px;border-top:1px solid #e8edf2;background:#fff
+}
+.qvl-corpus-proof-modal>footer a,.qvl-corpus-proof-modal>footer button{
+  min-height:35px;border-radius:8px;padding:0 11px;display:inline-flex;align-items:center;gap:6px;
+  text-decoration:none;font-size:10.8px;font-weight:780;cursor:pointer
+}
+.qvl-corpus-proof-modal>footer a{background:#3f6085;color:#fff;border:1px solid #3f6085}
+.qvl-corpus-proof-modal>footer button{background:#fff;border:1px solid #cdd9e5;color:#536c85}
+.qvl-corpus-proof-trigger{
+  border:1px solid #cfdbea!important;border-radius:8px!important;background:#fff!important;color:#315d8b!important;
+  min-height:32px!important;padding:0 9px!important;display:inline-flex!important;align-items:center!important;gap:5px!important;
+  font-size:10.5px!important;font-weight:800!important;cursor:pointer!important;white-space:nowrap
+}
+.qvl-corpus-proof-trigger:hover{background:#f6f9fc!important;border-color:#afc4dc!important}
+@media(max-width:760px){
+  .qvl-corpus-proof-backdrop{padding:10px}
+  .qvl-corpus-proof-modal{width:100%;max-height:94vh}
+  .qvl-corpus-proof-modal>header{padding:12px 14px 10px}
+  .qvl-corpus-proof-title-block h2{font-size:17px}
+  .qvl-corpus-proof-body{padding:14px 12px 5px}
+  .qvl-corpus-proof-excerpt>p{font-size:14px}
+}
+
+/* Alignement des actions de provenance dans le scénario de veille. */
+.qvl-t06-source-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.qvl-t06-source.compact .qvl-corpus-proof-trigger{min-height:29px!important;font-size:9.8px!important;padding:0 7px!important}
+@media(max-width:900px){.qvl-t06-source-actions{justify-content:flex-start}}
