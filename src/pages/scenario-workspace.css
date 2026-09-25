@@ -16,3 +16,256 @@
 @media(max-width:760px){.qvl-t06-page{padding:12px 14px 40px}.qvl-t06-hero h1{font-size:28px}.qvl-t06-steps{grid-template-columns:1fr 1fr}.qvl-t06-steps button:nth-child(2){border-right:0}.qvl-t06-steps button:nth-child(-n+2){border-bottom:1px solid #d8e4ee}.qvl-t06-metrics{grid-template-columns:1fr}.qvl-t06-actions.split{align-items:stretch;flex-direction:column}.qvl-t06-actions.split button{width:100%}.qvl-t06-source{grid-template-columns:1fr}.qvl-t06-source-link{white-space:normal}.qvl-t06-section-head{flex-direction:column}.qvl-t06-axis-head{grid-template-columns:auto 1fr}.qvl-t06-axis-head>span{grid-column:2;justify-self:start}.qvl-t06-audit-row{grid-template-columns:1fr}.qvl-t06-audit-row small{grid-column:1}}
 
 .qvl-t06-relevant{margin:14px 0 16px;border:1px solid #dbe7f1;border-radius:11px;background:#f8fbff;padding:12px 14px}.qvl-t06-relevant>summary{cursor:pointer;color:#1768c4;font-size:12px;font-weight:900}.qvl-t06-relevant-list{margin-top:8px}.qvl-t06-relevant .qvl-t06-source:first-child{border-top:0}
+
+/* =========================================================
+   T06 — LISIBILITÉ RENFORCÉE
+   Typographie uniquement : aucun changement de logique,
+   de données, de structure ou de comportement.
+   ========================================================= */
+
+/* Ensemble de la page */
+.qvl-t06-page{
+  font-size:15.5px;
+}
+.qvl-t06-topline{
+  font-size:14.5px;
+}
+.qvl-t06-hero p{
+  font-size:16.5px;
+  line-height:1.58;
+}
+.qvl-t06-hero-mark{
+  font-size:13.5px;
+}
+.qvl-t06-steps button{
+  font-size:14.5px;
+  line-height:1.3;
+  padding:13px 14px;
+}
+.qvl-t06-steps b{
+  width:27px;
+  height:27px;
+  font-size:12.5px;
+}
+.qvl-t06-section-head p{
+  font-size:15.5px;
+  line-height:1.5;
+}
+.qvl-t06-pill{
+  font-size:11.5px;
+  padding:7px 11px;
+}
+.qvl-t06-panel label{
+  font-size:14.5px;
+}
+.qvl-t06-panel textarea{
+  font-size:15.5px;
+  line-height:1.5;
+}
+.qvl-t06-actions button{
+  font-size:14.5px;
+  line-height:1.25;
+  padding:11px 15px;
+}
+.qvl-t06-principle,
+.qvl-t06-alert,
+.qvl-t06-loading{
+  font-size:14px;
+  line-height:1.5;
+}
+.qvl-t06-loading small{
+  font-size:13px;
+  line-height:1.45;
+}
+.qvl-t06-need{
+  font-size:14.5px;
+  line-height:1.48;
+  padding:11px 13px;
+}
+.qvl-t06-metrics strong{
+  font-size:24px;
+}
+.qvl-t06-metrics small{
+  font-size:13.5px;
+  line-height:1.35;
+}
+
+/* Étape 2 — axes */
+.qvl-t06-axis{
+  padding:17px;
+}
+.qvl-t06-axis-head h3{
+  font-size:21.5px;
+  line-height:1.24;
+}
+.qvl-t06-axis-head>span{
+  font-size:11px;
+  padding:5px 8px;
+}
+.qvl-t06-axis>p{
+  font-size:15px;
+  line-height:1.55;
+}
+.qvl-t06-foundation,
+.qvl-t06-limit{
+  font-size:13.5px!important;
+  line-height:1.5!important;
+}
+.qvl-t06-axis summary,
+.qvl-t06-audit summary,
+.qvl-t06-relevant>summary{
+  font-size:13.5px;
+  line-height:1.4;
+}
+.qvl-t06-audit-row{
+  font-size:13px;
+  line-height:1.4;
+}
+.qvl-t06-audit-row small{
+  font-size:12.5px;
+  line-height:1.4;
+}
+
+/* Provenance : lisible sans devenir dominante */
+.qvl-t06-source-main>strong{
+  font-size:13.5px;
+  line-height:1.4;
+}
+.qvl-t06-source-main>small{
+  font-size:12.5px;
+  line-height:1.45;
+}
+.qvl-t06-source-link{
+  font-size:12.5px;
+  line-height:1.35;
+}
+.qvl-t06-proof summary{
+  font-size:12.5px!important;
+}
+.qvl-t06-proof-box b{
+  font-size:11.5px;
+}
+.qvl-t06-proof-box p{
+  font-size:13.5px;
+  line-height:1.55;
+}
+
+/* =========================================================
+   ÉTAPE 3 — RÉSULTATS : PRIORITÉ À LA LISIBILITÉ
+   ========================================================= */
+.qvl-t06-axis-result{
+  padding:26px 28px;
+}
+.qvl-t06-result-head>span,
+.qvl-t06-final-axis>div:first-child>span{
+  font-size:12.5px;
+}
+.qvl-t06-result-head h3,
+.qvl-t06-final-axis h3{
+  font-size:29px;
+  line-height:1.18;
+}
+.qvl-t06-result-head p,
+.qvl-t06-final-axis>div:first-child>p{
+  font-size:16px;
+  line-height:1.52;
+}
+.qvl-t06-object-grid{
+  gap:16px;
+  margin-top:18px;
+}
+.qvl-t06-object-col{
+  padding:16px;
+}
+.qvl-t06-object-col h4{
+  margin-bottom:12px;
+  font-size:16px;
+  line-height:1.3;
+}
+.qvl-t06-object-card{
+  padding:14px 15px;
+  margin:11px 0;
+}
+.qvl-t06-object-card>strong{
+  display:block;
+  font-size:16px;
+  line-height:1.42;
+}
+.qvl-t06-object-card>p{
+  font-size:14.8px;
+  line-height:1.58;
+  margin:8px 0;
+}
+.qvl-t06-object-card .qvl-t06-limit{
+  font-size:13.5px!important;
+}
+.qvl-t06-object-card .qvl-t06-source-main>strong{
+  font-size:13px;
+}
+.qvl-t06-empty,
+.qvl-t06-empty-wide{
+  font-size:14.5px;
+  line-height:1.5;
+  padding:14px;
+}
+.qvl-t06-empty p{
+  line-height:1.5;
+}
+.qvl-t06-points{
+  padding:14px 16px;
+}
+.qvl-t06-points>b{
+  font-size:15px;
+}
+.qvl-t06-points li{
+  font-size:14.5px;
+  line-height:1.55;
+  margin:5px 0;
+}
+
+/* Étape 4 — prévisualisation / export */
+.qvl-t06-final-cover>span{
+  font-size:11.5px;
+}
+.qvl-t06-final-cover h3{
+  font-size:28px;
+  line-height:1.2;
+}
+.qvl-t06-final-cover small{
+  font-size:13.5px;
+}
+.qvl-t06-final-groups{
+  gap:15px;
+}
+.qvl-t06-final-groups>div{
+  padding:15px;
+}
+.qvl-t06-final-groups h4{
+  font-size:14px;
+  line-height:1.35;
+}
+.qvl-t06-final-groups em{
+  font-size:13.5px;
+  line-height:1.45;
+}
+.qvl-t06-final-item{
+  padding:11px 0;
+}
+.qvl-t06-final-item>b{
+  font-size:15px;
+  line-height:1.45;
+}
+.qvl-t06-final-item>p{
+  font-size:14px;
+  line-height:1.55;
+  margin:6px 0;
+}
+
+@media(max-width:760px){
+  .qvl-t06-page{font-size:15px}
+  .qvl-t06-result-head h3,
+  .qvl-t06-final-axis h3{font-size:25px}
+  .qvl-t06-object-col h4{font-size:15.5px}
+  .qvl-t06-object-card>strong{font-size:15.5px}
+  .qvl-t06-object-card>p{font-size:14.5px}
+}
