@@ -491,23 +491,26 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     }
   }, [])
 
-  const closeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'closed' }))
-  const minimizeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'minimized' }))
-  const restoreEclaireur = () => setEclaireur(state => ({ ...state, mode: 'open' }))
-  const previousEclaireur = () => setEclaireur(state => {
-    const order = ['intro', 'cards', 'needs', 'results']
-    const index = Math.max(0, order.indexOf(state.step))
-    return { mode: 'open', step: order[Math.max(0, index - 1)] }
-  })
-
+  const ECLAIREUR_STEPS = ['intro', 'cards', 'needs', 'results']
   const guideTo = step => {
     if (step === 'needs') setLeftCollapsed(false)
     if (step === 'results') setRightCollapsed(false)
     setEclaireur({ mode: 'open', step })
-    window.setTimeout(() => {
-      const selector = step === 'cards' ? '.qvl-canvas-toolbar' : step === 'needs' ? '.qvl-reflection-left' : step === 'results' ? '.qvl-reflection-right' : null
-      if (selector) document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    }, 30)
+  }
+  const closeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'closed' }))
+  const minimizeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'minimized' }))
+  const restoreEclaireur = () => setEclaireur(state => ({ ...state, mode: 'open', step: state.step || 'intro' }))
+  const previousEclaireur = () => {
+    const index = Math.max(0, ECLAIREUR_STEPS.indexOf(eclaireur.step))
+    guideTo(ECLAIREUR_STEPS[Math.max(0, index - 1)])
+  }
+  const nextEclaireur = () => {
+    const index = Math.max(0, ECLAIREUR_STEPS.indexOf(eclaireur.step))
+    if (index >= ECLAIREUR_STEPS.length - 1) {
+      minimizeEclaireur()
+      return
+    }
+    guideTo(ECLAIREUR_STEPS[index + 1])
   }
 
   const executeNeedSearch = async (needId, rawQuery, context = {}) => {
@@ -803,7 +806,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     </section>
 
     <div className={shellClass}>
-      <aside className={`qvl-reflection-left ${eclaireur.mode === 'open' && (eclaireur.step === 'needs' || eclaireur.step === 'intro') ? 'qvl-eclaireur-target' : ''}`}>
+      <aside className={`qvl-reflection-left ${eclaireur.mode === 'open' && (eclaireur.step === 'intro' || eclaireur.step === 'needs') ? 'qvl-eclaireur-target' : ''}`}>
         <button className="qvl-panel-toggle left" type="button" onClick={() => setLeftCollapsed(value => !value)} aria-label={leftCollapsed ? 'Déployer les besoins informationnels' : 'Replier les besoins informationnels'}>
           {leftCollapsed ? '›' : '‹'}
         </button>
@@ -829,7 +832,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
           <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2><p>Posez une question, formulez une idée, ajoutez une note ou conservez un élément du corpus. Déplacez les cartes, rapprochez-les et reliez-les pour faire apparaître progressivement votre raisonnement.</p></div></div>
-          <div className={`qvl-canvas-toolbar ${eclaireur.mode === 'open' && (eclaireur.step === 'cards' || eclaireur.step === 'intro') ? 'qvl-eclaireur-target' : ''}`}>
+          <div className={`qvl-canvas-toolbar ${eclaireur.mode === 'open' && (eclaireur.step === 'intro' || eclaireur.step === 'cards') ? 'qvl-eclaireur-target' : ''}`}>
             {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
             <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
             <span className="qvl-toolbar-spacer"/>
@@ -969,8 +972,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     </div>
 
     <EclaireurGuide
-      mode={eclaireur.mode}
       step={eclaireur.step}
+      mode={eclaireur.mode}
       resultCount={visibleResults.length}
       loading={searchLoading}
       awaitingCard={searchContext?.source === 'awaiting-card'}
@@ -978,18 +981,16 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       onMinimize={minimizeEclaireur}
       onRestore={restoreEclaireur}
       onPrevious={previousEclaireur}
-      onCards={() => guideTo('cards')}
-      onNeeds={() => guideTo('needs')}
-      onResults={() => guideTo('results')}
+      onNext={nextEclaireur}
     />
 
     {proofState.open && <ProofModal state={proofState} onClose={() => setProofState({ open: false, loading: false, error: '', material: null, result: null })}/>} 
   </main>
 }
 
-function EclaireurGuide({ mode, step, resultCount, loading, awaitingCard, onClose, onMinimize, onRestore, onPrevious, onCards, onNeeds, onResults }) {
-  const order = ['intro', 'cards', 'needs', 'results']
-  const index = Math.max(0, order.indexOf(step))
+function EclaireurGuide({ step = 'intro', mode = 'open', resultCount, loading, awaitingCard, onClose, onMinimize, onRestore, onPrevious, onNext }) {
+  const steps = ['intro', 'cards', 'needs', 'results']
+  const index = Math.max(0, steps.indexOf(step))
   const number = index + 1
   const side = step === 'results' ? 'left' : 'right'
   const multiple = resultCount > 1
@@ -1005,34 +1006,48 @@ function EclaireurGuide({ mode, step, resultCount, loading, awaitingCard, onClos
     </div>
   }
 
-  const header = <EclaireurHeader number={number} onMinimize={onMinimize} onClose={onClose}/>
-  const previous = index > 0 ? <button type="button" className="qvl-eclaireur-prev" onClick={onPrevious}>Précédent</button> : null
-
-  if (step === 'cards') return <aside className="qvl-eclaireur-guide cards qvl-eclaireur-side-right" aria-live="polite">
-    {header}<p className="qvl-eclaireur-lead">Commencez par une carte.</p><p>Les boutons <strong>Question</strong>, <strong>Idée / hypothèse</strong>, <strong>Note</strong> et <strong>Point à vérifier</strong> clignotent au-dessus du canevas.</p><p className="qvl-eclaireur-tip">Pour agrandir le canevas, vous pouvez <strong>replier les deux volets latéraux</strong> avec les chevrons.</p><div className="qvl-eclaireur-nav">{previous}<button type="button" onClick={onNeeds}>Voir les besoins informationnels</button></div>
-  </aside>
-
-  if (step === 'needs') return <aside className="qvl-eclaireur-guide needs qvl-eclaireur-side-right" aria-live="polite">
-    {header}<p className="qvl-eclaireur-lead">Choisissez votre besoin informationnel.</p><p>Le volet de gauche clignote : il détermine la manière dont le corpus sera interrogé à partir de votre carte.</p><div className="qvl-eclaireur-nav">{previous}<button type="button" onClick={onResults}>Voir où apparaissent les résultats</button></div>
-  </aside>
-
-  if (step === 'results') return <aside className="qvl-eclaireur-guide results qvl-eclaireur-side-left" aria-live="polite">
-    {header}<p className="qvl-eclaireur-lead">Les résultats apparaissent dans le volet de droite.</p>
-    {awaitingCard ? <p>Sélectionnez d’abord une carte dans le canevas : le besoin choisi sera appliqué à ce point de départ.</p> : loading ? <p>La recherche est en cours. Les éléments trouvés vont s’afficher dans cette colonne.</p> : resultCount === 0 ? <p>Si le corpus ne fournit pas de résultat suffisant, le message de limite s’affichera au même endroit.</p> : multiple ? <p className="qvl-eclaireur-scroll">Plusieurs résultats sont disponibles : <strong>faites bien descendre l’ascenseur de cette colonne jusqu’en bas</strong> pour tous les voir.</p> : <p>Le résultat est affiché dans cette colonne avec sa provenance et sa preuve.</p>}
-    <div className="qvl-eclaireur-nav">{previous}<button type="button" onClick={onMinimize}>Réduire</button></div>
-  </aside>
-
-  return <aside className="qvl-eclaireur-guide intro qvl-eclaireur-side-right" aria-live="polite">
-    {header}<p className="qvl-eclaireur-lead">Vous pouvez avancer de deux façons complémentaires.</p>
+  let title = 'Deux façons complémentaires d’avancer'
+  let body = <>
+    <p>Vous pouvez structurer votre réflexion dans le canevas et vous appuyer sur les <strong>besoins informationnels</strong> pour interroger le corpus.</p>
     <div className="qvl-eclaireur-section"><strong>Démarches dans le canevas</strong><span>Question · Idée / hypothèse · Note · Point à vérifier</span></div>
     <div className="qvl-eclaireur-section"><strong>Besoins informationnels</strong><span>Comprendre un thème · Trouver une information précise · Voir ce qui évolue · Identifier les acteurs · Explorer les réponses d’action publique</span></div>
-    <p className="qvl-eclaireur-tip">Les deux zones correspondantes clignotent pour vous montrer où agir. Le canevas peut être agrandi en repliant les deux volets.</p>
-    <div className="qvl-eclaireur-actions"><button type="button" onClick={onCards}>Voir les démarches</button><button type="button" onClick={onNeeds}>Voir les besoins</button></div>
-  </aside>
-}
+  </>
 
-function EclaireurHeader({ number, onMinimize, onClose }) {
-  return <div className="qvl-eclaireur-heading"><span className="qvl-eclaireur-mark">✦</span><strong>L’Éclaireur</strong><span className="qvl-eclaireur-step">{number}/4</span><div className="qvl-eclaireur-window-actions"><button type="button" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button><button type="button" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button></div></div>
+  if (step === 'cards') {
+    title = 'Commencez par une carte'
+    body = <>
+      <p>Utilisez <strong>Question</strong>, <strong>Idée / hypothèse</strong>, <strong>Note</strong> ou <strong>Point à vérifier</strong> pour poser votre point de départ dans le canevas.</p>
+      <p className="qvl-eclaireur-tip">Le canevas peut être agrandi en <strong>repliant les deux volets latéraux</strong> avec les chevrons.</p>
+    </>
+  } else if (step === 'needs') {
+    title = 'Choisissez votre besoin informationnel'
+    body = <>
+      <p>Le volet de gauche permet de choisir la manière dont le corpus sera interrogé à partir de votre carte.</p>
+      <p className="qvl-eclaireur-tip">La zone utile clignote brièvement pour attirer votre attention.</p>
+    </>
+  } else if (step === 'results') {
+    title = 'Consultez les résultats du corpus'
+    body = <>
+      <p>Les résultats apparaissent dans le volet de droite avec leur provenance et leur preuve.</p>
+      {awaitingCard ? <p>Sélectionnez d’abord une carte dans le canevas : le besoin choisi sera appliqué à ce point de départ.</p> : loading ? <p>La recherche est en cours. Les éléments trouvés vont s’afficher dans cette colonne.</p> : resultCount === 0 ? <p>Si le corpus ne fournit pas de résultat suffisant, le message de limite s’affichera au même endroit.</p> : multiple ? <p className="qvl-eclaireur-tip">Plusieurs résultats sont disponibles : <strong>faites bien descendre l’ascenseur de cette colonne jusqu’en bas</strong> pour tous les voir.</p> : <p>Le résultat est affiché dans cette colonne.</p>}
+    </>
+  }
+
+  return <aside className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}`} aria-live="polite" aria-label={`L’Éclaireur, étape ${number} sur 4`}>
+    <header className="qvl-eclaireur-visual-header">
+      <div className="qvl-eclaireur-brand"><span className="qvl-eclaireur-compass" aria-hidden="true">✦</span><div><strong>L’Éclaireur</strong><small>VOTRE GUIDE DANS CET ESPACE</small></div></div>
+      <div className="qvl-eclaireur-header-actions"><span>{number}/4</span><button type="button" className="qvl-eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button><button type="button" className="qvl-eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button></div>
+      <div className="qvl-eclaireur-lighthouse" aria-hidden="true"><span className="qvl-eclaireur-lighthouse-light"/><span className="qvl-eclaireur-lighthouse-top"/><span className="qvl-eclaireur-lighthouse-body"/><span className="qvl-eclaireur-lighthouse-base"/></div>
+    </header>
+    <div className="qvl-eclaireur-body">
+      <h3>{title}</h3>
+      {body}
+      <div className="qvl-eclaireur-footer">
+        <div className="qvl-eclaireur-dots" aria-hidden="true">{steps.map((item, dotIndex) => <i key={item} className={dotIndex === index ? 'active' : ''}/>)}</div>
+        <div className="qvl-eclaireur-nav-actions">{index > 0 && <button type="button" className="qvl-eclaireur-action qvl-eclaireur-prev" onClick={onPrevious}>Précédent</button>}<button type="button" className="qvl-eclaireur-action qvl-eclaireur-next" onClick={onNext}>{index < steps.length - 1 ? 'Suivant' : 'Compris'}</button></div>
+      </div>
+    </div>
+  </aside>
 }
 
 function NeedResults({ need, result, materials, onAdd, onProof }) {
