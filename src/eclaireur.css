@@ -627,3 +627,348 @@
   }
   .expertise-screen .eclaireur-direction{display:none}
 }
+
+/* -------------------------------------------------------------------------
+   ONGLET 1 — L’ÉCLAIREUR VISUEL V1.1
+   Correctif ciblé : fenêtre plus petite + accueil ancré sur l’introduction.
+   ------------------------------------------------------------------------- */
+.expertise-screen .eclaireur-expertise{
+  width:min(305px,calc(100vw - 28px));
+  border-radius:14px;
+  box-shadow:0 14px 34px rgba(18,55,92,.20),0 2px 8px rgba(18,55,92,.08);
+}
+
+/* À l’arrivée, L’Éclaireur reste sur le bloc
+   « Des publications aux savoir-faire du ministère », et non sur le graphe. */
+.expertise-screen .eclaireur-expertise-step-1{
+  top:118px;
+  left:14px;
+  right:auto;
+}
+.expertise-screen .eclaireur-expertise-step-2{
+  top:176px;
+  left:288px;
+}
+.expertise-screen .eclaireur-expertise-step-3{
+  top:154px;
+  right:350px;
+  left:auto;
+}
+
+.expertise-screen .eclaireur-expertise-header{
+  min-height:64px;
+  gap:10px;
+  padding:11px 12px 10px;
+  border-radius:13px 13px 0 0;
+}
+.expertise-screen .eclaireur-expertise-brand{gap:8px}
+.expertise-screen .eclaireur-expertise-brand strong{
+  font-size:16.5px;
+}
+.expertise-screen .eclaireur-expertise-brand small{
+  margin-top:3px;
+  font-size:8px;
+  letter-spacing:.075em;
+}
+.expertise-screen .eclaireur-expertise-compass{
+  width:31px;
+  height:31px;
+  flex-basis:31px;
+  font-size:18px;
+}
+.expertise-screen .eclaireur-expertise-header-actions{
+  gap:5px;
+  padding-right:20px;
+  font-size:9.5px;
+}
+.expertise-screen .eclaireur-expertise-header .eclaireur-close{
+  top:5px;
+  right:5px;
+  width:25px;
+  height:25px;
+  font-size:19px;
+}
+.expertise-screen .eclaireur-lighthouse{
+  right:18px;
+  width:34px;
+  height:49px;
+}
+.expertise-screen .eclaireur-lighthouse-light{right:7px;top:4px;width:16px;height:8px}
+.expertise-screen .eclaireur-lighthouse-top{right:5px;width:20px;height:7px}
+.expertise-screen .eclaireur-lighthouse-body{right:8px;bottom:7px;width:16px;height:33px}
+.expertise-screen .eclaireur-lighthouse-body::after{left:5px;top:15px;width:5px;height:7px}
+.expertise-screen .eclaireur-lighthouse-base{right:1px;width:29px;height:9px}
+
+.expertise-screen .eclaireur-expertise-body{
+  padding:11px 14px 10px;
+  border-radius:0 0 13px 13px;
+}
+.expertise-screen .eclaireur-expertise-body h3{
+  margin-bottom:6px;
+  font-size:13px;
+  line-height:1.24;
+}
+.expertise-screen .eclaireur-expertise-body p{
+  margin-bottom:6px;
+  font-size:11.2px;
+  line-height:1.4;
+}
+.expertise-screen .eclaireur-expertise-body .eclaireur-prompt{margin-bottom:7px}
+.expertise-screen .eclaireur-expertise-footer{
+  gap:8px;
+  margin-top:2px;
+  padding-top:7px;
+}
+.expertise-screen .eclaireur-dots{gap:5px}
+.expertise-screen .eclaireur-dots i{width:6px;height:6px}
+.expertise-screen .eclaireur-next{
+  padding:7px 10px;
+  border-radius:9px;
+  font-size:10.5px;
+}
+.expertise-screen .eclaireur-direction{
+  gap:5px;
+  font-size:10px;
+}
+.expertise-screen .eclaireur-direction b{font-size:27px}
+
+/* Étape 1 : la flèche reste liée à l’introduction, pas au graphe. */
+.expertise-screen .eclaireur-expertise-step-1 .eclaireur-direction{
+  left:34px;
+  top:100%;
+  transform:translate(0,7px) rotate(0deg);
+}
+.expertise-screen .eclaireur-expertise-step-1 .eclaireur-direction b{
+  transform:rotate(88deg);
+}
+
+@media(max-width:1380px){
+  .expertise-screen .eclaireur-expertise-step-1{left:10px;top:108px}
+  .expertise-screen .eclaireur-expertise-step-2{left:250px;top:166px}
+  .expertise-screen .eclaireur-expertise-step-3{right:318px;top:148px}
+}
+
+@media(max-width:1020px){
+  .expertise-screen .eclaireur-expertise{
+    max-width:330px;
+  }
+}
+
+
+/* -------------------------------------------------------------------------
+   ONGLET 1 — L’ÉCLAIREUR VISUEL V1.2
+   L’Éclaireur reste en haut, sur un bord de l’écran. Les zones utiles
+   clignotent brièvement ; les flèches de guidage sont supprimées.
+   ------------------------------------------------------------------------- */
+.expertise-screen .eclaireur-expertise{
+  width:min(286px,calc(100vw - 28px));
+}
+.expertise-screen .eclaireur-expertise-step-1,
+.expertise-screen .eclaireur-expertise-step-2{
+  top:108px;
+  right:14px;
+  left:auto;
+}
+.expertise-screen .eclaireur-expertise-step-3{
+  top:108px;
+  left:14px;
+  right:auto;
+}
+
+/* Plus aucune flèche flottante autour de la fenêtre. */
+.expertise-screen .eclaireur-direction{display:none!important}
+
+/* La zone visée devient le repère : un clignotement bref, sans déplacement. */
+.expertise-screen .expertise-eclaireur-target{
+  position:relative;
+  z-index:3;
+  border-radius:12px;
+  animation:expertise-eclaireur-focus .92s ease-in-out 5;
+}
+.expertise-screen .expertise-eclaireur-graph-target{
+  border-radius:14px;
+}
+@keyframes expertise-eclaireur-focus{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,186,62,0),0 0 0 0 rgba(31,111,164,0)}
+  50%{box-shadow:0 0 0 4px rgba(255,186,62,.60),0 0 22px 7px rgba(31,111,164,.20)}
+}
+
+@media(max-width:1380px){
+  .expertise-screen .eclaireur-expertise-step-1,
+  .expertise-screen .eclaireur-expertise-step-2{top:104px;right:10px;left:auto}
+  .expertise-screen .eclaireur-expertise-step-3{top:104px;left:10px;right:auto}
+}
+@media(max-width:1020px){
+  .expertise-screen .eclaireur-expertise{
+    top:86px!important;
+    bottom:auto!important;
+    width:min(280px,calc(100vw - 24px));
+    max-width:none;
+    margin:0;
+  }
+  .expertise-screen .eclaireur-expertise-step-1,
+  .expertise-screen .eclaireur-expertise-step-2{right:12px!important;left:auto!important}
+  .expertise-screen .eclaireur-expertise-step-3{left:12px!important;right:auto!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .expertise-screen .expertise-eclaireur-target{animation:none!important;box-shadow:0 0 0 3px rgba(255,186,62,.48)!important}
+}
+
+/* -------------------------------------------------------------------------
+   ONGLET 1 — L’ÉCLAIREUR V1.3
+   Correctif final de positionnement : toujours en haut sur un bord,
+   jamais au centre. Réduction / fermeture / réouverture + retour arrière.
+   ------------------------------------------------------------------------- */
+.expertise-screen .eclaireur-expertise{
+  position:fixed!important;
+  top:96px!important;
+  bottom:auto!important;
+  width:min(292px,calc(100vw - 28px))!important;
+  max-width:292px!important;
+  margin:0!important;
+  transform:none!important;
+  z-index:160!important;
+}
+.expertise-screen .eclaireur-expertise.eclaireur-side-right{
+  right:14px!important;
+  left:auto!important;
+}
+.expertise-screen .eclaireur-expertise.eclaireur-side-left{
+  left:14px!important;
+  right:auto!important;
+}
+.expertise-screen .eclaireur-expertise-step-1,
+.expertise-screen .eclaireur-expertise-step-2,
+.expertise-screen .eclaireur-expertise-step-3{
+  top:96px!important;
+  bottom:auto!important;
+  transform:none!important;
+}
+.expertise-screen .eclaireur-expertise-header{
+  min-height:58px!important;
+  padding:9px 10px!important;
+}
+.expertise-screen .eclaireur-expertise-brand strong{font-size:15px!important}
+.expertise-screen .eclaireur-expertise-brand small{font-size:7.5px!important}
+.expertise-screen .eclaireur-expertise-compass{
+  width:29px!important;height:29px!important;flex-basis:29px!important;font-size:16px!important;
+}
+.expertise-screen .eclaireur-expertise-header-actions{
+  position:relative!important;
+  z-index:4!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  padding:0!important;
+  margin-left:auto!important;
+  margin-right:32px!important;
+  font-size:9px!important;
+}
+.expertise-screen .eclaireur-expertise-header-actions .eclaireur-minimize,
+.expertise-screen .eclaireur-expertise-header-actions .eclaireur-close{
+  position:static!important;
+  display:grid!important;
+  place-items:center!important;
+  width:23px!important;
+  height:23px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.10)!important;
+  color:#fff!important;
+  font:700 16px/1 inherit!important;
+  cursor:pointer!important;
+}
+.expertise-screen .eclaireur-expertise-header-actions .eclaireur-minimize:hover,
+.expertise-screen .eclaireur-expertise-header-actions .eclaireur-close:hover{
+  background:rgba(255,255,255,.22)!important;
+}
+.expertise-screen .eclaireur-lighthouse{
+  right:8px!important;
+  width:27px!important;
+  height:41px!important;
+  opacity:.88!important;
+}
+.expertise-screen .eclaireur-expertise-body{padding:10px 12px 9px!important}
+.expertise-screen .eclaireur-expertise-body h3{font-size:12.5px!important;margin-bottom:5px!important}
+.expertise-screen .eclaireur-expertise-body p{font-size:10.8px!important;line-height:1.38!important;margin-bottom:5px!important}
+.expertise-screen .eclaireur-expertise-footer{margin-top:3px!important;padding-top:7px!important}
+.expertise-screen .eclaireur-nav-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.expertise-screen .eclaireur-prev,
+.expertise-screen .eclaireur-next{margin:0!important;padding:6px 9px!important;font-size:10px!important;min-height:28px!important}
+.expertise-screen .eclaireur-prev{background:#fff!important;color:#47627f!important}
+
+/* État réduit : une petite barre reste sur le même bord, en haut. */
+.expertise-screen .eclaireur-expertise-minimized{
+  position:fixed!important;
+  top:96px!important;
+  z-index:160!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:3px!important;
+  width:210px!important;
+  height:38px!important;
+  padding:3px 4px 3px 5px!important;
+  border:1px solid rgba(31,105,149,.30)!important;
+  border-radius:12px!important;
+  background:linear-gradient(110deg,#0b2c53 0%,#075f8d 62%,#0e86aa 100%)!important;
+  box-shadow:0 8px 24px rgba(18,55,92,.20)!important;
+}
+.expertise-screen .eclaireur-expertise-minimized.eclaireur-side-right{right:14px!important;left:auto!important}
+.expertise-screen .eclaireur-expertise-minimized.eclaireur-side-left{left:14px!important;right:auto!important}
+.expertise-screen .eclaireur-minimized-main{
+  flex:1 1 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  min-width:0!important;
+  height:30px!important;
+  padding:0 8px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  cursor:pointer!important;
+  font-family:inherit!important;
+}
+.expertise-screen .eclaireur-minimized-main span{color:#ffd15d;font-size:15px!important}
+.expertise-screen .eclaireur-minimized-main strong{font-size:11.5px!important;white-space:nowrap}
+.expertise-screen .eclaireur-minimized-main small{margin-left:auto;font-size:9px!important;opacity:.8}
+.expertise-screen .eclaireur-minimized-close{
+  width:28px!important;height:28px!important;border:0!important;border-radius:50%!important;
+  background:rgba(255,255,255,.10)!important;color:#fff!important;font:700 17px/1 inherit!important;cursor:pointer!important;
+}
+.expertise-screen .eclaireur-minimized-close:hover{background:rgba(255,255,255,.22)!important}
+
+/* État fermé : bouton discret, toujours en haut sur le bord. */
+.expertise-screen .eclaireur-help-button-expertise{
+  position:fixed!important;
+  top:96px!important;
+  bottom:auto!important;
+  z-index:160!important;
+  min-height:34px!important;
+  padding:0 11px!important;
+  border-radius:999px!important;
+}
+.expertise-screen .eclaireur-help-button-expertise.eclaireur-side-right{right:14px!important;left:auto!important}
+.expertise-screen .eclaireur-help-button-expertise.eclaireur-side-left{left:14px!important;right:auto!important}
+
+/* Le repère utile clignote ; la fenêtre ne pointe plus avec une flèche. */
+.expertise-screen .eclaireur-direction{display:none!important}
+.expertise-screen .expertise-eclaireur-target{
+  animation:expertise-eclaireur-focus-v13 .78s ease-in-out 5!important;
+  outline:0 solid transparent!important;
+}
+@keyframes expertise-eclaireur-focus-v13{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,190,58,0),0 0 0 0 rgba(19,103,162,0)}
+  50%{box-shadow:0 0 0 4px rgba(255,190,58,.72),0 0 24px 8px rgba(19,103,162,.20)}
+}
+
+@media(max-width:1020px){
+  .expertise-screen .eclaireur-expertise,
+  .expertise-screen .eclaireur-expertise-minimized,
+  .expertise-screen .eclaireur-help-button-expertise{top:82px!important}
+  .expertise-screen .eclaireur-expertise{width:min(280px,calc(100vw - 24px))!important;max-width:280px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .expertise-screen .expertise-eclaireur-target{animation:none!important;box-shadow:0 0 0 3px rgba(255,190,58,.52)!important}
+}
