@@ -131,7 +131,7 @@ function ExplorerIntro({onChoose,guideActive=false}){
     <section className="explorer-v02-hero">
       <div className="explorer-v02-copy">
         <span className="explorer-kicker">EXPLORER</span>
-        <h1>Explorer les connaissances contenues dans une publication, et les relations qui leur donnent sens.</h1>
+        <h1>Naviguez dans les publications et dans les univers métiers du Ministère de l’intérieur</h1>
         <p><strong>À la différence d’un graphe de réseaux</strong>, qui met principalement en évidence des connexions entre acteurs ou objets, le graphe de connaissances organise l’information sous la forme d’entités — idées, personnes, lieux, événements, dispositifs, etc. — reliées entre elles par des relations sémantiques explicites, souvent formulées à l’aide de verbes d’action.</p>
         <p>Il permet ainsi de <strong>naviguer à l’intérieur d’un texte et des connaissances qu’il mobilise</strong>, en passant d’une entité à une autre et en suivant les relations qui les relient.</p>
         <p>Le <strong>GraphRAG</strong> prolonge cette logique en permettant d’interroger les contenus documentaires et d’en extraire des objets spécifiques : <strong>acteurs, recommandations, localisations, actions, enjeux, concepts</strong>, etc.</p>

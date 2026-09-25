@@ -85,8 +85,7 @@ export default function Atelier({data}){
           <div className="qvl-promise-icon">✦</div>
           <div className="qvl-promise-copy">
             <p className="qvl-promise-lead">Si l’onglet <b>Explorer</b> favorise l’exploration, ce troisième onglet vous invite à mobiliser les publications recensées dans le bulletin de veille dans vos travaux personnels.</p>
-            <div className="qvl-promise-point"><span className="qvl-promise-check">✓</span><span>Vous pouvez identifier des experts ministériels sur les sujets qui vous intéressent, extraire des recommandations des rapports et être accompagné par l’IA générative dans l’élaboration de votre scénario de veille.</span></div>
-            <div className="qvl-promise-point"><span className="qvl-promise-check">✓</span><span>La carte de réflexion assistée prolonge vos travaux et stimule vos capacités cognitives.</span></div>
+            <div className="qvl-promise-point"><span className="qvl-promise-check">✓</span><span>Avancer avec le corpus prolonge vos travaux et stimule vos capacités cognitives.</span></div>
             <div className="qvl-promise-point"><span className="qvl-promise-check">✓</span><span><b>La cognition est distribuée</b> : votre question, le corpus, le graphe, l’interface et l’IA participent ensemble au parcours de réflexion.</span></div>
           </div>
           <div className="qvl-promise-art" aria-hidden="true"><span className="qvl-route"/><span className="qvl-compass">◇</span><span className="qvl-doc-stack"/></div>
