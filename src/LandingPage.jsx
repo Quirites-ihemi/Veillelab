@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './LandingPage.css'
-import landingLogo from './landing-logo.png'
+import quiritesLogo from './landing-quirites-logo.png'
 import radarVisual from './landing-radar.png'
 
 const cguDraft = [
@@ -17,37 +17,36 @@ export default function LandingPage({ onEnter }) {
 
   return (
     <div className="qlab-radar-landing">
-      <header className="qlab-radar-landing__header">
-        <div className="qlab-radar-landing__brand-wrap">
-          <img src={landingLogo} alt="Quiritès Veille Lab" className="qlab-radar-landing__logo" />
-        </div>
+      <div className="qlab-radar-landing__background" aria-hidden="true">
+        <img src={radarVisual} alt="" />
+        <div className="qlab-radar-landing__background-mask" />
+        <div className="qlab-radar-landing__radar-sweep" />
+        <div className="qlab-radar-landing__pulse qlab-radar-landing__pulse--one" />
+        <div className="qlab-radar-landing__pulse qlab-radar-landing__pulse--two" />
+      </div>
 
-        <nav className="qlab-radar-landing__nav" aria-label="Aperçu des espaces du Lab">
-          <span>Expertises ministérielles</span>
-          <span>Explorer une publication</span>
-          <span>Avancer avec le corpus</span>
-          <span>La veille à l’IHEMI</span>
-        </nav>
-      </header>
-
-      <main className="qlab-radar-landing__hero">
+      <main className="qlab-radar-landing__content">
         <section className="qlab-radar-landing__copy">
-          <div className="qlab-radar-landing__eyebrow">EXPLORER · RELIER · METTRE EN PERSPECTIVE</div>
+          <img
+            src={quiritesLogo}
+            alt="Quiritès"
+            className="qlab-radar-landing__logo"
+          />
+
+          <div className="qlab-radar-landing__eyebrow">
+            EXPLORER · RELIER · METTRE EN PERSPECTIVE
+          </div>
 
           <h1>
             <span>Bienvenue dans</span>
-            <strong>Quiritès <em>Veille Lab</em></strong>
+            <strong>
+              Quiritès <em>Veille Lab</em>
+            </strong>
           </h1>
 
           <p className="qlab-radar-landing__lead">
             Naviguez dans les publications et dans les univers métiers du ministère de l’Intérieur.
           </p>
-
-          <div className="qlab-radar-landing__tricolor" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
 
           <p className="qlab-radar-landing__intro">
             Explorez des publications, des expertises et des pistes de réflexion à partir du corpus actif de l’ensemble des bulletins de veille.
@@ -57,18 +56,16 @@ export default function LandingPage({ onEnter }) {
             Résultats fondés sur le corpus actif des bulletins de veille.
           </p>
 
-          <div className="qlab-radar-landing__actions">
-            <button
-              type="button"
-              className="qlab-radar-landing__enter"
-              onClick={onEnter}
-              disabled={!accepted}
-              title={accepted ? 'Entrer dans le Lab' : 'Acceptez les CGU pour entrer dans le Lab'}
-            >
-              <span aria-hidden="true">→</span>
-              Entrer dans le Lab
-            </button>
-          </div>
+          <button
+            type="button"
+            className="qlab-radar-landing__enter"
+            onClick={onEnter}
+            disabled={!accepted}
+            title={accepted ? 'Entrer dans le Lab' : 'Acceptez les CGU pour entrer dans le Lab'}
+          >
+            <span aria-hidden="true">→</span>
+            Entrer dans le Lab
+          </button>
 
           <div className="qlab-radar-landing__cgu-row">
             <label>
@@ -79,23 +76,20 @@ export default function LandingPage({ onEnter }) {
               />
               <span>J’accepte les CGU</span>
             </label>
+
             <button type="button" onClick={() => setShowCgu(true)}>
               Voir les conditions générales d’utilisation
             </button>
           </div>
         </section>
-
-        <section className="qlab-radar-landing__visual" aria-label="Radar de veille">
-          <img src={radarVisual} alt="Radar de veille centré sur la France et plusieurs univers thématiques" />
-          <div className="qlab-radar-landing__visual-fade" />
-          <div className="qlab-radar-landing__radar-sweep" aria-hidden="true" />
-          <div className="qlab-radar-landing__pulse qlab-radar-landing__pulse--one" aria-hidden="true" />
-          <div className="qlab-radar-landing__pulse qlab-radar-landing__pulse--two" aria-hidden="true" />
-        </section>
       </main>
 
       {showCgu && (
-        <div className="qlab-radar-landing__modal-backdrop" role="presentation" onMouseDown={() => setShowCgu(false)}>
+        <div
+          className="qlab-radar-landing__modal-backdrop"
+          role="presentation"
+          onMouseDown={() => setShowCgu(false)}
+        >
           <section
             className="qlab-radar-landing__modal"
             role="dialog"
@@ -112,8 +106,12 @@ export default function LandingPage({ onEnter }) {
               ×
             </button>
 
-            <span className="qlab-radar-landing__modal-kicker">VERSION PROVISOIRE</span>
-            <h2 id="qlab-cgu-title">Conditions générales d’utilisation</h2>
+            <span className="qlab-radar-landing__modal-kicker">
+              VERSION PROVISOIRE
+            </span>
+            <h2 id="qlab-cgu-title">
+              Conditions générales d’utilisation
+            </h2>
 
             <div className="qlab-radar-landing__modal-copy">
               {cguDraft.map((paragraph, index) => (
