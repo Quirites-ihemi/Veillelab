@@ -440,7 +440,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
   const [editingCardId, setEditingCardId] = useState(null)
   const [editDraft, setEditDraft] = useState({ title: '', text: '' })
-  const [eclaireur, setEclaireur] = useState({ mode: 'open', step: 'intro' })
+  const [eclaireur, setEclaireur] = useState({ mode: 'open', step: 'axis' })
   const canvasRef = useRef(null)
   const cardEditRef = useRef(null)
   const dragRef = useRef(null)
@@ -450,6 +450,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const activeNeed = NEEDS.find(item => item.id === activeNeedId) || NEEDS[0]
   const resultNeed = NEEDS.find(item => item.id === resultNeedId) || NEEDS[0]
   const selectedCards = useMemo(() => cards.filter(card => selectedIds.includes(card.id)), [cards, selectedIds])
+  const reflectionAxisCards = useMemo(() => cards.filter(card => card.kind === 'Question' || card.kind === 'Idée / hypothèse'), [cards])
+  const selectedAxisCards = useMemo(() => selectedCards.filter(card => card.kind === 'Question' || card.kind === 'Idée / hypothèse'), [selectedCards])
   const visibleResults = useMemo(() => visibleResultsForNeed(resultNeedId, searchResult), [resultNeedId, searchResult])
 
   useEffect(() => {
@@ -492,7 +494,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     }
   }, [])
 
-  const ECLAIREUR_STEPS = ['intro', 'cards', 'needs', 'results']
   const guideTo = step => {
     if (step === 'needs') setLeftCollapsed(false)
     if (step === 'results') setRightCollapsed(false)
@@ -500,19 +501,16 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   }
   const closeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'closed' }))
   const minimizeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'minimized' }))
-  const restoreEclaireur = () => setEclaireur(state => ({ ...state, mode: 'open', step: state.step || 'intro' }))
-  const previousEclaireur = () => {
-    const index = Math.max(0, ECLAIREUR_STEPS.indexOf(eclaireur.step))
-    guideTo(ECLAIREUR_STEPS[Math.max(0, index - 1)])
-  }
-  const nextEclaireur = () => {
-    const index = Math.max(0, ECLAIREUR_STEPS.indexOf(eclaireur.step))
-    if (index >= ECLAIREUR_STEPS.length - 1) {
-      minimizeEclaireur()
-      return
-    }
-    guideTo(ECLAIREUR_STEPS[index + 1])
-  }
+  const restoreEclaireur = () => setEclaireur(state => ({ ...state, mode: 'open', step: state.step || 'axis' }))
+
+  // L'Éclaireur suit désormais trois actions réelles : axe → besoin → corpus.
+  // Dès qu'une Question ou une Idée / hypothèse est sélectionnée, il ouvre
+  // directement l'étape des besoins informationnels.
+  useEffect(() => {
+    if (eclaireur.mode !== 'open' || eclaireur.step !== 'axis' || !selectedAxisCards.length) return
+    setLeftCollapsed(false)
+    setEclaireur({ mode: 'open', step: 'needs' })
+  }, [eclaireur.mode, eclaireur.step, selectedAxisCards.length])
 
   const executeNeedSearch = async (needId, rawQuery, context = {}) => {
     const clean = String(rawQuery || '').trim()
@@ -529,6 +527,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setSearchLoading(true)
     setSearchError('')
     setSearchResult(null)
+    setRightCollapsed(false)
+    setEclaireur({ mode: 'open', step: 'results' })
     try {
       const config = needSearchConfig(needId, clean)
       const result = await searchReflectionCorpus(config.query, {
@@ -560,11 +560,11 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
     // Le besoin informationnel travaille d'abord à partir du canevas courant.
     // Une ancienne question libre ne doit jamais prendre le pas sur le post-it sélectionné.
-    const cardsToUse = selectedCards.length
-      ? selectedCards
-      : (cards.length === 1 ? cards : [])
+    const cardsToUse = selectedAxisCards.length
+      ? selectedAxisCards.slice(0, 1)
+      : (reflectionAxisCards.length === 1 ? reflectionAxisCards : [])
 
-    if (!selectedCards.length && cards.length === 1) setSelectedIds([cards[0].id])
+    if (!selectedAxisCards.length && reflectionAxisCards.length === 1) setSelectedIds([reflectionAxisCards[0].id])
 
     const canvasQuery = cardsToUse
       .map(card => {
@@ -715,7 +715,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setLinkMode(false)
     setLinkLabel('est lié à')
     setShowLinks(false)
-    setEclaireur({ mode: 'closed', step: 'intro' })
+    setEclaireur({ mode: 'closed', step: 'axis' })
     try {
       sessionStorage.removeItem(STORAGE_KEY)
       sessionStorage.removeItem(LEGACY_STORAGE_KEY)
@@ -807,7 +807,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     </section>
 
     <div className={shellClass}>
-      <aside className={`qvl-reflection-left ${eclaireur.mode === 'open' && (eclaireur.step === 'intro' || eclaireur.step === 'needs') ? 'qvl-eclaireur-target' : ''}`}>
+      <aside className={`qvl-reflection-left ${eclaireur.mode === 'open' && eclaireur.step === 'needs' ? 'qvl-eclaireur-target' : ''}`}>
         <button className="qvl-panel-toggle left" type="button" onClick={() => setLeftCollapsed(value => !value)} aria-label={leftCollapsed ? 'Déployer les besoins informationnels' : 'Replier les besoins informationnels'}>
           {leftCollapsed ? '›' : '‹'}
         </button>
@@ -833,7 +833,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
           <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2></div></div>
-          <div className={`qvl-canvas-toolbar ${eclaireur.mode === 'open' && (eclaireur.step === 'intro' || eclaireur.step === 'cards') ? 'qvl-eclaireur-target' : ''}`}>
+          <div className={`qvl-canvas-toolbar ${eclaireur.mode === 'open' && eclaireur.step === 'axis' ? 'qvl-eclaireur-target' : ''}`}>
             {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
             <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
             <span className="qvl-toolbar-spacer"/>
@@ -995,16 +995,14 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       onClose={closeEclaireur}
       onMinimize={minimizeEclaireur}
       onRestore={restoreEclaireur}
-      onPrevious={previousEclaireur}
-      onNext={nextEclaireur}
     />
 
     {proofState.open && <ProofModal state={proofState} onClose={() => setProofState({ open: false, loading: false, error: '', material: null, result: null })}/>} 
   </main>
 }
 
-function EclaireurGuide({ step = 'intro', mode = 'open', resultCount, loading, awaitingCard, onClose, onMinimize, onRestore, onPrevious, onNext }) {
-  const steps = ['intro', 'cards', 'needs', 'results']
+function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, awaitingCard, onClose, onMinimize, onRestore }) {
+  const steps = ['axis', 'needs', 'results']
   const index = Math.max(0, steps.indexOf(step))
   const number = index + 1
   const side = step === 'results' ? 'left' : 'right'
@@ -1015,43 +1013,30 @@ function EclaireurGuide({ step = 'intro', mode = 'open', resultCount, loading, a
   }
 
   if (mode === 'minimized') {
-    return <div className={`qvl-eclaireur-minimized qvl-eclaireur-side-${side}`} aria-label={`L’Éclaireur, étape ${number} sur 4, réduit`}>
-      <button type="button" className="qvl-eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer L’Éclaireur"><span aria-hidden="true">✦</span><strong>L’Éclaireur</strong><small>{number}/4</small></button>
+    return <div className={`qvl-eclaireur-minimized qvl-eclaireur-side-${side}`} aria-label={`L’Éclaireur, étape ${number} sur 3, réduit`}>
+      <button type="button" className="qvl-eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer L’Éclaireur"><span aria-hidden="true">✦</span><strong>L’Éclaireur</strong><small>{number}/3</small></button>
       <button type="button" className="qvl-eclaireur-minimized-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
     </div>
   }
 
-  let title = 'Deux façons complémentaires d’avancer'
-  let body = <>
-    <p>Vous pouvez structurer votre réflexion dans le canevas et vous appuyer sur les <strong>besoins informationnels</strong> pour interroger le corpus.</p>
-    <div className="qvl-eclaireur-section"><strong>Démarches dans le canevas</strong><span>Question · Idée / hypothèse · Note · Point à vérifier</span></div>
-    <div className="qvl-eclaireur-section"><strong>Besoins informationnels</strong><span>Comprendre un thème · Trouver une information précise · Voir ce qui évolue · Identifier les acteurs · Explorer les réponses d’action publique</span></div>
-  </>
+  let title = '1 · Choisir un axe de réflexion'
+  let body = <p>Dans le canevas, sélectionnez une carte <strong>Question</strong> ou <strong>Idée / hypothèse</strong>. Elle devient le point de départ de votre recherche dans le corpus.</p>
 
-  if (step === 'cards') {
-    title = 'Commencez par une carte'
-    body = <>
-      <p>Utilisez <strong>Question</strong>, <strong>Idée / hypothèse</strong>, <strong>Note</strong> ou <strong>Point à vérifier</strong> pour poser votre point de départ dans le canevas.</p>
-      <p className="qvl-eclaireur-tip">Le canevas peut être agrandi en <strong>repliant les deux volets latéraux</strong> avec les chevrons.</p>
-    </>
-  } else if (step === 'needs') {
-    title = 'Choisissez votre besoin informationnel'
-    body = <>
-      <p>Le volet de gauche permet de choisir la manière dont le corpus sera interrogé à partir de votre carte.</p>
-      <p className="qvl-eclaireur-tip">La zone utile clignote brièvement pour attirer votre attention.</p>
-    </>
+  if (step === 'needs') {
+    title = '2 · Sélectionnez un besoin'
+    body = <p>Cliquez sur <strong>un besoin informationnel</strong> dans le volet de gauche. La recherche part de l’axe de réflexion que vous avez sélectionné.</p>
   } else if (step === 'results') {
-    title = 'Consultez les résultats du corpus'
+    title = '3 · Accéder au corpus'
     body = <>
-      <p>Le volet de droite organise les résultats en trois vues : <strong>Réponse</strong>, <strong>Sources</strong> et <strong>À explorer</strong>.</p>
-      {awaitingCard ? <p>Sélectionnez d’abord une carte dans le canevas : le besoin choisi sera appliqué à ce point de départ.</p> : loading ? <p>La recherche est en cours. Les éléments trouvés vont s’afficher dans cette colonne.</p> : resultCount === 0 ? <p>Si le corpus ne fournit pas de résultat suffisant, le message de limite s’affichera au même endroit.</p> : multiple ? <p className="qvl-eclaireur-tip">Plusieurs résultats sont disponibles : <strong>faites bien descendre l’ascenseur de cette colonne jusqu’en bas</strong> pour tous les voir.</p> : <p>Le résultat est affiché dans cette colonne.</p>}
+      {awaitingCard ? <p>Choisissez d’abord une carte <strong>Question</strong> ou <strong>Idée / hypothèse</strong> dans le canevas.</p> : loading ? <p>La recherche est en cours. Les résultats vont s’afficher dans le volet de droite.</p> : resultCount === 0 ? <p>Le corpus n’a pas fourni de résultat suffisant pour ce besoin. Vous pouvez revenir à votre axe ou choisir un autre besoin.</p> : <p>Les résultats sont disponibles dans le volet de droite. Pour chaque élément, utilisez <strong>Voir la preuve complète</strong> pour accéder à la preuve documentaire.</p>}
+      {multiple && !loading && <p className="qvl-eclaireur-tip">Plusieurs résultats sont disponibles : faites défiler la colonne pour tous les consulter.</p>}
     </>
   }
 
-  return <aside className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}`} aria-live="polite" aria-label={`L’Éclaireur, étape ${number} sur 4`}>
+  return <aside className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}`} aria-live="polite" aria-label={`L’Éclaireur, étape ${number} sur 3`}>
     <header className="qvl-eclaireur-visual-header">
       <div className="qvl-eclaireur-brand"><span className="qvl-eclaireur-compass" aria-hidden="true">✦</span><div><strong>L’Éclaireur</strong><small>VOTRE GUIDE DANS CET ESPACE</small></div></div>
-      <div className="qvl-eclaireur-header-actions"><span>{number}/4</span><button type="button" className="qvl-eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button><button type="button" className="qvl-eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button></div>
+      <div className="qvl-eclaireur-header-actions"><span>{number}/3</span><button type="button" className="qvl-eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button><button type="button" className="qvl-eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button></div>
       <div className="qvl-eclaireur-lighthouse" aria-hidden="true"><span className="qvl-eclaireur-lighthouse-light"/><span className="qvl-eclaireur-lighthouse-top"/><span className="qvl-eclaireur-lighthouse-body"/><span className="qvl-eclaireur-lighthouse-base"/></div>
     </header>
     <div className="qvl-eclaireur-body">
@@ -1059,7 +1044,6 @@ function EclaireurGuide({ step = 'intro', mode = 'open', resultCount, loading, a
       {body}
       <div className="qvl-eclaireur-footer">
         <div className="qvl-eclaireur-dots" aria-hidden="true">{steps.map((item, dotIndex) => <i key={item} className={dotIndex === index ? 'active' : ''}/>)}</div>
-        <div className="qvl-eclaireur-nav-actions">{index > 0 && <button type="button" className="qvl-eclaireur-action qvl-eclaireur-prev" onClick={onPrevious}>Précédent</button>}<button type="button" className="qvl-eclaireur-action qvl-eclaireur-next" onClick={onNext}>{index < steps.length - 1 ? 'Suivant' : 'Compris'}</button></div>
       </div>
     </div>
   </aside>
