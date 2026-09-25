@@ -39,8 +39,8 @@ html{font-size:16px}
 body{background:#f7f9fc;color:var(--q-text);min-width:1180px}
 
 /* menu général : bleu, fin, une seule ligne */
-.topbar{height:70px;border-radius:0;background:linear-gradient(110deg,#071d47,#031630 72%,#082653);padding:0 28px;display:grid;grid-template-columns:210px minmax(620px,1fr) 110px;align-items:center;box-shadow:0 2px 12px rgba(8,29,70,.13);position:sticky;top:0;z-index:50}
-.brand{width:auto;height:70px;border:0;background:transparent;color:white;padding:0;display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left}
+.topbar{height:70px;border-radius:0;background:linear-gradient(110deg,#071d47,#031630 72%,#082653);padding:0 28px;display:grid;grid-template-columns:285px minmax(620px,1fr) 110px;align-items:center;box-shadow:0 2px 12px rgba(8,29,70,.13);position:sticky;top:0;z-index:50}
+.brand{width:auto;height:70px;border:0;background:transparent;color:white;padding:0;display:flex;align-items:center;cursor:pointer;text-align:left}.brand-logo{display:block;width:252px;max-width:100%;height:auto;object-fit:contain;object-position:left center}
 .brand-mark{width:34px;height:34px;position:relative;display:block;border:2px solid #eef5ff;border-radius:50%}
 .brand-mark i{position:absolute;border:2px solid #5b8cff;border-radius:50%}.brand-mark i:nth-child(1){inset:5px}.brand-mark i:nth-child(2){width:7px;height:7px;left:12px;top:12px;background:#62d9c4;border:0}.brand-mark i:nth-child(3){width:5px;height:5px;right:-4px;top:9px;background:#ffbb22;border:0}
 .brand-copy{display:flex;align-items:baseline;gap:7px;white-space:nowrap}.brand-copy strong{font-size:20px;letter-spacing:-.3px}.brand-copy b{font-size:16px;font-weight:650;color:#65d7c5}
@@ -85,7 +85,7 @@ body{background:#f7f9fc;color:var(--q-text);min-width:1180px}
 .page{max-width:1600px;padding-top:34px}.page-heading h1{color:#071d47}.modern-home .source-banner{margin-top:5px}.footer{font-size:9px;padding:12px 30px 18px;background:#f7f9fc}
 
 @media(max-width:1380px){
-  .topbar{grid-template-columns:180px minmax(580px,1fr) 90px;padding:0 16px}.navtab{padding:0 12px;font-size:12px}.navtab svg{display:none}.brand-copy strong{font-size:18px}.brand-copy b{font-size:14px}
+  .topbar{grid-template-columns:245px minmax(580px,1fr) 90px;padding:0 16px}.brand-logo{width:220px}.navtab{padding:0 12px;font-size:12px}.navtab svg{display:none}
   .screen.graph-screen{grid-template-columns:245px minmax(610px,1fr)}.screen.graph-screen.has-drawer{grid-template-columns:245px minmax(610px,1fr) 310px}.left-rail{padding:22px 16px}.detail-drawer{padding:24px 18px}.workspace-toolbar h1{font-size:25px}.big-count strong{font-size:40px}.constellation-shell{min-height:470px}
 }
 
