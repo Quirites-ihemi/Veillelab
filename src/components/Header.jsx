@@ -1,5 +1,6 @@
 import React from 'react'
 import Icon from './Icon.jsx'
+import quiritesVeilleLabLogo from '../quirites-veille-lab-logo.png'
 
 const tabs=[
   {id:'expertises',label:'Expertises ministérielles',icon:'graph'},
@@ -11,8 +12,7 @@ const tabs=[
 export default function Header({active,onChange}){
   return <header className="topbar">
     <button className="brand" onClick={()=>onChange('expertises')} aria-label="Accueil Quiritès Veille Lab">
-      <span className="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span className="brand-copy"><strong>Quiritès</strong><b>Veille Lab</b></span>
+      <img className="brand-logo" src={quiritesVeilleLabLogo} alt="Quiritès Veille Lab" />
     </button>
     <nav className="topnav" aria-label="Navigation principale">
       {tabs.map(t=><button key={t.id} className={`navtab ${active===t.id?'active':''}`} onClick={()=>onChange(t.id)}>
