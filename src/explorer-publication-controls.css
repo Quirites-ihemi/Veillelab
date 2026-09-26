@@ -1,0 +1,150 @@
+/* ==========================================================
+   ONGLET 2 — ergonomie publication
+   - fiche contextuelle facilement repliable / réouvrable
+   - chatbot remonté
+   - commande de réinitialisation toujours accessible
+   ========================================================== */
+
+/* La fiche droite garde ses fonctions, mais ses contrôles deviennent explicites. */
+.explorer-v02-graph .detail-drawer.publication-drawer{
+  position:relative !important;
+}
+
+.explorer-v02-graph .publication-drawer-controls{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.explorer-v02-graph .publication-drawer-controls .drawer-collapse,
+.explorer-v02-graph .publication-drawer-controls .drawer-close{
+  position:static !important;
+  inset:auto !important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-height:34px;
+  border:1px solid #cdd8e6;
+  border-radius:9px;
+  background:#fff;
+  color:#294a70;
+  cursor:pointer;
+  box-shadow:0 3px 10px rgba(31,55,88,.07);
+}
+
+.explorer-v02-graph .publication-drawer-controls .drawer-collapse{
+  padding:0 10px;
+  font-size:12px;
+  font-weight:750;
+}
+
+.explorer-v02-graph .publication-drawer-controls .drawer-collapse svg{
+  transform:rotate(0deg);
+}
+
+.explorer-v02-graph .publication-drawer-controls .drawer-close{
+  width:34px;
+  height:34px;
+  padding:0;
+}
+
+.explorer-v02-graph .publication-drawer-controls button:hover{
+  background:#f1f5fa;
+  border-color:#aebed2;
+}
+
+/* Quand la fiche est repliée, la carte récupère immédiatement toute la largeur.
+   Un bouton persistant permet de rouvrir la fiche sans perdre le nœud sélectionné. */
+.explorer-v02-graph .publication-drawer-reopen{
+  position:fixed;
+  z-index:28;
+  right:12px;
+  top:156px;
+  min-height:42px;
+  padding:0 13px 0 10px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  border:1px solid #b9c9dd;
+  border-radius:12px 0 0 12px;
+  background:#fff;
+  color:#244b78;
+  box-shadow:0 8px 24px rgba(26,48,81,.16);
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.explorer-v02-graph .publication-drawer-reopen svg{
+  transform:rotate(180deg);
+}
+
+.explorer-v02-graph .publication-drawer-reopen:hover{
+  background:#eef4fb;
+}
+
+/* Le chatbot est remonté au maximum dans la zone graphe. */
+.explorer-v02-graph .graph-stage .explorer-chat-top{
+  top:2px !important;
+}
+
+/* Réinitialisation visible directement sur la carte, sans dépendre du bandeau supérieur. */
+.explorer-v02-graph .explorer-map-reset{
+  position:absolute;
+  z-index:11;
+  top:8px;
+  left:12px;
+  min-height:38px;
+  padding:0 12px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  border:1px solid #c8d5e5;
+  border-radius:10px;
+  background:rgba(255,255,255,.95);
+  color:#294d77;
+  box-shadow:0 7px 20px rgba(31,52,81,.10);
+  font-size:12.5px;
+  font-weight:800;
+  cursor:pointer;
+  backdrop-filter:blur(7px);
+}
+
+.explorer-v02-graph .explorer-map-reset:hover{
+  background:#f3f7fb;
+  border-color:#aebfd4;
+}
+
+@media(max-width:1180px){
+  .explorer-v02-graph .publication-drawer-reopen{
+    top:142px;
+  }
+  .explorer-v02-graph .explorer-map-reset span{
+    display:none;
+  }
+  .explorer-v02-graph .explorer-map-reset{
+    width:38px;
+    padding:0;
+    justify-content:center;
+  }
+}
+
+@media(max-width:760px){
+  .explorer-v02-graph .publication-drawer-reopen{
+    right:6px;
+    top:128px;
+  }
+  .explorer-v02-graph .publication-drawer-reopen span{
+    display:none;
+  }
+  .explorer-v02-graph .publication-drawer-reopen{
+    width:40px;
+    padding:0;
+    justify-content:center;
+  }
+}
