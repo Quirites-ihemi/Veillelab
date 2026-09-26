@@ -1612,3 +1612,76 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
 .workspace-page .provenance-chips span{font-size:10.5px!important}
 .workspace-page .generated-sources strong{font-size:13.5px!important;line-height:1.4!important}
 .workspace-page .generated-sources small{font-size:12px!important}
+
+
+/* =========================================================
+   T01 — RÉSUMÉ ANALYTIQUE ALLÉGÉ
+   - suppression visuelle du cadre de traitement
+   - explication courte
+   - bouton directement sous la demande
+   - résultat remonté
+   ========================================================= */
+
+.workspace-page .t01-production-panel{
+  padding:16px!important;
+}
+
+.workspace-page .t01-production-panel .user-need{
+  margin-bottom:12px!important;
+}
+
+.workspace-page .t01-generation-zone{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.workspace-page .t01-next-copy{
+  padding:0 2px;
+  color:#536983;
+}
+
+.workspace-page .t01-next-copy strong{
+  display:block;
+  margin-bottom:5px;
+  color:#17365d;
+  font-size:15px;
+  font-weight:800;
+}
+
+.workspace-page .t01-next-copy p{
+  margin:0;
+  color:#60748e;
+  font-size:14px;
+  line-height:1.55;
+}
+
+.workspace-page .t01-generate-action{
+  display:flex;
+  justify-content:flex-start;
+  margin:2px 0 0;
+}
+
+.workspace-page .t01-generate-btn{
+  min-height:44px;
+  padding:0 18px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px!important;
+}
+
+.workspace-page .t01-generation-zone .generation-state{
+  margin-top:0!important;
+}
+
+.workspace-page .t01-generation-zone .generated-output{
+  margin-top:2px!important;
+}
+
+@media(max-width:760px){
+  .workspace-page .t01-generate-btn{
+    width:100%;
+    justify-content:center;
+  }
+}
