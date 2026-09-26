@@ -57,6 +57,20 @@ const ATELIER_SCREEN_STYLES=`
 .qvl-v02 .qvl-regime-info.strict{background:#f6faff}.qvl-v02 .qvl-regime-info.extract{background:#fffaf3}.qvl-v02 .qvl-regime-info.enrich{background:#f7fcf7}
 .qvl-v02 .qvl-regime-info strong{display:block;margin-bottom:7px;color:#173b76;font-size:14px}.qvl-v02 .qvl-regime-info.extract strong{color:#c75a00}.qvl-v02 .qvl-regime-info.enrich strong{color:#24713a}
 .qvl-v02 .qvl-regime-info p{margin:0;color:#485b78;font-size:12.5px;line-height:1.5}
+
+/* ONGLET 3 — LISIBILITÉ GÉNÉRALE */
+.qvl-v02 .qvl-page-heading h1{font-size:42px}
+.qvl-v02 .qvl-page-heading p{font-size:17px;line-height:1.5}
+.qvl-v02 .qvl-promise-lead{font-size:18px;line-height:1.52}
+.qvl-v02 .qvl-promise-point{font-size:15px;line-height:1.5}
+.qvl-v02 .qvl-transform-title{font-size:21px}
+.qvl-v02 .qvl-treatment-card h3{font-size:18px;line-height:1.28}
+.qvl-v02 .qvl-treatment-card p{font-size:15px;line-height:1.52}
+.qvl-v02 .qvl-treatment-card .regime{font-size:12.5px}
+.qvl-v02 .qvl-regime-panel>h3{font-size:18px}
+.qvl-v02 .qvl-regime-info strong{font-size:15.5px}
+.qvl-v02 .qvl-regime-info p{font-size:14.5px;line-height:1.55}
+
 @media(max-width:1100px){.qvl-v02 .qvl-workshop-grid{grid-template-columns:1fr}.qvl-v02 .qvl-regime-panel{display:none}.qvl-v02 .qvl-promise{grid-template-columns:48px 1fr}.qvl-v02 .qvl-promise-art{display:none}}
 @media(max-width:800px){.qvl-v02 .qvl-treatment-grid{grid-template-columns:1fr}.qvl-v02 .qvl-page-heading h1{font-size:30px}.qvl-v02 .qvl-promise{padding:18px;grid-template-columns:1fr}.qvl-v02 .qvl-promise-icon{display:none}}
 `

@@ -5,3 +5,37 @@
 .qvl-experts-v01 .qvl-expert-detail{position:sticky;top:84px;border:1px solid #dbe3ed;border-radius:12px;background:#fff;min-height:500px;overflow:hidden;box-shadow:0 4px 14px rgba(28,52,86,.05)}.qvl-experts-v01 .qvl-expert-detail-head{padding:17px;border-bottom:1px solid #e7edf3;display:flex;align-items:center;gap:12px;background:#fbfdff}.qvl-experts-v01 .qvl-expert-detail-head span{display:block;color:#63809f;font-size:10.5px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}.qvl-experts-v01 .qvl-expert-detail-head h2{margin:3px 0 0;color:#15345d;font-size:21px}.qvl-experts-v01 .qvl-expert-detail-body{padding:16px}.qvl-experts-v01 .qvl-expert-detail-body section{margin-bottom:18px}.qvl-experts-v01 .qvl-expert-detail-body h3{margin:0 0 9px;color:#1b3c64;font-size:12.5px}.qvl-experts-v01 .qvl-expert-org{display:flex;align-items:flex-start;gap:7px;color:#455e7d;font-size:12.5px;line-height:1.4;margin:5px 0}.qvl-experts-v01 .qvl-expert-domain-list{display:flex;flex-wrap:wrap;gap:6px}.qvl-experts-v01 .qvl-expert-evidence-list{display:grid;gap:8px}.qvl-experts-v01 .qvl-expert-evidence-list article{border:1px solid #e0e7ef;border-radius:9px;padding:10px;background:#fbfcfe}.qvl-experts-v01 .qvl-expert-evidence-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;color:#31506f;font-size:10.5px}.qvl-experts-v01 .qvl-expert-evidence-top strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.qvl-experts-v01 .qvl-expert-evidence-top span{font-weight:800;color:#647a98}.qvl-experts-v01 .qvl-expert-evidence-list p{margin:7px 0;color:#4b617d;font-size:11.5px;line-height:1.48}.qvl-experts-v01 .qvl-expert-evidence-list a,.qvl-experts-v01 .qvl-expert-publications a{display:inline-flex;align-items:center;gap:5px;color:#195bbb;text-decoration:none;font-weight:800;font-size:11px}.qvl-experts-v01 .qvl-expert-publications{display:grid;gap:8px}.qvl-experts-v01 .qvl-expert-publications article{border:1px solid #e2e8ef;border-radius:9px;padding:9px 10px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}.qvl-experts-v01 .qvl-expert-publications b{display:block;color:#29599d;font-size:10px;margin-bottom:2px}.qvl-experts-v01 .qvl-expert-publications strong{display:block;color:#263e5d;font-size:11.5px;line-height:1.35}.qvl-experts-v01 .qvl-expert-publications span{display:block;margin-top:3px;color:#718099;font-size:10.5px}.qvl-experts-v01 .qvl-expert-note{border:1px solid #d8e4f2;background:#f6faff;border-radius:9px;padding:10px 11px;display:flex;gap:8px;align-items:flex-start;color:#5c708b;font-size:11px;line-height:1.48}.qvl-experts-v01 .qvl-experts-empty{border:1px dashed #cbd9eb;border-radius:14px;min-height:360px;background:#fbfdff;display:grid;place-items:center;text-align:center;padding:32px}.qvl-experts-v01 .qvl-experts-empty h2{margin:8px 0;color:#17345d;font-size:22px}.qvl-experts-v01 .qvl-experts-empty p{margin:0;max-width:680px;color:#5c6f89;font-size:14px;line-height:1.6}
 @media(max-width:1150px){.qvl-experts-v01 .qvl-experts-search-grid{grid-template-columns:1fr 1fr}.qvl-experts-v01 .qvl-experts-field.topic{grid-column:1/-1}.qvl-experts-v01 .qvl-experts-layout{grid-template-columns:1fr}.qvl-experts-v01 .qvl-expert-detail{position:static}.qvl-experts-v01 .qvl-experts-method{margin-left:0;max-width:none}}
 @media(max-width:760px){.qvl-experts-v01 .qvl-experts-head{display:block}.qvl-experts-v01 .qvl-experts-kpis{margin-top:12px}.qvl-experts-v01 .qvl-experts-search-grid{grid-template-columns:1fr}.qvl-experts-v01 .qvl-experts-field.topic{grid-column:auto}.qvl-experts-v01 .qvl-experts-actions{align-items:stretch;flex-direction:column}.qvl-experts-v01 .qvl-experts-result-bar{align-items:flex-start;flex-direction:column}.qvl-experts-v01 .qvl-experts-export{width:100%}.qvl-experts-v01 .qvl-experts-export button{flex:1}.qvl-experts-v01 .qvl-expert-card{grid-template-columns:44px minmax(0,1fr)}.qvl-experts-v01 .qvl-expert-card-meta,.qvl-experts-v01 .qvl-expert-card>svg{display:none}}
+
+
+/* ONGLET 3 — EXPERTS MINISTÉRIELS : typographie plus lisible */
+.qvl-experts-v01 .qvl-experts-title-row h1{font-size:41px!important}
+.qvl-experts-v01 .qvl-experts-head p{font-size:17.5px!important}
+.qvl-experts-v01 .qvl-experts-kpis span{font-size:13px!important}
+.qvl-experts-v01 .qvl-experts-kpis b{font-size:24px!important}
+.qvl-experts-v01 .qvl-experts-field label{font-size:14px!important}
+.qvl-experts-v01 .qvl-experts-field label span{font-size:11px!important}
+.qvl-experts-v01 .qvl-experts-query input,
+.qvl-experts-v01 select{font-size:14.5px!important}
+.qvl-experts-v01 .qvl-experts-method{font-size:13px!important;line-height:1.5!important}
+.qvl-experts-v01 .qvl-experts-result-bar strong{font-size:22px!important}
+.qvl-experts-v01 .qvl-experts-result-bar span{font-size:14px!important}
+.qvl-experts-v01 .qvl-expert-card-main h3{font-size:18.5px!important}
+.qvl-experts-v01 .qvl-expert-card-main p{font-size:14px!important;line-height:1.45!important}
+.qvl-experts-v01 .qvl-expert-chips span,
+.qvl-experts-v01 .qvl-expert-domain-list span{font-size:11.5px!important}
+.qvl-experts-v01 .qvl-expert-card-meta{font-size:11.5px!important}
+.qvl-experts-v01 .qvl-expert-card-meta b{font-size:21px!important}
+.qvl-experts-v01 .qvl-expert-detail-head span{font-size:11.5px!important}
+.qvl-experts-v01 .qvl-expert-detail-head h2{font-size:23px!important}
+.qvl-experts-v01 .qvl-expert-detail-body h3{font-size:14px!important}
+.qvl-experts-v01 .qvl-expert-org{font-size:14px!important;line-height:1.5!important}
+.qvl-experts-v01 .qvl-expert-evidence-top{font-size:12px!important}
+.qvl-experts-v01 .qvl-expert-evidence-list p{font-size:13.5px!important;line-height:1.55!important}
+.qvl-experts-v01 .qvl-expert-evidence-list a,
+.qvl-experts-v01 .qvl-expert-publications a{font-size:12.5px!important}
+.qvl-experts-v01 .qvl-expert-publications b{font-size:11.5px!important}
+.qvl-experts-v01 .qvl-expert-publications strong{font-size:13.5px!important;line-height:1.45!important}
+.qvl-experts-v01 .qvl-expert-publications span{font-size:12px!important}
+.qvl-experts-v01 .qvl-expert-note{font-size:12.5px!important;line-height:1.55!important}
+.qvl-experts-v01 .qvl-experts-empty h2{font-size:24px!important}
+.qvl-experts-v01 .qvl-experts-empty p{font-size:15px!important}

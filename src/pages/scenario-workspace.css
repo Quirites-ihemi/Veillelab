@@ -269,3 +269,38 @@
   .qvl-t06-object-card>strong{font-size:15.5px}
   .qvl-t06-object-card>p{font-size:14.5px}
 }
+
+
+/* ONGLET 3 — SCÉNARIO DE VEILLE : homogénéisation typographique finale */
+.qvl-t06-page{font-size:16px!important}
+.qvl-t06-topline{font-size:15px!important}
+.qvl-t06-kicker{font-size:12px!important}
+.qvl-t06-hero h1{font-size:38px!important}
+.qvl-t06-hero p{font-size:17px!important;line-height:1.6!important}
+.qvl-t06-hero-mark{font-size:14px!important}
+.qvl-t06-steps button{font-size:15px!important}
+.qvl-t06-section-head h2{font-size:28px!important}
+.qvl-t06-section-head p{font-size:16px!important}
+.qvl-t06-panel label{font-size:15px!important}
+.qvl-t06-panel textarea{font-size:16px!important}
+.qvl-t06-actions button{font-size:15px!important}
+.qvl-t06-principle,.qvl-t06-alert,.qvl-t06-loading{font-size:14.5px!important}
+.qvl-t06-need{font-size:15px!important}
+.qvl-t06-axis-head h3{font-size:22px!important}
+.qvl-t06-axis>p{font-size:15.5px!important;line-height:1.6!important}
+.qvl-t06-foundation,.qvl-t06-limit{font-size:14px!important}
+.qvl-t06-source-main>strong{font-size:14px!important}
+.qvl-t06-source-main>small{font-size:13px!important}
+.qvl-t06-source-link{font-size:13px!important}
+.qvl-t06-proof summary{font-size:13px!important}
+.qvl-t06-proof-box p{font-size:14px!important;line-height:1.6!important}
+.qvl-t06-result-head h3,.qvl-t06-final-axis h3{font-size:30px!important}
+.qvl-t06-result-head p,.qvl-t06-final-axis>div:first-child>p{font-size:16.5px!important}
+.qvl-t06-object-col h4{font-size:16.5px!important}
+.qvl-t06-object-card>strong{font-size:16.5px!important}
+.qvl-t06-object-card>p{font-size:15.2px!important;line-height:1.62!important}
+.qvl-t06-points>b{font-size:15.5px!important}
+.qvl-t06-points li{font-size:15px!important;line-height:1.6!important}
+.qvl-t06-final-groups h4{font-size:14.5px!important}
+.qvl-t06-final-item>b{font-size:15.5px!important}
+.qvl-t06-final-item>p{font-size:14.5px!important;line-height:1.6!important}

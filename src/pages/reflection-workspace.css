@@ -2344,3 +2344,60 @@
   .qvl-reflection-page .qvl-eclaireur-body h3{font-size:17.5px!important}
   .qvl-reflection-page .qvl-eclaireur-body p{font-size:15.5px!important}
 }
+
+
+/* =========================================================
+   ONGLET 3 — AVANCER AVEC LE CORPUS
+   Agrandissement global de la typographie.
+   ========================================================= */
+.qvl-reflection-page .back-link{font-size:14px!important}
+.qvl-reflection-page .qvl-hero-copy h1{font-size:40px!important}
+.qvl-reflection-page .qvl-hero-copy p{font-size:17px!important;line-height:1.55!important}
+.qvl-reflection-page .qvl-hero-copy span{font-size:14px!important}
+
+.qvl-reflection-page .qvl-side-heading h2{font-size:24px!important}
+.qvl-reflection-page .qvl-side-heading p{font-size:15px!important;line-height:1.45!important}
+.qvl-reflection-page .qvl-need-copy strong{font-size:16.5px!important;line-height:1.3!important}
+.qvl-reflection-page .qvl-need-copy small{font-size:14px!important;line-height:1.45!important}
+.qvl-reflection-page .qvl-scope-note,
+.qvl-reflection-page .qvl-corpus-boundary p{font-size:13.5px!important;line-height:1.5!important}
+.qvl-reflection-page .qvl-corpus-boundary strong{font-size:13.5px!important}
+
+.qvl-reflection-page .qvl-canvas-title h2{font-size:27px!important}
+.qvl-reflection-page .qvl-canvas-title p{font-size:15px!important}
+.qvl-reflection-page .qvl-postit-add,
+.qvl-reflection-page .qvl-link-button,
+.qvl-reflection-page .qvl-link-count{font-size:13.5px!important}
+.qvl-reflection-page .qvl-empty-canvas h3{font-size:28px!important}
+.qvl-reflection-page .qvl-empty-canvas p{font-size:16px!important;line-height:1.6!important}
+.qvl-reflection-page .qvl-empty-canvas>span{font-size:14.5px!important}
+
+.qvl-reflection-page .qvl-canvas-card>p{font-size:16px!important;line-height:1.5!important}
+.qvl-reflection-page .qvl-canvas-card header>span{font-size:12.5px!important}
+.qvl-reflection-page .qvl-canvas-card footer strong{font-size:12.8px!important}
+.qvl-reflection-page .qvl-canvas-card footer span{font-size:11.8px!important}
+
+.qvl-reflection-page .qvl-need-search textarea{font-size:15.5px!important;line-height:1.5!important}
+.qvl-reflection-page .qvl-need-search button{font-size:14px!important}
+.qvl-reflection-page .qvl-general-advice strong{font-size:13px!important}
+.qvl-reflection-page .qvl-general-advice p{font-size:13.5px!important;line-height:1.5!important}
+.qvl-reflection-page .qvl-guided-status strong{font-size:14px!important}
+.qvl-reflection-page .qvl-guided-status span{font-size:13px!important}
+.qvl-reflection-page .qvl-free-search-toggle strong{font-size:14px!important}
+.qvl-reflection-page .qvl-free-search-toggle small{font-size:12.5px!important}
+
+.qvl-reflection-page .qvl-results-heading h2{font-size:24px!important}
+.qvl-reflection-page .qvl-results-heading p{font-size:14px!important}
+.qvl-reflection-page .qvl-results-tabs button{font-size:14.5px!important}
+.qvl-reflection-page .qvl-result-heading strong{font-size:16px!important}
+.qvl-reflection-page .qvl-result-heading span{font-size:13px!important}
+.qvl-reflection-page .qvl-result-heading small{font-size:12px!important}
+.qvl-reflection-page .qvl-result-card-top{font-size:12.5px!important}
+.qvl-reflection-page .qvl-result-excerpt{font-size:16px!important;line-height:1.62!important}
+.qvl-reflection-page .qvl-result-source>strong{font-size:14.5px!important}
+.qvl-reflection-page .qvl-result-source>span{font-size:13px!important}
+.qvl-reflection-page .qvl-result-source em{font-size:11.5px!important}
+.qvl-reflection-page .qvl-result-actions a,
+.qvl-reflection-page .qvl-result-actions button{font-size:12.5px!important}
+.qvl-reflection-page .qvl-right-empty strong{font-size:18px!important}
+.qvl-reflection-page .qvl-right-empty p{font-size:14px!important;line-height:1.5!important}
