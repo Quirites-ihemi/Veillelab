@@ -1568,3 +1568,47 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
     margin-top: 15px !important;
   }
 }
+
+
+/* =========================================================
+   ONGLET 3 — SOUS-ESPACE RÉSUMÉ ANALYTIQUE
+   Typographie uniquement.
+   ========================================================= */
+.workspace-page .back-link{font-size:14px!important}
+.workspace-page .workspace-head h1{font-size:37px!important;line-height:1.1!important}
+.workspace-page .workspace-head p{font-size:15.5px!important;line-height:1.5!important}
+.workspace-page .regime{font-size:12px!important}
+
+.workspace-page .corpus-panel h3,
+.workspace-page .source-rules h3{font-size:15px!important}
+.workspace-page .corpus-scope-note{font-size:12.5px!important;line-height:1.5!important}
+.workspace-page .corpus-item strong{font-size:13.5px!important;line-height:1.4!important}
+.workspace-page .corpus-item span{font-size:12px!important;line-height:1.35!important}
+
+.workspace-page .user-need label{font-size:13.5px!important}
+.workspace-page .user-need textarea{font-size:15px!important;line-height:1.5!important}
+.workspace-page .production-sheet>h3{font-size:17px!important}
+.workspace-page .sheet-row{font-size:14px!important;line-height:1.55!important}
+.workspace-page .sheet-row strong{font-size:13.5px!important}
+
+.workspace-page .production-placeholder>strong{font-size:16px!important}
+.workspace-page .production-placeholder p,
+.workspace-page .source-rules p,
+.workspace-page .source-rule{font-size:13.5px!important;line-height:1.55!important}
+
+.workspace-page .generation-state strong{font-size:16px!important}
+.workspace-page .generation-state p{font-size:14px!important;line-height:1.55!important}
+
+.workspace-page .generated-kicker{font-size:11px!important}
+.workspace-page .generated-output-head h2{font-size:25px!important}
+.workspace-page .generated-output-head p{font-size:14px!important;line-height:1.45!important}
+.workspace-page .generation-metrics>span,
+.workspace-page .generation-metrics button{font-size:12px!important}
+.workspace-page .generated-section h3,
+.workspace-page .generated-sources h3{font-size:16px!important}
+.workspace-page .generated-section>p{font-size:15.5px!important;line-height:1.65!important}
+.workspace-page .generated-list article p{font-size:15px!important;line-height:1.62!important}
+.workspace-page .generated-index{font-size:11px!important}
+.workspace-page .provenance-chips span{font-size:10.5px!important}
+.workspace-page .generated-sources strong{font-size:13.5px!important;line-height:1.4!important}
+.workspace-page .generated-sources small{font-size:12px!important}
