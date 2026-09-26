@@ -8,6 +8,7 @@ import { buildAdjacency, nodeMeta } from '../lib/graph.js'
 import { normalize, sentenceCase } from '../lib/text.js'
 import { EXPLORER_GUIDE_SESSION_KEY, EXPLORER_GUIDE_STEP_MS } from '../lib/explorerEclaireurRules.js'
 import '../explorer-eclaireur.css'
+import '../explorer-publication-controls.css'
 
 const legendTypes=['acteur','expert_public','action','notion_idee','probleme','localisation','signal_faible','recommandation']
 const TYPE_COLOR={
@@ -159,6 +160,7 @@ export default function Explorer({data}){
   const [selectedNode,setSelectedNode]=useState(null),[proof,setProof]=useState(null),[showWeak,setShowWeak]=useState(true),[showRelationLabels,setShowRelationLabels]=useState(false)
   const [enabledTypes,setEnabledTypes]=useState(legendTypes),[nodeScale,setNodeScale]=useState(1),[labelScale,setLabelScale]=useState(1),[linkDensity,setLinkDensity]=useState(1),[resetToken,setResetToken]=useState(0),[fitToken,setFitToken]=useState(0)
   const [question,setQuestion]=useState(''),[chat,setChat]=useState(null),[loading,setLoading]=useState(false),[chatOpen,setChatOpen]=useState(false)
+  const [detailCollapsed,setDetailCollapsed]=useState(false)
   const [guideStep,setGuideStep]=useState(()=>{
     try{return window.sessionStorage.getItem(EXPLORER_GUIDE_SESSION_KEY)?7:1}catch(_e){return 1}
   })
@@ -198,7 +200,7 @@ export default function Explorer({data}){
     }
   },[selectedPub?.publication_id])
 
-  const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false);setShowRelationLabels(false);if(!guideCollapsed&&guideStep===1){setGuideStep(2);setGuidePaused(false);setGuideRunKey(x=>x+1)}}
+  const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setDetailCollapsed(false);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false);setShowRelationLabels(false);if(!guideCollapsed&&guideStep===1){setGuideStep(2);setGuidePaused(false);setGuideRunKey(x=>x+1)}}
 
   if(!selectedPub)return <div className="explorer-v02-shell"><ExplorerIntro onChoose={()=>setDrawerOpen(true)} guideActive={!guideCollapsed&&guideStep===1}/><ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed={guideCollapsed}/><PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication}/></div>
 
@@ -225,9 +227,10 @@ export default function Explorer({data}){
   const toggleType=t=>{if(normalizeGraphType(selectedNode?.type_noeud)===t&&enabledTypes.includes(t))setSelectedNode(null);setEnabledTypes(s=>s.includes(t)?s.filter(x=>x!==t):[...s,t])}
   const selectAllTypes=()=>setEnabledTypes([...legendTypes])
   const deselectAllTypes=()=>{setSelectedNode(null);setProof(null);setEnabledTypes([])}
-  const reset=()=>{setSelectedNode(null);setChat(null);setQuestion('');setNodeSearch('');setEnabledTypes(legendTypes);setNodeScale(1);setLabelScale(1);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1)}
+  const resetMap=()=>{setSelectedNode(null);setDetailCollapsed(false);setNodeSearch('');setEnabledTypes(legendTypes);setNodeScale(1);setLabelScale(1);setLinkDensity(1);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1);setFitToken(x=>x+1)}
   const selectNode=n=>{
     setSelectedNode(n)
+    setDetailCollapsed(false)
     if(!guideCollapsed&&guideStep===2){setGuideStep(3);setGuidePaused(false);setGuideRunKey(x=>x+1)}
     else if(!guideCollapsed&&guideStep===5){setGuideStep(6);setGuidePaused(false);setGuideRunKey(x=>x+1)}
   }
@@ -248,7 +251,7 @@ export default function Explorer({data}){
   }
   async function submit(e){e.preventDefault();await runQuestion(question)}
 
-  return <div className="explorer-v02-shell"><main className={`screen graph-screen publication-screen explorer-v02-graph ${selectedNode?'has-drawer':''}`}>
+  return <div className="explorer-v02-shell"><main className={`screen graph-screen publication-screen explorer-v02-graph ${selectedNode&&!detailCollapsed?'has-drawer':''} ${selectedNode&&detailCollapsed?'detail-collapsed':''}`}>
     <aside className="left-rail explorer-rail">
       <button className="explorer-change-publication" onClick={()=>setDrawerOpen(true)}><Icon name="file" size={17}/><span><small>Publication</small><strong>Changer de publication</strong></span><Icon name="chevron" size={17}/></button>
       <section className="rail-section"><h4>Publication sélectionnée</h4><article className="selected-publication-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article></section>
@@ -260,10 +263,11 @@ export default function Explorer({data}){
     </aside>
 
     <section className="graph-workspace publication-workspace">
-      <div className="workspace-toolbar"><div><span className="explorer-kicker">EXPLORER</span><h1>Explorateur de publication</h1><p className="workspace-subtitle">{sentenceCase(selectedPub.titre)}</p><div className="big-count"><strong>{visibleTypeIds.size}</strong><span>nœuds · {visibleRelationCount} liens visibles</span><Icon name="info" size={17}/></div></div><div className="toolbar-actions"><button onClick={reset}><Icon name="reset" size={17}/>Réinitialiser</button><button onClick={()=>setFitToken(x=>x+1)}><Icon name="target" size={17}/>Ajuster à l’écran</button></div></div>
+      <div className="workspace-toolbar"><div><span className="explorer-kicker">EXPLORER</span><h1>Explorateur de publication</h1><p className="workspace-subtitle">{sentenceCase(selectedPub.titre)}</p><div className="big-count"><strong>{visibleTypeIds.size}</strong><span>nœuds · {visibleRelationCount} liens visibles</span><Icon name="info" size={17}/></div></div><div className="toolbar-actions"><button onClick={resetMap}><Icon name="reset" size={17}/>Réinitialiser la carte</button><button onClick={()=>setFitToken(x=>x+1)}><Icon name="target" size={17}/>Ajuster à l’écran</button></div></div>
       <div className="graph-stage">
+        <button className="explorer-map-reset" type="button" onClick={resetMap} title="Réinitialiser la carte"><Icon name="reset" size={16}/><span>Réinitialiser la carte</span></button>
         <div className={`chat-dock explorer-chat explorer-chat-top ${chatOpen?'open':''}`}>
-          <button className="chat-dock-title" onClick={()=>setChatOpen(v=>!v)}><span>✦</span><strong>Interroger le graphe</strong><small>{chatOpen?'Réduire':'Ouvrir'}</small></button>
+          <button className="chat-dock-title" onClick={()=>{if(chatOpen){setChatOpen(false);setChat(null);setQuestion('')}else setChatOpen(true)}}><span>✦</span><strong>Interroger le graphe</strong><small>{chatOpen?'Réduire':'Ouvrir'}</small></button>
           {chatOpen&&<div className="chat-dock-body">
             <div className="chat-scroll-area">
               {!chat&&!loading&&<div className="chat-welcome"><strong>Que voulez-vous explorer ?</strong><p>Posez une question sur les connaissances et les relations présentes dans cette publication.</p></div>}
@@ -279,14 +283,18 @@ export default function Explorer({data}){
       </div>
     </section>
 
-    {(selectedNode||(!guideCollapsed&&guideStep===6))&&<aside className={`detail-drawer publication-drawer ${!guideCollapsed&&guideStep===6?'explorer-proof-guide':''}`}>
+    {(selectedNode||(!guideCollapsed&&guideStep===6))&&!detailCollapsed&&<aside className={`detail-drawer publication-drawer ${!guideCollapsed&&guideStep===6?'explorer-proof-guide':''}`}>
       <div className="drawer-type node-type"><i style={{background:colorForType((selectedNode||currentNode).type_noeud)}}></i>{nodeMeta((selectedNode||currentNode).type_noeud).label}</div>
-      <button className="drawer-close" onClick={()=>setSelectedNode(null)}><Icon name="close"/></button>
+      <div className="publication-drawer-controls">
+        {selectedNode&&<button className="drawer-collapse" type="button" onClick={()=>setDetailCollapsed(true)} title="Replier la fiche"><Icon name="chevron" size={16}/><span>Replier</span></button>}
+        <button className="drawer-close" onClick={()=>{setSelectedNode(null);setDetailCollapsed(false)}} title="Fermer la fiche"><Icon name="close"/></button>
+      </div>
       <h2>{(selectedNode||currentNode).libelle}</h2><p className="drawer-definition">Élément documenté dans la publication. Consultez les relations et la preuve ci-dessous pour vérifier son contexte source.</p>
       <h4>Nœuds liés ({currentLinked.length})</h4><div className="linked-node-list">{currentLinked.map(n=>{const m=nodeMeta(n.type_noeud);const c=colorForType(n.type_noeud);return <button key={n.node_id} onClick={()=>selectNode(n)}><i style={{background:c}}></i><span>{n.libelle}</span><b style={{color:c}}>{m.label}</b></button>})}</div>
       <h4>Preuve documentaire</h4><article className="proof-source-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article>
       <div className="inline-proof"><strong>{(selectedNode||currentNode).page_source?`Page / timecode ${(selectedNode||currentNode).page_source}`:'Page / timecode non renseigné'}</strong>{evidence?<p>{evidence.texte.slice(0,420)}{evidence.texte.length>420?'…':''}</p>:<p>Aucun extrait associé n’est disponible pour cet élément.</p>}<button onClick={()=>openProof(selectedNode||currentNode)}><Icon name="eye" size={16}/>Voir la preuve complète</button></div>
     </aside>}
+    {selectedNode&&detailCollapsed&&<button className="publication-drawer-reopen" type="button" onClick={()=>setDetailCollapsed(false)} title="Afficher la fiche"><Icon name="chevron" size={16}/><span>Afficher la fiche</span></button>}
     <ProofModal proof={proof} publication={selectedPub} contents={data.contents} nodeMap={nodeMap} onClose={()=>setProof(null)}/>
   </main>
   <PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} selectedId={selectedPub.publication_id}/>
