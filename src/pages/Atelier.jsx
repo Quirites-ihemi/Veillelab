@@ -23,20 +23,25 @@ const ALLOWED_TREATMENTS=[
 const ATELIER_SCREEN_STYLES=`
 .workshop-page.qvl-v02{padding-top:10px;color:#102a56}
 .qvl-v02 .qvl-home-shell{max-width:1510px;margin:0 auto;border:1px solid #dce7f5;border-radius:20px;background:linear-gradient(180deg,#fbfdff 0%,#f7fbff 100%);padding:16px;box-shadow:0 8px 28px rgba(27,67,123,.06)}
-.qvl-v02 .qvl-home-top{display:grid;grid-template-columns:minmax(360px,486px) minmax(0,1fr);gap:18px;align-items:stretch}
+.qvl-v02 .qvl-home-top{display:grid;grid-template-columns:minmax(350px,430px) minmax(0,1fr);gap:18px;align-items:start}
 .qvl-v02 .qvl-home-visual{min-width:0;border-radius:17px;overflow:hidden;background:#edf5fb;box-shadow:inset 0 0 0 1px rgba(192,211,236,.65)}
-.qvl-v02 .qvl-home-visual img{display:block;width:100%;height:100%;min-height:600px;object-fit:cover;object-position:center center}
-.qvl-v02 .qvl-home-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:16px;min-width:0}
-.qvl-v02 .qvl-treatment-card{appearance:none;text-align:left;position:relative;min-height:172px;padding:22px 46px 20px 22px;border:1px solid #dbe5f2;border-radius:16px;background:#fff;box-shadow:0 5px 16px rgba(30,67,116,.055);cursor:pointer;display:grid;grid-template-columns:68px minmax(0,1fr);gap:16px;align-items:start;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.qvl-v02 .qvl-home-visual img{display:block;width:100%;height:auto;min-height:0;object-fit:contain;object-position:center top}
+.qvl-v02 .qvl-home-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,auto);gap:12px;min-width:0}
+.qvl-v02 .qvl-treatment-card{appearance:none;text-align:left;position:relative;min-height:142px;padding:16px 40px 14px 16px;border:1px solid #dbe5f2;border-radius:14px;background:#fff;box-shadow:0 4px 13px rgba(30,67,116,.05);cursor:pointer;display:grid;grid-template-columns:50px minmax(0,1fr);gap:12px;align-items:start;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
 .qvl-v02 .qvl-treatment-card:hover{transform:translateY(-2px);border-color:#b9cff0;box-shadow:0 12px 26px rgba(28,70,138,.10);background:#fcfdff}
-.qvl-v02 .qvl-card-icon{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#eaf3ff;color:#1760d1}
+.qvl-v02 .qvl-card-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#eaf3ff;color:#1760d1}
 .qvl-v02 .qvl-treatment-card[data-key='carte'] .qvl-card-icon{background:#f3ebff;color:#7c3aed}
 .qvl-v02 .qvl-treatment-card[data-key='recommandations'] .qvl-card-icon{background:#fff0e3;color:#ef6c00}
 .qvl-v02 .qvl-treatment-card[data-key='experts'] .qvl-card-icon{background:#eaf3ff;color:#1760d1}
 .qvl-v02 .qvl-treatment-card[data-key='scenario'] .qvl-card-icon{background:#e6f8f8;color:#0898af}
-.qvl-v02 .qvl-treatment-card h3{margin:5px 0 10px;color:#102a56;font-size:20px;line-height:1.24;letter-spacing:-.015em}
-.qvl-v02 .qvl-treatment-card p{margin:0;color:#587096;font-size:15.5px;line-height:1.55}
-.qvl-v02 .qvl-card-chevron{position:absolute;right:17px;top:20px;color:#5c9af0;display:grid;place-items:center}
+.qvl-v02 .qvl-treatment-card h3{margin:2px 0 6px;color:#102a56;font-size:17px;line-height:1.22;letter-spacing:-.012em}
+.qvl-v02 .qvl-treatment-card p{margin:0;color:#587096;font-size:13.5px;line-height:1.48}
+.qvl-v02 .qvl-card-regimes{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.qvl-v02 .qvl-card-regime{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:11.5px;line-height:1.15;font-weight:700;border:1px solid transparent}
+.qvl-v02 .qvl-card-regime.strict{color:#4f46e5;background:#ede9fe;border-color:#ddd6fe}
+.qvl-v02 .qvl-card-regime.extract{color:#148148;background:#e6f7ed;border-color:#ccefd9}
+.qvl-v02 .qvl-card-regime.enrich{color:#1760d1;background:#e6f1ff;border-color:#d0e1ff}
+.qvl-v02 .qvl-card-chevron{position:absolute;right:13px;top:16px;color:#5c9af0;display:grid;place-items:center}
 .qvl-v02 .qvl-regime-strip{margin-top:16px;border:1px solid #d7e4f3;border-radius:15px;background:#fbfdff;display:grid;grid-template-columns:1.05fr repeat(3,1fr);align-items:stretch;overflow:hidden;box-shadow:0 4px 12px rgba(28,52,86,.035)}
 .qvl-v02 .qvl-regime-title{display:flex;align-items:flex-start;gap:12px;padding:19px 22px;color:#102a56;border-right:1px solid #dfe8f4}
 .qvl-v02 .qvl-regime-title-icon{width:36px;height:36px;flex:0 0 36px;border:2px solid #14366a;border-radius:50%;display:grid;place-items:center}
@@ -51,11 +56,11 @@ const ATELIER_SCREEN_STYLES=`
 .qvl-v02 .qvl-regime-strip .qvl-regime-info.enrich strong{color:#1760d1;background:#e6f1ff}
 
 @media(max-width:1180px){
-  .qvl-v02 .qvl-home-top{grid-template-columns:360px minmax(0,1fr)}
-  .qvl-v02 .qvl-treatment-card{min-height:156px;padding:18px 42px 17px 18px;grid-template-columns:56px minmax(0,1fr);gap:12px}
-  .qvl-v02 .qvl-card-icon{width:52px;height:52px}
-  .qvl-v02 .qvl-treatment-card h3{font-size:17px}
-  .qvl-v02 .qvl-treatment-card p{font-size:13.5px}
+  .qvl-v02 .qvl-home-top{grid-template-columns:340px minmax(0,1fr)}
+  .qvl-v02 .qvl-treatment-card{min-height:136px;padding:14px 38px 13px 14px;grid-template-columns:46px minmax(0,1fr);gap:11px}
+  .qvl-v02 .qvl-card-icon{width:44px;height:44px}
+  .qvl-v02 .qvl-treatment-card h3{font-size:16px}
+  .qvl-v02 .qvl-treatment-card p{font-size:12.8px}
   .qvl-v02 .qvl-regime-strip{grid-template-columns:1fr 1fr 1fr}
   .qvl-v02 .qvl-regime-title{grid-column:1/-1;border-right:0;border-bottom:1px solid #dfe8f4}
 }
@@ -98,11 +103,15 @@ export default function Atelier({data}){
           <img src={atelierHomeVisual} alt="Atelier de veille : du besoin au corpus Quiritès, puis à une production pour vos travaux"/>
         </div>
         <div className="qvl-home-cards">
-          {six.map(({spec,t})=><button key={spec.key} data-key={spec.key} className="qvl-treatment-card" onClick={()=>setSelected(t)}>
-            <span className="qvl-card-icon"><Icon name={spec.icon} size={29}/></span>
-            <span><h3>{spec.title}</h3><p>{spec.description}</p></span>
-            <span className="qvl-card-chevron"><Icon name="chevron" size={20}/></span>
-          </button>)}
+          {six.map(({spec,t})=>{const regime=t.regime_IA||spec.fallbackRegime;return <button key={spec.key} data-key={spec.key} className="qvl-treatment-card" onClick={()=>setSelected(t)}>
+            <span className="qvl-card-icon"><Icon name={spec.icon} size={25}/></span>
+            <span>
+              <h3>{spec.title}</h3>
+              <p>{spec.description}</p>
+              {regime&&<span className="qvl-card-regimes"><span className={`qvl-card-regime ${regimeClass[regime]||'enrich'}`}>{regime}</span></span>}
+            </span>
+            <span className="qvl-card-chevron"><Icon name="chevron" size={18}/></span>
+          </button>})}
         </div>
       </div>
       <section className="qvl-regime-strip" aria-label="Les régimes IA disponibles">
