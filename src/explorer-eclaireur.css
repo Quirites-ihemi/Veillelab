@@ -858,3 +858,55 @@
   .explorer-eclaireur-copy h3{font-size:17.5px!important}
   .explorer-eclaireur-copy p{font-size:15.5px!important}
 }
+
+
+/* ==========================================================
+   ONGLET 2 — ÉCLAIREUR RÉDUIT ACCESSIBLE
+   Dans une publication, le bouton réduit est ancré en bas à gauche
+   du graphe afin de ne jamais recouvrir les commandes de la fiche.
+   Aucun autre comportement de L'Éclaireur n'est modifié.
+   ========================================================== */
+.explorer-v02-graph .graph-stage > .explorer-eclaireur-recall{
+  position:absolute!important;
+  left:14px!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:14px!important;
+  z-index:26!important;
+}
+
+@media(max-width:760px){
+  .explorer-v02-graph .graph-stage > .explorer-eclaireur-recall{
+    left:10px!important;
+    right:auto!important;
+    top:auto!important;
+    bottom:10px!important;
+  }
+}
+
+
+/* ==========================================================
+   ONGLET 2 — ÉCLAIREUR RÉDUIT À CÔTÉ DES COMPTEURS
+   Le bouton réduit se place immédiatement après
+   « nœuds · liens visibles » dans la barre supérieure.
+   ========================================================== */
+.explorer-v02-graph .workspace-toolbar .big-count{
+  flex-wrap:wrap;
+}
+
+.explorer-v02-graph .workspace-toolbar .big-count .explorer-eclaireur-recall{
+  position:static!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  margin-left:12px!important;
+  z-index:5!important;
+  flex:0 0 auto;
+}
+
+@media(max-width:760px){
+  .explorer-v02-graph .workspace-toolbar .big-count .explorer-eclaireur-recall{
+    margin-left:8px!important;
+  }
+}
