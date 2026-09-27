@@ -8,6 +8,7 @@ import ExpertsWorkspace from './ExpertsWorkspace.jsx'
 import ScenarioWorkspace from './ScenarioWorkspace.jsx'
 import { generateTreatment } from '../services/treatmentApi.js'
 import { normalize } from '../lib/text.js'
+import atelierHomeVisual from '../atelier-home-visual.png'
 
 const regimeClass={'Synthèse stricte':'strict','Extraction stricte':'extract','Enrichissement contrôlé':'enrich'}
 const ALLOWED_TREATMENTS=[
@@ -15,64 +16,63 @@ const ALLOWED_TREATMENTS=[
   {key:'resume',title:'Résumé analytique',ids:['T01'],icon:'spark',fallbackRegime:'Synthèse stricte',description:'Obtenez une synthèse structurée et neutre d’une publication sélectionnée.'},
   {key:'glossaire',title:'Glossaire',ids:['T02'],icon:'book',fallbackRegime:'Enrichissement contrôlé',description:'Générez un glossaire des termes clés et notions importantes du sujet.'},
   {key:'recommandations',title:'Extraction de recommandations',ids:['T04'],icon:'spark',fallbackRegime:'Extraction stricte',description:'Identifiez et extrayez les recommandations clés des rapports et documents.'},
-  {key:'experts',title:'Experts ministériels',ids:['T08'],icon:'spark',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
+  {key:'experts',title:'Experts ministériels',ids:['T08'],icon:'graph',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
   {key:'scenario',title:'Scénario de veille',ids:['T06'],icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Construisez un scénario de veille à partir de votre besoin, des apports du corpus et de vos choix.'}
 ]
 
 const ATELIER_SCREEN_STYLES=`
-.workshop-page.qvl-v02{padding-top:8px}
-.qvl-v02 .qvl-workshop-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
-.qvl-v02 .qvl-workshop-main{min-width:0}
-.qvl-v02 .qvl-page-heading{margin:0 0 16px}
-.qvl-v02 .qvl-page-heading h1{margin:0;color:#102a56;font-size:36px;line-height:1.06;letter-spacing:-.03em}
-.qvl-v02 .qvl-page-heading p{margin:7px 0 0;color:#173b76;font-size:15px}
-.qvl-v02 .qvl-promise{position:relative;overflow:hidden;display:grid;grid-template-columns:54px minmax(0,1fr) 330px;gap:18px;align-items:center;padding:24px 26px;border:1px solid #bfd4fa;border-radius:14px;background:linear-gradient(100deg,#f7fbff 0%,#edf6ff 65%,#f7fbff 100%);box-shadow:0 6px 18px rgba(32,77,145,.08)}
-.qvl-v02 .qvl-promise-icon{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#0f3f9d;color:#fff;font-size:25px;box-shadow:0 8px 18px rgba(15,63,157,.18)}
-.qvl-v02 .qvl-promise-copy{position:relative;z-index:2}
-.qvl-v02 .qvl-promise-lead{margin:0 0 14px;color:#102a56;font-weight:800;font-size:16px;line-height:1.45;max-width:720px}
-.qvl-v02 .qvl-promise-point{display:flex;gap:10px;align-items:flex-start;margin:9px 0;color:#243e67;font-size:13.5px;line-height:1.42}
-.qvl-v02 .qvl-promise-check{flex:0 0 auto;margin-top:2px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:#1557c8;color:#fff;font-size:11px;font-weight:900}
-.qvl-v02 .qvl-promise-art{height:160px;position:relative;min-width:250px}
-.qvl-v02 .qvl-promise-art:before{content:'';position:absolute;inset:14px 5px 8px 35px;border-radius:50% 45% 40% 55%;background:radial-gradient(circle at 60% 48%,rgba(40,113,224,.21),rgba(40,113,224,.04) 52%,transparent 70%)}
-.qvl-v02 .qvl-route{position:absolute;left:8px;bottom:12px;width:210px;height:78px;border:14px solid rgba(59,130,246,.11);border-right-color:transparent;border-top-color:transparent;border-radius:50%;transform:rotate(-12deg)}
-.qvl-v02 .qvl-compass{position:absolute;left:112px;bottom:19px;width:72px;height:72px;border-radius:50%;border:9px solid #d5e6ff;background:#fff;box-shadow:0 10px 20px rgba(35,83,156,.14);display:grid;place-items:center;color:#2052a4;font-size:29px;font-weight:900}
-.qvl-v02 .qvl-doc-stack{position:absolute;right:24px;top:28px;width:104px;height:112px;border-radius:11px;background:rgba(255,255,255,.9);border:1px solid #d7e6fb;box-shadow:0 10px 24px rgba(37,91,166,.12)}
-.qvl-v02 .qvl-doc-stack:before,.qvl-v02 .qvl-doc-stack:after{content:'';position:absolute;left:15px;right:15px;height:6px;border-radius:4px;background:#cbdffd}
-.qvl-v02 .qvl-doc-stack:before{top:28px;box-shadow:0 17px 0 #d9e8fc,0 34px 0 #cbdffd,0 51px 0 #e1ecfb}
-.qvl-v02 .qvl-doc-stack:after{top:15px;right:35px}
-.qvl-v02 .qvl-transform-title{margin:22px 4px 12px;color:#102a56;font-size:18px}
-.qvl-v02 .qvl-treatment-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.qvl-v02 .qvl-treatment-card{appearance:none;text-align:left;min-height:154px;padding:18px;border:1px solid #dbe3ef;border-radius:14px;background:#fff;box-shadow:0 4px 12px rgba(28,52,86,.06);cursor:pointer;display:grid;grid-template-columns:58px 1fr;gap:14px;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
-.qvl-v02 .qvl-treatment-card:hover{transform:translateY(-2px);border-color:#b7cdf3;box-shadow:0 10px 22px rgba(28,70,138,.10)}
-.qvl-v02 .qvl-card-icon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#eef5ff;color:#1656ad}
-.qvl-v02 .qvl-treatment-card[data-key='carte'] .qvl-card-icon{background:#f3edff;color:#7c3aed}
-.qvl-v02 .qvl-treatment-card[data-key='recommandations'] .qvl-card-icon{background:#fff3e8;color:#dc6a00}
-.qvl-v02 .qvl-treatment-card[data-key='scenario'] .qvl-card-icon{background:#ebf8f7;color:#0e7490}
-.qvl-v02 .qvl-treatment-card h3{margin:1px 0 7px;color:#122a50;font-size:16px;line-height:1.2}
-.qvl-v02 .qvl-treatment-card p{margin:0 0 12px;color:#465a77;font-size:13px;line-height:1.45}
-.qvl-v02 .qvl-treatment-card .regime{display:inline-flex;font-size:11px}
-.qvl-v02 .qvl-regime-panel{border:1px solid #dbe3ef;border-radius:14px;background:#fff;padding:18px 15px;box-shadow:0 4px 14px rgba(28,52,86,.05)}
-.qvl-v02 .qvl-regime-panel>h3{margin:0 0 14px;color:#112a50;font-size:16px;display:flex;align-items:center;gap:8px}
-.qvl-v02 .qvl-regime-info{padding:15px 14px;border-radius:12px;margin:0 0 12px;border:1px solid #e8edf4}
-.qvl-v02 .qvl-regime-info.strict{background:#f6faff}.qvl-v02 .qvl-regime-info.extract{background:#fffaf3}.qvl-v02 .qvl-regime-info.enrich{background:#f7fcf7}
-.qvl-v02 .qvl-regime-info strong{display:block;margin-bottom:7px;color:#173b76;font-size:14px}.qvl-v02 .qvl-regime-info.extract strong{color:#c75a00}.qvl-v02 .qvl-regime-info.enrich strong{color:#24713a}
-.qvl-v02 .qvl-regime-info p{margin:0;color:#485b78;font-size:12.5px;line-height:1.5}
+.workshop-page.qvl-v02{padding-top:10px;color:#102a56}
+.qvl-v02 .qvl-home-shell{max-width:1510px;margin:0 auto;border:1px solid #dce7f5;border-radius:20px;background:linear-gradient(180deg,#fbfdff 0%,#f7fbff 100%);padding:16px;box-shadow:0 8px 28px rgba(27,67,123,.06)}
+.qvl-v02 .qvl-home-top{display:grid;grid-template-columns:minmax(360px,486px) minmax(0,1fr);gap:18px;align-items:stretch}
+.qvl-v02 .qvl-home-visual{min-width:0;border-radius:17px;overflow:hidden;background:#edf5fb;box-shadow:inset 0 0 0 1px rgba(192,211,236,.65)}
+.qvl-v02 .qvl-home-visual img{display:block;width:100%;height:100%;min-height:600px;object-fit:cover;object-position:center center}
+.qvl-v02 .qvl-home-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:16px;min-width:0}
+.qvl-v02 .qvl-treatment-card{appearance:none;text-align:left;position:relative;min-height:172px;padding:22px 46px 20px 22px;border:1px solid #dbe5f2;border-radius:16px;background:#fff;box-shadow:0 5px 16px rgba(30,67,116,.055);cursor:pointer;display:grid;grid-template-columns:68px minmax(0,1fr);gap:16px;align-items:start;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.qvl-v02 .qvl-treatment-card:hover{transform:translateY(-2px);border-color:#b9cff0;box-shadow:0 12px 26px rgba(28,70,138,.10);background:#fcfdff}
+.qvl-v02 .qvl-card-icon{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#eaf3ff;color:#1760d1}
+.qvl-v02 .qvl-treatment-card[data-key='carte'] .qvl-card-icon{background:#f3ebff;color:#7c3aed}
+.qvl-v02 .qvl-treatment-card[data-key='recommandations'] .qvl-card-icon{background:#fff0e3;color:#ef6c00}
+.qvl-v02 .qvl-treatment-card[data-key='experts'] .qvl-card-icon{background:#eaf3ff;color:#1760d1}
+.qvl-v02 .qvl-treatment-card[data-key='scenario'] .qvl-card-icon{background:#e6f8f8;color:#0898af}
+.qvl-v02 .qvl-treatment-card h3{margin:5px 0 10px;color:#102a56;font-size:20px;line-height:1.24;letter-spacing:-.015em}
+.qvl-v02 .qvl-treatment-card p{margin:0;color:#587096;font-size:15.5px;line-height:1.55}
+.qvl-v02 .qvl-card-chevron{position:absolute;right:17px;top:20px;color:#5c9af0;display:grid;place-items:center}
+.qvl-v02 .qvl-regime-strip{margin-top:16px;border:1px solid #d7e4f3;border-radius:15px;background:#fbfdff;display:grid;grid-template-columns:1.05fr repeat(3,1fr);align-items:stretch;overflow:hidden;box-shadow:0 4px 12px rgba(28,52,86,.035)}
+.qvl-v02 .qvl-regime-title{display:flex;align-items:flex-start;gap:12px;padding:19px 22px;color:#102a56;border-right:1px solid #dfe8f4}
+.qvl-v02 .qvl-regime-title-icon{width:36px;height:36px;flex:0 0 36px;border:2px solid #14366a;border-radius:50%;display:grid;place-items:center}
+.qvl-v02 .qvl-regime-title strong{display:block;font-size:18px;line-height:1.25;margin-bottom:5px}
+.qvl-v02 .qvl-regime-title p{margin:0;color:#647996;font-size:12.5px;line-height:1.45}
+.qvl-v02 .qvl-regime-strip .qvl-regime-info{margin:0;padding:18px 22px;border:0;border-right:1px solid #dfe8f4;border-radius:0;background:transparent}
+.qvl-v02 .qvl-regime-strip .qvl-regime-info:last-child{border-right:0}
+.qvl-v02 .qvl-regime-strip .qvl-regime-info strong{display:inline-flex;margin:0 0 8px;padding:5px 11px;border-radius:999px;font-size:13px;line-height:1.15}
+.qvl-v02 .qvl-regime-strip .qvl-regime-info p{margin:0;color:#587096;font-size:12.5px;line-height:1.48}
+.qvl-v02 .qvl-regime-strip .qvl-regime-info.strict strong{color:#4f46e5;background:#ede9fe}
+.qvl-v02 .qvl-regime-strip .qvl-regime-info.extract strong{color:#148148;background:#e6f7ed}
+.qvl-v02 .qvl-regime-strip .qvl-regime-info.enrich strong{color:#1760d1;background:#e6f1ff}
 
-/* ONGLET 3 — LISIBILITÉ GÉNÉRALE */
-.qvl-v02 .qvl-page-heading h1{font-size:42px}
-.qvl-v02 .qvl-page-heading p{font-size:17px;line-height:1.5}
-.qvl-v02 .qvl-promise-lead{font-size:18px;line-height:1.52}
-.qvl-v02 .qvl-promise-point{font-size:15px;line-height:1.5}
-.qvl-v02 .qvl-transform-title{font-size:21px}
-.qvl-v02 .qvl-treatment-card h3{font-size:18px;line-height:1.28}
-.qvl-v02 .qvl-treatment-card p{font-size:15px;line-height:1.52}
-.qvl-v02 .qvl-treatment-card .regime{font-size:12.5px}
-.qvl-v02 .qvl-regime-panel>h3{font-size:18px}
-.qvl-v02 .qvl-regime-info strong{font-size:15.5px}
-.qvl-v02 .qvl-regime-info p{font-size:14.5px;line-height:1.55}
-
-@media(max-width:1100px){.qvl-v02 .qvl-workshop-grid{grid-template-columns:1fr}.qvl-v02 .qvl-regime-panel{display:none}.qvl-v02 .qvl-promise{grid-template-columns:48px 1fr}.qvl-v02 .qvl-promise-art{display:none}}
-@media(max-width:800px){.qvl-v02 .qvl-treatment-grid{grid-template-columns:1fr}.qvl-v02 .qvl-page-heading h1{font-size:30px}.qvl-v02 .qvl-promise{padding:18px;grid-template-columns:1fr}.qvl-v02 .qvl-promise-icon{display:none}}
+@media(max-width:1180px){
+  .qvl-v02 .qvl-home-top{grid-template-columns:360px minmax(0,1fr)}
+  .qvl-v02 .qvl-treatment-card{min-height:156px;padding:18px 42px 17px 18px;grid-template-columns:56px minmax(0,1fr);gap:12px}
+  .qvl-v02 .qvl-card-icon{width:52px;height:52px}
+  .qvl-v02 .qvl-treatment-card h3{font-size:17px}
+  .qvl-v02 .qvl-treatment-card p{font-size:13.5px}
+  .qvl-v02 .qvl-regime-strip{grid-template-columns:1fr 1fr 1fr}
+  .qvl-v02 .qvl-regime-title{grid-column:1/-1;border-right:0;border-bottom:1px solid #dfe8f4}
+}
+@media(max-width:900px){
+  .qvl-v02 .qvl-home-top{grid-template-columns:1fr}
+  .qvl-v02 .qvl-home-visual img{height:auto;min-height:0;max-height:720px;object-fit:contain;background:#edf5fb}
+  .qvl-v02 .qvl-home-cards{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+}
+@media(max-width:680px){
+  .workshop-page.qvl-v02{padding-left:10px;padding-right:10px}
+  .qvl-v02 .qvl-home-shell{padding:10px;border-radius:14px}
+  .qvl-v02 .qvl-home-cards{grid-template-columns:1fr}
+  .qvl-v02 .qvl-treatment-card{min-height:0}
+  .qvl-v02 .qvl-regime-strip{grid-template-columns:1fr}
+  .qvl-v02 .qvl-regime-title,.qvl-v02 .qvl-regime-strip .qvl-regime-info{border-right:0;border-bottom:1px solid #dfe8f4}
+  .qvl-v02 .qvl-regime-strip .qvl-regime-info:last-child{border-bottom:0}
+}
 `
 
 function treatmentText(t){return `${t?.nom_traitement||''} ${t?.fonction||''} ${t?.objectif||''}`}
@@ -92,34 +92,29 @@ export default function Atelier({data}){
   if(selected) return <Workspace treatment={selected} data={data} initialNeed={need} onBack={()=>setSelected(null)}/>
   return <main className="page workshop-page qvl-v02">
     <style>{ATELIER_SCREEN_STYLES}</style>
-    <div className="qvl-workshop-grid">
-      <section className="qvl-workshop-main">
-        <div className="qvl-page-heading"><h1>Atelier de veille</h1><p>Je pars d’un besoin et je choisis une transformation.</p></div>
-        <section className="qvl-promise" aria-label="Promesse de l’Atelier de veille">
-          <div className="qvl-promise-icon">✦</div>
-          <div className="qvl-promise-copy">
-            <p className="qvl-promise-lead">Si l’onglet <b>Explorer</b> favorise l’exploration, ce troisième onglet vous invite à mobiliser les publications recensées dans le bulletin de veille dans vos travaux personnels.</p>
-            <div className="qvl-promise-point"><span className="qvl-promise-check">✓</span><span>Avancer avec le corpus prolonge vos travaux et stimule vos capacités cognitives.</span></div>
-            <div className="qvl-promise-point"><span className="qvl-promise-check">✓</span><span><b>La cognition est distribuée</b> : votre question, le corpus, le graphe, l’interface et l’IA participent ensemble au parcours de réflexion.</span></div>
-          </div>
-          <div className="qvl-promise-art" aria-hidden="true"><span className="qvl-route"/><span className="qvl-compass">◇</span><span className="qvl-doc-stack"/></div>
-        </section>
-
-        <h2 className="qvl-transform-title">Choisir une transformation</h2>
-        <div className="qvl-treatment-grid">
+    <section className="qvl-home-shell" aria-label="Accueil de l’Atelier de veille">
+      <div className="qvl-home-top">
+        <div className="qvl-home-visual">
+          <img src={atelierHomeVisual} alt="Atelier de veille : du besoin au corpus Quiritès, puis à une production pour vos travaux"/>
+        </div>
+        <div className="qvl-home-cards">
           {six.map(({spec,t})=><button key={spec.key} data-key={spec.key} className="qvl-treatment-card" onClick={()=>setSelected(t)}>
-            <span className="qvl-card-icon"><Icon name={spec.icon} size={26}/></span>
-            <span><h3>{spec.title}</h3><p>{spec.description}</p><span className={`regime ${regimeClass[t.regime_IA||spec.fallbackRegime]||''}`}>{t.regime_IA||spec.fallbackRegime}</span></span>
+            <span className="qvl-card-icon"><Icon name={spec.icon} size={29}/></span>
+            <span><h3>{spec.title}</h3><p>{spec.description}</p></span>
+            <span className="qvl-card-chevron"><Icon name="chevron" size={20}/></span>
           </button>)}
         </div>
+      </div>
+      <section className="qvl-regime-strip" aria-label="Les régimes IA disponibles">
+        <div className="qvl-regime-title">
+          <span className="qvl-regime-title-icon"><Icon name="info" size={20}/></span>
+          <div><strong>Les régimes IA disponibles</strong><p>Trois niveaux d’intervention selon la fonctionnalité choisie.</p></div>
+        </div>
+        <Regime cls="strict" title="Synthèse stricte">Résume fidèlement les contenus sélectionnés, sans ajout.</Regime>
+        <Regime cls="extract" title="Extraction stricte">Extrait uniquement les éléments présents dans les documents.</Regime>
+        <Regime cls="enrich" title="Enrichissement contrôlé">Enrichit et structure, en distinguant clairement les propositions documentées.</Regime>
       </section>
-      <aside className="qvl-regime-panel">
-        <h3><Icon name="info" size={17}/>Les régimes IA disponibles</h3>
-        <Regime cls="strict" title="Synthèse stricte">L’IA se limite à résumer fidèlement les contenus sélectionnés, sans ajouter d’informations externes ni d’interprétation.</Regime>
-        <Regime cls="extract" title="Extraction stricte">L’IA extrait uniquement des éléments présents dans les documents, sans interprétation ni ajout.</Regime>
-        <Regime cls="enrich" title="Enrichissement contrôlé">L’IA peut enrichir et structurer la réflexion, en distinguant clairement ses propositions des informations documentées.</Regime>
-      </aside>
-    </div>
+    </section>
   </main>
 }
 
