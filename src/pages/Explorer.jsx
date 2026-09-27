@@ -263,7 +263,7 @@ export default function Explorer({data}){
     </aside>
 
     <section className="graph-workspace publication-workspace">
-      <div className="workspace-toolbar"><div><span className="explorer-kicker">EXPLORER</span><h1>Explorateur de publication</h1><p className="workspace-subtitle">{sentenceCase(selectedPub.titre)}</p><div className="big-count"><strong>{visibleTypeIds.size}</strong><span>nœuds · {visibleRelationCount} liens visibles</span><Icon name="info" size={17}/></div></div><div className="toolbar-actions"><button onClick={resetMap}><Icon name="reset" size={17}/>Réinitialiser la carte</button><button onClick={()=>setFitToken(x=>x+1)}><Icon name="target" size={17}/>Ajuster à l’écran</button></div></div>
+      <div className="workspace-toolbar"><div><span className="explorer-kicker">EXPLORER</span><h1>Explorateur de publication</h1><p className="workspace-subtitle">{sentenceCase(selectedPub.titre)}</p><div className="big-count"><strong>{visibleTypeIds.size}</strong><span>nœuds · {visibleRelationCount} liens visibles</span><Icon name="info" size={17}/>{guideCollapsed&&<ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed/>}</div></div><div className="toolbar-actions"><button onClick={resetMap}><Icon name="reset" size={17}/>Réinitialiser la carte</button><button onClick={()=>setFitToken(x=>x+1)}><Icon name="target" size={17}/>Ajuster à l’écran</button></div></div>
       <div className="graph-stage">
         <button className="explorer-map-reset" type="button" onClick={resetMap} title="Réinitialiser la carte"><Icon name="reset" size={16}/><span>Réinitialiser la carte</span></button>
         <div className={`chat-dock explorer-chat explorer-chat-top ${chatOpen?'open':''}`}>
@@ -279,7 +279,7 @@ export default function Explorer({data}){
           </div>}
         </div>
         <KnowledgeGraph nodes={graphNodes} relations={graphRelations} selectedId={graphSelectedNode?.node_id} onSelectNode={selectNode} onSelectRelation={selectRelation} highlightIds={highlighted} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} labelScale={labelScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken} guideStep={guideCollapsed?0:guideStep}/>
-        <ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed={guideCollapsed}/>
+        {!guideCollapsed&&<ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed={false}/>}
       </div>
     </section>
 
