@@ -1220,3 +1220,90 @@
   .expertise-screen .eclaireur-expertise-body h3{font-size:17.5px!important}
   .expertise-screen .eclaireur-expertise-body p{font-size:15.5px!important}
 }
+
+
+/* ==========================================================================
+   ONGLET 1 — ÉCLAIREUR 4 ÉTAPES
+   Guidage du graphe :
+   - cluster mis en évidence jusqu'à son ouverture ;
+   - nœud mis en évidence jusqu'à la sélection d'une expertise.
+   Le texte de L'Éclaireur ne décrit pas l'animation.
+   ========================================================================== */
+
+.expertise-screen .eclaireur-cluster-pulse{
+  animation:eclaireur-cluster-breathe 1.35s ease-in-out infinite!important;
+}
+
+.expertise-screen .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg{
+  animation:eclaireur-title-breathe 1.35s ease-in-out infinite!important;
+  font-weight:900!important;
+}
+
+.expertise-screen .eclaireur-cluster-guide-ring{
+  fill:none;
+  stroke-width:4.5;
+  vector-effect:non-scaling-stroke;
+  pointer-events:none;
+  transform-box:fill-box;
+  transform-origin:center;
+  opacity:.82;
+  animation:eclaireur-guide-ring 1.35s ease-out infinite;
+}
+
+.expertise-screen .eclaireur-cluster-guide-ring-2{
+  animation-delay:.42s;
+}
+
+.expertise-screen .eclaireur-node-pulse-ring{
+  stroke:#275f9d!important;
+  stroke-width:4!important;
+  opacity:.9;
+  animation:eclaireur-node-ring-persistent 1.15s ease-out infinite!important;
+}
+
+@keyframes eclaireur-guide-ring{
+  0%{opacity:.86;transform:scale(.90)}
+  70%{opacity:.22;transform:scale(1.10)}
+  100%{opacity:0;transform:scale(1.16)}
+}
+
+@keyframes eclaireur-node-ring-persistent{
+  0%{opacity:.92;transform:scale(.72)}
+  72%{opacity:.24;transform:scale(1.48)}
+  100%{opacity:0;transform:scale(1.62)}
+}
+
+/* Étape 3 = cluster ; étape 4 = expertise / fiche. */
+.expertise-screen .eclaireur-expertise-step-3,
+.expertise-screen .eclaireur-expertise-step-4{
+  top:96px!important;
+}
+
+.expertise-screen .eclaireur-expertise-step-4.eclaireur-side-left{
+  left:14px!important;
+  right:auto!important;
+}
+
+@media(max-width:1020px){
+  .expertise-screen .eclaireur-expertise-step-4.eclaireur-side-left{
+    left:12px!important;
+    right:auto!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .expertise-screen .eclaireur-cluster-guide-ring,
+  .expertise-screen .eclaireur-cluster-pulse,
+  .expertise-screen .entry-cluster-label.eclaireur-cluster-label-pulse .entry-cluster-title-svg,
+  .expertise-screen .eclaireur-node-pulse-ring{
+    animation:none!important;
+  }
+
+  .expertise-screen .eclaireur-cluster-guide-ring{
+    opacity:.82!important;
+  }
+
+  .expertise-screen .eclaireur-node-pulse-ring{
+    opacity:.9!important;
+  }
+}
