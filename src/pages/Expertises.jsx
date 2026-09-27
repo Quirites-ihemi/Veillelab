@@ -116,7 +116,7 @@ function ExpertiseIntroBanner() {
         <p>
           Le ministère de l’Intérieur produit chaque année une grande variété
           de travaux qui combinent <strong>culture de l’action</strong> et mise
-          en perspective des politiques publiques. Cette carte donne à voir les
+          en perspective des politiques publiques. Ce graphe donne à voir les
           expertises mobilisées par cette production.
         </p>
       </div>
@@ -130,7 +130,7 @@ function ExpertiseIntroBanner() {
 
 
 function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose, onMinimize, onRestore }) {
-  const side = step === 3 && selected ? 'left' : 'right'
+  const side = step === 4 && selected ? 'left' : 'right'
 
   if (mode === 'closed') {
     return (
@@ -148,11 +148,11 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
 
   if (mode === 'minimized') {
     return (
-      <div className={`eclaireur-expertise-minimized eclaireur-side-${side}`} aria-label={`L’Éclaireur, étape ${step} sur 3, réduit`}>
+      <div className={`eclaireur-expertise-minimized eclaireur-side-${side}`} aria-label={`L’Éclaireur, étape ${step} sur 4, réduit`}>
         <button type="button" className="eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer L’Éclaireur">
           <span aria-hidden="true">✦</span>
           <strong>L’Éclaireur</strong>
-          <small>{step}/3</small>
+          <small>{step}/4</small>
         </button>
         <button type="button" className="eclaireur-minimized-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
       </div>
@@ -161,14 +161,11 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
 
   const content = {
     1: {
-      title: 'Commencez par le sens de la carte',
+      title: 'Commencez par le sens du graphe',
       body: (
         <>
           <p>
-            Le bloc <strong>« Des publications aux savoir-faire du ministère »</strong> explique ce que représente cette carte et comment la lire.
-          </p>
-          <p className="eclaireur-prompt">
-            Cette zone clignote pour vous indiquer où commencer.
+            Le bloc <strong>« Des publications aux savoir-faire du ministère »</strong> explique ce que représente ce graphe et comment le lire.
           </p>
         </>
       ),
@@ -180,18 +177,28 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
           <p>
             Utilisez le volet de gauche pour <strong>rechercher</strong> une expertise ou filtrer par <strong>entité</strong> et par <strong>type d’expertise</strong>.
           </p>
-          <p className="eclaireur-prompt">
-            Les zones utiles clignotent brièvement pour attirer votre attention.
-          </p>
         </>
       ),
     },
     3: {
-      title: selected ? 'Lisez la fiche de l’expertise' : 'Ouvrez la fiche d’une expertise',
+      title: 'Explorez les regroupements d’expertises',
+      body: (
+        <>
+          <p>
+            Les expertises ont été regroupées selon leurs proximités dans le graphe. Ces regroupements forment des <strong>clusters</strong>.
+          </p>
+          <p className="eclaireur-prompt">
+            Par exemple : <strong>« Articulation entre recherche scientifique et pratiques de sécurité intérieure »</strong>. Cliquez sur un cluster pour l’ouvrir.
+          </p>
+        </>
+      ),
+    },
+    4: {
+      title: selected ? 'Lisez la fiche de l’expertise' : 'Cliquez sur une expertise',
       body: selected ? (
         <>
           <p>
-            La fiche ouverte à droite rassemble la définition, les entités et les publications associées à cette expertise.
+            La fiche ouverte à droite rassemble l’expertise, les entités et les publications associées.
           </p>
           <p className="eclaireur-prompt">
             Descendez dans le volet pour voir aussi les expertises associées et les domaines mobilisés.
@@ -200,10 +207,7 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
       ) : (
         <>
           <p>
-            Cliquez sur une expertise du graphe : sa fiche s’ouvrira dans le volet de droite.
-          </p>
-          <p className="eclaireur-prompt">
-            Le graphe clignote brièvement pour vous montrer la zone à utiliser.
+            Dans le cluster ouvert, cliquez sur une expertise pour afficher sa fiche dans le volet de droite.
           </p>
         </>
       ),
@@ -214,7 +218,7 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
     <section
       className={`eclaireur-card eclaireur-expertise eclaireur-expertise-step-${step} eclaireur-side-${side}`}
       aria-live="polite"
-      aria-label={`L’Éclaireur, étape ${step} sur 3`}
+      aria-label={`L’Éclaireur, étape ${step} sur 4`}
     >
       <header className="eclaireur-expertise-header">
         <div className="eclaireur-expertise-brand">
@@ -226,7 +230,7 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
         </div>
 
         <div className="eclaireur-expertise-header-actions">
-          <span>{step}/3</span>
+          <span>{step}/4</span>
           <button type="button" className="eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button>
           <button type="button" className="eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
         </div>
@@ -245,7 +249,7 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
 
         <div className="eclaireur-expertise-footer">
           <div className="eclaireur-dots" aria-hidden="true">
-            {[1, 2, 3].map(n => <i key={n} className={n === step ? 'active' : ''} />)}
+            {[1, 2, 3, 4].map(n => <i key={n} className={n === step ? 'active' : ''} />)}
           </div>
 
           <div className="eclaireur-nav-actions">
@@ -254,9 +258,11 @@ function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose,
                 Précédent
               </button>
             )}
-            <button type="button" className="eclaireur-action eclaireur-next" onClick={onNext}>
-              {step < 3 ? 'Suivant' : 'Compris'}
-            </button>
+            {step !== 3 && (step !== 4 || selected) && (
+              <button type="button" className="eclaireur-action eclaireur-next" onClick={onNext}>
+                {step < 4 ? 'Suivant' : 'Compris'}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -273,6 +279,7 @@ export default function Expertises({ data }) {
   const [readingOpen, setReadingOpen] = useState(false)
   const [eclaireurMode, setEclaireurMode] = useState('open')
   const [eclaireurStep, setEclaireurStep] = useState(1)
+  const [eclaireurCluster, setEclaireurCluster] = useState(null)
 
   const [nodeSize, setNodeSize] = useState(2.45)
   const [linkDensity, setLinkDensity] = useState(1)
@@ -332,12 +339,24 @@ export default function Expertises({ data }) {
 
   const openExpertise = node => {
     setSelected(node)
-    setEclaireurStep(3)
+    setEclaireurStep(4)
     setEclaireurMode('open')
   }
 
+  const handleClusterChange = cluster => {
+    setEclaireurCluster(cluster)
+
+    if (cluster && eclaireurMode === 'open' && eclaireurStep === 3) {
+      setEclaireurStep(4)
+    }
+
+    if (!cluster && !selected && eclaireurMode === 'open' && eclaireurStep === 4) {
+      setEclaireurStep(3)
+    }
+  }
+
   const nextEclaireur = () => {
-    if (eclaireurStep < 3) {
+    if (eclaireurStep < 4) {
       setEclaireurStep(step => step + 1)
     } else {
       setEclaireurMode('minimized')
@@ -359,6 +378,7 @@ export default function Expertises({ data }) {
     setEntity('Toutes les entités')
     setFamily('Tous')
     setReadingOpen(false)
+    setEclaireurCluster(null)
     setResetToken(x => x + 1)
   }
 
@@ -373,7 +393,7 @@ export default function Expertises({ data }) {
       <aside className="left-rail">
 
         <section className={`rail-section expertise-intro ${eclaireurMode === 'open' && eclaireurStep === 1 ? 'expertise-eclaireur-target' : ''}`}>
-          <h3>Pourquoi cette carte ?</h3>
+          <h3>Pourquoi ce graphe ?</h3>
 
           <img
             className="sidebar-intro-visual"
@@ -389,7 +409,7 @@ export default function Expertises({ data }) {
           {!introExpanded ? (
             <p className="intro-summary">
               Les publications du ministère mobilisent un très large éventail
-              d’expertises. Cette carte permet d’explorer ces savoir-faire,
+              d’expertises. Ce graphe permet d’explorer ces savoir-faire,
               leurs proximités et les entités qui les mobilisent.
             </p>
           ) : (
@@ -570,14 +590,14 @@ export default function Expertises({ data }) {
 
       </aside>
 
-      <section className={`graph-workspace ${eclaireurMode === 'open' && eclaireurStep === 3 && !selected ? 'expertise-eclaireur-target expertise-eclaireur-graph-target' : ''}`}>
+      <section className="graph-workspace">
 
         <div className="workspace-toolbar expertise-workspace-toolbar">
 
           <div className="expertise-workspace-title">
             <h1>Expertises et savoir-faire du ministère de l’Intérieur</h1>
 
-            <div className="expertise-metrics expertise-metrics-under-title" aria-label="Statistiques de la carte">
+            <div className="expertise-metrics expertise-metrics-under-title" aria-label="Statistiques du graphe">
               <div className="expertise-metric">
                 <span className="expertise-metric-icon"><Icon name="graph" size={21} /></span>
                 <span>
@@ -637,6 +657,18 @@ export default function Expertises({ data }) {
           edges={visibleEdges}
           selected={selected}
           onSelect={openExpertise}
+          onClusterChange={handleClusterChange}
+          guideOverviewStep={
+            eclaireurMode === 'open' && eclaireurStep === 3 && !selected
+              ? 2
+              : null
+          }
+          guidePulseNode={
+            eclaireurMode === 'open' &&
+            eclaireurStep === 4 &&
+            !selected &&
+            Boolean(eclaireurCluster)
+          }
           nodeSize={nodeSize}
           linkDensity={linkDensity}
           resetToken={resetToken}
@@ -652,7 +684,7 @@ export default function Expertises({ data }) {
       </section>
 
       {selected && (
-        <aside className={`detail-drawer ${eclaireurMode === 'open' && eclaireurStep === 3 ? 'expertise-eclaireur-target' : ''}`}>
+        <aside className={`detail-drawer ${eclaireurMode === 'open' && eclaireurStep === 4 ? 'expertise-eclaireur-target' : ''}`}>
 
           <button
             className="drawer-close"
