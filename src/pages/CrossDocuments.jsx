@@ -3,6 +3,8 @@ import Icon from '../components/Icon.jsx'
 import { useChronologyData } from '../hooks/useChronologyData.js'
 import './cross-documents.css'
 
+const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012']
+
 const NAT_LABELS = {
   evenement: 'Événement',
   jalon: 'Jalon',
@@ -12,33 +14,19 @@ const NAT_LABELS = {
   sequence_historique: 'Séquence historique',
 }
 
-const NAT_ORDER = ['evenement', 'jalon', 'emergence', 'tendance', 'rupture_inflexion', 'sequence_historique']
-
-function normalizeText(value = '') {
-  return String(value)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[’‘]/g, "'")
-    .toLowerCase()
-}
-
 function cleanUrl(value = '') {
   const first = String(value || '').split(/\s+/).find(x => /^https?:\/\//i.test(x))
   return first || ''
 }
 
-function yearFromNormalized(value = '') {
-  const m = String(value || '').match(/(18|19|20|21)\d{2}/)
-  return m ? Number(m[0]) : null
-}
-
 function temporalValueFromNormalized(rawValue = '') {
   const raw = String(rawValue || '')
-  const y = yearFromNormalized(raw)
-  if (!y) return null
+  const match = raw.match(/(18|19|20|21)\d{2}/)
+  if (!match) return null
+  const year = Number(match[0])
   const month = Number((raw.match(/^\d{4}-(\d{2})/) || [])[1] || 1)
   const day = Number((raw.match(/^\d{4}-\d{2}-(\d{2})/) || [])[1] || 1)
-  return y + ((month - 1) / 12) + ((day - 1) / 365)
+  return year + ((month - 1) / 12) + ((day - 1) / 365)
 }
 
 function temporalValue(element) {
@@ -46,10 +34,10 @@ function temporalValue(element) {
 }
 
 function rangeYears(elements) {
-  const vals = elements.map(temporalValue).filter(v => v !== null)
-  if (!vals.length) return { min: 0, max: 1 }
-  let min = Math.floor(Math.min(...vals))
-  let max = Math.ceil(Math.max(...vals))
+  const values = elements.map(temporalValue).filter(v => v !== null)
+  if (!values.length) return { min: 0, max: 1 }
+  let min = Math.floor(Math.min(...values))
+  let max = Math.ceil(Math.max(...values))
   if (min === max) { min -= 1; max += 1 }
   return { min, max }
 }
@@ -58,45 +46,26 @@ function sourcePassageKey(prov) {
   return `${prov.publication_id || ''}:${prov.chunk_id || ''}`
 }
 
-function markRanges(text, needles, activeNeedle = '') {
-  if (!text || !needles.length) return [{ text, kind: '' }]
-  const source = String(text)
-  const normalized = normalizeText(source)
-  const matches = []
+function SourceExcerpt({ text, expression, active, transferred, onClick }) {
+  const source = String(text || '')
+  const needle = String(expression || '').trim()
+  if (!needle) return <p>{source}</p>
 
-  needles.forEach((needle, idx) => {
-    const n = normalizeText(needle)
-    if (!n || n.length < 2) return
-    let start = 0
-    while (start < normalized.length) {
-      const at = normalized.indexOf(n, start)
-      if (at < 0) break
-      matches.push({ start: at, end: at + n.length, needle, active: normalizeText(needle) === normalizeText(activeNeedle), idx })
-      start = at + Math.max(1, n.length)
-    }
-  })
+  const at = source.toLocaleLowerCase('fr').indexOf(needle.toLocaleLowerCase('fr'))
+  if (at < 0) return <p>{source}</p>
 
-  if (!matches.length) return [{ text: source, kind: '' }]
-  matches.sort((a, b) => a.start - b.start || b.end - a.end)
-  const kept = []
-  for (const m of matches) {
-    const prev = kept[kept.length - 1]
-    if (prev && m.start < prev.end) {
-      if (m.active && !prev.active) kept[kept.length - 1] = m
-      continue
-    }
-    kept.push(m)
-  }
-
-  const parts = []
-  let pos = 0
-  kept.forEach((m) => {
-    if (m.start > pos) parts.push({ text: source.slice(pos, m.start), kind: '' })
-    parts.push({ text: source.slice(m.start, m.end), kind: m.active ? 'active' : 'mark' })
-    pos = m.end
-  })
-  if (pos < source.length) parts.push({ text: source.slice(pos), kind: '' })
-  return parts
+  return <p>
+    {source.slice(0, at)}
+    <button
+      type="button"
+      className={`chrono-source-mark ${active ? 'active' : ''} ${transferred ? 'transferred' : ''}`}
+      onClick={onClick}
+      title="Repère temporel"
+    >
+      {source.slice(at, at + needle.length)}
+    </button>
+    {source.slice(at + needle.length)}
+  </p>
 }
 
 function CrossDocumentsHome({ onOpenChronology, publicationCount }) {
@@ -130,36 +99,46 @@ function CrossDocumentsHome({ onOpenChronology, publicationCount }) {
 
 function ChronologyWorkspace({ data, onBack }) {
   const { chronology, error } = useChronologyData(true)
-  const [publicationId, setPublicationId] = useState('PUB012')
-  const [nature, setNature] = useState('all')
-  const [knowledge, setKnowledge] = useState('all')
+  const [publicationId, setPublicationId] = useState(null)
   const [phase, setPhase] = useState('ready')
   const [revealed, setRevealed] = useState(0)
   const [selectedId, setSelectedId] = useState(null)
-  const passageRefs = useRef({})
+  const [passageIndex, setPassageIndex] = useState(0)
+  const [sourceCollapsed, setSourceCollapsed] = useState(false)
+  const [nonPositionableOpen, setNonPositionableOpen] = useState(true)
+  const timelineScrollRef = useRef(null)
+  const timelineEventRefs = useRef({})
+  const choiceRef = useRef(null)
 
-  const publications = useMemo(() => Object.fromEntries((data.publications || []).map(p => [p.publication_id, p])), [data.publications])
-  const contents = useMemo(() => Object.fromEntries((data.contents || []).map(c => [c.chunk_id, c])), [data.contents])
+  const publications = useMemo(
+    () => Object.fromEntries((data.publications || []).map(p => [p.publication_id, p])),
+    [data.publications]
+  )
+  const contents = useMemo(
+    () => Object.fromEntries((data.contents || []).map(c => [c.chunk_id, c])),
+    [data.contents]
+  )
 
-  const chronoPublications = useMemo(() => {
-    if (!chronology) return []
-    return [...new Set(chronology.elements.map(e => e.publication_id))]
-      .map(id => publications[id] || { publication_id: id, titre: id })
-      .sort((a, b) => String(a.publication_id).localeCompare(String(b.publication_id)))
-  }, [chronology, publications])
+  const publicationChoices = useMemo(() => ELIGIBLE_PUBLICATIONS
+    .filter(id => chronology?.elements.some(e => e.publication_id === id))
+    .map(id => publications[id] || { publication_id: id, titre: id }),
+  [chronology, publications])
 
-  const allElements = useMemo(() => chronology?.elements.filter(e => e.publication_id === publicationId) || [], [chronology, publicationId])
-  const filteredElements = useMemo(() => allElements.filter(e => {
-    if (nature !== 'all' && e.nature_chronologique !== nature) return false
-    if (knowledge !== 'all' && e.statut_connaissance !== knowledge) return false
-    return true
-  }), [allElements, nature, knowledge])
+  const allElements = useMemo(
+    () => publicationId ? (chronology?.elements.filter(e => e.publication_id === publicationId) || []) : [],
+    [chronology, publicationId]
+  )
 
-  const positionable = useMemo(() => filteredElements
+  const positionable = useMemo(() => allElements
     .filter(e => e.decision_post_traitement === 'retenu' && temporalValue(e) !== null)
-    .sort((a, b) => temporalValue(a) - temporalValue(b) || a.chrono_id.localeCompare(b.chrono_id)), [filteredElements])
+    .sort((a, b) => temporalValue(a) - temporalValue(b) || a.chrono_id.localeCompare(b.chrono_id)),
+  [allElements])
 
-  const nonPositionable = useMemo(() => filteredElements.filter(e => e.decision_post_traitement === 'non_positionnable'), [filteredElements])
+  const nonPositionable = useMemo(
+    () => allElements.filter(e => e.decision_post_traitement === 'non_positionnable'),
+    [allElements]
+  )
+
   const transformSequence = useMemo(() => [...positionable, ...nonPositionable], [positionable, nonPositionable])
 
   const provenancesByElement = useMemo(() => {
@@ -172,31 +151,32 @@ function ChronologyWorkspace({ data, onBack }) {
   }, [chronology, publicationId])
 
   const passages = useMemo(() => {
+    if (!publicationId) return []
     const map = new Map()
-    filteredElements.forEach(e => {
-      ;(provenancesByElement[e.chrono_id] || []).forEach(p => {
-        const key = sourcePassageKey(p)
-        const chunk = contents[p.chunk_id]
-        if (!chunk || map.has(key)) return
-        map.set(key, {
-          key,
-          chunk,
-          expressions: [],
-          elementIds: [],
+    allElements.forEach(element => {
+      ;(provenancesByElement[element.chrono_id] || []).forEach(prov => {
+        const key = sourcePassageKey(prov)
+        const chunk = contents[prov.chunk_id]
+        if (!map.has(key)) {
+          map.set(key, {
+            key,
+            chunkId: prov.chunk_id,
+            pageSource: prov.page_source || chunk?.page_debut || '',
+            section: prov.section || chunk?.section || '',
+            order: Number(chunk?.ordre || 9999),
+            proofs: [],
+          })
+        }
+        map.get(key).proofs.push({
+          chronoId: element.chrono_id,
+          proof: prov.preuve || element.preuve,
+          expression: prov.expression_temporelle_source || element.expression_temporelle_source,
+          confidence: prov.niveau_confiance || element.niveau_confiance,
         })
       })
     })
-    filteredElements.forEach(e => {
-      ;(provenancesByElement[e.chrono_id] || []).forEach(p => {
-        const item = map.get(sourcePassageKey(p))
-        if (!item) return
-        const expression = p.expression_temporelle_source || e.expression_temporelle_source
-        if (expression && !item.expressions.includes(expression)) item.expressions.push(expression)
-        if (!item.elementIds.includes(e.chrono_id)) item.elementIds.push(e.chrono_id)
-      })
-    })
-    return [...map.values()].sort((a, b) => Number(a.chunk.ordre || 0) - Number(b.chunk.ordre || 0))
-  }, [filteredElements, provenancesByElement, contents])
+    return [...map.values()].sort((a, b) => a.order - b.order || a.chunkId.localeCompare(b.chunkId))
+  }, [publicationId, allElements, provenancesByElement, contents])
 
   const visibleElements = useMemo(() => {
     if (phase === 'complete') return transformSequence
@@ -205,260 +185,268 @@ function ChronologyWorkspace({ data, onBack }) {
   }, [phase, transformSequence, revealed])
 
   const visibleIds = useMemo(() => new Set(visibleElements.map(e => e.chrono_id)), [visibleElements])
-  const currentElement = phase === 'building' ? transformSequence[Math.min(revealed, transformSequence.length - 1)] : null
   const selected = selectedId ? allElements.find(e => e.chrono_id === selectedId) : null
-  const selectedProvs = selected ? provenancesByElement[selected.chrono_id] || [] : []
+  const currentElement = phase === 'building' && revealed < transformSequence.length
+    ? transformSequence[revealed]
+    : null
+  const activeElement = selected || currentElement
+
+  const currentPassage = passages[Math.min(passageIndex, Math.max(0, passages.length - 1))] || null
 
   useEffect(() => {
     setPhase('ready')
     setRevealed(0)
     setSelectedId(null)
-  }, [publicationId, nature, knowledge])
+    setPassageIndex(0)
+    setSourceCollapsed(false)
+    setNonPositionableOpen(true)
+  }, [publicationId])
 
   useEffect(() => {
     if (phase !== 'building') return
-    if (!transformSequence.length) {
-      setPhase('complete')
-      return
-    }
-    if (revealed >= transformSequence.length) {
-      const done = window.setTimeout(() => setPhase('complete'), 450)
+    if (!transformSequence.length || revealed >= transformSequence.length) {
+      const done = window.setTimeout(() => setPhase('complete'), 380)
       return () => window.clearTimeout(done)
     }
-    const delay = transformSequence.length <= 8 ? 760 : transformSequence.length <= 25 ? 310 : 95
-    const timer = window.setTimeout(() => setRevealed(v => v + 1), delay)
+    const timer = window.setTimeout(() => setRevealed(v => v + 1), 245)
     return () => window.clearTimeout(timer)
   }, [phase, revealed, transformSequence.length])
 
   useEffect(() => {
-    if (!selectedProvs.length) return
-    const key = sourcePassageKey(selectedProvs[0])
-    const node = passageRefs.current[key]
-    if (node) node.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [selectedId])
+    if (!activeElement) return
+    const prov = (provenancesByElement[activeElement.chrono_id] || [])[0]
+    if (prov) {
+      const key = sourcePassageKey(prov)
+      const idx = passages.findIndex(p => p.key === key)
+      if (idx >= 0) setPassageIndex(idx)
+    }
+
+    if (visibleIds.has(activeElement.chrono_id)) {
+      const eventNode = timelineEventRefs.current[activeElement.chrono_id]
+      if (eventNode && timelineScrollRef.current) {
+        const target = Math.max(0, eventNode.offsetLeft - timelineScrollRef.current.clientWidth * 0.48)
+        timelineScrollRef.current.scrollTo({ left: target, behavior: 'smooth' })
+      }
+    }
+  }, [activeElement?.chrono_id, passages, provenancesByElement, visibleIds])
 
   if (error) return <main className="page chronology-workspace"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour</button><div className="chrono-error"><strong>Chronologie indisponible</strong><p>{error.message}</p></div></main>
   if (!chronology) return <main className="page chronology-workspace"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour</button><div className="chrono-loading"><div className="loader"></div><span>Chargement de la chronologie…</span></div></main>
 
-  const pub = publications[publicationId] || { publication_id: publicationId, titre: publicationId }
+  const pub = publicationId ? (publications[publicationId] || { publication_id: publicationId, titre: publicationId }) : null
   const total = transformSequence.length
-  const progress = total ? Math.round((Math.min(revealed, total) / total) * 100) : 100
+  const progress = total ? Math.round((Math.min(revealed, total) / total) * 100) : 0
   const range = rangeYears(positionable)
-  const timelineWidth = Math.max(1180, Math.min(9600, positionable.length * 150))
+  const timelineWidth = Math.max(1120, Math.min(8500, positionable.length * 108))
   const tickStep = Math.max(1, Math.ceil((range.max - range.min) / 8))
   const ticks = []
   for (let y = range.min; y <= range.max; y += tickStep) ticks.push(y)
-  if (ticks[ticks.length - 1] !== range.max) ticks.push(range.max)
+  if (ticks.length && ticks[ticks.length - 1] !== range.max) ticks.push(range.max)
 
   const startTransform = () => {
+    if (!publicationId || !total) return
     setSelectedId(null)
     setRevealed(0)
+    setPassageIndex(0)
+    setSourceCollapsed(false)
     setPhase('building')
   }
 
-  const chooseElement = (e) => {
-    setSelectedId(e.chrono_id)
+  const chooseElement = (element) => {
+    setSelectedId(element.chrono_id)
+    setSourceCollapsed(false)
+    const prov = (provenancesByElement[element.chrono_id] || [])[0]
+    if (prov) {
+      const idx = passages.findIndex(p => p.key === sourcePassageKey(prov))
+      if (idx >= 0) setPassageIndex(idx)
+    }
   }
 
-  const sourceUrl = cleanUrl(pub.url_source) || cleanUrl(pub.url_contenu)
+  const choosePublication = (id) => setPublicationId(id)
+  const changePublication = () => {
+    setPublicationId(null)
+    window.setTimeout(() => choiceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+  }
+
+  const sourceUrl = pub ? (cleanUrl(pub.url_source) || cleanUrl(pub.url_contenu)) : ''
+  const activeExpression = activeElement
+    ? ((provenancesByElement[activeElement.chrono_id] || [])[0]?.expression_temporelle_source || activeElement.expression_temporelle_source)
+    : ''
 
   return <main className="page chronology-workspace">
-    <div className="chrono-topline">
-      <button className="back-link chrono-back" onClick={onBack}><Icon name="back"/>D’un document à l’autre</button>
-      <span className="chrono-version">Chronologie · Bêta · restitution déterministe</span>
-    </div>
+    <button className="chrono-return" type="button" onClick={onBack}><Icon name="back" size={16}/>D’un document à l’autre</button>
 
-    <header className="chrono-heading">
-      <div>
-        <div className="crossdoc-kicker">TRANSFORMATION DOCUMENTAIRE</div>
-        <div className="chrono-title-row"><h1>Chronologie</h1><span className="chrono-beta-badge">BÊTA</span></div>
-        <p>Du texte à la frise, sans perdre la source.</p>
+    <header className="chrono-hero">
+      <div className="chrono-title-line">
+        <h1>Du texte à la frise, sans perdre la source</h1>
+        <span className="chrono-beta-badge">BÊTA</span>
       </div>
-      <div className="chrono-legend" aria-label="Légende">
-        <span><i className="dot observed"></i>Observé</span>
-        <span><i className="diamond prospective"></i>Prospectif</span>
-        <span><i className="dash unpositionable"></i>Non positionnable</span>
+      <p className="chrono-subtitle">Une publication <b>→</b> ses repères temporels <b>→</b> une frise interactive</p>
+
+      <div className="chrono-steps" aria-label="Fonctionnement de la chronologie">
+        <div className="chrono-step"><span>1</span><div><strong>Choisissez une publication</strong><p>Sélectionnez un document dont la chronologie a été préalablement validée.</p></div></div>
+        <div className="chrono-step"><span>2</span><div><strong>Regardez les repères apparaître</strong><p>Dates, périodes, émergences, jalons et tendances sont repérés dans les passages sources.</p></div></div>
+        <div className="chrono-step"><span>3</span><div><strong>Transformez le texte en frise</strong><p>Chaque élément rejoint sa position temporelle sans perdre son lien avec la preuve.</p></div></div>
       </div>
+
+      <div className="chrono-deterministic-note"><Icon name="info" size={18}/><span><strong>Restitution déterministe</strong> — aucune interprétation n’est effectuée pendant la consultation. La frise restitue uniquement les données chronologiques validées.</span></div>
     </header>
 
-
-    <section className="chrono-intro" aria-label="Présentation de la fonction Chronologie">
-      <div>
-        <strong>Explorer la dimension temporelle d’une publication</strong>
-        <p>Les repères chronologiques identifiés dans le document sont organisés dans une frise interactive et restent reliés à leur preuve source.</p>
-      </div>
-      <div>
-        <strong>Une restitution entièrement déterministe</strong>
-        <p>Aucune interprétation n’est réalisée au moment de la consultation. Les repères insuffisamment précis sont conservés hors de l’axe plutôt que datés artificiellement.</p>
-      </div>
-      <div className="chrono-intro-beta">
-        <strong>Version Bêta</strong>
-        <p>La fonction est actuellement disponible pour deux publications validées. Son périmètre sera étendu progressivement.</p>
-      </div>
-    </section>
-
-    <section className="chrono-controls">
-      <label>
-        <span>Document</span>
-        <select value={publicationId} onChange={e => setPublicationId(e.target.value)}>
-          {chronoPublications.map(p => <option key={p.publication_id} value={p.publication_id}>{p.publication_id} — {p.titre}</option>)}
-        </select>
-      </label>
-      <label>
-        <span>Nature</span>
-        <select value={nature} onChange={e => setNature(e.target.value)}>
-          <option value="all">Toutes les natures</option>
-          {NAT_ORDER.filter(n => allElements.some(e => e.nature_chronologique === n)).map(n => <option key={n} value={n}>{NAT_LABELS[n]}</option>)}
-        </select>
-      </label>
-      <label>
-        <span>Statut</span>
-        <select value={knowledge} onChange={e => setKnowledge(e.target.value)}>
-          <option value="all">Observé + prospectif</option>
-          <option value="observe">Observé</option>
-          <option value="prospectif">Prospectif</option>
-        </select>
-      </label>
-      <div className="chrono-counts">
-        <strong>{positionable.length}</strong><span>positionnables</span>
-        <strong>{nonPositionable.length}</strong><span>non positionnables</span>
+    <section className="chrono-publication-choice" ref={choiceRef}>
+      <div className="chrono-section-title"><span>1</span><h2>Choisissez une publication à explorer</h2></div>
+      <div className="chrono-publication-cards">
+        {publicationChoices.map(choice => {
+          const selectedChoice = publicationId === choice.publication_id
+          const elementCount = chronology.elements.filter(e => e.publication_id === choice.publication_id).length
+          return <button
+            type="button"
+            key={choice.publication_id}
+            className={`chrono-publication-card ${selectedChoice ? 'selected' : ''}`}
+            onClick={() => choosePublication(choice.publication_id)}
+          >
+            <img src={choice.image_path || `./images/publications/${choice.publication_id}.png`} alt=""/>
+            <div>
+              <b>{choice.publication_id}</b>
+              <strong>{choice.titre}</strong>
+              <span>{choice.organisme_producteur || 'Publication du corpus'}</span>
+              <small>{choice['année_publication'] || ''}{choice.type_document ? ` · ${choice.type_document}` : ''} · {elementCount} repères validés</small>
+            </div>
+          </button>
+        })}
       </div>
     </section>
 
-    <section className="chrono-publication-strip">
-      <div>
-        <strong>{publicationId}</strong>
-        <h2>{pub.titre}</h2>
-        <p>{[pub.organisme_producteur, pub.année_publication, pub.type_document].filter(Boolean).join(' · ')}</p>
-      </div>
-      {sourceUrl && <a className="chrono-source-link" href={sourceUrl} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Voir le document source</a>}
-    </section>
-
-    <section className="chrono-transform-layout">
-      <div className="chrono-source-panel">
-        <div className="chrono-panel-head">
-          <div><span>1</span><strong>Le texte reste premier</strong></div>
-          <small>{passages.length} passage{passages.length > 1 ? 's' : ''} porteur{passages.length > 1 ? 's' : ''} d’un repère temporel</small>
-        </div>
-        <div className="chrono-passages">
-          {passages.map(item => {
-            const activeExpression = currentElement && item.elementIds.includes(currentElement.chrono_id)
-              ? ((provenancesByElement[currentElement.chrono_id] || []).find(p => p.chunk_id === item.chunk.chunk_id)?.expression_temporelle_source || currentElement.expression_temporelle_source)
-              : (selected && item.elementIds.includes(selected.chrono_id)
-                ? ((provenancesByElement[selected.chrono_id] || []).find(p => p.chunk_id === item.chunk.chunk_id)?.expression_temporelle_source || selected.expression_temporelle_source)
-                : '')
-            const isActive = Boolean(activeExpression)
-            const parts = markRanges(item.chunk.texte, item.expressions, activeExpression)
-            return <article
-              key={item.key}
-              ref={node => { passageRefs.current[item.key] = node }}
-              className={`chrono-passage ${isActive ? 'active' : ''}`}
-            >
-              <header><span>Page {item.chunk.page_debut}{item.chunk.page_fin && item.chunk.page_fin !== item.chunk.page_debut ? `–${item.chunk.page_fin}` : ''}</span><b>{item.chunk.section}</b><em>{item.chunk.chunk_id}</em></header>
-              <p>{parts.map((part, idx) => part.kind ? <mark key={idx} className={part.kind === 'active' ? 'active-mark' : ''}>{part.text}</mark> : <React.Fragment key={idx}>{part.text}</React.Fragment>)}</p>
-            </article>
-          })}
+    {publicationId && <section className="chrono-transform-section">
+      <div className="chrono-transform-titlebar">
+        <div className="chrono-section-title"><span>2</span><h2>Explorez le texte et transformez-le en chronologie</h2></div>
+        <div className="chrono-main-actions">
+          <button type="button" className="chrono-primary-action" onClick={startTransform} disabled={phase === 'building' || !total}>
+            <span className="play-triangle">▶</span>{phase === 'complete' ? 'Rejouer la transformation' : 'Transformer en chronologie'}
+          </button>
+          <button type="button" className="chrono-secondary-action" onClick={changePublication}><Icon name="reset" size={16}/>Changer de publication</button>
         </div>
       </div>
 
-      <div className="chrono-visual-panel">
-        <div className="chrono-panel-head">
-          <div><span>2</span><strong>Transformation en frise</strong></div>
-          {phase === 'ready' && <small>La frise n’est pas encore construite</small>}
-          {phase === 'building' && <small>Transformation {Math.min(revealed, total)} / {total}</small>}
-          {phase === 'complete' && <small>Transformation terminée</small>}
-        </div>
-
-        {phase === 'ready' && <div className="chrono-start-state">
-          <div className="chrono-start-glyph" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
-          <h3>Le document contient {total} repère{total > 1 ? 's' : ''} temporel{total > 1 ? 's' : ''} dans ce filtre.</h3>
-          <p>Déclenchez la transformation : les marqueurs du texte vont apparaître progressivement sur la frise. Les formulations imprécises resteront volontairement hors de l’axe.</p>
-          <button type="button" className="chrono-transform-button" onClick={startTransform} disabled={!total}><Icon name="spark" size={18}/>Transformer en chronologie</button>
-        </div>}
-
-        {phase !== 'ready' && <>
-          <div className="chrono-progress"><span style={{ width: `${phase === 'complete' ? 100 : progress}%` }}></span></div>
-          <div className="chrono-timeline-scroll">
-            <div className="chrono-timeline" style={{ width: timelineWidth }}>
-              <div className="chrono-axis"></div>
-              {ticks.map(y => {
-                const left = ((y - range.min) / (range.max - range.min)) * 100
-                return <div key={y} className="chrono-tick" style={{ left: `${left}%` }}><span>{y}</span></div>
-              })}
-              {positionable.map((e, idx) => {
-                const val = temporalValue(e)
-                const left = ((val - range.min) / (range.max - range.min)) * 100
-                const lane = idx % 6
-                const visible = visibleIds.has(e.chrono_id)
-                const endVal = temporalValueFromNormalized(e.date_fin_normalisee)
-                const isClosedPeriod = e.statut_temporel === 'periode_fermee' && endVal !== null && endVal > val
-                const isOpenPeriod = e.statut_temporel === 'periode_ouverte'
-                const availableYears = Math.max(1, range.max - range.min)
-                const spanYears = isClosedPeriod
-                  ? Math.max(0, endVal - val)
-                  : (isOpenPeriod ? Math.max(0, range.max - val) : 0)
-                const spanPx = spanYears
-                  ? Math.max(20, (spanYears / availableYears) * Math.max(1000, timelineWidth - 80))
-                  : 0
-                const periodClass = isClosedPeriod ? 'period closed-period' : (isOpenPeriod ? 'period open-period' : 'point')
-                return <button
-                  key={e.chrono_id}
-                  type="button"
-                  className={`chrono-event ${periodClass} ${visible ? 'visible' : ''} ${e.statut_connaissance === 'prospectif' ? 'prospective' : 'observed'} ${selectedId === e.chrono_id ? 'selected' : ''}`}
-                  style={{ left: `${left}%`, top: `${73 + lane * 78}px` }}
-                  onClick={() => chooseElement(e)}
-                  disabled={!visible}
-                  title={e.libelle}
-                >
-                  {spanPx > 0 && <span className="chrono-period-track" style={{ width: `${spanPx}px` }} aria-hidden="true"></span>}
-                  <i></i>
-                  <span className="chrono-event-date">{e.expression_temporelle_source || e.date_debut_normalisee}</span>
-                  <strong>{e.libelle}</strong>
-                  <small>{NAT_LABELS[e.nature_chronologique] || e.nature_chronologique}</small>
-                </button>
-              })}
+      <div className={`chrono-transform-grid ${sourceCollapsed ? 'source-collapsed' : ''}`}>
+        {!sourceCollapsed && <aside className="chrono-source-panel">
+          <div className="chrono-panel-heading">
+            <strong>Texte source (extraits)</strong>
+            <div className="chrono-source-nav">
+              {currentPassage && <span>Page {currentPassage.pageSource || '—'} · {passageIndex + 1}/{passages.length}</span>}
+              <button type="button" onClick={() => setPassageIndex(i => Math.max(0, i - 1))} disabled={passageIndex <= 0} aria-label="Extrait précédent">‹</button>
+              <button type="button" onClick={() => setPassageIndex(i => Math.min(passages.length - 1, i + 1))} disabled={passageIndex >= passages.length - 1} aria-label="Extrait suivant">›</button>
+              <button type="button" className="chrono-collapse-source" onClick={() => setSourceCollapsed(true)} aria-label="Replier le volet texte"><span>Replier</span>‹</button>
             </div>
           </div>
+
+          <div className="chrono-source-body">
+            {currentPassage ? <>
+              <div className="chrono-source-meta"><b>{currentPassage.section || 'Extrait source'}</b><span>{currentPassage.chunkId}</span></div>
+              {currentPassage.proofs.map((proof, idx) => {
+                const isActive = activeElement?.chrono_id === proof.chronoId
+                return <div key={`${proof.chronoId}-${idx}`} className={`chrono-source-proof ${isActive ? 'active' : ''}`}>
+                  <SourceExcerpt
+                    text={proof.proof}
+                    expression={proof.expression}
+                    active={isActive}
+                    transferred={visibleIds.has(proof.chronoId)}
+                    onClick={() => {
+                      const element = allElements.find(e => e.chrono_id === proof.chronoId)
+                      if (element && visibleIds.has(element.chrono_id)) chooseElement(element)
+                    }}
+                  />
+                </div>
+              })}
+              <div className="chrono-source-footer">
+                <span>Preuve issue de {publicationId}</span>
+                {sourceUrl && <a href={sourceUrl} target="_blank" rel="noreferrer">Voir le document source <Icon name="external" size={13}/></a>}
+              </div>
+            </> : <div className="chrono-empty-source">Aucun extrait source disponible.</div>}
+          </div>
+        </aside>}
+
+        {sourceCollapsed && <button type="button" className="chrono-expand-source" onClick={() => setSourceCollapsed(false)}><span>Afficher le texte source</span>›</button>}
+
+        <section className="chrono-timeline-panel">
+          <div className="chrono-panel-heading chrono-timeline-heading">
+            <strong>Frise chronologique</strong>
+            <div className="chrono-timeline-legend">
+              <span><i className="legend-dot"></i>Événement / jalon</span>
+              <span><i className="legend-period"></i>Période</span>
+              <span><i className="legend-open"></i>Période ouverte</span>
+            </div>
+          </div>
+
+          {phase === 'ready' && <div className="chrono-timeline-empty">
+            <div className="chrono-empty-axis"><i></i><i></i><i></i><i></i></div>
+            <strong>La frise attend la transformation du texte.</strong>
+            <p>Les repères surlignés à gauche rejoindront progressivement leur position temporelle.</p>
+          </div>}
+
+          {phase !== 'ready' && <>
+            <div className="chrono-progress"><span style={{ width: `${phase === 'complete' ? 100 : progress}%` }}></span></div>
+            <div className="chrono-timeline-scroll" ref={timelineScrollRef}>
+              <div className="chrono-timeline" style={{ width: timelineWidth }}>
+                <div className="chrono-axis"></div>
+                {ticks.map(year => {
+                  const left = ((year - range.min) / (range.max - range.min)) * 100
+                  return <div key={year} className="chrono-tick" style={{ left: `${left}%` }}><span>{year}</span></div>
+                })}
+
+                {positionable.map((element, idx) => {
+                  const value = temporalValue(element)
+                  const left = ((value - range.min) / (range.max - range.min)) * 100
+                  const lane = idx % 5
+                  const visible = visibleIds.has(element.chrono_id)
+                  const endValue = temporalValueFromNormalized(element.date_fin_normalisee)
+                  const isClosedPeriod = element.statut_temporel === 'periode_fermee' && endValue !== null && endValue > value
+                  const isOpenPeriod = element.statut_temporel === 'periode_ouverte'
+                  const rangeSpan = Math.max(1, range.max - range.min)
+                  const spanYears = isClosedPeriod ? Math.max(0, endValue - value) : (isOpenPeriod ? Math.max(0, range.max - value) : 0)
+                  const spanPx = spanYears ? Math.max(24, (spanYears / rangeSpan) * Math.max(1000, timelineWidth - 90)) : 0
+                  return <button
+                    key={element.chrono_id}
+                    ref={node => { timelineEventRefs.current[element.chrono_id] = node }}
+                    type="button"
+                    className={`chrono-event ${visible ? 'visible' : ''} ${selectedId === element.chrono_id ? 'selected' : ''} nature-${element.nature_chronologique} ${isClosedPeriod ? 'period closed-period' : isOpenPeriod ? 'period open-period' : 'point'} ${activeElement?.chrono_id === element.chrono_id ? 'transforming' : ''}`}
+                    style={{ left: `${left}%`, top: `${78 + lane * 72}px` }}
+                    onClick={() => visible && chooseElement(element)}
+                    disabled={!visible}
+                    title={element.libelle}
+                  >
+                    {spanPx > 0 && <span className="chrono-period-track" style={{ width: `${spanPx}px` }} aria-hidden="true"></span>}
+                    <i></i>
+                    <span className="chrono-event-date">{element.expression_temporelle_source || element.date_debut_normalisee}</span>
+                    <strong>{element.libelle}</strong>
+                    <small>{NAT_LABELS[element.nature_chronologique] || element.nature_chronologique}</small>
+                  </button>
+                })}
+              </div>
+            </div>
+          </>}
 
           <div className={`chrono-unpositionable ${phase === 'complete' || nonPositionable.some(e => visibleIds.has(e.chrono_id)) ? 'visible' : ''}`}>
-            <div className="chrono-unpositionable-title"><Icon name="warning" size={17}/><div><strong>Repères temporels non positionnables</strong><span>Conservés sans leur attribuer artificiellement une année.</span></div></div>
-            <div className="chrono-unpositionable-list">
-              {nonPositionable.map(e => <button key={e.chrono_id} className={visibleIds.has(e.chrono_id) ? 'visible' : ''} onClick={() => chooseElement(e)} disabled={!visibleIds.has(e.chrono_id)}>
-                <b>{e.expression_temporelle_source}</b><span>{e.libelle}</span>
+            <button type="button" className="chrono-unpositionable-head" onClick={() => setNonPositionableOpen(v => !v)}>
+              <span><strong>Éléments non positionnables dans le temps ({nonPositionable.length})</strong><small>Conservés sans date artificielle</small></span>
+              <b className={nonPositionableOpen ? 'open' : ''}>⌄</b>
+            </button>
+            {nonPositionableOpen && <div className="chrono-unpositionable-list">
+              {nonPositionable.map(element => <button
+                key={element.chrono_id}
+                className={visibleIds.has(element.chrono_id) ? 'visible' : ''}
+                onClick={() => visibleIds.has(element.chrono_id) && chooseElement(element)}
+                disabled={!visibleIds.has(element.chrono_id)}
+              >
+                <b>{element.expression_temporelle_source || 'Repère relatif'}</b>
+                <span>{element.libelle}</span>
               </button>)}
-            </div>
+            </div>}
           </div>
+        </section>
 
-          {phase === 'complete' && <button className="chrono-replay" type="button" onClick={startTransform}><Icon name="reset" size={15}/>Rejouer la transformation</button>}
-        </>}
-      </div>
-    </section>
-
-    {selected && <section className="chrono-detail" aria-live="polite">
-      <div className="chrono-detail-head">
-        <div><span className={`chrono-nature-pill ${selected.nature_chronologique}`}>{NAT_LABELS[selected.nature_chronologique] || selected.nature_chronologique}</span>{selected.sous_type && <span className="chrono-subtype-pill">{selected.sous_type.replaceAll('_', ' ')}</span>}<span className={`chrono-status-pill ${selected.statut_connaissance}`}>{selected.statut_connaissance === 'prospectif' ? 'Prospectif' : 'Observé'}</span></div>
-        <button type="button" onClick={() => setSelectedId(null)} aria-label="Fermer le détail"><Icon name="close" size={17}/></button>
-      </div>
-      <div className="chrono-detail-grid">
-        <div>
-          <span className="chrono-detail-label">REPÈRE TEMPOREL</span>
-          <h3>{selected.expression_temporelle_source}</h3>
-          <h2>{selected.libelle}</h2>
-          <p className="chrono-justification">{selected.justification_chronologique}</p>
-        </div>
-        <div className="chrono-proof-stack">
-          {(selectedProvs.length ? selectedProvs : [{ preuve: selected.preuve, niveau_confiance: selected.niveau_confiance }]).map((proof, proofIndex) => <div className="chrono-proof-card" key={`${selected.chrono_id}-${proof.chunk_id || 'proof'}-${proofIndex}`}>
-            <span className="chrono-detail-label">{selectedProvs.length > 1 ? `PREUVE SOURCE ${proofIndex + 1} / ${selectedProvs.length}` : 'PREUVE SOURCE'}</span>
-            <blockquote>{proof.preuve || selected.preuve}</blockquote>
-            <div className="chrono-proof-meta">
-              <b>{publicationId}</b>
-              {proof.page_source && <span>Page {proof.page_source}</span>}
-              {proof.chunk_id && <span>Chunk {proof.chunk_id}</span>}
-              <span>Confiance : {proof.niveau_confiance || selected.niveau_confiance}</span>
-            </div>
-            {sourceUrl && <a href={sourceUrl} target="_blank" rel="noreferrer">Voir le document source <Icon name="external" size={14}/></a>}
-          </div>)}
-        </div>
+        {phase === 'building' && currentElement && !sourceCollapsed && <div key={currentElement.chrono_id} className={`chrono-flight nature-${currentElement.nature_chronologique}`} aria-hidden="true">
+          <span>{activeExpression || currentElement.date_debut_normalisee || 'repère'}</span>
+        </div>}
       </div>
     </section>}
   </main>
@@ -466,7 +454,7 @@ function ChronologyWorkspace({ data, onBack }) {
 
 export default function CrossDocuments({ data }) {
   const [view, setView] = useState('home')
-  const { chronology } = useChronologyData(view === 'home')
+  const { chronology } = useChronologyData(true)
   const publicationCount = chronology
     ? new Set(chronology.elements.map(e => e.publication_id)).size
     : 0
