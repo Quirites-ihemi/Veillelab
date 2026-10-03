@@ -1685,3 +1685,23 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
     justify-content:center;
   }
 }
+
+/* =========================================================
+   Navigation principale — 5 entrées visibles sans défilement
+   Correction de mise en page uniquement, aucune logique métier.
+   ========================================================= */
+@media(min-width:981px){
+  .topbar{grid-template-columns:190px minmax(0,1fr) 48px;padding:0 18px}
+  .brand-logo{width:172px}
+  .topnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));min-width:0;width:100%;justify-content:stretch}
+  .navtab{min-width:0;width:100%;padding:0 9px;justify-content:center;gap:7px;white-space:normal;line-height:1.18;text-align:center;font-size:12.5px}
+  .navtab span{max-width:155px;text-align:center;overflow-wrap:normal}
+  .navtab.active::after{left:10%;right:10%}
+  .top-actions{min-width:0}
+}
+@media(min-width:981px) and (max-width:1220px){
+  .topbar{grid-template-columns:168px minmax(0,1fr) 42px;padding:0 12px}
+  .brand-logo{width:150px}
+  .navtab{padding:0 6px;font-size:11.7px;gap:4px}
+  .navtab svg{display:none}
+}
