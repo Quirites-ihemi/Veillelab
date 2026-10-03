@@ -6,6 +6,7 @@ import Explorer from './pages/Explorer.jsx'
 import Expertises from './pages/Expertises.jsx'
 import Atelier from './pages/Atelier.jsx'
 import About from './pages/About.jsx'
+import CrossDocuments from './pages/CrossDocuments.jsx'
 
 export default function App(){
   const [showLanding,setShowLanding]=useState(true)
@@ -43,8 +44,9 @@ export default function App(){
     {active==='expertises'&&<Expertises data={data}/>} 
     {active==='explorer'&&<Explorer data={data}/>} 
     {active==='atelier'&&<Atelier data={data}/>} 
+    {active==='documents'&&<CrossDocuments data={data}/>}
     {active==='about'&&<About/>}
-    {(active==='atelier'||active==='about')&&
+    {(active==='atelier'||active==='documents'||active==='about')&&
       <footer className="footer">
         Quiritès Veille Lab · prototype local · base stabilisée du 23 août 2026
       </footer>
