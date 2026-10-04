@@ -78,6 +78,21 @@ const NAT_LABELS = {
   sequence_historique: 'Séquence historique',
 }
 
+const NOTION_BRANCH_LAYOUTS = {
+  1: [[50, 50]],
+  2: [[20, 50], [80, 50]],
+  3: [[20, 24], [80, 24], [50, 82]],
+  4: [[20, 24], [80, 24], [20, 78], [80, 78]],
+  5: [[18, 20], [82, 20], [16, 77], [50, 84], [84, 77]],
+  6: [[16, 18], [50, 15], [84, 18], [16, 80], [50, 85], [84, 80]],
+}
+
+function notionBranchPosition(index, count) {
+  const layout = NOTION_BRANCH_LAYOUTS[Math.min(6, Math.max(1, count))] || NOTION_BRANCH_LAYOUTS[6]
+  const point = layout[index % layout.length] || [50, 50]
+  return { x: point[0], y: point[1] }
+}
+
 function cleanUrl(value = '') {
   const first = String(value || '').split(/\s+/).find(x => /^https?:\/\//i.test(x))
   return first || ''
@@ -294,11 +309,14 @@ function NotionWorkspace({ data, onBack }) {
   }
 
   useEffect(() => {
-    if (phase !== 'filtering') return undefined
-    const a = window.setTimeout(() => setPhase('passing'), 520)
-    const b = window.setTimeout(() => setPhase('final'), 1750)
-    return () => { window.clearTimeout(a); window.clearTimeout(b) }
-  }, [phase, selectedNotionId])
+    if (!selectedNotionId) return undefined
+    const passingTimer = window.setTimeout(() => setPhase('passing'), 700)
+    const finalTimer = window.setTimeout(() => setPhase('final'), 2600)
+    return () => {
+      window.clearTimeout(passingTimer)
+      window.clearTimeout(finalTimer)
+    }
+  }, [selectedNotionId])
 
   function resetNotion() {
     setSelectedNodeId(null)
@@ -343,7 +361,7 @@ function NotionWorkspace({ data, onBack }) {
       </div>
 
       <div className="notion-stage-canvas">
-        <div className="notion-library">
+        {phase !== 'final' && <div className="notion-library">
           {visibleLibrary.map((publication, index) => {
             const relevant = selectedPublicationIds.includes(publication.publication_id)
             const ids = selectedNotion?.selections[publication.publication_id] || []
@@ -353,43 +371,97 @@ function NotionWorkspace({ data, onBack }) {
               {relevant && <b className="notion-source-count">{ids.length}</b>}
             </article>
           })}
-        </div>
-
-        {selectedNotion && <div className="notion-flow-layer" aria-hidden="true">
-          {selectedPublicationIds.map((publicationId, pubIndex) =>
-            (selectedNotion.selections[publicationId] || []).slice(0, 6).map((nodeId, nodeIndex) => {
-              const node = nodesById[nodeId]
-              return <span key={nodeId} className="notion-flow-chip" style={{'--pub-index': pubIndex, '--node-index': nodeIndex, '--flow-color': selectedNotion.accent}}>{node?.libelle || nodeId}</span>
-            })
-          )}
         </div>}
 
-        {selectedNotion && <div className="notion-center" style={{'--notion-accent': selectedNotion.accent}}>
+        {selectedNotion && phase !== 'final' && <div className="notion-flow-layer" aria-hidden="true">
+          {selectedPublicationIds.map((publicationId, pubIndex) => {
+            const libraryIndex = Math.max(0, visibleLibrary.findIndex(p => p.publication_id === publicationId))
+            const column = libraryIndex % 4
+            const row = Math.floor(libraryIndex / 4)
+            return (selectedNotion.selections[publicationId] || []).slice(0, 6).map((nodeId, nodeIndex) => {
+              const node = nodesById[nodeId]
+              const left = 6 + (column * 24) + ((nodeIndex % 2) * 2.2)
+              const top = 15 + (row * 23) + (nodeIndex * 2.4)
+              return <span
+                key={nodeId}
+                className="notion-flow-chip"
+                style={{
+                  left: `${left}%`,
+                  top: `${Math.min(83, top)}%`,
+                  animationDelay: `${(pubIndex * 110) + (nodeIndex * 75)}ms`,
+                  '--flow-color': selectedNotion.accent,
+                }}
+              >{node?.libelle || nodeId}</span>
+            })
+          })}
+        </div>}
+
+        {selectedNotion && phase !== 'final' && <div className="notion-center" style={{'--notion-accent': selectedNotion.accent}}>
           <Icon name={selectedNotion.icon} size={28}/><strong>{selectedNotion.label}</strong><span>{selectedNodes.length} nœuds · {selectedPublicationIds.length} publications</span>
         </div>}
-      </div>
 
-      {selectedNotion && phase === 'final' && <div className="notion-final-map">
-        {selectedPublicationIds.map((publicationId, index) => {
-          const publication = publicationsById[publicationId]
-          const nodeIds = selectedNotion.selections[publicationId] || []
-          return <section className="notion-publication-branch" key={publicationId} style={{'--branch-index': index, '--notion-accent': selectedNotion.accent}}>
-            <div className="notion-branch-publication">
-              <img src={publication?.image_path || `./images/publications/${publicationId}.png`} alt=""/>
-              <div><small>{publicationId}</small><strong>{publication?.titre || publicationId}</strong><span>{nodeIds.length} nœud{nodeIds.length > 1 ? 's' : ''} retenu{nodeIds.length > 1 ? 's' : ''}</span></div>
-            </div>
-            <div className="notion-branch-nodes">
-              {nodeIds.map(nodeId => {
-                const node = nodesById[nodeId]
-                if (!node) return null
-                return <button key={nodeId} type="button" className={`notion-node-pill ${selectedNodeId === nodeId ? 'selected' : ''}`} onClick={() => setSelectedNodeId(nodeId)}>
-                  <i></i><span>{node.libelle}</span><small>{TYPE_LABELS[node.type_noeud] || node.type_noeud}</small>
-                </button>
-              })}
-            </div>
-          </section>
-        })}
-      </div>}
+        {selectedNotion && phase !== 'final' && <div className="notion-passage-status">
+          {phase === 'filtering'
+            ? <><b>1. Le corpus se filtre</b><span>Les publications qui documentent « {selectedNotion.label} » restent au premier plan.</span></>
+            : <><b>2. Les éléments se détachent</b><span>Les nœuds validés quittent visuellement leurs documents pour rejoindre la notion commune.</span></>}
+        </div>}
+
+        {selectedNotion && phase === 'final' && <div className="notion-final-scene">
+          <svg className="notion-final-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {selectedPublicationIds.map((publicationId, index) => {
+              const pos = notionBranchPosition(index, selectedPublicationIds.length)
+              return <line key={publicationId} x1="50" y1="50" x2={pos.x} y2={pos.y}/>
+            })}
+          </svg>
+
+          <div className="notion-final-center" style={{'--notion-accent': selectedNotion.accent}}>
+            <Icon name={selectedNotion.icon} size={28}/>
+            <strong>{selectedNotion.label}</strong>
+            <span>{selectedNodes.length} nœuds issus de {selectedPublicationIds.length} publications</span>
+          </div>
+
+          {selectedPublicationIds.map((publicationId, index) => {
+            const publication = publicationsById[publicationId]
+            const nodeIds = selectedNotion.selections[publicationId] || []
+            const pos = notionBranchPosition(index, selectedPublicationIds.length)
+            return <section
+              className="notion-final-branch"
+              key={publicationId}
+              style={{
+                left: `${pos.x}%`,
+                top: `${pos.y}%`,
+                '--notion-accent': selectedNotion.accent,
+                animationDelay: `${index * 90}ms`,
+              }}
+            >
+              <div className="notion-final-publication">
+                <img src={publication?.image_path || `./images/publications/${publicationId}.png`} alt=""/>
+                <div>
+                  <small>{publicationId}</small>
+                  <strong>{publication?.titre || publicationId}</strong>
+                  <span>{nodeIds.length} nœud{nodeIds.length > 1 ? 's' : ''} validé{nodeIds.length > 1 ? 's' : ''}</span>
+                </div>
+              </div>
+              <div className="notion-final-node-list">
+                {nodeIds.slice(0, 4).map(nodeId => {
+                  const node = nodesById[nodeId]
+                  if (!node) return null
+                  return <button
+                    key={nodeId}
+                    type="button"
+                    className={`notion-final-node ${selectedNodeId === nodeId ? 'selected' : ''}`}
+                    onClick={() => setSelectedNodeId(nodeId)}
+                    title={node.libelle}
+                  >
+                    <i></i><span>{node.libelle}</span>
+                  </button>
+                })}
+                {nodeIds.length > 4 && <div className="notion-final-more">+ {nodeIds.length - 4} autre{nodeIds.length - 4 > 1 ? 's' : ''} élément{nodeIds.length - 4 > 1 ? 's' : ''} validé{nodeIds.length - 4 > 1 ? 's' : ''}</div>}
+              </div>
+            </section>
+          })}
+        </div>}
+      </div>
     </section>
 
     {selectedNode && <aside className="notion-detail-panel" aria-label="Détail du nœud">
