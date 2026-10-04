@@ -5,6 +5,70 @@ import './cross-documents.css'
 
 const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012']
 
+
+const TRANSVERSAL_NOTIONS = [
+  {
+    id: 'criminalites',
+    label: 'Criminalités',
+    icon: 'graph',
+    accent: '#2f7ee6',
+    selections: {
+      PUB006: ['N0092','N0095','N0103','N0104'],
+      PUB007: ['N0182'],
+      PUB015: ['N0433','N0436','N0441','N0443','N0457'],
+      PUB024: ['N0598','N0599','N0600','N0605','N0612','N0610','N0630','N0632'],
+      PUB025: ['N0666','N0671','N0676','N0677','N0678'],
+      PUB057: ['N0925','N0931','N0936','N0940','N0941','N0944','N0953'],
+    },
+  },
+  {
+    id: 'ia',
+    label: 'Intelligence artificielle',
+    icon: 'spark',
+    accent: '#176fd0',
+    selections: {
+      PUB005: ['N0122','N0123','N0124','N0132','N0133','N0136'],
+      PUB006: ['N0096'],
+      PUB033: ['N1115','N1116','N1120','N1128'],
+    },
+  },
+  {
+    id: 'violences-sexuelles',
+    label: 'Violences sexuelles',
+    icon: 'target',
+    accent: '#2d83cc',
+    selections: {
+      PUB008: ['N0220','N0222','N0224','N0247','N0248'],
+      PUB031: ['N1088','N1089','N1091','N1093'],
+      PUB090: ['N1156','N1157'],
+    },
+  },
+  {
+    id: 'stupefiants',
+    label: 'Stupéfiants',
+    icon: 'layers',
+    accent: '#208c67',
+    selections: {
+      PUB008: ['N0227','N0228','N0229','N0239','N0250','N0257'],
+      PUB014: ['N0396','N0401'],
+      PUB025: ['N0666','N0671','N0676','N0677','N0678'],
+    },
+  },
+]
+
+const TYPE_LABELS = {
+  notion_idee: 'Notion / idée',
+  probleme: 'Problème',
+  action: 'Action',
+  acteur: 'Acteur',
+  expert_public: 'Expert public',
+  localisation: 'Localisation',
+  signal_faible: 'Signal faible',
+  recommandation: 'Recommandation',
+  tendance: 'Tendance',
+  instrument_dispositif: 'Instrument / dispositif',
+}
+
 const NAT_LABELS = {
   evenement: 'Événement',
   jalon: 'Jalon',
@@ -136,7 +200,7 @@ function SourceExcerpt({ text, expression, active, transferred, onClick }) {
   </p>
 }
 
-function CrossDocumentsHome({ onOpenChronology, publicationCount }) {
+function CrossDocumentsHome({ onOpenChronology, onOpenNotions, publicationCount }) {
   return <main className="page crossdoc-home">
     <header className="crossdoc-heading">
       <div className="crossdoc-kicker">EXPLORATIONS TRANSPUBLICATIONS</div>
@@ -161,7 +225,189 @@ function CrossDocumentsHome({ onOpenChronology, publicationCount }) {
           <div className="crossdoc-feature-action">Explorer une chronologie <Icon name="chevron" size={17}/></div>
         </div>
       </button>
+
+      <button className="crossdoc-feature-card notion-feature-card" type="button" onClick={onOpenNotions}>
+        <div className="crossdoc-feature-visual notion-mini-visual" aria-hidden="true">
+          <div className="notion-mini-library"><span></span><span></span><span></span><span></span></div>
+          <div className="notion-mini-flow"><i></i><i></i><i></i></div>
+          <div className="notion-mini-center">N</div>
+        </div>
+        <div className="crossdoc-feature-copy">
+          <div className="crossdoc-feature-topline"><span>VUE TRANSVERSALE</span><em className="crossdoc-beta">4 notions</em></div>
+          <h2>Suivre une notion</h2>
+          <p className="notion-home-explanation">Partez des publications du corpus, choisissez une notion, puis regardez les éléments déjà validés se détacher de leurs documents d’origine et se recomposer en un parcours transversal. Aucun nouveau rapprochement n’est créé : chaque nœud reste relié à sa publication, sa page, son chunk et sa preuve.</p>
+          <div className="crossdoc-feature-action">Voir le corpus se transformer <Icon name="chevron" size={17}/></div>
+        </div>
+      </button>
     </section>
+  </main>
+}
+
+function NotionWorkspace({ data, onBack }) {
+  const [selectedNotionId, setSelectedNotionId] = useState(null)
+  const [phase, setPhase] = useState('library')
+  const [selectedNodeId, setSelectedNodeId] = useState(null)
+
+  const publicationsById = useMemo(
+    () => Object.fromEntries((data.publications || []).map(p => [p.publication_id, p])),
+    [data.publications]
+  )
+  const nodesById = useMemo(
+    () => Object.fromEntries((data.nodes || []).map(n => [n.node_id, n])),
+    [data.nodes]
+  )
+  const contentsById = useMemo(
+    () => Object.fromEntries((data.contents || []).map(c => [c.chunk_id, c])),
+    [data.contents]
+  )
+
+  const selectedNotion = TRANSVERSAL_NOTIONS.find(n => n.id === selectedNotionId) || null
+  const selectedPublicationIds = useMemo(
+    () => selectedNotion ? Object.keys(selectedNotion.selections) : [],
+    [selectedNotion]
+  )
+  const selectedNodes = useMemo(() => {
+    if (!selectedNotion) return []
+    return Object.entries(selectedNotion.selections).flatMap(([publicationId, nodeIds]) =>
+      nodeIds.map(nodeId => nodesById[nodeId]).filter(Boolean).map(node => ({ ...node, publicationId }))
+    )
+  }, [selectedNotion, nodesById])
+
+  const selectedNode = selectedNodeId ? nodesById[selectedNodeId] : null
+  const selectedPublication = selectedNode ? publicationsById[selectedNode.publication_id] : null
+  const proofChunks = useMemo(() => {
+    if (!selectedNode) return []
+    return String(selectedNode.chunk_id_source || '')
+      .split(';').map(x => x.trim()).filter(Boolean)
+      .map(id => contentsById[id]).filter(Boolean)
+  }, [selectedNode, contentsById])
+
+  const visibleLibrary = useMemo(() => {
+    const preferred = ['PUB005','PUB006','PUB007','PUB008','PUB014','PUB015','PUB024','PUB025','PUB031','PUB033','PUB057','PUB090']
+    return preferred.map(id => publicationsById[id]).filter(Boolean)
+  }, [publicationsById])
+
+  function chooseNotion(id) {
+    setSelectedNodeId(null)
+    setSelectedNotionId(id)
+    setPhase('filtering')
+  }
+
+  useEffect(() => {
+    if (phase !== 'filtering') return undefined
+    const a = window.setTimeout(() => setPhase('passing'), 520)
+    const b = window.setTimeout(() => setPhase('final'), 1750)
+    return () => { window.clearTimeout(a); window.clearTimeout(b) }
+  }, [phase, selectedNotionId])
+
+  function resetNotion() {
+    setSelectedNodeId(null)
+    setSelectedNotionId(null)
+    setPhase('library')
+  }
+
+  return <main className="page notion-workspace">
+    <button className="chrono-return" type="button" onClick={onBack}><Icon name="back" size={15}/> D’un document à l’autre</button>
+
+    <header className="notion-hero">
+      <div className="crossdoc-kicker">D’UN DOCUMENT À L’AUTRE</div>
+      <h1>Suivre une notion</h1>
+      <div className="notion-purpose">
+        <div className="notion-purpose-icon"><Icon name="layers" size={31}/></div>
+        <div>
+          <strong>Voir le corpus se recomposer autour d’un même objet.</strong>
+          <p>Vous partez des publications telles qu’elles existent dans le corpus. En choisissant une notion, seules les publications qui la documentent restent au premier plan ; les nœuds déjà sélectionnés et validés se détachent visuellement de leurs documents, puis se réorganisent autour de la notion commune. <b>La fonction ne produit pas de synthèse automatique et n’invente aucun rapprochement.</b> Chaque élément conserve son document source, son type, ses pages, ses chunks et sa preuve complète.</p>
+        </div>
+      </div>
+    </header>
+
+    <section className="notion-selector" aria-label="Choisir une notion transversale">
+      <div className="notion-selector-title"><span>1</span><div><strong>Choisissez la notion à suivre</strong><small>Quatre notions transversales ont été préparées à partir de rattachements fixes.</small></div></div>
+      <div className="notion-choice-grid">
+        {TRANSVERSAL_NOTIONS.map(notion => {
+          const publicationCount = Object.keys(notion.selections).length
+          const nodeCount = Object.values(notion.selections).reduce((sum, ids) => sum + ids.length, 0)
+          return <button key={notion.id} type="button" className={`notion-choice-card ${selectedNotionId === notion.id ? 'selected' : ''}`} onClick={() => chooseNotion(notion.id)} style={{'--notion-accent': notion.accent}}>
+            <span className="notion-choice-icon"><Icon name={notion.icon} size={26}/></span>
+            <strong>{notion.label}</strong>
+            <small>{publicationCount} publication{publicationCount > 1 ? 's' : ''} · {nodeCount} nœuds</small>
+          </button>
+        })}
+      </div>
+    </section>
+
+    <section className={`notion-passage-stage phase-${phase}`}>
+      <div className="notion-stage-heading">
+        <div className="notion-selector-title"><span>2</span><div><strong>{!selectedNotion ? 'Le corpus dans sa forme documentaire' : phase === 'final' ? 'La vue transversale est recomposée' : 'Le passage est en cours'}</strong><small>{!selectedNotion ? 'Les documents restent autonomes tant qu’aucune notion n’est choisie.' : 'Les publications demeurent les points d’origine des éléments affichés.'}</small></div></div>
+        {selectedNotion && <button type="button" className="notion-reset" onClick={resetNotion}><Icon name="reset" size={15}/> Revenir au corpus</button>}
+      </div>
+
+      <div className="notion-stage-canvas">
+        <div className="notion-library">
+          {visibleLibrary.map((publication, index) => {
+            const relevant = selectedPublicationIds.includes(publication.publication_id)
+            const ids = selectedNotion?.selections[publication.publication_id] || []
+            return <article key={publication.publication_id} className={`notion-source-card ${selectedNotion ? (relevant ? 'relevant' : 'dimmed') : ''}`} style={{'--source-index': index}}>
+              <img src={publication.image_path || `./images/publications/${publication.publication_id}.png`} alt=""/>
+              <div><small>{publication.publication_id}</small><strong>{publication.titre}</strong><span>{publication.organisme_producteur || publication.type_document}</span></div>
+              {relevant && <b className="notion-source-count">{ids.length}</b>}
+            </article>
+          })}
+        </div>
+
+        {selectedNotion && <div className="notion-flow-layer" aria-hidden="true">
+          {selectedPublicationIds.map((publicationId, pubIndex) =>
+            (selectedNotion.selections[publicationId] || []).slice(0, 6).map((nodeId, nodeIndex) => {
+              const node = nodesById[nodeId]
+              return <span key={nodeId} className="notion-flow-chip" style={{'--pub-index': pubIndex, '--node-index': nodeIndex, '--flow-color': selectedNotion.accent}}>{node?.libelle || nodeId}</span>
+            })
+          )}
+        </div>}
+
+        {selectedNotion && <div className="notion-center" style={{'--notion-accent': selectedNotion.accent}}>
+          <Icon name={selectedNotion.icon} size={28}/><strong>{selectedNotion.label}</strong><span>{selectedNodes.length} nœuds · {selectedPublicationIds.length} publications</span>
+        </div>}
+      </div>
+
+      {selectedNotion && phase === 'final' && <div className="notion-final-map">
+        {selectedPublicationIds.map((publicationId, index) => {
+          const publication = publicationsById[publicationId]
+          const nodeIds = selectedNotion.selections[publicationId] || []
+          return <section className="notion-publication-branch" key={publicationId} style={{'--branch-index': index, '--notion-accent': selectedNotion.accent}}>
+            <div className="notion-branch-publication">
+              <img src={publication?.image_path || `./images/publications/${publicationId}.png`} alt=""/>
+              <div><small>{publicationId}</small><strong>{publication?.titre || publicationId}</strong><span>{nodeIds.length} nœud{nodeIds.length > 1 ? 's' : ''} retenu{nodeIds.length > 1 ? 's' : ''}</span></div>
+            </div>
+            <div className="notion-branch-nodes">
+              {nodeIds.map(nodeId => {
+                const node = nodesById[nodeId]
+                if (!node) return null
+                return <button key={nodeId} type="button" className={`notion-node-pill ${selectedNodeId === nodeId ? 'selected' : ''}`} onClick={() => setSelectedNodeId(nodeId)}>
+                  <i></i><span>{node.libelle}</span><small>{TYPE_LABELS[node.type_noeud] || node.type_noeud}</small>
+                </button>
+              })}
+            </div>
+          </section>
+        })}
+      </div>}
+    </section>
+
+    {selectedNode && <aside className="notion-detail-panel" aria-label="Détail du nœud">
+      <button type="button" className="notion-detail-close" onClick={() => setSelectedNodeId(null)} aria-label="Fermer"><Icon name="close" size={18}/></button>
+      <div className="notion-detail-kicker">NŒUD SOURCE</div>
+      <h2>{selectedNode.libelle}</h2>
+      <dl>
+        <div><dt>Publication</dt><dd>{selectedPublication?.titre || selectedNode.publication_id}</dd></div>
+        <div><dt>Type de nœud</dt><dd>{TYPE_LABELS[selectedNode.type_noeud] || selectedNode.type_noeud}</dd></div>
+        <div><dt>Page(s)</dt><dd>{selectedNode.page_source || '—'}</dd></div>
+        <div><dt>Chunk(s)</dt><dd>{selectedNode.chunk_id_source || '—'}</dd></div>
+      </dl>
+      <div className="notion-proof-title">Preuve complète</div>
+      <div className="notion-proof-list">
+        {proofChunks.length ? proofChunks.map(chunk => <article key={chunk.chunk_id}><header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header><p>{chunk.texte}</p></article>) : <p className="notion-no-proof">Aucun chunk source disponible dans les données chargées.</p>}
+      </div>
+      {selectedPublication && <a className="notion-source-link" href={cleanUrl(selectedPublication.url_contenu || selectedPublication.url_source)} target="_blank" rel="noreferrer"><Icon name="external" size={16}/> Ouvrir la source</a>}
+    </aside>}
   </main>
 }
 
@@ -550,5 +796,10 @@ export default function CrossDocuments({ data }) {
     : 0
 
   if (view === 'chronology') return <ChronologyWorkspace data={data} onBack={() => setView('home')} />
-  return <CrossDocumentsHome publicationCount={publicationCount} onOpenChronology={() => setView('chronology')} />
+  if (view === 'notions') return <NotionWorkspace data={data} onBack={() => setView('home')} />
+  return <CrossDocumentsHome
+    publicationCount={publicationCount}
+    onOpenChronology={() => setView('chronology')}
+    onOpenNotions={() => setView('notions')}
+  />
 }
