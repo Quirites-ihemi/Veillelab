@@ -33,13 +33,81 @@ function temporalValue(element) {
   return temporalValueFromNormalized(element.date_debut_normalisee)
 }
 
+const TIMELINE_CARD_WIDTH = 165
+const TIMELINE_CARD_GAP = 18
+const TIMELINE_LANE_HEIGHT = 76
+const TIMELINE_CARD_TOP = 82
+const TIMELINE_HORIZONTAL_PADDING = 58
+const TIMELINE_TARGET_MAX_LANES = 5
+const TIMELINE_MAX_WIDTH = 9500
+
 function rangeYears(elements) {
-  const values = elements.map(temporalValue).filter(v => v !== null)
+  const values = []
+  elements.forEach(element => {
+    const start = temporalValue(element)
+    const end = temporalValueFromNormalized(element.date_fin_normalisee)
+    if (start !== null) values.push(start)
+    if (end !== null) values.push(end)
+  })
   if (!values.length) return { min: 0, max: 1 }
   let min = Math.floor(Math.min(...values))
   let max = Math.ceil(Math.max(...values))
   if (min === max) { min -= 1; max += 1 }
   return { min, max }
+}
+
+function timelineX(value, range, width) {
+  const span = Math.max(1, range.max - range.min)
+  const usableWidth = Math.max(1, width - TIMELINE_HORIZONTAL_PADDING * 2)
+  const ratio = Math.max(0, Math.min(1, (value - range.min) / span))
+  return TIMELINE_HORIZONTAL_PADDING + ratio * usableWidth
+}
+
+function packTimeline(elements, range, width) {
+  const laneEnds = []
+  const placements = {}
+
+  elements.forEach(element => {
+    const value = temporalValue(element)
+    if (value === null) return
+
+    const x = timelineX(value, range, width)
+    const cardStart = x - 6
+    const cardEnd = cardStart + TIMELINE_CARD_WIDTH
+    let lane = laneEnds.findIndex(lastEnd => cardStart >= lastEnd + TIMELINE_CARD_GAP)
+
+    if (lane === -1) {
+      lane = laneEnds.length
+      laneEnds.push(cardEnd)
+    } else {
+      laneEnds[lane] = cardEnd
+    }
+
+    placements[element.chrono_id] = { x, lane }
+  })
+
+  return { placements, laneCount: Math.max(1, laneEnds.length) }
+}
+
+function buildTimelineLayout(elements, range) {
+  const rangeSpan = Math.max(1, range.max - range.min)
+  const densityWidth = elements.length * 72
+  const temporalWidth = rangeSpan * 22 + 250
+  let width = Math.max(1400, Math.min(TIMELINE_MAX_WIDTH, Math.max(densityWidth, temporalWidth)))
+  let packed = packTimeline(elements, range, width)
+  let guard = 0
+
+  while (packed.laneCount > TIMELINE_TARGET_MAX_LANES && width < TIMELINE_MAX_WIDTH && guard < 6) {
+    width = Math.min(TIMELINE_MAX_WIDTH, Math.round(width * 1.25))
+    packed = packTimeline(elements, range, width)
+    guard += 1
+  }
+
+  return {
+    width,
+    height: Math.max(370, TIMELINE_CARD_TOP + packed.laneCount * TIMELINE_LANE_HEIGHT + 28),
+    ...packed,
+  }
 }
 
 function sourcePassageKey(prov) {
@@ -223,12 +291,28 @@ function ChronologyWorkspace({ data, onBack }) {
 
     if (visibleIds.has(activeElement.chrono_id)) {
       const eventNode = timelineEventRefs.current[activeElement.chrono_id]
-      if (eventNode && timelineScrollRef.current) {
-        const target = Math.max(0, eventNode.offsetLeft - timelineScrollRef.current.clientWidth * 0.48)
-        timelineScrollRef.current.scrollTo({ left: target, behavior: 'smooth' })
+      const scroller = timelineScrollRef.current
+      if (eventNode && scroller) {
+        const targetLeft = Math.max(0, eventNode.offsetLeft - scroller.clientWidth * 0.48)
+        const targetTop = Math.max(0, eventNode.offsetTop - scroller.clientHeight * 0.34)
+        scroller.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' })
       }
     }
   }, [activeElement?.chrono_id, passages, provenancesByElement, visibleIds])
+
+  useEffect(() => {
+    if (phase !== 'building' || revealed <= 0) return
+    const latest = transformSequence[revealed - 1]
+    if (!latest || temporalValue(latest) === null) return
+
+    const eventNode = timelineEventRefs.current[latest.chrono_id]
+    const scroller = timelineScrollRef.current
+    if (!eventNode || !scroller) return
+
+    const targetLeft = Math.max(0, eventNode.offsetLeft - scroller.clientWidth * 0.48)
+    const targetTop = Math.max(0, eventNode.offsetTop - scroller.clientHeight * 0.34)
+    scroller.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' })
+  }, [phase, revealed, transformSequence])
 
   if (error) return <main className="page chronology-workspace"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour</button><div className="chrono-error"><strong>Chronologie indisponible</strong><p>{error.message}</p></div></main>
   if (!chronology) return <main className="page chronology-workspace"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour</button><div className="chrono-loading"><div className="loader"></div><span>Chargement de la chronologie…</span></div></main>
@@ -237,8 +321,10 @@ function ChronologyWorkspace({ data, onBack }) {
   const total = transformSequence.length
   const progress = total ? Math.round((Math.min(revealed, total) / total) * 100) : 0
   const range = rangeYears(positionable)
-  const timelineWidth = Math.max(1120, Math.min(8500, positionable.length * 108))
-  const tickStep = Math.max(1, Math.ceil((range.max - range.min) / 8))
+  const timelineLayout = buildTimelineLayout(positionable, range)
+  const timelineWidth = timelineLayout.width
+  const timelineHeight = timelineLayout.height
+  const tickStep = Math.max(1, Math.ceil((range.max - range.min) / 10))
   const ticks = []
   for (let y = range.min; y <= range.max; y += tickStep) ticks.push(y)
   if (ticks.length && ticks[ticks.length - 1] !== range.max) ticks.push(range.max)
@@ -385,31 +471,35 @@ function ChronologyWorkspace({ data, onBack }) {
 
           {phase !== 'ready' && <>
             <div className="chrono-progress"><span style={{ width: `${phase === 'complete' ? 100 : progress}%` }}></span></div>
-            <div className="chrono-timeline-scroll" ref={timelineScrollRef}>
-              <div className="chrono-timeline" style={{ width: timelineWidth }}>
+            <div
+              className="chrono-timeline-scroll"
+              ref={timelineScrollRef}
+              style={{ height: `${Math.min(560, Math.max(385, timelineHeight + 12))}px` }}
+            >
+              <div className="chrono-timeline" style={{ width: timelineWidth, height: timelineHeight }}>
                 <div className="chrono-axis"></div>
                 {ticks.map(year => {
-                  const left = ((year - range.min) / (range.max - range.min)) * 100
-                  return <div key={year} className="chrono-tick" style={{ left: `${left}%` }}><span>{year}</span></div>
+                  const x = timelineX(year, range, timelineWidth)
+                  return <div key={year} className="chrono-tick" style={{ left: `${x}px` }}><span>{year}</span></div>
                 })}
 
-                {positionable.map((element, idx) => {
+                {positionable.map(element => {
                   const value = temporalValue(element)
-                  const left = ((value - range.min) / (range.max - range.min)) * 100
-                  const lane = idx % 5
+                  const placement = timelineLayout.placements[element.chrono_id] || { x: TIMELINE_HORIZONTAL_PADDING, lane: 0 }
                   const visible = visibleIds.has(element.chrono_id)
                   const endValue = temporalValueFromNormalized(element.date_fin_normalisee)
                   const isClosedPeriod = element.statut_temporel === 'periode_fermee' && endValue !== null && endValue > value
                   const isOpenPeriod = element.statut_temporel === 'periode_ouverte'
-                  const rangeSpan = Math.max(1, range.max - range.min)
-                  const spanYears = isClosedPeriod ? Math.max(0, endValue - value) : (isOpenPeriod ? Math.max(0, range.max - value) : 0)
-                  const spanPx = spanYears ? Math.max(24, (spanYears / rangeSpan) * Math.max(1000, timelineWidth - 90)) : 0
+                  const endX = isClosedPeriod && endValue !== null
+                    ? timelineX(endValue, range, timelineWidth)
+                    : (isOpenPeriod ? timelineWidth - TIMELINE_HORIZONTAL_PADDING : placement.x)
+                  const spanPx = (isClosedPeriod || isOpenPeriod) ? Math.max(24, endX - placement.x) : 0
                   return <button
                     key={element.chrono_id}
                     ref={node => { timelineEventRefs.current[element.chrono_id] = node }}
                     type="button"
                     className={`chrono-event ${visible ? 'visible' : ''} ${selectedId === element.chrono_id ? 'selected' : ''} nature-${element.nature_chronologique} ${isClosedPeriod ? 'period closed-period' : isOpenPeriod ? 'period open-period' : 'point'} ${activeElement?.chrono_id === element.chrono_id ? 'transforming' : ''}`}
-                    style={{ left: `${left}%`, top: `${78 + lane * 72}px` }}
+                    style={{ left: `${placement.x}px`, top: `${TIMELINE_CARD_TOP + placement.lane * TIMELINE_LANE_HEIGHT}px` }}
                     onClick={() => visible && chooseElement(element)}
                     disabled={!visible}
                     title={element.libelle}
