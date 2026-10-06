@@ -181,6 +181,34 @@ function buildLocalContributionOffsets(count, zone = 'top') {
   }))
 }
 
+function buildRibbonPositions(count) {
+  if (!count) return []
+  if (count === 1) return [{ x: 50, y: 20 }]
+  const left = 8
+  const right = 92
+  const step = (right - left) / (count - 1)
+  return Array.from({ length: count }, (_, index) => {
+    const x = left + (step * index)
+    const wave = Math.sin((index / Math.max(1, count - 1)) * Math.PI * 2 - Math.PI / 2)
+    return { x, y: 20 + (wave * 4.5) }
+  })
+}
+
+function buildTreeOffsets(count) {
+  const presets = [
+    { x: -210, y: -55 },
+    { x: 210, y: -55 },
+    { x: -255, y: 105 },
+    { x: 255, y: 105 },
+    { x: -120, y: 210 },
+    { x: 120, y: 210 },
+    { x: 0, y: 300 },
+    { x: -315, y: 245 },
+    { x: 315, y: 245 },
+  ]
+  return Array.from({ length: count }, (_, index) => presets[index % presets.length])
+}
+
 function cleanUrl(value = '') {
   const first = String(value || '').split(/\s+/).find(x => /^https?:\/\//i.test(x))
   return first || ''
@@ -401,7 +429,7 @@ function NotionWorkspace({ data, onBack }) {
   const activeNodes = activePublication?.nodes || []
 
   const selectedNode = useMemo(() => {
-    if (!selectedNodeId || !activeNodes.length) return null
+    if (!selectedNodeId) return null
     return activeNodes.find(node => node.node_id === selectedNodeId) || null
   }, [activeNodes, selectedNodeId])
 
@@ -415,29 +443,15 @@ function NotionWorkspace({ data, onBack }) {
       .filter(Boolean)
   }, [selectedNode, contentsById])
 
-  const circularPositions = useMemo(
-    () => buildCircularJourneyPositions(publicationJourney.length),
+  const ribbonPositions = useMemo(
+    () => buildRibbonPositions(publicationJourney.length),
     [publicationJourney.length]
   )
 
-  const activePublicationPosition = circularPositions[activePublicationIndex] || { x: 50, y: 50, angle: -90 }
-  const zone = journeyZone(activePublicationPosition)
-
-  const activeCorePosition = useMemo(() => {
-    const dx = 50 - activePublicationPosition.x
-    const dy = 50 - activePublicationPosition.y
-    const length = Math.hypot(dx, dy) || 1
-    const distance = 22
-    return {
-      x: activePublicationPosition.x + ((dx / length) * distance),
-      y: activePublicationPosition.y + ((dy / length) * distance),
-    }
-  }, [activePublicationPosition])
-
-  const contributionOffsets = useMemo(
-    () => buildLocalContributionOffsets(activeNodes.length, zone),
-    [activeNodes.length, zone]
-  )
+  const activeStation = ribbonPositions[activePublicationIndex] || { x: 50, y: 20 }
+  const focusX = 30 + (((activeStation.x - 8) / 84) * 40)
+  const focusY = 54
+  const treeOffsets = useMemo(() => buildTreeOffsets(activeNodes.length), [activeNodes.length])
 
   function chooseNotion(id) {
     const notion = TRANSVERSAL_NOTIONS.find(item => item.id === id)
@@ -472,8 +486,8 @@ function NotionWorkspace({ data, onBack }) {
 
   useEffect(() => {
     if (!selectedNotionId) return undefined
-    const passingTimer = window.setTimeout(() => setPhase('passing'), 700)
-    const finalTimer = window.setTimeout(() => setPhase('final'), 2200)
+    const passingTimer = window.setTimeout(() => setPhase('passing'), 650)
+    const finalTimer = window.setTimeout(() => setPhase('final'), 1800)
     return () => {
       window.clearTimeout(passingTimer)
       window.clearTimeout(finalTimer)
@@ -494,71 +508,60 @@ function NotionWorkspace({ data, onBack }) {
         return publicationJourney[nextIndex].publicationId
       })
       setSelectedNodeId(null)
-    }, 4200)
+    }, 4600)
     return () => window.clearInterval(timer)
   }, [phase, publicationJourney, isPaused])
 
-  return <main className="page notion-workspace">
+  return <main className="page notion-workspace ribbon-version">
     <button className="chrono-return" type="button" onClick={onBack}><Icon name="back" size={15}/> D’un document à l’autre</button>
 
-    <header className="notion-hero">
+    <header className="notion-hero ribbon-hero">
       <div className="crossdoc-kicker">D’UN DOCUMENT À L’AUTRE</div>
       <div className="notion-title-row">
         <h1>Suivre une notion</h1>
         <span className="crossdoc-beta notion-beta-inline">BÊTA</span>
       </div>
-      <div className="notion-purpose">
-        <div className="notion-purpose-icon"><Icon name="layers" size={31}/></div>
-        <div>
-          <strong>Suivre une même notion d’une publication à l’autre.</strong>
-          <p>La notion circule entre les publications qui la documentent. À chaque étape, seule la publication active est mise en évidence ; autour d’elle apparaissent les éléments validés qui montrent ce que ce document apporte à la notion.</p>
-        </div>
-      </div>
+      <p className="ribbon-intro">La notion se déplace d’une publication à l’autre, puis déploie localement ses déclinaisons.</p>
     </header>
 
-    <section className="notion-selector" aria-label="Choisir une notion transversale">
-      <div className="notion-selector-title"><span>1</span><div><strong>Choisissez la notion à suivre</strong><small>Quatre notions transversales ont été préparées à partir de rattachements fixes.</small></div></div>
-      <div className="notion-choice-grid">
+    <section className="notion-selector ribbon-selector" aria-label="Choisir une notion transversale">
+      <div className="notion-choice-grid ribbon-choice-grid">
         {TRANSVERSAL_NOTIONS.map(notion => {
           const publicationCount = Object.keys(notion.selections).length
           const elementCount = Object.values(notion.selections).reduce((sum, ids) => sum + ids.length, 0)
           return <button key={notion.id} type="button" className={`notion-choice-card ${selectedNotionId === notion.id ? 'selected' : ''}`} onClick={() => chooseNotion(notion.id)} style={{'--notion-accent': notion.accent}}>
-            <span className="notion-choice-icon"><Icon name={notion.icon} size={26}/></span>
             <strong>{notion.label}</strong>
-            <small>{publicationCount} publication{publicationCount > 1 ? 's' : ''} · {elementCount} éléments validés</small>
+            <small>{publicationCount} publication{publicationCount > 1 ? 's' : ''} · {elementCount} éléments</small>
           </button>
         })}
       </div>
     </section>
 
-    <section className={`notion-passage-stage phase-${phase}`}>
-      <div className="notion-stage-heading">
-        <div className="notion-selector-title"><span>2</span><div><strong>{!selectedNotion ? 'Le corpus dans sa forme documentaire' : phase === 'final' ? 'La notion se déplace entre les publications' : 'Le passage est en cours'}</strong><small>{!selectedNotion ? 'Les documents restent autonomes tant qu’aucune notion n’est choisie.' : 'La publication active se distingue nettement et le détail n’apparaît qu’au clic sur un élément.'}</small></div></div>
-        {selectedNotion && <button type="button" className="notion-reset" onClick={resetNotion}><Icon name="reset" size={15}/> Revenir au corpus</button>}
+    <section className={`notion-passage-stage ribbon-stage phase-${phase}`}>
+      <div className="ribbon-stage-head">
+        <div className="ribbon-stage-caption"><span>2</span><div><strong>{!selectedNotion ? 'Choisissez une notion' : 'La notion se déplace entre les publications'}</strong><small>{!selectedNotion ? 'Le parcours s’ouvrira ici.' : 'La publication active se distingue ; son arbre de déclinaisons se déploie sous elle.'}</small></div></div>
+        {selectedNotion && <div className="ribbon-actions">
+          <button type="button" className="notion-motion-button primary" onClick={() => setIsPaused(true)} disabled={isPaused}><span className="notion-motion-glyph">❚❚</span> Arrêter l’animation</button>
+          <button type="button" className="notion-motion-button" onClick={() => setIsPaused(false)} disabled={!isPaused}><span className="notion-motion-glyph">▶</span> Reprendre</button>
+          <button type="button" className="notion-reset" onClick={resetNotion}><Icon name="reset" size={15}/> Revenir au corpus</button>
+        </div>}
       </div>
 
-      {selectedNotion && phase === 'final' ? <div className={`notion-journey-shell ${selectedNode ? 'detail-open' : 'detail-closed'}`}>
-        <div className="notion-journey-topbar">
-          <div className="notion-journey-topbar-buttons">
-            <button type="button" className="notion-motion-button primary" onClick={() => setIsPaused(true)} disabled={isPaused}><span className="notion-motion-glyph">❚❚</span> Arrêter l’animation</button>
-            <button type="button" className="notion-motion-button" onClick={() => setIsPaused(false)} disabled={!isPaused}><span className="notion-motion-glyph">▶</span> Reprendre</button>
-          </div>
-        </div>
-
-        <div className="notion-circular-layout">
-          <div className="notion-journey-scene" style={{ '--notion-accent': selectedNotion.accent }}>
-            <div className="notion-journey-ring main" aria-hidden="true"></div>
-            <div className="notion-journey-ring secondary" aria-hidden="true"></div>
-            <div className="notion-journey-ring tertiary" aria-hidden="true"></div>
+      {selectedNotion && phase === 'final' ? <div className={`ribbon-shell ${selectedNode ? 'detail-open' : 'detail-closed'}`}>
+        <div className="ribbon-layout">
+          <div className="ribbon-scene" style={{'--notion-accent': selectedNotion.accent}}>
+            <div className="ribbon-wave wave-a" aria-hidden="true"></div>
+            <div className="ribbon-wave wave-b" aria-hidden="true"></div>
+            <div className="ribbon-wave-glow" aria-hidden="true"></div>
 
             {publicationJourney.map((item, index) => {
-              const position = circularPositions[index] || { x: 50, y: 50 }
+              const position = ribbonPositions[index] || { x: 50, y: 20 }
               const isActive = item.publicationId === activePublication?.publicationId
               return <button
                 key={item.publicationId}
                 type="button"
-                className={`notion-orbit-publication ${isActive ? 'active' : ''}`}
-                style={{ left: `${position.x}%`, top: `${position.y}%` }}
+                className={`ribbon-publication ${isActive ? 'active' : ''}`}
+                style={{left: `${position.x}%`, top: `${position.y}%`}}
                 onClick={() => selectPublication(item.publicationId)}
                 title={item.publication?.titre || item.publicationId}
               >
@@ -568,43 +571,44 @@ function NotionWorkspace({ data, onBack }) {
                   <strong>{item.publication?.titre || item.publicationId}</strong>
                   <span>{formatPublicationDate(item.publication)}</span>
                 </div>
-                {isActive && <b className="notion-active-badge">{activePublicationIndex + 1}</b>}
+                {isActive && <b className="ribbon-step-badge">{activePublicationIndex + 1}</b>}
               </button>
             })}
 
-            <div className="notion-core-connector" style={{ left: `${activeCorePosition.x}%`, top: `${activeCorePosition.y}%` }} aria-hidden="true"></div>
+            <div className="ribbon-travel-dot" style={{left: `${activeStation.x}%`, top: `calc(${activeStation.y}% + 86px)`}} aria-hidden="true"></div>
+            <div className="ribbon-drop-line" style={{left: `${activeStation.x}%`, top: `calc(${activeStation.y}% + 92px)`, height: `${Math.max(70, (focusY - activeStation.y) * 8)}px`}} aria-hidden="true"></div>
 
-            <div className="notion-travel-core" style={{ left: `${activeCorePosition.x}%`, top: `${activeCorePosition.y}%`, '--notion-accent': selectedNotion.accent }}>
-              <Icon name={selectedNotion.icon} size={28}/>
-              <strong>{selectedNotion.label}</strong>
-              <span>{activePublicationIndex + 1} / {publicationJourney.length}</span>
-            </div>
+            <div className="ribbon-tree" key={activePublication?.publicationId || 'none'}>
+              <div className="ribbon-core" style={{left: `${focusX}%`, top: `${focusY}%`, '--notion-accent': selectedNotion.accent}}>
+                <Icon name={selectedNotion.icon} size={31}/>
+                <strong>{selectedNotion.label}</strong>
+                <span>{activePublicationIndex + 1} / {publicationJourney.length}</span>
+              </div>
 
-            <div className="notion-contribution-cloud" aria-label="Ce que ce document apporte à la notion">
               {activeNodes.map((node, index) => {
-                const offset = contributionOffsets[index] || { x: 0, y: 0 }
-                return <button
-                  key={node.node_id}
-                  type="button"
-                  className={`notion-contribution-bubble ${selectedNode?.node_id === node.node_id ? 'selected' : ''}`}
-                  onClick={() => chooseNode(node.node_id)}
-                  title={node.libelle}
-                  style={{
-                    left: `calc(${activeCorePosition.x}% + ${offset.x}px)`,
-                    top: `calc(${activeCorePosition.y}% + ${offset.y}px)`,
-                    '--notion-accent': selectedNotion.accent,
-                    '--bubble-index': index,
-                  }}
-                >
-                  <span>{node.libelle}</span>
-                </button>
+                const offset = treeOffsets[index] || {x:0,y:0}
+                return <React.Fragment key={node.node_id}>
+                  <span className="ribbon-branch" style={{
+                    left: `calc(${focusX}% + ${offset.x * 0.47}px)`,
+                    top: `calc(${focusY}% + ${offset.y * 0.47}px)`,
+                    width: `${Math.max(48, Math.hypot(offset.x, offset.y) * .54)}px`,
+                    transform: `translate(-50%, -50%) rotate(${Math.atan2(offset.y, offset.x) * 180 / Math.PI}deg)`,
+                  }} aria-hidden="true"></span>
+                  <button
+                    type="button"
+                    className={`ribbon-declination ${selectedNode?.node_id === node.node_id ? 'selected' : ''}`}
+                    style={{left: `calc(${focusX}% + ${offset.x}px)`, top: `calc(${focusY}% + ${offset.y}px)`, '--decl-index': index}}
+                    onClick={() => chooseNode(node.node_id)}
+                    title={node.libelle}
+                  >
+                    <span>{node.libelle}</span>
+                  </button>
+                </React.Fragment>
               })}
             </div>
           </div>
 
-          {!selectedNode && <div className="notion-detail-closed-tab" aria-hidden="true"><span>‹</span><b>Détail</b></div>}
-
-          {selectedNode && <aside className="notion-journey-panel">
+          {selectedNode && <aside className="notion-journey-panel ribbon-detail-panel">
             <div className="notion-journey-panel-block">
               <div className="notion-panel-title">Publication et preuve</div>
               {activePublication && <div className="notion-panel-publication-card">
@@ -616,7 +620,6 @@ function NotionWorkspace({ data, onBack }) {
                 </div>
               </div>}
             </div>
-
             <div className="notion-journey-panel-block">
               <div className="notion-panel-title">Élément sélectionné</div>
               <button type="button" className="notion-panel-chip selected single">{selectedNode.libelle}</button>
@@ -626,7 +629,6 @@ function NotionWorkspace({ data, onBack }) {
                 <div><b>Chunks</b><span>{selectedNode.chunk_id_source || '—'}</span></div>
               </div>
             </div>
-
             <div className="notion-journey-panel-block">
               <div className="notion-panel-title">Preuve principale</div>
               <div className="notion-panel-proof-list">
@@ -641,51 +643,17 @@ function NotionWorkspace({ data, onBack }) {
             </div>
           </aside>}
         </div>
-      </div> : <div className="notion-stage-canvas">
+      </div> : <div className="notion-stage-canvas ribbon-loading-canvas">
         {phase !== 'final' && <div className="notion-library">
           {visibleLibrary.map((publication, index) => {
             const relevant = selectedPublicationIds.includes(publication.publication_id)
-            const ids = selectedNotion?.selections[publication.publication_id] || []
             return <article key={publication.publication_id} className={`notion-source-card ${selectedNotion ? (relevant ? 'relevant' : 'dimmed') : ''}`} style={{'--source-index': index}}>
               <img src={publicationImageSrc(publication.image_path, publication.publication_id)} alt=""/>
               <div><small>{publication.publication_id}</small><strong>{publication.titre}</strong><span>{publication.organisme_producteur || publication.type_document}</span></div>
-              {relevant && <b className="notion-source-count">{ids.length}</b>}
             </article>
           })}
         </div>}
-
-        {selectedNotion && phase !== 'final' && <div className="notion-flow-layer" aria-hidden="true">
-          {selectedPublicationIds.map((publicationId, pubIndex) => {
-            const libraryIndex = Math.max(0, visibleLibrary.findIndex(p => p.publication_id === publicationId))
-            const column = libraryIndex % 4
-            const row = Math.floor(libraryIndex / 4)
-            return (selectedNotion.selections[publicationId] || []).slice(0, 6).map((nodeId, nodeIndex) => {
-              const node = nodesById[nodeId]
-              const left = 6 + (column * 24) + ((nodeIndex % 2) * 2.2)
-              const top = 15 + (row * 23) + (nodeIndex * 2.4)
-              return <span
-                key={nodeId}
-                className="notion-flow-chip"
-                style={{
-                  left: `${left}%`,
-                  top: `${Math.min(83, top)}%`,
-                  animationDelay: `${(pubIndex * 110) + (nodeIndex * 75)}ms`,
-                  '--flow-color': selectedNotion.accent,
-                }}
-              >{node?.libelle || nodeId}</span>
-            })
-          })}
-        </div>}
-
-        {selectedNotion && phase !== 'final' && <div className="notion-center" style={{'--notion-accent': selectedNotion.accent}}>
-          <Icon name={selectedNotion.icon} size={28}/><strong>{selectedNotion.label}</strong><span>{selectedPublicationIds.length} publication{selectedPublicationIds.length > 1 ? 's' : ''} concernée{selectedPublicationIds.length > 1 ? 's' : ''}</span>
-        </div>}
-
-        {selectedNotion && phase !== 'final' && <div className="notion-passage-status">
-          {phase === 'filtering'
-            ? <><b>1. Le corpus se filtre</b><span>Les publications qui documentent « {selectedNotion.label} » restent au premier plan.</span></>
-            : <><b>2. La notion se met en mouvement</b><span>Les publications concernées restent visibles pendant que la notion se prépare à circuler d’un document à l’autre.</span></>}
-        </div>}
+        {selectedNotion && phase !== 'final' && <div className="notion-passage-status"><b>Le parcours se construit</b><span>Les publications concernées restent au premier plan.</span></div>}
       </div>}
     </section>
   </main>
