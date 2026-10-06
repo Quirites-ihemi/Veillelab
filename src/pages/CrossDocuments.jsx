@@ -93,6 +93,45 @@ function notionBranchPosition(index, count) {
   return { x: point[0], y: point[1] }
 }
 
+
+function normalizeDeclinationKey(value = '') {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function buildDeclinationOrbit(count) {
+  const placements = []
+  let placed = 0
+  let ring = 0
+
+  while (placed < count) {
+    const remaining = count - placed
+    const capacity = Math.min(remaining, 8 + (ring * 4))
+    const radius = 220 + (ring * 126)
+    const size = Math.max(116, 154 - (ring * 14))
+    const angleOffset = ring % 2 === 0 ? -90 : -75
+
+    for (let index = 0; index < capacity; index += 1) {
+      const angle = angleOffset + ((360 / capacity) * index)
+      const radians = angle * (Math.PI / 180)
+      placements.push({
+        x: Math.cos(radians) * radius,
+        y: Math.sin(radians) * radius,
+        size,
+      })
+    }
+
+    placed += capacity
+    ring += 1
+  }
+
+  return placements
+}
+
 function cleanUrl(value = '') {
   const first = String(value || '').split(/\s+/).find(x => /^https?:\/\//i.test(x))
   return first || ''
@@ -261,7 +300,7 @@ function CrossDocumentsHome({ onOpenChronology, onOpenNotions, publicationCount 
 function NotionWorkspace({ data, onBack }) {
   const [selectedNotionId, setSelectedNotionId] = useState(null)
   const [phase, setPhase] = useState('library')
-  const [selectedNodeId, setSelectedNodeId] = useState(null)
+  const [selectedDeclinationId, setSelectedDeclinationId] = useState(null)
 
   const publicationsById = useMemo(
     () => Object.fromEntries((data.publications || []).map(p => [p.publication_id, p])),
@@ -284,26 +323,74 @@ function NotionWorkspace({ data, onBack }) {
   const selectedNodes = useMemo(() => {
     if (!selectedNotion) return []
     return Object.entries(selectedNotion.selections).flatMap(([publicationId, nodeIds]) =>
-      nodeIds.map(nodeId => nodesById[nodeId]).filter(Boolean).map(node => ({ ...node, publicationId }))
+      nodeIds
+        .map(nodeId => nodesById[nodeId])
+        .filter(Boolean)
+        .map(node => ({ ...node, publicationId }))
     )
   }, [selectedNotion, nodesById])
 
-  const selectedNode = selectedNodeId ? nodesById[selectedNodeId] : null
-  const selectedPublication = selectedNode ? publicationsById[selectedNode.publication_id] : null
-  const proofChunks = useMemo(() => {
-    if (!selectedNode) return []
-    return String(selectedNode.chunk_id_source || '')
-      .split(';').map(x => x.trim()).filter(Boolean)
-      .map(id => contentsById[id]).filter(Boolean)
-  }, [selectedNode, contentsById])
+  const declinations = useMemo(() => {
+    const grouped = new Map()
+
+    selectedNodes.forEach(node => {
+      const key = normalizeDeclinationKey(node.libelle)
+      if (!grouped.has(key)) {
+        grouped.set(key, {
+          id: key,
+          label: node.libelle,
+          occurrences: [],
+        })
+      }
+      grouped.get(key).occurrences.push(node)
+    })
+
+    return Array.from(grouped.values())
+      .sort((a, b) => {
+        const diff = b.occurrences.length - a.occurrences.length
+        if (diff) return diff
+        return a.label.localeCompare(b.label, 'fr')
+      })
+  }, [selectedNodes])
+
+  const selectedDeclination = useMemo(
+    () => declinations.find(item => item.id === selectedDeclinationId) || null,
+    [declinations, selectedDeclinationId]
+  )
+
+  const declinationEntries = useMemo(() => {
+    if (!selectedDeclination) return []
+
+    return selectedDeclination.occurrences.map(node => {
+      const publication = publicationsById[node.publication_id]
+      const chunkIds = String(node.chunk_id_source || '')
+        .split(';')
+        .map(x => x.trim())
+        .filter(Boolean)
+      const chunks = chunkIds
+        .map(id => contentsById[id])
+        .filter(Boolean)
+
+      return {
+        node,
+        publication,
+        chunks,
+      }
+    })
+  }, [selectedDeclination, publicationsById, contentsById])
 
   const visibleLibrary = useMemo(() => {
     const preferred = ['PUB005','PUB006','PUB007','PUB008','PUB014','PUB015','PUB024','PUB025','PUB031','PUB033','PUB057','PUB090']
     return preferred.map(id => publicationsById[id]).filter(Boolean)
   }, [publicationsById])
 
+  const orbitPlacements = useMemo(
+    () => buildDeclinationOrbit(declinations.length),
+    [declinations.length]
+  )
+
   function chooseNotion(id) {
-    setSelectedNodeId(null)
+    setSelectedDeclinationId(null)
     setSelectedNotionId(id)
     setPhase('filtering')
   }
@@ -319,7 +406,7 @@ function NotionWorkspace({ data, onBack }) {
   }, [selectedNotionId])
 
   function resetNotion() {
-    setSelectedNodeId(null)
+    setSelectedDeclinationId(null)
     setSelectedNotionId(null)
     setPhase('library')
   }
@@ -333,8 +420,8 @@ function NotionWorkspace({ data, onBack }) {
       <div className="notion-purpose">
         <div className="notion-purpose-icon"><Icon name="layers" size={31}/></div>
         <div>
-          <strong>Voir le corpus se recomposer autour d’un même objet.</strong>
-          <p>Vous partez des publications telles qu’elles existent dans le corpus. En choisissant une notion, seules les publications qui la documentent restent au premier plan ; les nœuds déjà sélectionnés et validés se détachent visuellement de leurs documents, puis se réorganisent autour de la notion commune. <b>La fonction ne produit pas de synthèse automatique et n’invente aucun rapprochement.</b> Chaque élément conserve son document source, son type, ses pages, ses chunks et sa preuve complète.</p>
+          <strong>Voir comment une notion se décline d’un document à l’autre.</strong>
+          <p>Vous partez des publications telles qu’elles existent dans le corpus. En choisissant une notion, seules les publications qui la documentent restent au premier plan ; leurs <b>déclinaisons déjà validées</b> se rassemblent ensuite autour du terme noyau. <b>La fonction n’invente aucun rapprochement</b> : chaque déclinaison reste attachée à ses publications sources, à ses pages, à ses chunks et à sa preuve complète.</p>
         </div>
       </div>
     </header>
@@ -344,11 +431,11 @@ function NotionWorkspace({ data, onBack }) {
       <div className="notion-choice-grid">
         {TRANSVERSAL_NOTIONS.map(notion => {
           const publicationCount = Object.keys(notion.selections).length
-          const nodeCount = Object.values(notion.selections).reduce((sum, ids) => sum + ids.length, 0)
+          const elementCount = Object.values(notion.selections).reduce((sum, ids) => sum + ids.length, 0)
           return <button key={notion.id} type="button" className={`notion-choice-card ${selectedNotionId === notion.id ? 'selected' : ''}`} onClick={() => chooseNotion(notion.id)} style={{'--notion-accent': notion.accent}}>
             <span className="notion-choice-icon"><Icon name={notion.icon} size={26}/></span>
             <strong>{notion.label}</strong>
-            <small>{publicationCount} publication{publicationCount > 1 ? 's' : ''} · {nodeCount} nœuds</small>
+            <small>{publicationCount} publication{publicationCount > 1 ? 's' : ''} · {elementCount} éléments validés</small>
           </button>
         })}
       </div>
@@ -356,7 +443,7 @@ function NotionWorkspace({ data, onBack }) {
 
     <section className={`notion-passage-stage phase-${phase}`}>
       <div className="notion-stage-heading">
-        <div className="notion-selector-title"><span>2</span><div><strong>{!selectedNotion ? 'Le corpus dans sa forme documentaire' : phase === 'final' ? 'La vue transversale est recomposée' : 'Le passage est en cours'}</strong><small>{!selectedNotion ? 'Les documents restent autonomes tant qu’aucune notion n’est choisie.' : 'Les publications demeurent les points d’origine des éléments affichés.'}</small></div></div>
+        <div className="notion-selector-title"><span>2</span><div><strong>{!selectedNotion ? 'Le corpus dans sa forme documentaire' : phase === 'final' ? 'Les déclinaisons de la notion sont visibles' : 'Le passage est en cours'}</strong><small>{!selectedNotion ? 'Les documents restent autonomes tant qu’aucune notion n’est choisie.' : 'Les publications demeurent les points d’origine des déclinaisons affichées.'}</small></div></div>
         {selectedNotion && <button type="button" className="notion-reset" onClick={resetNotion}><Icon name="reset" size={15}/> Revenir au corpus</button>}
       </div>
 
@@ -397,88 +484,83 @@ function NotionWorkspace({ data, onBack }) {
         </div>}
 
         {selectedNotion && phase !== 'final' && <div className="notion-center" style={{'--notion-accent': selectedNotion.accent}}>
-          <Icon name={selectedNotion.icon} size={28}/><strong>{selectedNotion.label}</strong><span>{selectedNodes.length} nœuds · {selectedPublicationIds.length} publications</span>
+          <Icon name={selectedNotion.icon} size={28}/><strong>{selectedNotion.label}</strong><span>{declinations.length} déclinaison{declinations.length > 1 ? 's' : ''} · {selectedPublicationIds.length} publication{selectedPublicationIds.length > 1 ? 's' : ''}</span>
         </div>}
 
         {selectedNotion && phase !== 'final' && <div className="notion-passage-status">
           {phase === 'filtering'
             ? <><b>1. Le corpus se filtre</b><span>Les publications qui documentent « {selectedNotion.label} » restent au premier plan.</span></>
-            : <><b>2. Les éléments se détachent</b><span>Les nœuds validés quittent visuellement leurs documents pour rejoindre la notion commune.</span></>}
+            : <><b>2. Les déclinaisons se rassemblent</b><span>Les éléments validés quittent visuellement leurs documents pour recomposer les différentes déclinaisons de la notion.</span></>}
         </div>}
 
         {selectedNotion && phase === 'final' && <div className="notion-final-scene">
-          <svg className="notion-final-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {selectedPublicationIds.map((publicationId, index) => {
-              const pos = notionBranchPosition(index, selectedPublicationIds.length)
-              return <line key={publicationId} x1="50" y1="50" x2={pos.x} y2={pos.y}/>
-            })}
-          </svg>
-
           <div className="notion-final-center" style={{'--notion-accent': selectedNotion.accent}}>
             <Icon name={selectedNotion.icon} size={28}/>
             <strong>{selectedNotion.label}</strong>
-            <span>{selectedNodes.length} nœuds issus de {selectedPublicationIds.length} publications</span>
+            <span>{declinations.length} déclinaison{declinations.length > 1 ? 's' : ''} documentée{declinations.length > 1 ? 's' : ''}</span>
           </div>
 
-          {selectedPublicationIds.map((publicationId, index) => {
-            const publication = publicationsById[publicationId]
-            const nodeIds = selectedNotion.selections[publicationId] || []
-            const pos = notionBranchPosition(index, selectedPublicationIds.length)
-            return <section
-              className="notion-final-branch"
-              key={publicationId}
-              style={{
-                left: `${pos.x}%`,
-                top: `${pos.y}%`,
-                '--notion-accent': selectedNotion.accent,
-                animationDelay: `${index * 90}ms`,
-              }}
-            >
-              <div className="notion-final-publication">
-                <img src={publication?.image_path || `./images/publications/${publicationId}.png`} alt=""/>
-                <div>
-                  <small>{publicationId}</small>
-                  <strong>{publication?.titre || publicationId}</strong>
-                  <span>{nodeIds.length} nœud{nodeIds.length > 1 ? 's' : ''} validé{nodeIds.length > 1 ? 's' : ''}</span>
-                </div>
-              </div>
-              <div className="notion-final-node-list">
-                {nodeIds.slice(0, 4).map(nodeId => {
-                  const node = nodesById[nodeId]
-                  if (!node) return null
-                  return <button
-                    key={nodeId}
-                    type="button"
-                    className={`notion-final-node ${selectedNodeId === nodeId ? 'selected' : ''}`}
-                    onClick={() => setSelectedNodeId(nodeId)}
-                    title={node.libelle}
-                  >
-                    <i></i><span>{node.libelle}</span>
-                  </button>
-                })}
-                {nodeIds.length > 4 && <div className="notion-final-more">+ {nodeIds.length - 4} autre{nodeIds.length - 4 > 1 ? 's' : ''} élément{nodeIds.length - 4 > 1 ? 's' : ''} validé{nodeIds.length - 4 > 1 ? 's' : ''}</div>}
-              </div>
-            </section>
-          })}
+          <div className="notion-orbit-cloud" aria-label="Déclinaisons de la notion">
+            {declinations.map((declination, index) => {
+              const placement = orbitPlacements[index] || { x: 0, y: 0, size: 132 }
+              return <button
+                key={declination.id}
+                type="button"
+                className={`notion-declination-bubble ${selectedDeclinationId === declination.id ? 'selected' : ''}`}
+                onClick={() => setSelectedDeclinationId(declination.id)}
+                title={declination.label}
+                style={{
+                  left: `calc(50% + ${placement.x}px)`,
+                  top: `calc(50% + ${placement.y}px)`,
+                  width: `${placement.size}px`,
+                  height: `${placement.size}px`,
+                  '--notion-accent': selectedNotion.accent,
+                  animationDelay: `${index * 70}ms`,
+                }}
+              >
+                <span>{declination.label}</span>
+                <b>{declination.occurrences.length}</b>
+              </button>
+            })}
+          </div>
         </div>}
       </div>
     </section>
 
-    {selectedNode && <aside className="notion-detail-panel" aria-label="Détail du nœud">
-      <button type="button" className="notion-detail-close" onClick={() => setSelectedNodeId(null)} aria-label="Fermer"><Icon name="close" size={18}/></button>
-      <div className="notion-detail-kicker">NŒUD SOURCE</div>
-      <h2>{selectedNode.libelle}</h2>
+    {selectedDeclination && <aside className="notion-detail-panel" aria-label="Détail de la déclinaison">
+      <button type="button" className="notion-detail-close" onClick={() => setSelectedDeclinationId(null)} aria-label="Fermer"><Icon name="close" size={18}/></button>
+      <div className="notion-detail-kicker">DÉCLINAISON DOCUMENTÉE</div>
+      <h2>{selectedDeclination.label}</h2>
       <dl>
-        <div><dt>Publication</dt><dd>{selectedPublication?.titre || selectedNode.publication_id}</dd></div>
-        <div><dt>Type de nœud</dt><dd>{TYPE_LABELS[selectedNode.type_noeud] || selectedNode.type_noeud}</dd></div>
-        <div><dt>Page(s)</dt><dd>{selectedNode.page_source || '—'}</dd></div>
-        <div><dt>Chunk(s)</dt><dd>{selectedNode.chunk_id_source || '—'}</dd></div>
+        <div><dt>Notion</dt><dd>{selectedNotion?.label || '—'}</dd></div>
+        <div><dt>Publications</dt><dd>{declinationEntries.length}</dd></div>
       </dl>
-      <div className="notion-proof-title">Preuve complète</div>
+      <div className="notion-proof-title">Publications qui documentent cette déclinaison</div>
       <div className="notion-proof-list">
-        {proofChunks.length ? proofChunks.map(chunk => <article key={chunk.chunk_id}><header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header><p>{chunk.texte}</p></article>) : <p className="notion-no-proof">Aucun chunk source disponible dans les données chargées.</p>}
+        {declinationEntries.length ? declinationEntries.map(({ node, publication, chunks }) => {
+          const sourceLink = cleanUrl(publication?.url_contenu || publication?.url_source)
+          return <article key={node.node_id} className="notion-declination-proof">
+            <div className="notion-proof-publication-head">
+              <img src={publication?.image_path || `./images/publications/${node.publication_id}.png`} alt=""/>
+              <div>
+                <small>{node.publication_id}</small>
+                <strong>{publication?.titre || node.publication_id}</strong>
+                <span>{publication?.organisme_producteur || publication?.type_document || 'Publication du corpus'}</span>
+              </div>
+            </div>
+            <div className="notion-proof-meta-grid">
+              <div><b>Type</b><span>{TYPE_LABELS[node.type_noeud] || node.type_noeud || '—'}</span></div>
+              <div><b>Pages</b><span>{node.page_source || '—'}</span></div>
+              <div><b>Chunks</b><span>{node.chunk_id_source || '—'}</span></div>
+            </div>
+            {chunks.length ? chunks.map(chunk => <div key={chunk.chunk_id} className="notion-proof-chunk">
+              <header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header>
+              <p>{chunk.texte}</p>
+            </div>) : <p className="notion-no-proof">Aucun extrait source disponible dans les données chargées.</p>}
+            {sourceLink && <a className="notion-source-link" href={sourceLink} target="_blank" rel="noreferrer"><Icon name="external" size={16}/> Ouvrir la source</a>}
+          </article>
+        }) : <p className="notion-no-proof">Aucune publication source disponible pour cette déclinaison.</p>}
       </div>
-      {selectedPublication && <a className="notion-source-link" href={cleanUrl(selectedPublication.url_contenu || selectedPublication.url_source)} target="_blank" rel="noreferrer"><Icon name="external" size={16}/> Ouvrir la source</a>}
     </aside>}
   </main>
 }
