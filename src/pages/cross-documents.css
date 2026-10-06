@@ -747,3 +747,62 @@
   .ribbon-publication.active{width:370px}
   .ribbon-publication.active strong{font-size:19px}
 }
+
+
+/* =========================================================
+   RUBAN V2 — vrai ruban fluide, uniquement le tracé
+   ========================================================= */
+.ribbon-scene::after{display:none!important}
+.ribbon-wave,.ribbon-wave-glow{display:none!important}
+.ribbon-svg{
+  position:absolute;
+  left:0;
+  top:64px;
+  width:100%;
+  height:300px;
+  z-index:2;
+  overflow:visible;
+  pointer-events:none;
+}
+.ribbon-svg path{
+  fill:none;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.ribbon-shadow{
+  stroke:rgba(22,97,168,.20);
+  stroke-width:92;
+  filter:url(#ribbonGlow);
+  transform:translateY(12px);
+}
+.ribbon-main{
+  stroke:url(#ribbonGradient);
+  stroke-width:76;
+  filter:drop-shadow(0 16px 18px rgba(18,104,190,.18));
+}
+.ribbon-depth{
+  stroke:url(#ribbonShade);
+  stroke-width:72;
+  opacity:.58;
+}
+.ribbon-topline{
+  stroke:rgba(255,255,255,.72);
+  stroke-width:4;
+  opacity:.95;
+}
+.ribbon-light-runner{
+  stroke:rgba(255,255,255,.96);
+  stroke-width:8;
+  stroke-dasharray:42 235;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.95));
+  animation:ribbonRunner 3.2s linear infinite;
+}
+.ribbon-light-runner.paused{animation-play-state:paused}
+@keyframes ribbonRunner{to{stroke-dashoffset:-277}}
+
+/* les stations restent au-dessus du ruban */
+.ribbon-publication{z-index:6}
+.ribbon-publication.active{z-index:10}
+.ribbon-travel-dot{z-index:11}
+.ribbon-drop-line{z-index:4}
