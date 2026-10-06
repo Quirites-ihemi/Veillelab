@@ -183,28 +183,28 @@ function buildLocalContributionOffsets(count, zone = 'top') {
 
 function buildRibbonPositions(count) {
   if (!count) return []
-  if (count === 1) return [{ x: 50, y: 18 }]
+  if (count === 1) return [{ x: 50, y: 17 }]
   const left = 10
   const right = 90
   const step = (right - left) / (count - 1)
   return Array.from({ length: count }, (_, index) => {
     const x = left + (step * index)
-    const wave = Math.sin((index / Math.max(1, count - 1)) * Math.PI * 2 - Math.PI / 2)
-    return { x, y: 18 + (wave * 2.4) }
+    const wave = Math.sin((index / Math.max(1, count - 1)) * Math.PI * 1.8 - Math.PI / 2)
+    return { x, y: 17 + (wave * 3.1) }
   })
 }
 
 function buildTreeOffsets(count) {
   const presets = [
-    { x: -145, y: 18 },
-    { x: 145, y: 18 },
-    { x: -178, y: 148 },
-    { x: 0, y: 178 },
-    { x: 178, y: 148 },
-    { x: -92, y: 286 },
-    { x: 92, y: 286 },
-    { x: -250, y: 258 },
-    { x: 250, y: 258 },
+    { x: -118, y: 34 },
+    { x: 118, y: 34 },
+    { x: -168, y: 156 },
+    { x: 0, y: 194 },
+    { x: 168, y: 156 },
+    { x: -88, y: 286 },
+    { x: 88, y: 286 },
+    { x: -226, y: 266 },
+    { x: 226, y: 266 },
   ]
   return Array.from({ length: count }, (_, index) => presets[index % presets.length])
 }
@@ -567,7 +567,6 @@ function NotionWorkspace({ data, onBack }) {
               >
                 <img src={publicationImageSrc(item.publication?.image_path, item.publicationId)} alt=""/>
                 <div>
-                  <small>{item.publicationId}</small>
                   <strong>{item.publication?.titre || item.publicationId}</strong>
                   <span>{formatPublicationDate(item.publication)}</span>
                 </div>
@@ -598,6 +597,11 @@ function NotionWorkspace({ data, onBack }) {
                   <span>{node.libelle}</span>
                 </button>
               })}
+            </div>
+
+            <div className={`ribbon-eclaireur ${selectedNode ? 'active' : ''}`}>
+              <div className="ribbon-eclaireur-title">L’Éclaireur</div>
+              <p>{selectedNode ? 'Source retrouvée dans le document actif.' : 'Cliquez sur un terme pour accéder à la source.'}</p>
             </div>
           </div>
 
