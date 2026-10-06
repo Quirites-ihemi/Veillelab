@@ -95,8 +95,8 @@ function notionBranchPosition(index, count) {
 
 function buildCircularJourneyPositions(count) {
   if (!count) return []
-  const radiusX = 40
-  const radiusY = 36
+  const radiusX = 26
+  const radiusY = 39
   const startAngle = -150
   const step = 360 / count
   return Array.from({ length: count }, (_, index) => {
@@ -159,19 +159,19 @@ function journeyZone(point = { x: 50, y: 50 }) {
 function buildLocalContributionOffsets(count, zone = 'top') {
   const layouts = {
     top: [
-      [-178, -12], [178, -12], [-196, 150], [0, 206], [196, 150], [0, 330],
+      [-174, 12], [174, 12], [-184, 158], [0, 216], [184, 158], [0, 340],
     ],
     bottom: [
-      [-178, 12], [178, 12], [-196, -150], [0, -206], [196, -150], [0, -330],
+      [-174, -12], [174, -12], [-184, -158], [0, -216], [184, -158], [0, -340],
     ],
     left: [
-      [12, -178], [12, 178], [150, -196], [206, 0], [150, 196], [330, 0],
+      [24, -170], [24, 170], [172, -182], [232, 0], [172, 182], [338, 0],
     ],
     right: [
-      [-12, -178], [-12, 178], [-150, -196], [-206, 0], [-150, 196], [-330, 0],
+      [-24, -170], [-24, 170], [-172, -182], [-232, 0], [-172, 182], [-338, 0],
     ],
     center: [
-      [-184, -78], [0, -190], [184, -78], [-184, 112], [0, 196], [184, 112],
+      [-188, -84], [0, -200], [188, -84], [-188, 116], [0, 208], [188, 116],
     ],
   }
   const selected = layouts[zone] || layouts.center
