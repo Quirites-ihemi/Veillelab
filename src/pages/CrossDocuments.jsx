@@ -183,28 +183,28 @@ function buildLocalContributionOffsets(count, zone = 'top') {
 
 function buildRibbonPositions(count) {
   if (!count) return []
-  if (count === 1) return [{ x: 50, y: 20 }]
-  const left = 8
-  const right = 92
+  if (count === 1) return [{ x: 50, y: 18 }]
+  const left = 10
+  const right = 90
   const step = (right - left) / (count - 1)
   return Array.from({ length: count }, (_, index) => {
     const x = left + (step * index)
     const wave = Math.sin((index / Math.max(1, count - 1)) * Math.PI * 2 - Math.PI / 2)
-    return { x, y: 20 + (wave * 4.5) }
+    return { x, y: 18 + (wave * 2.4) }
   })
 }
 
 function buildTreeOffsets(count) {
   const presets = [
-    { x: -210, y: -55 },
-    { x: 210, y: -55 },
-    { x: -255, y: 105 },
-    { x: 255, y: 105 },
-    { x: -120, y: 210 },
-    { x: 120, y: 210 },
-    { x: 0, y: 300 },
-    { x: -315, y: 245 },
-    { x: 315, y: 245 },
+    { x: -145, y: 18 },
+    { x: 145, y: 18 },
+    { x: -178, y: 148 },
+    { x: 0, y: 178 },
+    { x: 178, y: 148 },
+    { x: -92, y: 286 },
+    { x: 92, y: 286 },
+    { x: -250, y: 258 },
+    { x: 250, y: 258 },
   ]
   return Array.from({ length: count }, (_, index) => presets[index % presets.length])
 }
@@ -587,23 +587,16 @@ function NotionWorkspace({ data, onBack }) {
 
               {activeNodes.map((node, index) => {
                 const offset = treeOffsets[index] || {x:0,y:0}
-                return <React.Fragment key={node.node_id}>
-                  <span className="ribbon-branch" style={{
-                    left: `calc(${focusX}% + ${offset.x * 0.47}px)`,
-                    top: `calc(${focusY}% + ${offset.y * 0.47}px)`,
-                    width: `${Math.max(48, Math.hypot(offset.x, offset.y) * .54)}px`,
-                    transform: `translate(-50%, -50%) rotate(${Math.atan2(offset.y, offset.x) * 180 / Math.PI}deg)`,
-                  }} aria-hidden="true"></span>
-                  <button
-                    type="button"
-                    className={`ribbon-declination ${selectedNode?.node_id === node.node_id ? 'selected' : ''}`}
-                    style={{left: `calc(${focusX}% + ${offset.x}px)`, top: `calc(${focusY}% + ${offset.y}px)`, '--decl-index': index}}
-                    onClick={() => chooseNode(node.node_id)}
-                    title={node.libelle}
-                  >
-                    <span>{node.libelle}</span>
-                  </button>
-                </React.Fragment>
+                return <button
+                  key={node.node_id}
+                  type="button"
+                  className={`ribbon-declination ${selectedNode?.node_id === node.node_id ? 'selected' : ''}`}
+                  style={{left: `calc(${focusX}% + ${offset.x}px)`, top: `calc(${focusY}% + ${offset.y}px)`, '--decl-index': index}}
+                  onClick={() => chooseNode(node.node_id)}
+                  title={node.libelle}
+                >
+                  <span>{node.libelle}</span>
+                </button>
               })}
             </div>
           </div>
