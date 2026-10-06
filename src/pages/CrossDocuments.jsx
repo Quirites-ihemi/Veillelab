@@ -95,16 +95,17 @@ function notionBranchPosition(index, count) {
 
 function buildCircularJourneyPositions(count) {
   if (!count) return []
-  const radius = 34
-  const startAngle = -145
+  const radiusX = 40
+  const radiusY = 36
+  const startAngle = -150
   const step = 360 / count
   return Array.from({ length: count }, (_, index) => {
     const angle = startAngle + (step * index)
     const radians = angle * (Math.PI / 180)
     return {
       angle,
-      x: 50 + (Math.cos(radians) * radius),
-      y: 50 + (Math.sin(radians) * radius),
+      x: 50 + (Math.cos(radians) * radiusX),
+      y: 50 + (Math.sin(radians) * radiusY),
     }
   })
 }
@@ -121,6 +122,63 @@ function buildContributionOrbit(count) {
     { x: 120, y: 120 },
   ]
   return Array.from({ length: count }, (_, index) => presets[index % presets.length])
+}
+
+function publicationImageSrc(imagePath = '', publicationId = '') {
+  const base = import.meta.env.BASE_URL || '/'
+  const raw = String(imagePath || '').trim()
+  if (/^https?:\/\//i.test(raw)) return raw
+  const normalized = raw
+    ? raw.replace(/^\/+/, '')
+    : `images/publications/${publicationId}.png`
+  return `${base}${normalized}`
+}
+
+function formatPublicationDate(publication = {}) {
+  const candidates = [
+    publication.date_publication,
+    publication.date,
+    publication.date_source,
+    publication.date_document,
+    publication.date_debut,
+    publication['année_publication'],
+    publication.annee,
+  ].filter(Boolean)
+  if (!candidates.length) return ''
+  return String(candidates[0])
+}
+
+function journeyZone(point = { x: 50, y: 50 }) {
+  if (point.y <= 32) return 'top'
+  if (point.y >= 68) return 'bottom'
+  if (point.x <= 32) return 'left'
+  if (point.x >= 68) return 'right'
+  return 'center'
+}
+
+function buildLocalContributionOffsets(count, zone = 'top') {
+  const layouts = {
+    top: [
+      [-178, -12], [178, -12], [-196, 150], [0, 206], [196, 150], [0, 330],
+    ],
+    bottom: [
+      [-178, 12], [178, 12], [-196, -150], [0, -206], [196, -150], [0, -330],
+    ],
+    left: [
+      [12, -178], [12, 178], [150, -196], [206, 0], [150, 196], [330, 0],
+    ],
+    right: [
+      [-12, -178], [-12, 178], [-150, -196], [-206, 0], [-150, 196], [-330, 0],
+    ],
+    center: [
+      [-184, -78], [0, -190], [184, -78], [-184, 112], [0, 196], [184, 112],
+    ],
+  }
+  const selected = layouts[zone] || layouts.center
+  return Array.from({ length: count }, (_, index) => ({
+    x: selected[index % selected.length][0],
+    y: selected[index % selected.length][1],
+  }))
 }
 
 function cleanUrl(value = '') {
@@ -293,6 +351,7 @@ function NotionWorkspace({ data, onBack }) {
   const [phase, setPhase] = useState('library')
   const [activePublicationId, setActivePublicationId] = useState(null)
   const [selectedNodeId, setSelectedNodeId] = useState(null)
+  const [isPaused, setIsPaused] = useState(false)
 
   const publicationsById = useMemo(
     () => Object.fromEntries((data.publications || []).map(p => [p.publication_id, p])),
@@ -342,9 +401,8 @@ function NotionWorkspace({ data, onBack }) {
   const activeNodes = activePublication?.nodes || []
 
   const selectedNode = useMemo(() => {
-    if (!activeNodes.length) return null
-    const explicit = activeNodes.find(node => node.node_id === selectedNodeId)
-    return explicit || activeNodes[0] || null
+    if (!selectedNodeId || !activeNodes.length) return null
+    return activeNodes.find(node => node.node_id === selectedNodeId) || null
   }, [activeNodes, selectedNodeId])
 
   const proofChunks = useMemo(() => {
@@ -362,25 +420,30 @@ function NotionWorkspace({ data, onBack }) {
     [publicationJourney.length]
   )
 
-  const contributionOffsets = useMemo(
-    () => buildContributionOrbit(activeNodes.length),
-    [activeNodes.length]
-  )
+  const activePublicationPosition = circularPositions[activePublicationIndex] || { x: 50, y: 50, angle: -90 }
+  const zone = journeyZone(activePublicationPosition)
 
   const activeCorePosition = useMemo(() => {
-    const reference = circularPositions[activePublicationIndex] || { angle: -90 }
-    const radians = reference.angle * (Math.PI / 180)
+    const dx = 50 - activePublicationPosition.x
+    const dy = 50 - activePublicationPosition.y
+    const length = Math.hypot(dx, dy) || 1
+    const distance = 22
     return {
-      x: 50 + (Math.cos(radians) * 16),
-      y: 50 + (Math.sin(radians) * 16),
-      angle: reference.angle,
+      x: activePublicationPosition.x + ((dx / length) * distance),
+      y: activePublicationPosition.y + ((dy / length) * distance),
     }
-  }, [circularPositions, activePublicationIndex])
+  }, [activePublicationPosition])
+
+  const contributionOffsets = useMemo(
+    () => buildLocalContributionOffsets(activeNodes.length, zone),
+    [activeNodes.length, zone]
+  )
 
   function chooseNotion(id) {
     const notion = TRANSVERSAL_NOTIONS.find(item => item.id === id)
     const firstPublicationId = notion ? Object.keys(notion.selections)[0] || null : null
     setSelectedNodeId(null)
+    setIsPaused(false)
     setSelectedNotionId(id)
     setActivePublicationId(firstPublicationId)
     setPhase('filtering')
@@ -390,6 +453,7 @@ function NotionWorkspace({ data, onBack }) {
     setSelectedNodeId(null)
     setSelectedNotionId(null)
     setActivePublicationId(null)
+    setIsPaused(false)
     setPhase('library')
   }
 
@@ -398,10 +462,18 @@ function NotionWorkspace({ data, onBack }) {
     setSelectedNodeId(null)
   }
 
+  function chooseNode(nodeId) {
+    setSelectedNodeId(current => {
+      const next = current === nodeId ? null : nodeId
+      if (next) setIsPaused(true)
+      return next
+    })
+  }
+
   useEffect(() => {
     if (!selectedNotionId) return undefined
     const passingTimer = window.setTimeout(() => setPhase('passing'), 700)
-    const finalTimer = window.setTimeout(() => setPhase('final'), 2600)
+    const finalTimer = window.setTimeout(() => setPhase('final'), 2200)
     return () => {
       window.clearTimeout(passingTimer)
       window.clearTimeout(finalTimer)
@@ -410,13 +482,11 @@ function NotionWorkspace({ data, onBack }) {
 
   useEffect(() => {
     if (!publicationJourney.length) return
-    if (!activePublicationId) {
-      setActivePublicationId(publicationJourney[0].publicationId)
-    }
+    if (!activePublicationId) setActivePublicationId(publicationJourney[0].publicationId)
   }, [publicationJourney, activePublicationId])
 
   useEffect(() => {
-    if (phase !== 'final' || publicationJourney.length <= 1) return undefined
+    if (phase !== 'final' || publicationJourney.length <= 1 || isPaused) return undefined
     const timer = window.setInterval(() => {
       setActivePublicationId(current => {
         const currentIndex = publicationJourney.findIndex(item => item.publicationId === current)
@@ -424,9 +494,9 @@ function NotionWorkspace({ data, onBack }) {
         return publicationJourney[nextIndex].publicationId
       })
       setSelectedNodeId(null)
-    }, 4500)
+    }, 4200)
     return () => window.clearInterval(timer)
-  }, [phase, publicationJourney])
+  }, [phase, publicationJourney, isPaused])
 
   return <main className="page notion-workspace">
     <button className="chrono-return" type="button" onClick={onBack}><Icon name="back" size={15}/> D’un document à l’autre</button>
@@ -441,7 +511,7 @@ function NotionWorkspace({ data, onBack }) {
         <div className="notion-purpose-icon"><Icon name="layers" size={31}/></div>
         <div>
           <strong>Suivre une même notion d’une publication à l’autre.</strong>
-          <p>Cette vue ne montre pas un champ lexical : elle permet de voir <b>ce que chaque document apporte à la notion</b>. La notion circule entre les publications qui la documentent, puis s’entoure à chaque étape des éléments validés dans le corpus. Les publications restent les points d’origine de ce parcours, avec leurs preuves, leurs pages et leurs chunks.</p>
+          <p>La notion circule entre les publications qui la documentent. À chaque étape, seule la publication active est mise en évidence ; autour d’elle apparaissent les éléments validés qui montrent ce que ce document apporte à la notion.</p>
         </div>
       </div>
     </header>
@@ -463,127 +533,121 @@ function NotionWorkspace({ data, onBack }) {
 
     <section className={`notion-passage-stage phase-${phase}`}>
       <div className="notion-stage-heading">
-        <div className="notion-selector-title"><span>2</span><div><strong>{!selectedNotion ? 'Le corpus dans sa forme documentaire' : phase === 'final' ? 'Le parcours de la notion est visible' : 'Le passage est en cours'}</strong><small>{!selectedNotion ? 'Les documents restent autonomes tant qu’aucune notion n’est choisie.' : 'La notion progresse d’une publication à l’autre dans un parcours circulaire simple.'}</small></div></div>
+        <div className="notion-selector-title"><span>2</span><div><strong>{!selectedNotion ? 'Le corpus dans sa forme documentaire' : phase === 'final' ? 'La notion se déplace entre les publications' : 'Le passage est en cours'}</strong><small>{!selectedNotion ? 'Les documents restent autonomes tant qu’aucune notion n’est choisie.' : 'La publication active se distingue nettement et le détail n’apparaît qu’au clic sur un élément.'}</small></div></div>
         {selectedNotion && <button type="button" className="notion-reset" onClick={resetNotion}><Icon name="reset" size={15}/> Revenir au corpus</button>}
       </div>
 
-      {selectedNotion && phase === 'final' ? <div className="notion-circular-layout">
-        <div className="notion-journey-scene" style={{ '--notion-accent': selectedNotion.accent }}>
-          <div className="notion-journey-ring" aria-hidden="true"></div>
-          <div className="notion-journey-ring inner" aria-hidden="true"></div>
-
-          {publicationJourney.map((item, index) => {
-            const position = circularPositions[index] || { x: 50, y: 50 }
-            const isActive = item.publicationId === activePublication?.publicationId
-            return <button
-              key={item.publicationId}
-              type="button"
-              className={`notion-orbit-publication ${isActive ? 'active' : ''}`}
-              style={{ left: `${position.x}%`, top: `${position.y}%` }}
-              onClick={() => selectPublication(item.publicationId)}
-              title={item.publication?.titre || item.publicationId}
-            >
-              <img src={item.publication?.image_path || `./images/publications/${item.publicationId}.png`} alt=""/>
-              <div>
-                <small>{item.publicationId}</small>
-                <strong>{item.publication?.titre || item.publicationId}</strong>
-                <span>{item.nodes.length} élément{item.nodes.length > 1 ? 's' : ''}</span>
-              </div>
-            </button>
-          })}
-
-          <div className="notion-travel-core" style={{ left: `${activeCorePosition.x}%`, top: `${activeCorePosition.y}%`, '--notion-accent': selectedNotion.accent }}>
-            <Icon name={selectedNotion.icon} size={28}/>
-            <strong>{selectedNotion.label}</strong>
-            <span>{activePublicationIndex + 1} / {publicationJourney.length}</span>
-          </div>
-
-          <div className="notion-contribution-cloud" aria-label="Ce que ce document apporte à la notion">
-            {activeNodes.map((node, index) => {
-              const offset = contributionOffsets[index] || { x: 0, y: 0 }
-              return <button
-                key={node.node_id}
-                type="button"
-                className={`notion-contribution-bubble ${selectedNode?.node_id === node.node_id ? 'selected' : ''}`}
-                onClick={() => setSelectedNodeId(node.node_id)}
-                title={node.libelle}
-                style={{
-                  left: `calc(${activeCorePosition.x}% + ${offset.x}px)`,
-                  top: `calc(${activeCorePosition.y}% + ${offset.y}px)`,
-                  '--notion-accent': selectedNotion.accent,
-                }}
-              >
-                <span>{node.libelle}</span>
-              </button>
-            })}
-          </div>
-
-          <div className="notion-journey-progress">
-            {publicationJourney.map((item, index) => <button
-              key={item.publicationId}
-              type="button"
-              className={`notion-progress-step ${index === activePublicationIndex ? 'active' : ''}`}
-              onClick={() => selectPublication(item.publicationId)}
-            >
-              <b>{index + 1}</b>
-              <div>
-                <strong>{item.publicationId}</strong>
-                <span>{item.publication?.titre || item.publicationId}</span>
-              </div>
-            </button>)}
+      {selectedNotion && phase === 'final' ? <div className={`notion-journey-shell ${selectedNode ? 'detail-open' : 'detail-closed'}`}>
+        <div className="notion-journey-topbar">
+          <div className="notion-journey-topbar-buttons">
+            <button type="button" className="notion-motion-button primary" onClick={() => setIsPaused(true)} disabled={isPaused}><span className="notion-motion-glyph">❚❚</span> Arrêter l’animation</button>
+            <button type="button" className="notion-motion-button" onClick={() => setIsPaused(false)} disabled={!isPaused}><span className="notion-motion-glyph">▶</span> Reprendre</button>
           </div>
         </div>
 
-        <aside className="notion-journey-panel">
-          <div className="notion-journey-panel-block">
-            <div className="notion-panel-title">Publication active</div>
-            {activePublication && <div className="notion-panel-publication-card">
-              <img src={activePublication.publication?.image_path || `./images/publications/${activePublication.publicationId}.png`} alt=""/>
-              <div>
-                <small>{activePublication.publicationId}</small>
-                <strong>{activePublication.publication?.titre || activePublication.publicationId}</strong>
-                <span>{activePublication.publication?.organisme_producteur || activePublication.publication?.type_document || 'Publication du corpus'}</span>
-              </div>
-            </div>}
-          </div>
+        <div className="notion-circular-layout">
+          <div className="notion-journey-scene" style={{ '--notion-accent': selectedNotion.accent }}>
+            <div className="notion-journey-ring main" aria-hidden="true"></div>
+            <div className="notion-journey-ring secondary" aria-hidden="true"></div>
+            <div className="notion-journey-ring tertiary" aria-hidden="true"></div>
 
-          <div className="notion-journey-panel-block">
-            <div className="notion-panel-title">Ce que ce document apporte</div>
-            <div className="notion-panel-chip-list">
-              {activeNodes.map(node => <button
-                key={node.node_id}
+            {publicationJourney.map((item, index) => {
+              const position = circularPositions[index] || { x: 50, y: 50 }
+              const isActive = item.publicationId === activePublication?.publicationId
+              return <button
+                key={item.publicationId}
                 type="button"
-                className={`notion-panel-chip ${selectedNode?.node_id === node.node_id ? 'selected' : ''}`}
-                onClick={() => setSelectedNodeId(node.node_id)}
-              >{node.libelle}</button>)}
+                className={`notion-orbit-publication ${isActive ? 'active' : ''}`}
+                style={{ left: `${position.x}%`, top: `${position.y}%` }}
+                onClick={() => selectPublication(item.publicationId)}
+                title={item.publication?.titre || item.publicationId}
+              >
+                <img src={publicationImageSrc(item.publication?.image_path, item.publicationId)} alt=""/>
+                <div>
+                  <small>{item.publicationId}</small>
+                  <strong>{item.publication?.titre || item.publicationId}</strong>
+                  <span>{formatPublicationDate(item.publication)}</span>
+                </div>
+                {isActive && <b className="notion-active-badge">{activePublicationIndex + 1}</b>}
+              </button>
+            })}
+
+            <div className="notion-core-connector" style={{ left: `${activeCorePosition.x}%`, top: `${activeCorePosition.y}%` }} aria-hidden="true"></div>
+
+            <div className="notion-travel-core" style={{ left: `${activeCorePosition.x}%`, top: `${activeCorePosition.y}%`, '--notion-accent': selectedNotion.accent }}>
+              <Icon name={selectedNotion.icon} size={28}/>
+              <strong>{selectedNotion.label}</strong>
+              <span>{activePublicationIndex + 1} / {publicationJourney.length}</span>
+            </div>
+
+            <div className="notion-contribution-cloud" aria-label="Ce que ce document apporte à la notion">
+              {activeNodes.map((node, index) => {
+                const offset = contributionOffsets[index] || { x: 0, y: 0 }
+                return <button
+                  key={node.node_id}
+                  type="button"
+                  className={`notion-contribution-bubble ${selectedNode?.node_id === node.node_id ? 'selected' : ''}`}
+                  onClick={() => chooseNode(node.node_id)}
+                  title={node.libelle}
+                  style={{
+                    left: `calc(${activeCorePosition.x}% + ${offset.x}px)`,
+                    top: `calc(${activeCorePosition.y}% + ${offset.y}px)`,
+                    '--notion-accent': selectedNotion.accent,
+                    '--bubble-index': index,
+                  }}
+                >
+                  <span>{node.libelle}</span>
+                </button>
+              })}
             </div>
           </div>
 
-          {selectedNode && <div className="notion-journey-panel-block">
-            <div className="notion-panel-title">Preuve principale</div>
-            <div className="notion-panel-meta">
-              <div><b>Type</b><span>{TYPE_LABELS[selectedNode.type_noeud] || selectedNode.type_noeud || '—'}</span></div>
-              <div><b>Pages</b><span>{selectedNode.page_source || '—'}</span></div>
-              <div><b>Chunks</b><span>{selectedNode.chunk_id_source || '—'}</span></div>
+          {!selectedNode && <div className="notion-detail-closed-tab" aria-hidden="true"><span>‹</span><b>Détail</b></div>}
+
+          {selectedNode && <aside className="notion-journey-panel">
+            <div className="notion-journey-panel-block">
+              <div className="notion-panel-title">Publication et preuve</div>
+              {activePublication && <div className="notion-panel-publication-card">
+                <img src={publicationImageSrc(activePublication.publication?.image_path, activePublication.publicationId)} alt=""/>
+                <div>
+                  <small>{activePublication.publicationId}</small>
+                  <strong>{activePublication.publication?.titre || activePublication.publicationId}</strong>
+                  <span>{formatPublicationDate(activePublication.publication)}</span>
+                </div>
+              </div>}
             </div>
-            <div className="notion-panel-proof-list">
-              {proofChunks.length ? proofChunks.map(chunk => <article key={chunk.chunk_id}>
-                <header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header>
-                <p>{chunk.texte}</p>
-              </article>) : <p className="notion-no-proof">Aucun extrait source disponible dans les données chargées.</p>}
+
+            <div className="notion-journey-panel-block">
+              <div className="notion-panel-title">Élément sélectionné</div>
+              <button type="button" className="notion-panel-chip selected single">{selectedNode.libelle}</button>
+              <div className="notion-panel-meta">
+                <div><b>Type</b><span>{TYPE_LABELS[selectedNode.type_noeud] || selectedNode.type_noeud || '—'}</span></div>
+                <div><b>Pages</b><span>{selectedNode.page_source || '—'}</span></div>
+                <div><b>Chunks</b><span>{selectedNode.chunk_id_source || '—'}</span></div>
+              </div>
             </div>
-            {activePublication?.publication && cleanUrl(activePublication.publication.url_contenu || activePublication.publication.url_source)
-              ? <a className="notion-source-link" href={cleanUrl(activePublication.publication.url_contenu || activePublication.publication.url_source)} target="_blank" rel="noreferrer"><Icon name="external" size={16}/> Ouvrir la source</a>
-              : null}
-          </div>}
-        </aside>
+
+            <div className="notion-journey-panel-block">
+              <div className="notion-panel-title">Preuve principale</div>
+              <div className="notion-panel-proof-list">
+                {proofChunks.length ? proofChunks.map(chunk => <article key={chunk.chunk_id}>
+                  <header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header>
+                  <p>{chunk.texte}</p>
+                </article>) : <p className="notion-no-proof">Aucun extrait source disponible dans les données chargées.</p>}
+              </div>
+              {activePublication?.publication && cleanUrl(activePublication.publication.url_contenu || activePublication.publication.url_source)
+                ? <a className="notion-source-link" href={cleanUrl(activePublication.publication.url_contenu || activePublication.publication.url_source)} target="_blank" rel="noreferrer"><Icon name="external" size={16}/> Ouvrir la source</a>
+                : null}
+            </div>
+          </aside>}
+        </div>
       </div> : <div className="notion-stage-canvas">
         {phase !== 'final' && <div className="notion-library">
           {visibleLibrary.map((publication, index) => {
             const relevant = selectedPublicationIds.includes(publication.publication_id)
             const ids = selectedNotion?.selections[publication.publication_id] || []
             return <article key={publication.publication_id} className={`notion-source-card ${selectedNotion ? (relevant ? 'relevant' : 'dimmed') : ''}`} style={{'--source-index': index}}>
-              <img src={publication.image_path || `./images/publications/${publication.publication_id}.png`} alt=""/>
+              <img src={publicationImageSrc(publication.image_path, publication.publication_id)} alt=""/>
               <div><small>{publication.publication_id}</small><strong>{publication.titre}</strong><span>{publication.organisme_producteur || publication.type_document}</span></div>
               {relevant && <b className="notion-source-count">{ids.length}</b>}
             </article>
