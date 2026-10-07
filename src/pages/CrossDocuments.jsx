@@ -905,7 +905,7 @@ function ChronologyWorkspace({ data, onBack }) {
             className={`chrono-publication-card ${selectedChoice ? 'selected' : ''}`}
             onClick={() => choosePublication(choice.publication_id)}
           >
-            <img src={choice.image_path || `./images/publications/${choice.publication_id}.png`} alt=""/>
+            <img src={publicationImageSrc(choice.image_path, choice.publication_id)} alt=""/>
             <div>
               <b>{choice.publication_id}</b>
               <strong>{choice.titre}</strong>
