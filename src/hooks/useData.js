@@ -8,6 +8,12 @@ function normalizePublicationImages(publications = []) {
     const declaredFile = String(publication?.image_publication || '').trim()
     const declaredPath = String(publication?.image_path || '').trim()
 
+    // Respecte explicitement l'absence d'image déclarée dans les données.
+    // Cela évite de fabriquer un chemin PUBxxx.png inexistant pour les nouvelles publications.
+    if (publication?.has_image === false) {
+      return { ...publication, image_path: '', has_image: false }
+    }
+
     // Convention unique pour tout le site :
     // public/images/publications/PUBxxx.png
     // Si image_path n'a pas été régénéré dans publications.json,
