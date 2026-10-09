@@ -3,7 +3,7 @@ import Icon from '../components/Icon.jsx'
 import { useChronologyData } from '../hooks/useChronologyData.js'
 import './cross-documents.css'
 
-const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012']
+const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012', 'PUB113']
 
 
 const TRANSVERSAL_NOTIONS = [
@@ -52,6 +52,29 @@ const TRANSVERSAL_NOTIONS = [
       PUB008: ['N0227','N0228','N0229','N0239','N0250','N0257'],
       PUB014: ['N0396','N0401'],
       PUB025: ['N0666','N0671','N0676','N0677','N0678'],
+    },
+  },
+  {
+    id: 'chien',
+    label: 'Chien',
+    icon: 'target',
+    accent: '#4f86c6',
+    selections: {
+      PUB012: ['N0661','N0639','N0642','N0652'],
+      PUB113: ['N1284'],
+    },
+  },
+  {
+    id: 'gestion-crise',
+    label: 'Gestion de crise',
+    icon: 'compass',
+    accent: '#5577b7',
+    selections: {
+      PUB010: ['N0269'],
+      PUB054: ['N0915'],
+      PUB113: ['N1267'],
+      PUB005: ['N0129'],
+      PUB118: ['N1443'],
     },
   },
 ]
@@ -216,7 +239,7 @@ function cleanUrl(value = '') {
 
 function temporalValueFromNormalized(rawValue = '') {
   const raw = String(rawValue || '')
-  const match = raw.match(/(18|19|20|21)\d{2}/)
+  const match = raw.match(/(15|16|17|18|19|20|21)\d{2}/)
   if (!match) return null
   const year = Number(match[0])
   const month = Number((raw.match(/^\d{4}-(\d{2})/) || [])[1] || 1)
@@ -364,7 +387,7 @@ function CrossDocumentsHome({ onOpenChronology, onOpenNotions, publicationCount 
           <div className="notion-mini-center">N</div>
         </div>
         <div className="crossdoc-feature-copy">
-          <div className="crossdoc-feature-topline"><span>VUE TRANSVERSALE</span><em className="crossdoc-beta">4 notions</em></div>
+          <div className="crossdoc-feature-topline"><span>VUE TRANSVERSALE</span><em className="crossdoc-beta">6 notions</em></div>
           <h2>Suivre une notion</h2>
           <p className="notion-home-explanation">Partez des publications du corpus, choisissez une notion, puis regardez les éléments déjà validés se détacher de leurs documents d’origine et se recomposer en un parcours transversal. Aucun nouveau rapprochement n’est créé : chaque nœud reste relié à sa publication, sa page, son chunk et sa preuve.</p>
           <div className="crossdoc-feature-action">Voir le corpus se transformer <Icon name="chevron" size={17}/></div>
@@ -401,7 +424,7 @@ function NotionWorkspace({ data, onBack }) {
   )
 
   const visibleLibrary = useMemo(() => {
-    const preferred = ['PUB005','PUB006','PUB007','PUB008','PUB014','PUB015','PUB024','PUB025','PUB031','PUB033','PUB057','PUB090']
+    const preferred = ['PUB005','PUB006','PUB007','PUB008','PUB010','PUB012','PUB014','PUB015','PUB024','PUB025','PUB031','PUB033','PUB054','PUB057','PUB090','PUB113','PUB118']
     return preferred.map(id => publicationsById[id]).filter(Boolean)
   }, [publicationsById])
 
@@ -589,7 +612,7 @@ function NotionWorkspace({ data, onBack }) {
                 onClick={() => selectPublication(item.publicationId)}
                 title={item.publication?.titre || item.publicationId}
               >
-                <img src={publicationImageSrc(item.publication?.image_path, item.publicationId)} alt=""/>
+                {item.publication?.has_image !== false ? <img src={publicationImageSrc(item.publication?.image_path, item.publicationId)} alt=""/> : <div className="notion-publication-cover-placeholder">{item.publicationId}</div>}
                 <div>
                   <strong>{item.publication?.titre || item.publicationId}</strong>
                   <span>{formatPublicationDate(item.publication)}</span>
@@ -633,7 +656,7 @@ function NotionWorkspace({ data, onBack }) {
             <div className="notion-journey-panel-block">
               <div className="notion-panel-title">Publication et preuve</div>
               {activePublication && <div className="notion-panel-publication-card">
-                <img src={publicationImageSrc(activePublication.publication?.image_path, activePublication.publicationId)} alt=""/>
+                {activePublication.publication?.has_image !== false ? <img src={publicationImageSrc(activePublication.publication?.image_path, activePublication.publicationId)} alt=""/> : <div className="notion-publication-cover-placeholder">{activePublication.publicationId}</div>}
                 <div>
                   <small>{activePublication.publicationId}</small>
                   <strong>{activePublication.publication?.titre || activePublication.publicationId}</strong>
@@ -669,7 +692,7 @@ function NotionWorkspace({ data, onBack }) {
           {visibleLibrary.map((publication, index) => {
             const relevant = selectedPublicationIds.includes(publication.publication_id)
             return <article key={publication.publication_id} className={`notion-source-card ${selectedNotion ? (relevant ? 'relevant' : 'dimmed') : ''}`} style={{'--source-index': index}}>
-              <img src={publicationImageSrc(publication.image_path, publication.publication_id)} alt=""/>
+              {publication.has_image !== false ? <img src={publicationImageSrc(publication.image_path, publication.publication_id)} alt=""/> : <div className="notion-publication-cover-placeholder">{publication.publication_id}</div>}
               <div><small>{publication.publication_id}</small><strong>{publication.titre}</strong><span>{publication.organisme_producteur || publication.type_document}</span></div>
             </article>
           })}
@@ -905,7 +928,7 @@ function ChronologyWorkspace({ data, onBack }) {
             className={`chrono-publication-card ${selectedChoice ? 'selected' : ''}`}
             onClick={() => choosePublication(choice.publication_id)}
           >
-            <img src={publicationImageSrc(choice.image_path, choice.publication_id)} alt=""/>
+            {choice.has_image ? <img src={publicationImageSrc(choice.image_path, choice.publication_id)} alt=""/> : <div className="chrono-publication-cover-placeholder">{choice.publication_id}</div>}
             <div>
               <b>{choice.publication_id}</b>
               <strong>{choice.titre}</strong>
