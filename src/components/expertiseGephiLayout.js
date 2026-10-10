@@ -14,7 +14,7 @@ export const expertiseGephiLayout = {
   "ME002": {
     "x": 1003.121,
     "y": 27.186,
-    "size": 7.714,
+    "size": 9.429,
     "cluster": 16
   },
   "ME003": {
@@ -38,7 +38,7 @@ export const expertiseGephiLayout = {
   "ME006": {
     "x": -258.461,
     "y": 266.289,
-    "size": 12.857,
+    "size": 14.571,
     "cluster": 33
   },
   "ME007": {
@@ -116,7 +116,7 @@ export const expertiseGephiLayout = {
   "ME019": {
     "x": 202.145,
     "y": -187.356,
-    "size": 18.0,
+    "size": 23.143,
     "cluster": 19
   },
   "ME020": {
@@ -146,7 +146,7 @@ export const expertiseGephiLayout = {
   "ME024": {
     "x": -357.11,
     "y": 12.2,
-    "size": 9.429,
+    "size": 12.857,
     "cluster": 11
   },
   "ME025": {
@@ -272,7 +272,7 @@ export const expertiseGephiLayout = {
   "ME045": {
     "x": -112.236,
     "y": 32.867,
-    "size": 19.714,
+    "size": 21.429,
     "cluster": 33
   },
   "ME046": {
@@ -284,7 +284,7 @@ export const expertiseGephiLayout = {
   "ME047": {
     "x": -197.166,
     "y": -16.798,
-    "size": 14.571,
+    "size": 16.286,
     "cluster": 11
   },
   "ME048": {
@@ -428,7 +428,7 @@ export const expertiseGephiLayout = {
   "ME071": {
     "x": -12.692,
     "y": 267.91,
-    "size": 7.714,
+    "size": 9.429,
     "cluster": 33
   },
   "ME072": {
@@ -692,7 +692,7 @@ export const expertiseGephiLayout = {
   "ME116": {
     "x": -224.843,
     "y": -53.053,
-    "size": 9.429,
+    "size": 14.571,
     "cluster": 11
   },
   "ME117": {
@@ -770,7 +770,7 @@ export const expertiseGephiLayout = {
   "ME130": {
     "x": -14.287,
     "y": -291.921,
-    "size": 7.714,
+    "size": 9.429,
     "cluster": 43
   },
   "ME131": {
@@ -866,7 +866,7 @@ export const expertiseGephiLayout = {
   "ME148": {
     "x": -207.915,
     "y": -474.534,
-    "size": 7.714,
+    "size": 11.143,
     "cluster": 43
   },
   "ME149": {
@@ -915,6 +915,30 @@ export const expertiseGephiLayout = {
     "x": -512.268,
     "y": -311.389,
     "size": 7.714,
+    "cluster": 43
+  },
+  "ME157": {
+    "x": -185.0,
+    "y": 195.0,
+    "size": 12.857,
+    "cluster": 33
+  },
+  "ME158": {
+    "x": -297.0,
+    "y": -82.0,
+    "size": 12.857,
+    "cluster": 11
+  },
+  "ME159": {
+    "x": -220.0,
+    "y": -380.0,
+    "size": 12.857,
+    "cluster": 43
+  },
+  "ME160": {
+    "x": -140.0,
+    "y": -500.0,
+    "size": 9.429,
     "cluster": 43
   }
 }
