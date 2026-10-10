@@ -752,8 +752,8 @@
     "relation_count": 19,
     "chunk_count": 17,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB111.png"
   },
   {
     "publication_id": "PUB112",
@@ -770,8 +770,8 @@
     "relation_count": 24,
     "chunk_count": 18,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB112.png"
   },
   {
     "publication_id": "PUB113",
@@ -788,8 +788,8 @@
     "relation_count": 16,
     "chunk_count": 14,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB113.png"
   },
   {
     "publication_id": "PUB114",
@@ -806,8 +806,8 @@
     "relation_count": 37,
     "chunk_count": 18,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB114.png"
   },
   {
     "publication_id": "PUB115",
@@ -824,8 +824,8 @@
     "relation_count": 41,
     "chunk_count": 22,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB115.png"
   },
   {
     "publication_id": "PUB116",
@@ -842,8 +842,8 @@
     "relation_count": 32,
     "chunk_count": 0,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB116.png"
   },
   {
     "publication_id": "PUB117",
@@ -860,8 +860,8 @@
     "relation_count": 24,
     "chunk_count": 0,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB117.png"
   },
   {
     "publication_id": "PUB118",
@@ -878,8 +878,8 @@
     "relation_count": 60,
     "chunk_count": 33,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB118.png"
   },
   {
     "publication_id": "PUB119",
@@ -896,7 +896,7 @@
     "relation_count": 31,
     "chunk_count": 17,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB119.png"
   }
 ]
