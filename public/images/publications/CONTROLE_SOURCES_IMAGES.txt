@@ -1,0 +1,49 @@
+QUIRITÈS VEILLE LAB — CONTRÔLE DES IMAGES PUB111 À PUB119
+===========================================================
+
+Règle appliquée
+- Publication écrite : couverture / première page officielle.
+- Documentaire : visuel officiel ou carton-titre identifiable.
+- Aucune image générique n'a été substituée à une publication.
+
+PUB111 — La délinquance enregistrée dans les réseaux de transports en commun en 2025
+Statut : couverture / première page officielle.
+Source : PDF SSMSI, Interstats Info rapide n°67, septembre 2026.
+
+PUB112 — Panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête Vécu et ressenti en matière de sécurité (2022-2024)
+Statut : couverture / première page officielle.
+Source : PDF SSMSI, Interstats Analyse n°84, septembre 2026.
+
+PUB113 — Forêts aux abois, l'histoire des gendarmes à l'épreuve du feu
+Statut : couverture officielle.
+Source : Note du CRGN n°132, août 2026.
+
+PUB114 — L'intégration précoce des demandeurs de protection internationale
+Statut : couverture / première page officielle.
+Source : Réseau européen des migrations, juillet 2026.
+
+PUB115 — Lutte contre le commerce illicite du tabac dans l’UE — Éparpillement des efforts et lacunes persistantes
+Statut : couverture / première page officielle.
+Source : Cour des comptes européenne, Rapport spécial 23/2026.
+
+PUB116 — Des policiers à la fac
+Statut : visuel du documentaire avec titre.
+Source : carton-titre Arte reproduit dans le bulletin Quiritès de septembre 2026.
+
+PUB117 — La désinformation
+Statut : couverture de l’ouvrage.
+Source : couverture Éditions La Découverte reproduite dans le bulletin Quiritès de septembre 2026.
+
+PUB118 — Neurosciences et comportements militaires
+Statut : VISUEL PROVISOIRE — page de titre reconstituée, pas une couverture officielle.
+Source textuelle vérifiée : page officielle Fondapol, juin 2026.
+Motif : la couverture/page de titre originale n'a pas pu être récupérée sous forme d'image exploitable.
+
+PUB119 — Religion au travail — Baromètre du fait religieux en entreprise 2026
+Statut : VISUEL PROVISOIRE — page de titre reconstituée, pas une couverture officielle.
+Source textuelle vérifiée : première page du PDF officiel Institut Montaigne, juillet 2026.
+Motif : le PDF officiel est identifié mais sa première page n'a pas pu être récupérée sous forme d'image exploitable.
+
+IMPORTANT
+PUB118 et PUB119 sont volontairement signalées comme provisoires afin de ne pas faire passer
+une reconstitution graphique pour une couverture officielle.
