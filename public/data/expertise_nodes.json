@@ -23,7 +23,8 @@
     "domains": [
       "Démocraties et sujets informationnels",
       "Sécurité publique",
-      "Travail, emploi, formation"
+      "Travail, emploi, formation",
+      "Sécurité civile"
     ],
     "publications": [
       {
@@ -55,16 +56,30 @@
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/26008R%20-%20D%C3%A9ploiement%20IA%20dans%20AP.pdf",
         "url_source": "https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports,https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports",
         "has_graph": false
+      },
+      {
+        "publication_id": "PUB113",
+        "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
+        "annee": "2026",
+        "organisme": "Centre de recherche de la Gendarmerie nationale",
+        "image_path": "/images/publications/PUB113.png",
+        "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME060",
         "count": 1
+      },
+      {
+        "id": "ME159",
+        "count": 1
       }
     ],
-    "publication_count": 3,
-    "degree": 1
+    "publication_count": 4,
+    "degree": 2
   },
   {
     "id": "ME003",
@@ -181,6 +196,16 @@
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
         "has_graph": false
+      },
+      {
+        "publication_id": "PUB111",
+        "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB111.png",
+        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -199,10 +224,14 @@
       {
         "id": "ME107",
         "count": 1
+      },
+      {
+        "id": "ME157",
+        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 4
+    "publication_count": 3,
+    "degree": 5
   },
   {
     "id": "ME007",
@@ -534,6 +563,16 @@
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139696/1101982/file/Rapport%20d%E2%80%99enque%CC%82te%20the%CC%81matique%202022%20V%C3%A9cu%20et%20ressenti%20en%20mati%C3%A8re%20de%20s%C3%A9curit%C3%A9.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Rapport-d-enquete-thematique-2022-Vecu-et-ressenti-en-matiere-de-securite-les-interactions-entre-les-forces-de-securite-interieure-et-la-population",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB112",
+        "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB112.png",
+        "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -547,14 +586,14 @@
       },
       {
         "id": "ME116",
-        "count": 1
+        "count": 2
       },
       {
         "id": "ME117",
         "count": 1
       }
     ],
-    "publication_count": 2,
+    "publication_count": 3,
     "degree": 4
   },
   {
@@ -701,6 +740,26 @@
         "url_contenu": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
         "url_source": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB111",
+        "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB111.png",
+        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB112",
+        "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB112.png",
+        "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -725,16 +784,28 @@
         "count": 1
       },
       {
+        "id": "ME116",
+        "count": 1
+      },
+      {
         "id": "ME118",
         "count": 1
       },
       {
         "id": "ME139",
         "count": 1
+      },
+      {
+        "id": "ME157",
+        "count": 1
+      },
+      {
+        "id": "ME158",
+        "count": 1
       }
     ],
-    "publication_count": 5,
-    "degree": 7
+    "publication_count": 7,
+    "degree": 10
   },
   {
     "id": "ME020",
@@ -850,7 +921,8 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à croiser des variables sociales et territoriales pour analyser un phénomène public.",
     "entities": [
-      "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville"
+      "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
+      "Service statistique ministériel de la sécurité intérieure"
     ],
     "domains": [
       "Sécurité publique"
@@ -865,6 +937,16 @@
         "url_contenu": "https://www.onpv.fr/uploads/media_items/onpv-etude-insecurite.original.pdf",
         "url_source": "https://anct.gouv.fr/ressources/publications/etude-onpv-sentiment-d-insecurite-exprime-par-les-habitants-des-quartiers",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB112",
+        "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB112.png",
+        "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -875,10 +957,18 @@
       {
         "id": "ME090",
         "count": 1
+      },
+      {
+        "id": "ME116",
+        "count": 1
+      },
+      {
+        "id": "ME158",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 2
+    "publication_count": 2,
+    "degree": 4
   },
   {
     "id": "ME025",
@@ -1211,12 +1301,12 @@
     ],
     "associated": [
       {
-        "id": "ME042",
-        "count": 2
-      },
-      {
         "id": "ME030",
         "count": 1
+      },
+      {
+        "id": "ME042",
+        "count": 2
       },
       {
         "id": "ME091",
@@ -1644,6 +1734,16 @@
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
         "has_graph": false
+      },
+      {
+        "publication_id": "PUB111",
+        "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB111.png",
+        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -1678,10 +1778,14 @@
       {
         "id": "ME117",
         "count": 1
+      },
+      {
+        "id": "ME157",
+        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 8
+    "publication_count": 3,
+    "degree": 9
   },
   {
     "id": "ME046",
@@ -1761,6 +1865,16 @@
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
         "has_graph": false
+      },
+      {
+        "publication_id": "PUB112",
+        "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB112.png",
+        "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -1783,10 +1897,14 @@
       {
         "id": "ME117",
         "count": 1
+      },
+      {
+        "id": "ME158",
+        "count": 1
       }
     ],
-    "publication_count": 3,
-    "degree": 5
+    "publication_count": 4,
+    "degree": 6
   },
   {
     "id": "ME048",
@@ -2726,12 +2844,14 @@
     "id": "ME071",
     "label": "Mise en perspective historique d’une capacité opérationnelle",
     "family": "Méthode / savoir-faire",
-    "definition": "",
+    "definition": "Capacité à retracer l’évolution historique de missions, doctrines et capacités opérationnelles afin d’éclairer les pratiques contemporaines.",
     "entities": [
-      "Les cahiers français"
+      "Les cahiers français",
+      "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Sécurité publique"
+      "Sécurité publique",
+      "Sécurité civile"
     ],
     "publications": [
       {
@@ -2743,16 +2863,30 @@
         "url_contenu": "",
         "url_source": "https://www.lgdj.fr/cahiers-francais-mai-juin-2026-n451-9782111743533.html",
         "has_graph": false
+      },
+      {
+        "publication_id": "PUB113",
+        "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
+        "annee": "2026",
+        "organisme": "Centre de recherche de la Gendarmerie nationale",
+        "image_path": "/images/publications/PUB113.png",
+        "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME046",
         "count": 1
+      },
+      {
+        "id": "ME159",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 1
+    "publication_count": 2,
+    "degree": 2
   },
   {
     "id": "ME072",
@@ -2803,12 +2937,12 @@
     ],
     "associated": [
       {
-        "id": "ME075",
-        "count": 2
-      },
-      {
         "id": "ME036",
         "count": 1
+      },
+      {
+        "id": "ME075",
+        "count": 2
       },
       {
         "id": "ME099",
@@ -2903,12 +3037,12 @@
     ],
     "associated": [
       {
-        "id": "ME073",
-        "count": 2
-      },
-      {
         "id": "ME036",
         "count": 1
+      },
+      {
+        "id": "ME073",
+        "count": 2
       },
       {
         "id": "ME078",
@@ -4246,7 +4380,7 @@
     "id": "ME116",
     "label": "Le sentiment d'insécurité",
     "family": "Problème public",
-    "definition": "",
+    "definition": "Perception subjective de l’insécurité et craintes exprimées par les individus face au risque d’être victime.",
     "entities": [
       "Service statistique ministériel de la sécurité intérieure"
     ],
@@ -4263,20 +4397,42 @@
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139696/1101982/file/Rapport%20d%E2%80%99enque%CC%82te%20the%CC%81matique%202022%20V%C3%A9cu%20et%20ressenti%20en%20mati%C3%A8re%20de%20s%C3%A9curit%C3%A9.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Rapport-d-enquete-thematique-2022-Vecu-et-ressenti-en-matiere-de-securite-les-interactions-entre-les-forces-de-securite-interieure-et-la-population",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB112",
+        "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB112.png",
+        "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME016",
+        "count": 2
+      },
+      {
+        "id": "ME019",
+        "count": 1
+      },
+      {
+        "id": "ME024",
         "count": 1
       },
       {
         "id": "ME047",
         "count": 1
+      },
+      {
+        "id": "ME158",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 2
+    "publication_count": 2,
+    "degree": 5
   },
   {
     "id": "ME117",
@@ -4742,10 +4898,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à décrire les caractéristiques, fréquences et configurations d’un phénomène criminel à partir des données disponibles.",
     "entities": [
-      "Revue du Grasco"
+      "Revue du Grasco",
+      "Service statistique ministériel de la sécurité intérieure"
     ],
     "domains": [
-      "Criminologie"
+      "Criminologie",
+      "Sécurité publique"
     ],
     "publications": [
       {
@@ -4757,16 +4915,30 @@
         "url_contenu": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
         "url_source": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB111",
+        "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB111.png",
+        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME087",
         "count": 1
+      },
+      {
+        "id": "ME157",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 1
+    "publication_count": 2,
+    "degree": 2
   },
   {
     "id": "ME131",
@@ -5368,7 +5540,8 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Sécurité publique"
+      "Sécurité publique",
+      "Sécurité civile"
     ],
     "publications": [
       {
@@ -5380,16 +5553,34 @@
         "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
         "has_graph": false
+      },
+      {
+        "publication_id": "PUB113",
+        "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
+        "annee": "2026",
+        "organisme": "Centre de recherche de la Gendarmerie nationale",
+        "image_path": "/images/publications/PUB113.png",
+        "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME028",
         "count": 1
+      },
+      {
+        "id": "ME159",
+        "count": 1
+      },
+      {
+        "id": "ME160",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 1
+    "publication_count": 2,
+    "degree": 3
   },
   {
     "id": "ME149",
@@ -5658,5 +5849,173 @@
     ],
     "publication_count": 1,
     "degree": 1
+  },
+  {
+    "id": "ME157",
+    "label": "Délinquance enregistrée dans les transports en commun",
+    "family": "Problème public",
+    "definition": "Faits de délinquance enregistrés par les services de police et de gendarmerie dans les réseaux de transports en commun, analysés selon la nature des atteintes, les profils et les territoires.",
+    "entities": [
+      "Service statistique ministériel de la sécurité intérieure"
+    ],
+    "domains": [
+      "Sécurité publique"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB111",
+        "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB111.png",
+        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME006",
+        "count": 1
+      },
+      {
+        "id": "ME019",
+        "count": 1
+      },
+      {
+        "id": "ME045",
+        "count": 1
+      },
+      {
+        "id": "ME130",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 4
+  },
+  {
+    "id": "ME158",
+    "label": "Victimation déclarée",
+    "family": "Problème public",
+    "definition": "Faits d’atteintes aux biens ou aux personnes déclarés par les individus dans le cadre d’enquêtes de victimation.",
+    "entities": [
+      "Service statistique ministériel de la sécurité intérieure"
+    ],
+    "domains": [
+      "Sécurité publique"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB112",
+        "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "image_path": "/images/publications/PUB112.png",
+        "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+        "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME019",
+        "count": 1
+      },
+      {
+        "id": "ME024",
+        "count": 1
+      },
+      {
+        "id": "ME047",
+        "count": 1
+      },
+      {
+        "id": "ME116",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 4
+  },
+  {
+    "id": "ME159",
+    "label": "Feux de forêt",
+    "family": "Problème public",
+    "definition": "Incendies affectant les espaces forestiers et nécessitant des actions de prévention, de lutte, d’investigation et de gestion de crise.",
+    "entities": [
+      "Centre de recherche de la Gendarmerie nationale"
+    ],
+    "domains": [
+      "Sécurité civile"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB113",
+        "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
+        "annee": "2026",
+        "organisme": "Centre de recherche de la Gendarmerie nationale",
+        "image_path": "/images/publications/PUB113.png",
+        "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME002",
+        "count": 1
+      },
+      {
+        "id": "ME071",
+        "count": 1
+      },
+      {
+        "id": "ME148",
+        "count": 1
+      },
+      {
+        "id": "ME160",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 4
+  },
+  {
+    "id": "ME160",
+    "label": "Coordination interservices dans la prévention et la gestion des feux de forêt",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à coordonner plusieurs services et métiers dans la prévention, l’intervention, l’investigation et la gestion des feux de forêt.",
+    "entities": [
+      "Centre de recherche de la Gendarmerie nationale"
+    ],
+    "domains": [
+      "Sécurité civile"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB113",
+        "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
+        "annee": "2026",
+        "organisme": "Centre de recherche de la Gendarmerie nationale",
+        "image_path": "/images/publications/PUB113.png",
+        "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME148",
+        "count": 1
+      },
+      {
+        "id": "ME159",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
   }
 ]

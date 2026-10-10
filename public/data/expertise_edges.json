@@ -235,9 +235,10 @@
   {
     "source": "ME016",
     "target": "ME116",
-    "count": 1,
+    "count": 2,
     "publication_ids": [
-      "PUB013"
+      "PUB013",
+      "PUB112"
     ]
   },
   {
@@ -1376,6 +1377,126 @@
     "count": 1,
     "publication_ids": [
       "PUB090"
+    ]
+  },
+  {
+    "source": "ME157",
+    "target": "ME045",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
+    ]
+  },
+  {
+    "source": "ME157",
+    "target": "ME130",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
+    ]
+  },
+  {
+    "source": "ME157",
+    "target": "ME006",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
+    ]
+  },
+  {
+    "source": "ME157",
+    "target": "ME019",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
+    ]
+  },
+  {
+    "source": "ME158",
+    "target": "ME047",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME158",
+    "target": "ME116",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME158",
+    "target": "ME024",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME116",
+    "target": "ME024",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME158",
+    "target": "ME019",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME116",
+    "target": "ME019",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME159",
+    "target": "ME071",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
+    ]
+  },
+  {
+    "source": "ME159",
+    "target": "ME148",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
+    ]
+  },
+  {
+    "source": "ME159",
+    "target": "ME160",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
+    ]
+  },
+  {
+    "source": "ME159",
+    "target": "ME002",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
+    ]
+  },
+  {
+    "source": "ME148",
+    "target": "ME160",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
     ]
   }
 ]

@@ -1,13 +1,13 @@
 {
-  "source_workbook": "Modele_BDD_application_veille_CHRONO_310_PUB012_TRANSVERSAUX_V1(1).xlsx",
+  "source_workbook": "Modele_BDD_application_veille_CHRONO_310_PUB012_TRANSVERSAUX_V1(3).xlsx",
   "counts": {
     "publications": 50,
     "nodes": 1305,
     "relations": 1174,
     "treatments": 10,
     "contents": 996,
-    "expertise_nodes": 152,
-    "expertise_edges": 172
+    "expertise_nodes": 156,
+    "expertise_edges": 187
   },
   "graph_publications": [
     "PUB001",
