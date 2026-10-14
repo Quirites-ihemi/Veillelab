@@ -3,6 +3,7 @@ import {
   expertiseGephiLayout,
   expertiseClusters,
 } from './expertiseGephiLayout.js'
+import { atlasClusterColor, ATLAS_ISOLATED_COLOR } from './atlasPalette.js'
 
 const FAMILY_COLORS = {
   'Instrument / dispositif': '#7258d9',
@@ -184,7 +185,49 @@ export function selectOverviewExpertises(nodes, limit = Infinity) {
   return selected
 }
 
-function wrapLabel(label, maxChars = 32, maxLines = 3) {
+
+// ---------------------------------------------------------------------------
+// ATLAS — mesure du texte et découpage SANS TRONCATURE.
+// Les intitulés sont mesurés avec la police réellement utilisée (canvas),
+// puis découpés en lignes. Aucun mot n'est jamais supprimé.
+// ---------------------------------------------------------------------------
+
+const ATLAS_FONT_STACK = 'Manrope, "Segoe UI", Roboto, system-ui, -apple-system, sans-serif'
+const ATLAS_SERIF_STACK = '"Source Serif 4", Georgia, "Times New Roman", serif'
+
+let measureContext = null
+
+function measureText(text, font) {
+  if (typeof document === 'undefined') return String(text).length * 9
+  if (!measureContext) {
+    measureContext = document.createElement('canvas').getContext('2d')
+  }
+  measureContext.font = font
+  return measureContext.measureText(String(text)).width
+}
+
+function wrapByWidth(label, maxWidth, font) {
+  const words = String(label || '').split(/\s+/).filter(Boolean)
+  const lines = []
+  let current = ''
+
+  words.forEach(word => {
+    const next = current ? `${current} ${word}` : word
+    if (current && measureText(next, font) > maxWidth) {
+      lines.push(current)
+      current = word
+    } else {
+      current = next
+    }
+  })
+
+  if (current) lines.push(current)
+  return lines
+}
+
+// Conservé pour compatibilité : découpage par nombre de caractères, sans
+// suppression de lignes (l'ancienne version tronquait silencieusement).
+function wrapLabel(label, maxChars = 32) {
   const words = String(label || '').split(/\s+/).filter(Boolean)
   const lines = []
   let current = ''
@@ -200,11 +243,176 @@ function wrapLabel(label, maxChars = 32, maxLines = 3) {
   })
 
   if (current) lines.push(current)
-  return lines.slice(0, maxLines)
+  return lines
 }
 
 function familyColor(family) {
   return FAMILY_COLORS[family] || '#64748b'
+}
+
+// Taille du cœur lumineux d'un nœud, en pixels écran, déduite de la taille
+// Gephi (6 → 30). Les nœuds sont volontairement perceptibles d'emblée.
+function corePx(gephiSize) {
+  return 5 + Number(gephiSize || 6) * 0.4
+}
+
+// Géométrie des intitulés de clusters, en pixels écran. Sur un écran
+// portable, le gabarit compact (15 px) reste confortablement lisible.
+const TITLE_METRICS = {
+  regular: { font: 15.5, line: 19, maxWidth: 236, narrow: 180, trans: 13 },
+  compact: { font: 14.5, line: 18, maxWidth: 212, narrow: 168, trans: 12.5 },
+}
+const titleFont = m => `600 ${m.font}px ${ATLAS_SERIF_STACK}`
+const transFont = m => `italic 400 ${m.trans}px ${ATLAS_SERIF_STACK}`
+// Distance maximale entre un intitulé et sa constellation, et tolérance
+// de proximité avec une autre constellation (pixels écran).
+const TITLE_MAX_DISTANCE_PX = 150
+const TITLE_AMBIGUITY_PX = 60
+const TITLE_GAP_PX = 12       // écart minimal entre deux intitulés
+const NODE_CLEARANCE_PX = 7   // écart minimal entre un intitulé et un nœud
+// Bande libre réservée en bas du graphe quand une communauté est ouverte :
+// c'est l'emplacement de L'Éclaireur (bandeau ou pastille) dans cette vue.
+const OPEN_GUIDE_DOCK_PX = 100
+const GLOBAL_GUIDE_DOCK_PX = 96
+
+function titleBoxPx(cluster, m, maxWidth = m.maxWidth) {
+  const lines = wrapByWidth(cluster.label, maxWidth, titleFont(m))
+  const width = Math.max(
+    ...lines.map(line => measureText(line, titleFont(m))),
+    cluster.transdirectional ? measureText('Cluster transdirectionnel', transFont(m)) : 0
+  )
+  const height =
+    lines.length * m.line +
+    10 +
+    (cluster.transdirectional ? m.trans + 7 : 0)
+
+  // +6 px de marge : la police finale peut différer légèrement de la mesure.
+  return { lines, w: Math.ceil(width) + 6, h: height, m }
+}
+
+function boxesOverlap(a, b, margin = 0) {
+  return !(
+    a.x1 + margin <= b.x0 ||
+    b.x1 + margin <= a.x0 ||
+    a.y1 + margin <= b.y0 ||
+    b.y1 + margin <= a.y0
+  )
+}
+
+function boxHitsCircle(box, cx, cy, r) {
+  const nx = clamp(cx, box.x0, box.x1)
+  const ny = clamp(cy, box.y0, box.y1)
+  return Math.hypot(cx - nx, cy - ny) < r
+}
+
+const ALIGNMENTS = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]
+
+function angleGap(a, b) {
+  const d = Math.abs(a - b) % (Math.PI * 2)
+  return d > Math.PI ? Math.PI * 2 - d : d
+}
+
+// Positions candidates d'un intitulé, à l'EXTÉRIEUR de sa constellation :
+// à distance croissante du cluster, dans toutes les directions, le rectangle
+// touchant le point de départ par un bord ou un coin. Sont écartées d'emblée
+// les positions qui touchent un nœud ou sortent du cadre. Au-delà de
+// `maxExtra` pixels, l'intitulé serait trop loin de sa constellation pour
+// être lu comme le sien : on ne le propose pas.
+function titleCandidates({ cluster, box, unit, nodes, bounds, maxExtra }) {
+  const halfW = (box.w / 2) * unit
+  const halfH = (box.h / 2) * unit
+  const own = nodes.filter(n => n.clusterId === cluster.id)
+  // Les micro-expertises isolées n'ont pas d'intitulé : elles ne peuvent pas
+  // créer d'ambiguïté et ne sont prises en compte que comme obstacles.
+  const others = nodes.filter(n => n.clusterId !== cluster.id && !n.isolated)
+  const step = 8 * unit
+  const out = []
+
+  const distToRect = (rect, n) =>
+    Math.hypot(n.x - clamp(n.x, rect.x0, rect.x1), n.y - clamp(n.y, rect.y0, rect.y1))
+
+  // Fenêtre de recherche : emprise du cluster élargie de la taille de
+  // l'intitulé et de la distance maximale autorisée.
+  const reach = maxExtra * unit
+  const x0 = Math.max(bounds.x0 + halfW, cluster.minX - reach - halfW)
+  const x1 = Math.min(bounds.x1 - halfW, cluster.maxX + reach + halfW)
+  const y0 = Math.max(bounds.y0 + halfH, cluster.minY - reach - halfH)
+  const y1 = Math.min(bounds.y1 - halfH, cluster.maxY + reach + halfH)
+
+  for (let cx = x0; cx <= x1; cx += step) {
+    for (let cy = y0; cy <= y1; cy += step) {
+      const rect = { x0: cx - halfW, x1: cx + halfW, y0: cy - halfH, y1: cy + halfH }
+
+      if (nodes.some(n => boxHitsCircle(rect, n.x, n.y, (corePx(n.gephiSize) + NODE_CLEARANCE_PX) * unit))) continue
+
+      const dOwn = Math.min(...own.map(n => distToRect(rect, n))) / unit
+      if (dOwn > maxExtra) continue
+
+      // L'intitulé doit se lire comme celui de SA constellation : il est
+      // plus proche d'elle que de toute autre.
+      const dOther = others.length
+        ? Math.min(...others.map(n => distToRect(rect, n))) / unit
+        : Infinity
+      if (dOther < dOwn - TITLE_AMBIGUITY_PX) continue
+
+      out.push({ cx, cy, rect, box, extra: dOwn, cost: dOwn })
+    }
+  }
+
+  return out.sort((x, y) => x.cost - y.cost)
+}
+
+// Générateur pseudo-aléatoire déterministe : la carte est identique à
+// chaque ouverture.
+function seededRandom(seed) {
+  let t = seed >>> 0
+  return () => {
+    t += 0x6D2B79F5
+    let r = Math.imul(t ^ (t >>> 15), 1 | t)
+    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r)
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+// Choix global : on essaie plusieurs ordres de placement et on retient la
+// configuration qui affiche le plus d'intitulés (pondérés par la taille du
+// cluster) avec les traits de rappel les plus courts. Aucun recouvrement
+// n'est jamais accepté.
+function solveTitles(clusters, candidates, unit, fixed = []) {
+  const gap = TITLE_GAP_PX * unit
+  const run = order => {
+    const placed = [...fixed]
+    const chosen = new Map()
+    let score = 0
+    order.forEach(cluster => {
+      const list = candidates.get(cluster.id) || []
+      const spot = list.find(c => !placed.some(r => boxesOverlap(c.rect, r, gap)))
+      if (spot) {
+        placed.push(spot.rect)
+        chosen.set(cluster.id, spot)
+        score += cluster.nodeCount * 1000 - spot.cost
+      }
+    })
+    return { chosen, score }
+  }
+
+  let best = run(clusters)
+  const rand = seededRandom(1789)
+  for (let i = 0; i < 160; i += 1) {
+    const order = [...clusters]
+    for (let j = order.length - 1; j > 0; j -= 1) {
+      const k = Math.floor(rand() * (j + 1))
+      ;[order[j], order[k]] = [order[k], order[j]]
+    }
+    const result = run(order)
+    if (result.score > best.score) best = result
+  }
+  return best.chosen
+}
+
+// Point du rectangle le plus proche d'un point donné (pour le trait de rappel).
+function nearestOnRect(rect, x, y) {
+  return { x: clamp(x, rect.x0, rect.x1), y: clamp(y, rect.y0, rect.y1) }
 }
 
 export default function ExpertiseConstellation({
@@ -213,6 +421,9 @@ export default function ExpertiseConstellation({
   selected,
   onSelect,
   onClusterChange,
+  onHoverCluster,
+  highlightClusterId = null,
+  focusClusterRequest = null,
   guideOverviewStep = null,
   guidePulseNode = false,
   nodeSize = 1,
@@ -222,16 +433,21 @@ export default function ExpertiseConstellation({
 }) {
   const svgRef = useRef(null)
   const dragRef = useRef(null)
+  const groupRef = useRef(null)
+  const lastDragMovedRef = useRef(0)
 
   const [mode, setMode] = useState('cluster')
   const [activeCluster, setActiveCluster] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)
+  const [hoveredTitleId, setHoveredTitleId] = useState(null)
   const [scale, setScale] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [fontsReady, setFontsReady] = useState(0)
+  // Cadrage calculé à l'ouverture d'une communauté : sert à maintenir les
+  // colonnes d'étiquettes dans la partie visible du graphe.
+  const [openFrame, setOpenFrame] = useState(null)
 
-  // Dimensions réelles du cadre, en pixels. Elles servent à deux choses :
-  // aligner le viewBox sur le format du conteneur (plus de bandes latérales)
-  // et exprimer la taille des titres en pixels écran et non en unités monde.
+  // Dimensions réelles du cadre, en pixels.
   const [viewport, setViewport] = useState({ w: 1120, h: 740 })
 
   useEffect(() => {
@@ -241,7 +457,11 @@ export default function ExpertiseConstellation({
     const measure = () => {
       const rect = el.getBoundingClientRect()
       if (rect.width > 0 && rect.height > 0) {
-        setViewport({ w: rect.width, h: rect.height })
+        setViewport(current =>
+          Math.abs(current.w - rect.width) < 1 && Math.abs(current.h - rect.height) < 1
+            ? current
+            : { w: rect.width, h: rect.height }
+        )
       }
     }
 
@@ -251,9 +471,23 @@ export default function ExpertiseConstellation({
     return () => observer.disconnect()
   }, [])
 
+  // Les intitulés sont mesurés avec la police réelle : on recalcule une fois
+  // les polices web chargées.
+  useEffect(() => {
+    let alive = true
+    const fonts = document.fonts
+    if (fonts?.load) {
+      Promise.all([
+        fonts.load(`600 15px ${ATLAS_SERIF_STACK}`),
+        fonts.load(`italic 400 13px ${ATLAS_SERIF_STACK}`),
+        fonts.load(`600 14px ${ATLAS_FONT_STACK}`),
+      ]).then(() => alive && setFontsReady(x => x + 1)).catch(() => {})
+    }
+    fonts?.ready?.then(() => alive && setFontsReady(x => x + 1))
+    return () => { alive = false }
+  }, [])
 
   const overviewNodes = useMemo(
-    // ÉTAPE 2A — vue globale complète : 152 nœuds, plus d'échantillonnage.
     () => selectOverviewExpertises(nodes, Infinity),
     [nodes]
   )
@@ -283,6 +517,9 @@ export default function ExpertiseConstellation({
             gephiSize: layout.size,
             clusterId: layout.cluster,
             isolated: Boolean(layout.isolated),
+            color: layout.isolated
+              ? ATLAS_ISOLATED_COLOR
+              : atlasClusterColor(layout.cluster),
           }
         })
         .filter(Boolean),
@@ -302,32 +539,32 @@ export default function ExpertiseConstellation({
     [edges, byId]
   )
 
-  // -------------------------------------------------------------------------
-  // MODÈLE DE MISE EN PAGE — passe unique, sans rétroaction.
-  //
-  // La taille des titres est calée sur une RÉFÉRENCE STABLE (l'emprise des
-  // nœuds seuls), jamais sur le cadre final. Sans cela on obtient une boucle
-  // divergente : un titre plus grand agrandit le cadre, qui agrandit le titre.
-  // Le cadre final, lui, englobe les boîtes de titre réelles — donc plus
-  // aucun titre n'est rogné.
-  // -------------------------------------------------------------------------
-  const TITLE_PX = 24
-  const TITLE_BOOST = 1.4
-
   // Seuil d'affichage permanent des titres de clusters. En deçà, le titre
-  // n'apparaît qu'au survol, au zoom, ou quand le cluster est ouvert.
+  // n'apparaît qu'au survol, depuis le panneau, ou quand le cluster est ouvert.
   const TITLE_MIN_NODES = 6
 
-  // Géométrie des étiquettes de nœuds en vue cluster ouvert, exprimée en
-  // pixels écran puis convertie en unités monde via `unit`.
-  const OPEN_LABEL_WIDTH = 230
-  const OPEN_LABEL_OFFSET = 30
-  const OPEN_LABEL_FONT_MAX = 19
+  // Géométrie des étiquettes de nœuds en vue cluster ouvert (pixels écran).
+  const OPEN_LABEL_WIDTH = 240
+  const OPEN_LABEL_OFFSET = 34
+  const OPEN_LABEL_FONT_MAX = 15
   const OPEN_LABEL_FONT_MIN = 13
-  const OPEN_LABEL_LINES = 3
 
+  // -------------------------------------------------------------------------
+  // MODÈLE DE MISE EN PAGE
+  // 1. cadre de référence sur les nœuds seuls ;
+  // 2. placement des grands intitulés à l'extérieur, sans collision ;
+  // 3. cadre final englobant nœuds + intitulés, puis on recommence avec
+  //    l'échelle finale (3 passes) pour que les tailles soient exactes ;
+  // 4. intitulés des petits clusters, posés DANS le cadre final, sans
+  //    collision avec les précédents (affichés au survol uniquement).
+  // -------------------------------------------------------------------------
   const model = useMemo(() => {
-    const frameRatio = viewport.w / Math.max(1, viewport.h)
+    // Écran bas (portable) : une bande libre est aussi réservée en bas de la
+    // vue globale, pour que L'Éclaireur ait toujours où se poser.
+    const dockPx = viewport.h < 700 ? GLOBAL_GUIDE_DOCK_PX : 0
+    const effH = Math.max(1, viewport.h - dockPx)
+    const frameRatio = viewport.w / effH
+    const metrics = viewport.w < 860 || viewport.h < 660 ? TITLE_METRICS.compact : TITLE_METRICS.regular
 
     const frame = (box, padX, padY) => {
       const w = Math.max(1, box.maxX - box.minX) * padX
@@ -359,10 +596,10 @@ export default function ExpertiseConstellation({
       maxY: Math.max(...positionedNodes.map(n => n.y)),
     }
 
-    const reference = frame(nodeBox, 1.3, 1.3)
-    const unit = reference.h / Math.max(1, viewport.h)
-    const titleSize = TITLE_PX * TITLE_BOOST * unit
-    const lineHeight = titleSize * 1.16
+    const center = {
+      x: positionedNodes.reduce((a, n) => a + n.x, 0) / positionedNodes.length,
+      y: positionedNodes.reduce((a, n) => a + n.y, 0) / positionedNodes.length,
+    }
 
     const grouped = new Map()
     positionedNodes.forEach(node => {
@@ -370,128 +607,106 @@ export default function ExpertiseConstellation({
       grouped.get(node.clusterId).push(node)
     })
 
-    const clusters = expertiseClusters
+    const baseClusters = expertiseClusters
       .filter(cluster => grouped.has(cluster.id))
       .map(cluster => {
         const clusterNodes = grouped.get(cluster.id)
         const xs = clusterNodes.map(n => n.x)
         const ys = clusterNodes.map(n => n.y)
-
         const minX = Math.min(...xs)
         const maxX = Math.max(...xs)
         const minY = Math.min(...ys)
         const maxY = Math.max(...ys)
         const centerX = (minX + maxX) / 2
         const centerY = (minY + maxY) / 2
-
         const spread = Math.max(
           ...clusterNodes.map(n => Math.hypot(n.x - centerX, n.y - centerY))
         )
 
-        // Quatre lignes autorisées : plus aucun titre tronqué.
-        const lines = wrapLabel(cluster.label, 26, 4)
-        const blockHeight =
-          lines.length * lineHeight + (cluster.transdirectional ? lineHeight : 0)
-        const halfW =
-          (Math.max(...lines.map(l => l.length)) * titleSize * 0.5) / 2
-        const halfH = blockHeight / 2
-
-        let dx = centerX - GRAPH_CENTER.x
-        let dy = centerY - GRAPH_CENTER.y
-        const norm = Math.hypot(dx, dy) || 1
-        dx /= norm
-        dy /= norm
-
-        // L'écartement tient compte de la dimension du bloc DANS la direction
-        // où il part : un titre large chassé latéralement doit s'éloigner de
-        // sa demi-largeur, pas de sa demi-hauteur.
-        let offset =
-          spread + 20 * unit + Math.abs(dx) * halfW + Math.abs(dy) * halfH
-        let labelX = centerX + dx * offset
-        let labelY = centerY + dy * offset
-
-        // Répulsion contre les nœuds, bornée pour ne pas exiler le titre.
-        for (let step = 0; step < 12; step += 1) {
-          const hit = positionedNodes.some(
-            n =>
-              Math.abs(n.x - labelX) < halfW + 8 * unit &&
-              Math.abs(n.y - labelY) < halfH + 8 * unit
-          )
-          if (!hit) break
-          offset += 16 * unit
-          labelX = centerX + dx * offset
-          labelY = centerY + dy * offset
-        }
-
         return {
           ...cluster,
+          color: atlasClusterColor(cluster.id),
           showLabel: clusterNodes.length >= TITLE_MIN_NODES,
           nodeIds: new Set(clusterNodes.map(n => n.id)),
+          nodeCount: clusterNodes.length,
           minX,
           maxX,
           minY,
           maxY,
           centerX,
           centerY,
-          lines,
-          blockHeight,
-          titleSize,
-          lineHeight,
-          halfW,
-          halfH,
-          labelWorldWidth: halfW * 2,
-          labelX,
-          labelY,
-          radius: Math.max(70, spread + 46),
+          spread,
+          box: titleBoxPx(cluster, metrics),
+          boxes: [titleBoxPx(cluster, metrics), titleBoxPx(cluster, metrics, metrics.narrow)],
         }
       })
 
-    // Désempilement vertical entre titres.
-    for (let iter = 0; iter < 60; iter += 1) {
-      for (let i = 0; i < clusters.length; i += 1) {
-        for (let j = i + 1; j < clusters.length; j += 1) {
-          const a = clusters[i]
-          const b = clusters[j]
-          if (!a.showLabel || !b.showLabel) continue
-          if (Math.abs(a.labelX - b.labelX) >= a.halfW + b.halfW) continue
-          const needY = a.halfH + b.halfH + 8 * unit
-          const gapY = Math.abs(a.labelY - b.labelY)
-          if (gapY >= needY) continue
+    const major = baseClusters
+      .filter(c => c.showLabel)
+      .sort((a, b) => b.nodeCount - a.nodeCount)
+    const minor = baseClusters
+      .filter(c => !c.showLabel)
+      .sort((a, b) => b.nodeCount - a.nodeCount)
 
-          const push = (needY - gapY) / 2 + 1
-          if (a.labelY <= b.labelY) {
-            a.labelY -= push
-            b.labelY += push
-          } else {
-            a.labelY += push
-            b.labelY -= push
-          }
-        }
-      }
+    // Le cadre est calé sur les NŒUDS (le graphe reste le protagoniste) ;
+    // les intitulés sont ensuite posés dans l'espace libre de ce cadre.
+    const viewTop = frame(nodeBox, 1.24, 1.24)
+    const unit = viewTop.h / effH
+    const view = { ...viewTop, h: viewTop.h + dockPx * unit }
+    const bounds = {
+      x0: viewTop.x + 8 * unit,
+      x1: viewTop.x + viewTop.w - 8 * unit,
+      y0: viewTop.y + 8 * unit,
+      y1: viewTop.y + viewTop.h - 8 * unit,
     }
 
-    // Cadre final : nœuds ET boîtes de titre réelles.
-    const xs = [nodeBox.minX - 16 * unit, nodeBox.maxX + 16 * unit]
-    const ys = [nodeBox.minY - 16 * unit, nodeBox.maxY + 16 * unit]
-    clusters.forEach(c => {
-      if (!c.showLabel) return
-      xs.push(c.labelX - c.halfW, c.labelX + c.halfW)
-      ys.push(c.labelY - c.halfH - c.lineHeight, c.labelY + c.halfH)
-    })
+    const candidatesFor = (list, maxExtra) => {
+      const map = new Map()
+      list.forEach(cluster => {
+        const all = cluster.boxes.flatMap((box, variant) =>
+          titleCandidates({
+            cluster,
+            box,
+            unit,
+            nodes: positionedNodes,
+            bounds,
+            maxExtra,
+          }).map(c => ({ ...c, cost: c.cost + variant * 6 }))
+        )
+        map.set(cluster.id, all.sort((x, y) => x.cost - y.cost))
+      })
+      return map
+    }
 
-    const view = frame(
-      {
-        minX: Math.min(...xs),
-        maxX: Math.max(...xs),
-        minY: Math.min(...ys),
-        maxY: Math.max(...ys),
-      },
-      1.03,
-      1.04
+    // Grands clusters : intitulés permanents, proches de leur constellation.
+    const majorSpots = solveTitles(major, candidatesFor(major, TITLE_MAX_DISTANCE_PX), unit)
+    // Petits clusters : intitulés révélés au survol, sans recouvrir les autres.
+    const minorSpots = solveTitles(
+      minor,
+      candidatesFor(minor, TITLE_MAX_DISTANCE_PX),
+      unit,
+      [...majorSpots.values()].map(spot => spot.rect)
     )
 
-    return { view, clusters, unit: view.h / Math.max(1, viewport.h) }
-  }, [positionedNodes, viewport])
+    const placements = new Map()
+    ;[...majorSpots, ...minorSpots].forEach(([id, spot]) => {
+      placements.set(id, { ...spot, unit })
+    })
+
+    const clusters = baseClusters.map(cluster => {
+      const spot = placements.get(cluster.id) || null
+      return {
+        ...cluster,
+        placement: spot,
+        // Un grand cluster dont l'intitulé n'a pas trouvé de place libre
+        // n'est pas affiché en permanence (règle : aucun chevauchement).
+        showLabel: cluster.showLabel && Boolean(spot),
+        radius: Math.max(70, cluster.spread + 46),
+      }
+    })
+
+    return { view, clusters, unit }
+  }, [positionedNodes, viewport, fontsReady])
 
   const view = model.view
   const unit = model.unit
@@ -500,9 +715,8 @@ export default function ExpertiseConstellation({
   const primaryGuideClusterId = useMemo(() => {
     if (!clusterStats.length) return null
 
-    // Cluster vert « Articulation entre recherche scientifique et pratiques
-    // de sécurité intérieure » : il reste bien dégagé à gauche de la carte et
-    // sert de repère stable pendant la lecture animée de l’Éclaireur.
+    // Cluster « Articulation entre recherche scientifique et pratiques
+    // de sécurité intérieure » : repère stable pendant la visite guidée.
     const greenReferenceCluster = clusterStats.find(cluster => cluster.id === 43)
     if (greenReferenceCluster) return greenReferenceCluster.id
 
@@ -543,9 +757,6 @@ export default function ExpertiseConstellation({
   const guideOverviewNodeIds = useMemo(() => {
     if (activeCluster !== null || guideOverviewStep !== 0) return new Set()
 
-    // Pour expliquer ce qu'est un point, on fait pulser plusieurs micro-expertises
-    // du cluster vert. Trois points sont assez nombreux pour attirer l'œil sans
-    // donner l'impression que toute la communauté est sélectionnée.
     const candidates = positionedNodes
       .filter(node => node.clusterId === primaryGuideClusterId)
       .sort((a, b) => b.gephiSize - a.gephiSize)
@@ -566,10 +777,6 @@ export default function ExpertiseConstellation({
   const guideLinkKeys = useMemo(() => {
     if (activeCluster !== null || guideOverviewStep !== 1) return new Set()
 
-    // Pendant l'étape « liens », on éclaire nettement davantage d'arêtes autour
-    // du cluster vert. Les liens internes sont prioritaires, puis viennent ses
-    // connexions vers le reste du réseau : cela rend immédiatement visible la
-    // logique relationnelle du graphe sans faire clignoter toutes les arêtes.
     const candidates = visibleEdges
       .map(edge => {
         const source = byId.get(edge.source)
@@ -616,13 +823,22 @@ export default function ExpertiseConstellation({
     [view]
   )
 
-  // Cluster actuellement survolé, déduit du nœud sous le curseur : il sert à
-  // révéler le titre des petits clusters, masqués en vue globale.
-  const hoveredClusterId = useMemo(() => {
+  // Cluster survolé : déduit du nœud sous le curseur, d'un intitulé survolé,
+  // ou du panneau « Communautés d'expertise ».
+  const hoveredNodeClusterId = useMemo(() => {
     if (!hoveredId) return null
-    const node = positionedNodes.find(n => n.id === hoveredId)
-    return node ? node.clusterId : null
-  }, [hoveredId, positionedNodes])
+    const node = byId.get(hoveredId)
+    return node && !node.isolated ? node.clusterId : null
+  }, [hoveredId, byId])
+
+  const emphasisClusterId =
+    activeCluster === null
+      ? (highlightClusterId ?? hoveredTitleId ?? hoveredNodeClusterId ?? null)
+      : null
+
+  useEffect(() => {
+    onHoverCluster?.(hoveredTitleId ?? hoveredNodeClusterId ?? null)
+  }, [hoveredTitleId, hoveredNodeClusterId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectedId = selected?.id || null
 
@@ -641,6 +857,7 @@ export default function ExpertiseConstellation({
   useEffect(() => {
     setActiveCluster(null)
     setHoveredId(null)
+    setHoveredTitleId(null)
     setScale(1)
     setPan({ x: 0, y: 0 })
     setMode('cluster')
@@ -668,23 +885,25 @@ export default function ExpertiseConstellation({
     setPan({ x: 0, y: 0 })
   }
 
-  const focusCluster = cluster => {
+  const openCluster = cluster => {
     if (!cluster) return
-
-    if (activeCluster === cluster.id) {
-      closeCluster()
-      return
-    }
 
     // A cluster focus must not inherit a previous node selection.
     onSelect?.(null)
     setActiveCluster(cluster.id)
+    setHoveredTitleId(null)
     onClusterChange?.({
       id: cluster.id,
       label: cluster.label,
       transdirectional: Boolean(cluster.transdirectional),
     })
 
+    frameCluster(cluster)
+  }
+
+  // Cadrage d'une communauté ouverte. Rappelé quand le cadre change de taille
+  // (ouverture de la fiche, repli d'un panneau) pour rester centré.
+  const frameCluster = cluster => {
     const clusterNodes = positionedNodes.filter(
       node => node.clusterId === cluster.id
     )
@@ -694,34 +913,64 @@ export default function ExpertiseConstellation({
     const xs = clusterNodes.map(node => node.x)
     const ys = clusterNodes.map(node => node.y)
     const centerX = (Math.min(...xs) + Math.max(...xs)) / 2
-    const centerY = (Math.min(...ys) + Math.max(...ys)) / 2
 
-    // Le zoom n'est plus une valeur forfaitaire : il est calculé pour que la
-    // constellation ET ses étiquettes de nœuds remplissent réellement le cadre.
     const spanX = Math.max(...xs) - Math.min(...xs)
     const spanY = Math.max(...ys) - Math.min(...ys)
 
-    // Les étiquettes occupent une largeur FIXE en pixels de chaque côté ; on
-    // résout donc le zoom sur la place qui reste réellement au nuage de nœuds.
+    // Place réservée : étiquettes de part et d'autre, intitulé au-dessus.
+    const titleReserve = cluster.box.h + 26
     const freeW =
       viewport.w * 0.94 - 2 * (OPEN_LABEL_OFFSET + OPEN_LABEL_WIDTH)
-    const freeH = viewport.h * 0.94 - 2 * OPEN_LABEL_FONT_MAX * 2
+    const freeH = viewport.h * 0.9 - OPEN_GUIDE_DOCK_PX - titleReserve - 2 * OPEN_LABEL_FONT_MAX * 2
 
-    const byWidth = (freeW * unit) / Math.max(1, spanX)
-    const byHeight = (freeH * unit) / Math.max(1, spanY)
+    const byWidth = (Math.max(80, freeW) * unit) / Math.max(1, spanX)
+    const byHeight = (Math.max(80, freeH) * unit) / Math.max(1, spanY)
 
     const nextScale = clamp(Math.min(byWidth, byHeight), 1, MAX_SCALE)
 
-    setScale(nextScale)
-    setPan({
+    // On centre l'ensemble « intitulé + constellation ».
+    const topWorld = Math.min(...ys) - (titleReserve * unit) / nextScale
+    const centerY = (topWorld + Math.max(...ys)) / 2
+
+    const nextPan = {
       x: nextScale * (viewCenter.x - centerX),
-      y: nextScale * (viewCenter.y - centerY),
-    })
+      // Remonté d'une demi-bande : la bande basse reste libre.
+      y: nextScale * (viewCenter.y - centerY) - (OPEN_GUIDE_DOCK_PX / 2) * unit,
+    }
+    setScale(nextScale)
+    setPan(nextPan)
+    setOpenFrame({ scale: nextScale, pan: nextPan })
   }
 
-  // Étiquettes des nœuds en vue cluster ouvert. La police n'est plus une
-  // constante : elle est déduite de la hauteur disponible par étiquette, donc
-  // aussi grande que le cluster le permet. Retourne aussi ses propres mesures.
+  useEffect(() => {
+    if (activeCluster === null) return
+    const cluster = clusterStats.find(item => item.id === activeCluster)
+    if (cluster) frameCluster(cluster)
+  }, [viewport.w, viewport.h]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const focusCluster = cluster => {
+    if (!cluster) return
+
+    if (activeCluster === cluster.id) {
+      closeCluster()
+      return
+    }
+
+    openCluster(cluster)
+  }
+
+  // Ouverture demandée depuis le panneau « Communautés d'expertise ».
+  useEffect(() => {
+    if (!focusClusterRequest) return
+    if (focusClusterRequest.id === null) {
+      if (activeCluster !== null) closeCluster()
+      return
+    }
+    const cluster = clusterStats.find(item => item.id === focusClusterRequest.id)
+    if (cluster && activeCluster !== cluster.id) openCluster(cluster)
+  }, [focusClusterRequest?.token]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Étiquettes des nœuds en vue cluster ouvert, en colonnes de part et d'autre.
   const activeNodeLabels = useMemo(() => {
     const none = { items: [], font: OPEN_LABEL_FONT_MIN, rowHeight: 0 }
     if (activeCluster === null) return none
@@ -743,17 +992,33 @@ export default function ExpertiseConstellation({
       .sort((a, b) => a.y - b.y)
 
     const perSide = Math.max(left.length, right.length, 1)
-    const rowPx = (viewport.h * 0.96) / perSide
+    const available = viewport.h - 70 - OPEN_GUIDE_DOCK_PX
+    const fontFor = lines =>
+      clamp(
+        available / perSide / (lines * 1.25 + 0.55),
+        OPEN_LABEL_FONT_MIN,
+        OPEN_LABEL_FONT_MAX
+      )
 
-    const font = clamp(
-      rowPx / (OPEN_LABEL_LINES * 1.28 + 0.7),
-      OPEN_LABEL_FONT_MIN,
-      OPEN_LABEL_FONT_MAX
-    )
+    // Lignes réelles à la police retenue : on part de la plus grande police
+    // possible et on descend tant que le nombre de lignes l'exige.
+    let font = OPEN_LABEL_FONT_MAX
+    let maxLines = 1
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      const f = `600 ${font}px ${ATLAS_FONT_STACK}`
+      maxLines = Math.max(
+        ...clusterNodes.map(n => wrapByWidth(n.label, OPEN_LABEL_WIDTH, f).length)
+      )
+      const next = fontFor(maxLines)
+      if (Math.abs(next - font) < 0.25) break
+      font = next
+    }
 
-    // Tout est exprimé en pixels écran puis ramené en unités monde.
+    const fontString = `600 ${font}px ${ATLAS_FONT_STACK}`
+    const rowPx = font * (maxLines * 1.25 + 0.55)
+
     const toWorld = px => (px * unit) / scale
-    const gap = toWorld(Math.max(rowPx, font * (OPEN_LABEL_LINES * 1.28 + 0.7)))
+    const gap = toWorld(rowPx)
 
     const distribute = (items, side) => {
       if (!items.length) return []
@@ -773,7 +1038,21 @@ export default function ExpertiseConstellation({
       const avgPlaced =
         placed.reduce((sum, item) => sum + item.y, 0) / placed.length
 
-      const shift = avgOriginal - avgPlaced
+      let shift = avgOriginal - avgPlaced
+
+      // Colonne maintenue dans la zone visible (sous les boutons du haut).
+      if (openFrame) {
+        const k = openFrame.scale
+        const visTop = viewCenter.y - openFrame.pan.y / k - view.h / (2 * k)
+        const visBottom = viewCenter.y - openFrame.pan.y / k + view.h / (2 * k)
+        const half = gap / 2
+        const top = visTop + (60 * unit) / k
+        const bottom = visBottom - ((10 + OPEN_GUIDE_DOCK_PX) * unit) / k
+        const last = placed[placed.length - 1].y + shift + half
+        if (last > bottom) shift -= last - bottom
+        if (placed[0].y + shift - half < top) shift += top - (placed[0].y + shift - half)
+      }
+
       const x =
         side === 'left'
           ? cluster.minX - toWorld(OPEN_LABEL_OFFSET)
@@ -784,6 +1063,7 @@ export default function ExpertiseConstellation({
         x,
         y: item.y + shift,
         side,
+        lines: wrapByWidth(item.node.label, OPEN_LABEL_WIDTH, fontString),
       }))
     }
 
@@ -792,7 +1072,7 @@ export default function ExpertiseConstellation({
       font,
       rowHeight: rowPx,
     }
-  }, [activeCluster, clusterStats, positionedNodes, unit, scale, viewport])
+  }, [activeCluster, clusterStats, positionedNodes, unit, scale, viewport, openFrame, view, viewCenter])
 
   const onPointerDown = event => {
     if (event.button !== 0) return
@@ -802,6 +1082,7 @@ export default function ExpertiseConstellation({
 
     dragRef.current = {
       pointerId: event.pointerId,
+      moved: 0,
       startX: event.clientX,
       startY: event.clientY,
       panX: pan.x,
@@ -813,9 +1094,52 @@ export default function ExpertiseConstellation({
     event.currentTarget.setPointerCapture?.(event.pointerId)
   }
 
+  // -------------------------------------------------------------------------
+  // SÉLECTION AU POINTEUR : le nœud retenu est TOUJOURS celui dont le centre
+  // est le plus proche du pointeur (dans la limite de son rayon + 9 px).
+  // Les anciennes zones cliquables, plus larges que les nœuds, se
+  // chevauchaient : le dernier nœud dessiné « volait » le clic de son voisin.
+  // -------------------------------------------------------------------------
+  const nodeAtPointer = event => {
+    const svg = svgRef.current
+    const group = groupRef.current
+    const ctm = group?.getScreenCTM?.()
+    if (!svg || !ctm) return null
+
+    const point = svg.createSVGPoint()
+    point.x = event.clientX
+    point.y = event.clientY
+    const world = point.matrixTransform(ctm.inverse())
+    const pxPerWorld = Math.hypot(ctm.a, ctm.b) || 1
+
+    let best = null
+    let bestDistance = Infinity
+    positionedNodes.forEach(node => {
+      if (nodeOpacity(node) < 0.1) return
+      const distance = Math.hypot(node.x - world.x, node.y - world.y) * pxPerWorld
+      const reach = radiusFor(node) * pxPerWorld + 9
+      if (distance <= reach && distance < bestDistance) {
+        best = node
+        bestDistance = distance
+      }
+    })
+    return best
+  }
+
   const onPointerMove = event => {
     const drag = dragRef.current
-    if (!drag || drag.pointerId !== event.pointerId) return
+    if (!drag || drag.pointerId !== event.pointerId) {
+      if (event.target.closest?.('.atlas-title')) return
+      const node = nodeAtPointer(event)
+      const id = node ? node.id : null
+      if (id !== hoveredId) setHoveredId(id)
+      return
+    }
+
+    drag.moved = Math.max(
+      drag.moved,
+      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY)
+    )
 
     const dx =
       (event.clientX - drag.startX) *
@@ -836,8 +1160,17 @@ export default function ExpertiseConstellation({
   const endDrag = event => {
     const drag = dragRef.current
     if (!drag || drag.pointerId !== event.pointerId) return
+    lastDragMovedRef.current = drag.moved
     dragRef.current = null
     event.currentTarget.releasePointerCapture?.(event.pointerId)
+  }
+
+  const onSvgClick = event => {
+    if (event.target.closest?.('.atlas-title')) return
+    // Un glisser-déplacer n'est pas un clic.
+    if (lastDragMovedRef.current > 5) return
+    const node = nodeAtPointer(event)
+    if (node) onSelect?.(node)
   }
 
   const zoomTransform = [
@@ -846,96 +1179,271 @@ export default function ExpertiseConstellation({
     `translate(${-viewCenter.x} ${-viewCenter.y})`,
   ].join(' ')
 
-  useEffect(() => {
-    // L’interface validée ne montre pas le bloc « Afficher ».
-    // On conserve les filtres Entité(s), Type d’expertise et les réglages d’affichage.
-    const hideTextBlock = text => {
-      const allEls = Array.from(document.querySelectorAll('aside h1, aside h2, aside h3, aside p, aside a, aside label, aside div, aside span'))
-      const el = allEls.find(node => (node.textContent || '').trim() === text)
-      if (!el) return
-      el.style.display = 'none'
-      const parent = el.parentElement
-      if (parent && parent !== document.body) {
-        const txt = (parent.textContent || '').trim()
-        if (txt && txt.length < 180) {
-          parent.style.display = 'none'
-        }
-      }
-    }
-
-    hideTextBlock('Afficher')
-    hideTextBlock('Toutes les expertises')
-    hideTextBlock('Mes expertises uniquement')
-  }, [])
-
   const hoveredNode = hoveredId ? byId.get(hoveredId) : null
   const labelNode = selected && byId.get(selected.id)
     ? byId.get(selected.id)
     : hoveredNode
 
+  // Échelle inverse appliquée aux intitulés : au zoom avant, ils gardent leur
+  // taille à l'écran (et ne peuvent donc pas se chevaucher davantage).
+  const titleScale = 1 / Math.max(1, scale)
+
+  // Taille des cœurs : constante à l'écran en cluster ouvert.
+  const radiusFor = node => {
+    const px = corePx(node.gephiSize) * nodeSize
+    return activeCluster !== null
+      ? (px * 1.25 * unit) / scale
+      : px * unit
+  }
+
+  const activeClusterStat =
+    activeCluster !== null
+      ? clusterStats.find(cluster => cluster.id === activeCluster)
+      : null
+
+  // Carte d'information (coin inférieur gauche) : nom complet du cluster
+  // survolé, y compris pour les petits clusters sans intitulé permanent.
+  const infoCluster =
+    activeCluster === null && emphasisClusterId !== null
+      ? clusterStats.find(cluster => cluster.id === emphasisClusterId)
+      : null
+
+  const nodeOpacity = node => {
+    // Communauté ouverte : les nœuds extérieurs restent en retrait, même
+    // voisins de l'expertise sélectionnée (ils passeraient sous les étiquettes).
+    if (activeCluster !== null && node.clusterId !== activeCluster) {
+      return selectedId && neighbourIds.has(node.id) ? 0.3 : 0.07
+    }
+    if (selectedId) return neighbourIds.has(node.id) ? 1 : 0.16
+    if (activeCluster !== null) return 1
+    if (emphasisClusterId !== null) return node.clusterId === emphasisClusterId ? 1 : 0.2
+    return 1
+  }
+
+  const renderTitle = (cluster, opts) => {
+    const { cx, cy, k, open } = opts
+    const box = opts.box || cluster.box
+    const u = open ? unit / scale : unit
+    const w = box.w * u
+    const h = box.h * u
+    const x0 = cx - w / 2
+    const y0 = cy - h / 2
+    const m = box.m
+    const font = m.font * u
+    const line = m.line * u
+    const underlineY = y0 + box.lines.length * line + 5 * u
+    const isGuide =
+      guideClusterId === cluster.id || guideTitleClusterId === cluster.id
+
+    return (
+      <g
+        key={`label-${cluster.id}`}
+        className={`entry-cluster-label atlas-title ${isGuide ? 'eclaireur-cluster-label-pulse' : ''} ${open ? 'is-open' : ''}`}
+        transform={k === 1 ? undefined : `translate(${cx} ${cy}) scale(${k}) translate(${-cx} ${-cy})`}
+        role="button"
+        tabIndex="0"
+        aria-label={
+          cluster.transdirectional
+            ? `${cluster.label}, Cluster transdirectionnel`
+            : cluster.label
+        }
+        onPointerDown={event => event.stopPropagation()}
+        onMouseEnter={() => setHoveredTitleId(cluster.id)}
+        onMouseLeave={() => setHoveredTitleId(null)}
+        onClick={() => focusCluster(cluster)}
+        onKeyDown={event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            focusCluster(cluster)
+          }
+        }}
+        data-cluster-id={cluster.id}
+      >
+        <rect
+          className="atlas-title-hit"
+          x={x0 - 6 * u}
+          y={y0 - 4 * u}
+          width={w + 12 * u}
+          height={h + 8 * u}
+          rx={8 * u}
+        />
+
+        <text
+          x={cx}
+          y={y0 + (m.font - 0.5) * u}
+          textAnchor="middle"
+          className="entry-cluster-title-svg atlas-title-text"
+          style={{ fontSize: `${font}px` }}
+        >
+          {box.lines.map((text, index) => (
+            <tspan key={`${cluster.id}-${index}`} x={cx} dy={index === 0 ? 0 : line}>
+              {text}
+            </tspan>
+          ))}
+        </text>
+
+        <rect
+          className="atlas-title-underline"
+          x={cx - Math.min(w / 2, 80 * u)}
+          y={underlineY - 1.25 * u}
+          width={Math.min(w, 160 * u)}
+          height={2.5 * u}
+          rx={1.25 * u}
+          fill={`url(#atlas-underline-${cluster.id})`}
+        />
+
+        {cluster.transdirectional && (
+          <text
+            x={cx}
+            y={underlineY + (m.trans + 4) * u}
+            textAnchor="middle"
+            className={`entry-cluster-transdirectional-svg atlas-title-trans ${
+              guideTransClusterId === cluster.id ? 'eclaireur-transdirectional-pulse' : ''
+            }`}
+            style={{ fontSize: `${m.trans * u}px` }}
+          >
+            Cluster transdirectionnel
+          </text>
+        )}
+      </g>
+    )
+  }
+
   return (
-    <section className="constellation-shell gephi-entry-shell">
-      <div className="gephi-zoom-tools" aria-label="Zoom du graphe">
-        <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant">+</button>
-        <button type="button" onClick={() => zoom(0.86)} aria-label="Zoom arrière">−</button>
-        <button type="button" onClick={resetView} aria-label="Recentrer">⌾</button>
+    <section className="constellation-shell atlas-constellation">
+      <div className="atlas-zoom-tools" aria-label="Zoom du graphe">
+        <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant" title="Zoom avant">+</button>
+        <button type="button" onClick={() => zoom(0.86)} aria-label="Zoom arrière" title="Zoom arrière">−</button>
+        <button type="button" onClick={resetView} aria-label="Recentrer" title="Recentrer">⌾</button>
       </div>
 
       {activeCluster !== null && mode === 'cluster' && (
         <button
           type="button"
-          className="gephi-back-cluster"
+          className="atlas-back-cluster"
           onClick={closeCluster}
         >
-          Retour à la carte complète
+          <span aria-hidden="true">←</span> Retour au graphe complet
         </button>
+      )}
+
+      {infoCluster && (
+        <div className="atlas-hover-card" aria-live="polite">
+          <i style={{ background: infoCluster.color, boxShadow: `0 0 10px ${infoCluster.color}` }} />
+          <div>
+            <strong>{infoCluster.label}</strong>
+            {infoCluster.transdirectional && <em>Cluster transdirectionnel</em>}
+            <small>{infoCluster.nodeCount} micro-expertise{infoCluster.nodeCount > 1 ? 's' : ''} · cliquer pour explorer</small>
+          </div>
+        </div>
       )}
 
       <svg
         ref={svgRef}
-        className="gephi-entry-svg"
+        className="atlas-svg"
         viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="Carte des expertises ministérielles"
+        aria-label="Atlas des expertises ministérielles"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onPointerLeave={() => !dragRef.current && setHoveredId(null)}
+        onClick={onSvgClick}
+        style={hoveredId ? { cursor: 'pointer' } : undefined}
         onWheel={event => {
           if (event.deltaY < 0) zoom(1.08)
           if (event.deltaY > 0) zoom(0.92)
         }}
       >
         <defs>
-          <filter id="cluster-blur-entry">
-            <feGaussianBlur stdDeviation="34" />
-          </filter>
+
+          {[...clusterStats.map(c => [c.id, c.color]), ['iso', ATLAS_ISOLATED_COLOR]].map(([id, color]) => (
+            <React.Fragment key={`grad-${id}`}>
+              <radialGradient id={`atlas-core-${id}`} cx="42%" cy="40%" r="62%">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="28%" stopColor="#ffffff" stopOpacity="0.92" />
+                <stop offset="52%" stopColor={color} />
+                <stop offset="100%" stopColor={color} />
+              </radialGradient>
+              <radialGradient id={`atlas-halo-${id}`}>
+                <stop offset="0%" stopColor={color} stopOpacity="0.62" />
+                <stop offset="34%" stopColor={color} stopOpacity="0.2" />
+                <stop offset="100%" stopColor={color} stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id={`atlas-nebula-${id}`}>
+                <stop offset="0%" stopColor={color} stopOpacity="1" />
+                <stop offset="45%" stopColor={color} stopOpacity="0.45" />
+                <stop offset="100%" stopColor={color} stopOpacity="0" />
+              </radialGradient>
+              <linearGradient id={`atlas-underline-${id}`} x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor={color} stopOpacity="0.15" />
+                <stop offset="50%" stopColor={color} stopOpacity="1" />
+                <stop offset="100%" stopColor={color} stopOpacity="0.15" />
+              </linearGradient>
+            </React.Fragment>
+          ))}
+
+          {visibleEdges.map((edge, index) => {
+            const source = byId.get(edge.source)
+            const target = byId.get(edge.target)
+            if (!source || !target) return null
+            return (
+              <linearGradient
+                key={`eg-${index}`}
+                id={`atlas-edge-${index}`}
+                gradientUnits="userSpaceOnUse"
+                x1={source.x}
+                y1={source.y}
+                x2={target.x}
+                y2={target.y}
+              >
+                <stop offset="0%" stopColor={source.color} />
+                <stop offset="100%" stopColor={target.color} />
+              </linearGradient>
+            )
+          })}
         </defs>
 
-        <g transform={zoomTransform}>
+        <g ref={groupRef} transform={zoomTransform}>
           {(mode === 'cluster' || mode === 'category') && (
-            <g className="entry-cluster-halos" aria-hidden="true">
+            <g className="atlas-nebulae" aria-hidden="true">
               {clusterStats.map(cluster => {
                 const dim =
-                  activeCluster !== null &&
-                  activeCluster !== cluster.id
+                  (activeCluster !== null && activeCluster !== cluster.id) ||
+                  (emphasisClusterId !== null && emphasisClusterId !== cluster.id)
+                const strong = emphasisClusterId === cluster.id
+
+                // Communauté ouverte : les nébuleuses des autres communautés,
+                // presque invisibles et très agrandies, ne sont pas dessinées.
+                if (activeCluster !== null && activeCluster !== cluster.id) return null
 
                 return (
-                  <circle
-                    key={`halo-${cluster.id}`}
-                    className={
-                      guideClusterId === cluster.id
-                        ? 'eclaireur-cluster-pulse'
-                        : undefined
-                    }
-                    cx={cluster.centerX}
-                    cy={cluster.centerY}
-                    r={cluster.radius}
-                    fill={cluster.color || DEFAULT_CLUSTER_COLOR}
-                    opacity={dim ? 0.015 : 0.21}
-                    filter="url(#cluster-blur-entry)"
-                  />
+                  <React.Fragment key={`halo-${cluster.id}`}>
+                    <circle
+                      className={
+                        guideClusterId === cluster.id
+                          ? 'eclaireur-cluster-pulse'
+                          : 'atlas-nebula'
+                      }
+                      cx={cluster.centerX}
+                      cy={cluster.centerY}
+                      r={cluster.radius * 1.25}
+                      fill={`url(#atlas-nebula-${cluster.id})`}
+                      opacity={dim ? 0.02 : strong ? 0.2 : 0.1}
+                    />
+                    {cluster.nodeCount >= 4 && (
+                      <circle
+                        className="atlas-orbit"
+                        cx={cluster.centerX}
+                        cy={cluster.centerY}
+                        r={cluster.spread + 22 * unit}
+                        stroke={cluster.color}
+                        opacity={dim ? 0.05 : strong ? 0.55 : 0.2}
+                      />
+                    )}
+                  </React.Fragment>
                 )
               })}
             </g>
@@ -950,21 +1458,21 @@ export default function ExpertiseConstellation({
                   className="eclaireur-cluster-guide-ring"
                   cx={guideCluster.centerX}
                   cy={guideCluster.centerY}
-                  r={guideCluster.radius * 0.72}
-                  style={{ stroke: guideCluster.color || '#97C53D' }}
+                  r={guideCluster.spread + 18 * unit}
+                  style={{ stroke: guideCluster.color }}
                 />
                 <circle
                   className="eclaireur-cluster-guide-ring eclaireur-cluster-guide-ring-2"
                   cx={guideCluster.centerX}
                   cy={guideCluster.centerY}
-                  r={guideCluster.radius * 0.94}
-                  style={{ stroke: guideCluster.color || '#97C53D' }}
+                  r={guideCluster.spread + 30 * unit}
+                  style={{ stroke: guideCluster.color }}
                 />
               </g>
             )
           })()}
 
-          <g className="entry-edges">
+          <g className="entry-edges atlas-edges">
             {visibleEdges.map((edge, index) => {
               const source = byId.get(edge.source)
               const target = byId.get(edge.target)
@@ -984,99 +1492,100 @@ export default function ExpertiseConstellation({
                   target.clusterId === activeCluster
                 )
 
+              const emphasisActive =
+                emphasisClusterId === null ||
+                source.clusterId === emphasisClusterId ||
+                target.clusterId === emphasisClusterId
+
               const sameCluster = source.clusterId === target.clusterId
               const isGuideEdge =
                 guideLinkKeys.has(`${edge.source}|${edge.target}`)
+              const isActive =
+                selectedId &&
+                (edge.source === selectedId || edge.target === selectedId)
+
+              const base = sameCluster ? 0.72 : 0.36
+              const leavesOpenCluster =
+                activeCluster !== null &&
+                (source.clusterId !== activeCluster || target.clusterId !== activeCluster)
+              const opacity =
+                isActive
+                  ? (leavesOpenCluster ? 0.3 : 1)
+                  : selectedActive && clusterActive && emphasisActive
+                    ? base * linkDensity
+                    : activeCluster !== null ? 0.05 : 0.09
 
               return (
-                <line
-                  key={`${edge.source}-${edge.target}-${index}`}
-                  x1={source.x}
-                  y1={source.y}
-                  x2={target.x}
-                  y2={target.y}
-                  className={
-                    `${
-                      selectedId &&
-                      (edge.source === selectedId || edge.target === selectedId)
-                        ? 'entry-edge active'
-                        : 'entry-edge'
-                    } ${sameCluster ? 'intra-cluster' : 'inter-cluster'} ${
-                      isGuideEdge ? 'eclaireur-link-pulse' : ''
-                    }`
-                  }
-                  opacity={
-                    selectedActive && clusterActive
-                      ? (sameCluster ? 0.68 : 0.24) * linkDensity
-                      : activeCluster !== null ? 0.07 : 0.15
-                  }
-                />
+                <g key={`${edge.source}-${edge.target}-${index}`} opacity={opacity}>
+                  {(sameCluster || isActive) && (
+                    <line
+                      x1={source.x}
+                      y1={source.y}
+                      x2={target.x}
+                      y2={target.y}
+                      className="atlas-edge-glow"
+                      stroke={`url(#atlas-edge-${index})`}
+                    />
+                  )}
+                  <line
+                    x1={source.x}
+                    y1={source.y}
+                    x2={target.x}
+                    y2={target.y}
+                    stroke={`url(#atlas-edge-${index})`}
+                    className={
+                      `${isActive ? 'entry-edge active' : 'entry-edge'} atlas-edge ${sameCluster ? 'intra-cluster' : 'inter-cluster'} ${
+                        isGuideEdge ? 'eclaireur-link-pulse' : ''
+                      }`
+                    }
+                  />
+                </g>
               )
             })}
           </g>
 
-          <g className="entry-nodes">
+          <g className="entry-nodes atlas-nodes">
             {positionedNodes.map(node => {
               const isSelected = selectedId === node.id
-              const selectedActive =
-                !selectedId || neighbourIds.has(node.id)
-
-              const clusterActive =
-                activeCluster === null ||
-                node.clusterId === activeCluster
-
-              const cluster = expertiseClusters.find(
-                item => item.id === node.clusterId
-              )
-
-              const fill =
-                mode === 'category'
-                  ? familyColor(node.family)
-                  : cluster?.color || DEFAULT_CLUSTER_COLOR
-
-              const radius =
-                Math.max(11, 7.5 + node.gephiSize * 0.70) *
-                nodeSize *
-                // Cluster ouvert : les nœuds cèdent la place au texte.
-                (activeCluster !== null ? 0.55 : 1)
+              const radius = radiusFor(node)
+              const gradientKey = node.isolated ? 'iso' : node.clusterId
+              const opacity = nodeOpacity(node)
+              const isHovered = hoveredId === node.id
 
               return (
                 <g
                   key={node.id}
-                  className="constellation-node"
-                  onPointerDown={event => event.stopPropagation()}
+                  className={`atlas-node ${isSelected ? 'is-selected' : ''}`}
+                  opacity={opacity}
+                  data-node-id={node.id}
+                  data-cluster-id={node.clusterId}
                 >
-                  <circle
-                    className="node-hit-target"
-                    cx={node.x}
-                    cy={node.y}
-                    r={radius + 7}
-                    fill="transparent"
-                    onMouseEnter={() => setHoveredId(node.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                    onFocus={() => setHoveredId(node.id)}
-                    onBlur={() => setHoveredId(null)}
-                    onClick={() => onSelect?.(node)}
-                    tabIndex="0"
-                    role="button"
-                    aria-label={node.label}
-                  />
+                  {opacity >= 0.15 && (
+                    <circle
+                      className="atlas-node-halo"
+                      cx={node.x}
+                      cy={node.y}
+                      r={radius * (isSelected || isHovered ? 3.6 : 2.9)}
+                      fill={`url(#atlas-halo-${gradientKey})`}
+                      pointerEvents="none"
+                    />
+                  )}
 
                   {guideOverviewNodeIds.has(node.id) && (
                     <circle
-                      className="eclaireur-overview-node-ring"
+                      className="eclaireur-overview-node-ring atlas-guide-ring"
                       cx={node.x}
                       cy={node.y}
-                      r={radius + 12}
+                      r={radius + 12 * unit}
                     />
                   )}
 
                   {guideIsolatedNodeId === node.id && (
                     <circle
-                      className="eclaireur-isolated-node-ring"
+                      className="eclaireur-isolated-node-ring atlas-guide-ring"
                       cx={node.x}
                       cy={node.y}
-                      r={radius + 12}
+                      r={radius + 12 * unit}
                     />
                   )}
 
@@ -1085,170 +1594,157 @@ export default function ExpertiseConstellation({
                       className="eclaireur-node-pulse-ring"
                       cx={node.x}
                       cy={node.y}
-                      r={radius + 10}
+                      r={radius * 1.9}
                     />
                   )}
 
                   <circle
-                    className={
+                    className={`atlas-node-core ${
                       guideOverviewNodeIds.has(node.id)
                         ? 'eclaireur-overview-node-core'
-                        : undefined
-                    }
+                        : ''
+                    }`}
                     cx={node.x}
                     cy={node.y}
                     r={radius}
-                    fill={fill}
-                    stroke={isSelected ? '#0b2545' : '#ffffff'}
-                    strokeWidth={isSelected ? 4.2 : 1.65}
-                    opacity={
-                      selectedActive && clusterActive
-                        ? 0.98
-                        : activeCluster !== null
-                          ? 0.08
-                          : 0.15
-                    }
+                    fill={`url(#atlas-core-${gradientKey})`}
+                    stroke={isSelected ? '#ffffff' : node.color}
+                    strokeWidth={isSelected ? 2.6 : 1}
+                    strokeOpacity={isSelected ? 1 : 0.9}
                     pointerEvents="none"
+                  />
+
+                  {isSelected && (
+                    <circle
+                      className="atlas-selected-ring"
+                      cx={node.x}
+                      cy={node.y}
+                      r={radius + 7 * (activeCluster !== null ? unit / scale : unit)}
+                      stroke={node.color}
+                      pointerEvents="none"
+                    />
+                  )}
+
+                  <circle
+                    className="node-hit-target"
+                    cx={node.x}
+                    cy={node.y}
+                    r={radius}
+                    fill="transparent"
+                    pointerEvents="none"
+                    onFocus={() => setHoveredId(node.id)}
+                    onBlur={() => setHoveredId(null)}
+                    onKeyDown={event => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        onSelect?.(node)
+                      }
+                    }}
+                    tabIndex="0"
+                    role="button"
+                    aria-label={node.label}
                   />
                 </g>
               )
             })}
           </g>
 
-          {(mode === 'cluster' || mode === 'category') && (
-            <g className="entry-cluster-labels">
+          {(mode === 'cluster' || mode === 'category') && activeCluster === null && (
+            <g className="entry-cluster-labels atlas-titles">
               {clusterStats.map(cluster => {
-                // Titre permanent pour les grands clusters ; les autres
-                // n'apparaissent qu'au survol, au zoom ou à l'ouverture.
-                // Cluster ouvert : seul son titre reste. Les autres titres
-                // sont retirés, sans quoi ils écrasent la constellation.
-                if (activeCluster !== null) {
-                  if (activeCluster !== cluster.id) return null
-                } else {
-                  const revealed =
-                    cluster.showLabel ||
-                    hoveredClusterId === cluster.id ||
-                    guideClusterId === cluster.id ||
-                    guideTitleClusterId === cluster.id ||
-                    guideTransClusterId === cluster.id ||
-                    scale > 1.35
-                  if (!revealed) return null
+                const spot = cluster.placement
+                if (!spot) return null
+
+                const revealed =
+                  cluster.showLabel ||
+                  emphasisClusterId === cluster.id ||
+                  guideClusterId === cluster.id ||
+                  guideTitleClusterId === cluster.id ||
+                  guideTransClusterId === cluster.id
+                if (!revealed) return null
+
+                const dim =
+                  emphasisClusterId !== null && emphasisClusterId !== cluster.id
+
+                // Trait de rappel : du bord de l'intitulé au nœud le plus proche.
+                const k = titleScale
+                const nearestNode = positionedNodes
+                  .filter(n => n.clusterId === cluster.id)
+                  .reduce((best, n) => {
+                    const d = Math.hypot(n.x - spot.cx, n.y - spot.cy)
+                    return !best || d < best.d ? { n, d } : best
+                  }, null)?.n
+
+                let leader = null
+                if (nearestNode) {
+                  const scaledRect = {
+                    x0: spot.cx + (spot.rect.x0 - spot.cx) * k,
+                    x1: spot.cx + (spot.rect.x1 - spot.cx) * k,
+                    y0: spot.cy + (spot.rect.y0 - spot.cy) * k,
+                    y1: spot.cy + (spot.rect.y1 - spot.cy) * k,
+                  }
+                  const p = nearestOnRect(scaledRect, nearestNode.x, nearestNode.y)
+                  const len = Math.hypot(nearestNode.x - p.x, nearestNode.y - p.y)
+                  const nodeR = radiusFor(nearestNode) + 5 * unit
+                  if (len > nodeR + 16 * unit) {
+                    const t = (len - nodeR) / len
+                    leader = {
+                      x1: p.x,
+                      y1: p.y,
+                      x2: p.x + (nearestNode.x - p.x) * t,
+                      y2: p.y + (nearestNode.y - p.y) * t,
+                    }
+                  }
                 }
 
-                const isOpen = activeCluster === cluster.id
-
-                // En vue ouverte le groupe entier est agrandi par le zoom :
-                // on divise donc la taille du titre par le facteur de zoom
-                // pour qu'il conserve la même taille apparente à l'écran,
-                // et on le repose juste au-dessus de la constellation.
-                const titleSize = isOpen
-                  ? cluster.titleSize / scale
-                  : cluster.titleSize
-                const lineHeight = isOpen
-                  ? cluster.lineHeight / scale
-                  : cluster.lineHeight
-
-                const lines = cluster.lines
-                const totalHeight = (lines.length - 1) * lineHeight
-
-                const anchorX = isOpen ? cluster.centerX : cluster.labelX
-                const anchorY = isOpen
-                  ? cluster.minY - (lines.length + 1) * lineHeight
-                  : cluster.labelY
-
-                const halfW = isOpen
-                  ? cluster.halfW / scale
-                  : cluster.halfW
-
-                const dim = false
-
                 return (
-                  <g
-                    key={`label-${cluster.id}`}
-                    className={`entry-cluster-label ${
-                      guideClusterId === cluster.id ||
-                      guideTitleClusterId === cluster.id
-                        ? 'eclaireur-cluster-label-pulse'
-                        : ''
-                    }`}
-                    opacity={dim ? 0.12 : 1}
-                    role="button"
-                    tabIndex="0"
-                    aria-label={
-                      cluster.transdirectional
-                        ? `${cluster.label}, Cluster transdirectionnel`
-                        : cluster.label
-                    }
-                    onPointerDown={event => event.stopPropagation()}
-                    onClick={() => focusCluster(cluster)}
-                    onKeyDown={event => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault()
-                        focusCluster(cluster)
-                      }
-                    }}
-                  >
-                    <rect
-                      x={anchorX - halfW}
-                      y={anchorY - totalHeight / 2 - lineHeight}
-                      width={halfW * 2}
-                      height={
-                        (lines.length + (cluster.transdirectional ? 2 : 1)) *
-                        lineHeight
-                      }
-                      fill="transparent"
-                    />
-
-                    <text
-                      x={anchorX}
-                      y={anchorY - totalHeight / 2}
-                      textAnchor="middle"
-                      className="entry-cluster-title-svg"
-                      style={{ fontSize: `${titleSize}px` }}
-                    >
-                      {lines.map((line, index) => (
-                        <tspan
-                          key={`${cluster.id}-${index}`}
-                          x={anchorX}
-                          dy={index === 0 ? 0 : lineHeight}
-                        >
-                          {line}
-                        </tspan>
-                      ))}
-                    </text>
-
-                    {cluster.transdirectional && (
-                      <text
-                        x={anchorX}
-                        y={anchorY + totalHeight / 2 + lineHeight}
-                        textAnchor="middle"
-                        className={`entry-cluster-transdirectional-svg ${
-                          guideTransClusterId === cluster.id
-                            ? 'eclaireur-transdirectional-pulse'
-                            : ''
-                        }`}
-                        style={{ fontSize: `${titleSize * 0.62}px` }}
-                      >
-                        Cluster transdirectionnel
-                      </text>
+                  <g key={`title-wrap-${cluster.id}`} opacity={dim ? 0.28 : 1} className="atlas-title-wrap">
+                    {leader && (
+                      <>
+                        <line
+                          className="atlas-leader"
+                          {...leader}
+                          stroke={cluster.color}
+                        />
+                        <circle
+                          className="atlas-leader-dot"
+                          cx={leader.x2}
+                          cy={leader.y2}
+                          r={2.2 * unit}
+                          fill={cluster.color}
+                        />
+                      </>
                     )}
+                    {renderTitle(cluster, { cx: spot.cx, cy: spot.cy, k, open: false, box: spot.box })}
                   </g>
                 )
               })}
             </g>
           )}
 
+          {activeClusterStat && (() => {
+            const u = unit / scale
+            const h = activeClusterStat.box.h * u
+            const cy = activeClusterStat.minY - (corePx(14) * 1.25 + 18) * u - h / 2
+            return (
+              <g className="entry-cluster-labels atlas-titles">
+                {renderTitle(activeClusterStat, {
+                  cx: activeClusterStat.centerX,
+                  cy,
+                  k: 1,
+                  open: true,
+                })}
+              </g>
+            )
+          })()}
+
           {activeCluster !== null && (
-            <g className="entry-node-labels-open-cluster" pointerEvents="none">
+            <g className="entry-node-labels-open-cluster atlas-open-labels" pointerEvents="none">
               {activeNodeLabels.items.map(item => {
-                // Plus d'encadré : le texte seul, aussi grand que possible.
                 const openFont = (activeNodeLabels.font * unit) / scale
-                const openLine = openFont * 1.28
-                const lines = wrapLabel(
-                  item.node.label,
-                  26,
-                  OPEN_LABEL_LINES
-                )
+                const openLine = openFont * 1.25
+                const lines = item.lines
+                const isSel = selectedId === item.node.id
 
                 const textX =
                   item.side === 'left'
@@ -1256,20 +1752,21 @@ export default function ExpertiseConstellation({
                     : item.x + openFont * 0.5
 
                 return (
-                  <g key={`open-label-${item.node.id}`}>
+                  <g key={`open-label-${item.node.id}`} className={isSel ? 'is-selected' : ''}>
                     <line
                       x1={item.node.x}
                       y1={item.node.y}
                       x2={item.x}
                       y2={item.y}
-                      className="entry-open-label-link"
+                      className="entry-open-label-link atlas-open-link"
+                      stroke={item.node.color}
                     />
 
                     <text
                       x={textX}
-                      y={item.y - ((lines.length - 1) * openLine) / 2}
+                      y={item.y - ((lines.length - 1) * openLine) / 2 + openFont * 0.35}
                       textAnchor={item.side === 'left' ? 'end' : 'start'}
-                      className="entry-open-node-label"
+                      className="entry-open-node-label atlas-open-label"
                       style={{ fontSize: `${openFont}px` }}
                     >
                       {lines.map((line, index) => (
@@ -1288,479 +1785,24 @@ export default function ExpertiseConstellation({
             </g>
           )}
 
-          {labelNode && (
-            <g className="entry-node-label" pointerEvents="none">
-              <text
-                x={labelNode.x + 18}
-                y={labelNode.y - 16}
-                textAnchor="start"
-              >
-                {labelNode.label}
-              </text>
-            </g>
-          )}
+          {labelNode && !(activeCluster !== null && labelNode.clusterId === activeCluster) && (() => {
+            const u = activeCluster !== null ? unit / scale : unit / Math.max(1, scale)
+            const r = radiusFor(labelNode)
+            return (
+              <g className="entry-node-label atlas-node-tip" pointerEvents="none">
+                <text
+                  x={labelNode.x + r + 8 * u}
+                  y={labelNode.y - r - 4 * u}
+                  textAnchor="start"
+                  style={{ fontSize: `${14 * u}px` }}
+                >
+                  {labelNode.label}
+                </text>
+              </g>
+            )
+          })()}
         </g>
       </svg>
-
-
-      <style>{`
-        .gephi-entry-shell{
-          position:relative;
-          min-height:700px;
-          overflow:hidden;
-          border-radius:18px;
-          background:
-            radial-gradient(circle at 50% 40%,rgba(241,245,251,.92),rgba(255,255,255,0) 44%),
-            linear-gradient(180deg,#ffffff 0%,#fbfcfe 100%);
-        }
-
-        .gephi-entry-svg{
-          display:block;
-          width:100%;
-          height:clamp(690px,76vh,820px);
-          touch-action:none;
-          user-select:none;
-          cursor:grab;
-        }
-
-        .gephi-entry-svg:active{
-          cursor:grabbing;
-        }
-
-        .entry-edge{
-          stroke:#7589a3;
-          stroke-width:2.45;
-          stroke-linecap:round;
-          vector-effect:non-scaling-stroke;
-        }
-
-        .entry-edge.intra-cluster{
-          stroke:#667e9d;
-        }
-
-        .entry-edge.inter-cluster{
-          stroke:#94a4b8;
-        }
-
-        .entry-edge.active{
-          stroke:#e88b00;
-          stroke-width:3.8;
-        }
-
-        .gephi-view-switch{
-          position:absolute;
-          z-index:6;
-          left:14px;
-          top:14px;
-          display:flex;
-          gap:5px;
-          padding:4px;
-          border:1px solid #dbe4f0;
-          border-radius:10px;
-          background:rgba(255,255,255,.95);
-          box-shadow:0 4px 14px rgba(15,46,85,.07);
-        }
-
-        .gephi-view-switch button{
-          border:0;
-          border-radius:7px;
-          padding:7px 10px;
-          background:transparent;
-          color:#536686;
-          font:750 10px/1.2 inherit;
-          cursor:pointer;
-        }
-
-        .gephi-view-switch button.active{
-          background:#eef3fb;
-          color:#123567;
-        }
-
-        .map-reading-inline{
-          position:absolute;
-          z-index:7;
-          left:14px;
-          top:62px;
-          width:min(760px,calc(100% - 190px));
-          max-height:min(58vh,560px);
-          overflow:auto;
-          padding:20px 22px 18px;
-          border:1px solid #d9e3ef;
-          border-radius:12px;
-          background:rgba(255,255,255,.985);
-          box-shadow:0 12px 30px rgba(18,46,83,.14);
-          color:#425a78;
-        }
-
-        .map-reading-inline h2{
-          margin:0 34px 14px 0;
-          color:#0b2751;
-          font-size:20px;
-          line-height:1.2;
-          letter-spacing:-.2px;
-        }
-
-        .map-reading-inline p{
-          margin:0 0 12px;
-          font-size:14px;
-          line-height:1.62;
-        }
-
-        .map-reading-inline strong{
-          color:#173b70;
-          font-weight:800;
-        }
-
-        .map-reading-inline .map-reading-last{
-          margin-bottom:0;
-          color:#254e85;
-          font-weight:700;
-        }
-
-        .map-reading-inline-close{
-          position:absolute;
-          top:10px;
-          right:12px;
-          width:30px;
-          height:30px;
-          border:0;
-          border-radius:7px;
-          background:transparent;
-          color:#17345f;
-          font:700 23px/1 inherit;
-          cursor:pointer;
-        }
-
-        .map-reading-inline-close:hover{
-          background:#eef3fb;
-        }
-
-        .gephi-zoom-tools{
-          position:absolute;
-          z-index:8;
-          right:14px;
-          top:14px;
-          bottom:auto;
-          display:flex;
-          flex-direction:row;
-          overflow:hidden;
-          border:1.5px solid #8fb3ea;
-          border-radius:11px;
-          background:#fff;
-          box-shadow:0 6px 18px rgba(15,46,85,.13);
-        }
-
-        .gephi-zoom-tools button{
-          width:46px;
-          height:42px;
-          border:0;
-          border-right:1px solid #dce6f3;
-          background:#fff;
-          color:#124f9d;
-          font:850 20px/1 inherit;
-          cursor:pointer;
-        }
-
-        .gephi-zoom-tools button:hover{
-          background:#f2f7ff;
-        }
-
-        .gephi-zoom-tools button:last-child{
-          border-right:0;
-        }
-
-        .gephi-back-cluster{
-          position:absolute;
-          z-index:6;
-          left:14px;
-          top:60px;
-          border:1px solid #ccd9ea;
-          border-radius:8px;
-          padding:7px 10px;
-          background:rgba(255,255,255,.96);
-          color:#315b91;
-          font:750 10px/1.2 inherit;
-          cursor:pointer;
-        }
-
-        .entry-cluster-label{
-          cursor:pointer;
-          outline:none;
-        }
-
-        .entry-cluster-name{
-          fill:#203653;
-          font-size:22px;
-          font-weight:860;
-          letter-spacing:-.2px;
-          paint-order:stroke;
-          stroke:#ffffff;
-          stroke-width:5px;
-          stroke-linejoin:round;
-          pointer-events:none;
-        }
-
-        .entry-cluster-transdirectional{
-          fill:#6b7b91;
-          font-size:13px;
-          font-style:italic;
-          font-weight:680;
-          paint-order:stroke;
-          stroke:#ffffff;
-          stroke-width:4px;
-          pointer-events:none;
-        }
-
-        .entry-cluster-label{
-          cursor:pointer;
-          outline:none;
-        }
-
-        /* La taille est désormais imposée en style inline, en pixels ecran. */
-        .entry-cluster-title-svg{
-          fill:#142f55;
-          font-size:28px;
-          font-weight:880;
-          letter-spacing:-.15px;
-          paint-order:stroke;
-          stroke:#ffffff;
-          stroke-width:5px;
-          stroke-linejoin:round;
-          pointer-events:none;
-        }
-
-        .entry-cluster-transdirectional-svg{
-          fill:#61738c;
-          font-size:12px;
-          font-style:italic;
-          font-weight:750;
-          paint-order:stroke;
-          stroke:#ffffff;
-          stroke-width:4px;
-          pointer-events:none;
-        }
-
-        .entry-open-label-link{
-          stroke:#8295ad;
-          stroke-width:1.1;
-          opacity:.65;
-          vector-effect:non-scaling-stroke;
-        }
-
-        .entry-open-label-bg{
-          fill:rgba(255,255,255,.94);
-          stroke:rgba(203,213,225,.9);
-          stroke-width:1;
-          vector-effect:non-scaling-stroke;
-        }
-
-        .entry-node-label text{
-          fill:#0f2748;
-          font-size:13px;
-          font-weight:850;
-          paint-order:stroke;
-          stroke:#ffffff;
-          stroke-width:5px;
-          stroke-linejoin:round;
-        }
-
-        .entry-open-node-label{
-          fill:#0b2447;
-          font-weight:800;
-          /* Halo blanc en lieu et place de l'ancien encadré : le texte reste
-             lisible au-dessus des nœuds sans boîte opaque. non-scaling-stroke
-             maintient l'épaisseur en pixels écran malgré le zoom. */
-          paint-order:stroke;
-          stroke:#ffffff;
-          stroke-width:4px;
-          stroke-linejoin:round;
-          vector-effect:non-scaling-stroke;
-        }
-
-
-        .entry-cluster-card{
-          width:100%;
-          height:100%;
-          display:flex;
-          flex-direction:column;
-          align-items:center;
-          justify-content:center;
-          gap:4px;
-          padding:7px 10px;
-          border:0;
-          border-radius:0;
-          background:transparent;
-          box-shadow:none;
-          color:#203653;
-          font-family:inherit;
-          text-align:center;
-          cursor:pointer;
-        }
-
-        .entry-cluster-card strong{
-          font-size:28px;
-          line-height:1.06;
-          font-weight:860;
-          letter-spacing:-.15px;
-        }
-
-        .entry-cluster-card span{
-          color:#6b7b91;
-          font-size:15px;
-          line-height:1.12;
-          font-style:italic;
-          font-weight:680;
-        }
-
-
-        /* Bloc d'introduction latéral — proportions validées */
-        .sidebar-intro-visual{
-          display:block!important;
-          width:118px!important;
-          max-width:62%!important;
-          height:auto!important;
-          object-fit:contain!important;
-          margin:2px auto 16px!important;
-        }
-
-        .sidebar-intro-title{
-          display:block!important;
-          max-width:210px!important;
-          margin-left:auto!important;
-          margin-right:auto!important;
-          text-align:left!important;
-        }
-
-        /* ONGLET 1 — finalisation lisibilité */
-        .expertise-screen .expertise-transition-banner{
-          display:none!important;
-        }
-
-        .expertise-screen>.graph-workspace{
-          padding-top:10px!important;
-        }
-
-        .expertise-screen aside,
-        .expertise-screen .sidebar,
-        .expertise-screen .left-sidebar,
-        .expertise-screen .workspace-sidebar{
-          padding-top:12px!important;
-        }
-
-        .expertise-screen aside h1,
-        .expertise-screen aside h2,
-        .expertise-screen aside h3{
-          word-break:normal!important;
-        }
-
-        .expertise-screen aside{
-          overflow-wrap:anywhere;
-        }
-
-        .expertise-screen aside .sidebar-section,
-        .expertise-screen .workspace-sidebar .sidebar-section{
-          margin-bottom:10px!important;
-        }
-
-
-
-                /* ONGLET 1 — entrée immersive : priorité visuelle au graphe */
-        .expertise-screen>.graph-workspace{
-          padding:14px 18px 10px!important;
-        }
-
-        .expertise-screen .expertise-transition-banner{
-          grid-template-columns:minmax(0,1fr) 190px!important;
-          gap:14px!important;
-          margin:0 0 10px!important;
-          padding:11px 16px!important;
-          min-height:0!important;
-          border-radius:12px!important;
-        }
-
-        .expertise-screen .expertise-transition-kicker{
-          margin:0 0 4px!important;
-          font-size:9px!important;
-        }
-
-        .expertise-screen .expertise-transition-copy h2{
-          margin:0 0 4px!important;
-          font-size:21px!important;
-          line-height:1.08!important;
-        }
-
-        .expertise-screen .expertise-transition-copy p{
-          max-width:900px!important;
-          font-size:12.5px!important;
-          line-height:1.35!important;
-        }
-
-        .expertise-screen .expertise-transition-art{
-          height:72px!important;
-        }
-
-        .expertise-screen .expertise-transition-art img{
-          max-width:240px!important;
-        }
-
-        .expertise-screen .workspace-toolbar{
-          margin-bottom:2px!important;
-        }
-
-        .expertise-screen .workspace-toolbar h1{
-          font-size:26px!important;
-          margin-bottom:4px!important;
-        }
-
-        .expertise-screen .workspace-subtitle{
-          margin-bottom:5px!important;
-        }
-
-        @media(max-width:1180px){
-          .expertise-screen .expertise-transition-banner{
-            grid-template-columns:minmax(0,1fr) 150px!important;
-          }
-          .expertise-screen .expertise-transition-art{
-            height:62px!important;
-            justify-content:flex-end!important;
-          }
-        }
-
-        @media(max-width:1380px){
-
-          .gephi-entry-svg{
-            height:700px;
-          }
-
-          .entry-cluster-card strong{
-            font-size:22px;
-          }
-        }
-
-        @media(max-width:820px){
-          .gephi-entry-svg{
-            height:570px;
-          }
-
-
-          .gephi-view-switch{
-            max-width:calc(100% - 28px);
-          }
-
-          .gephi-view-switch button{
-            padding:6px 8px;
-            font-size:9px;
-          }
-
-          .entry-cluster-card strong{
-            font-size:18px;
-          }
-
-          .entry-cluster-card span{
-            font-size:10px;
-          }
-        }
-      `}</style>
     </section>
   )
 }
