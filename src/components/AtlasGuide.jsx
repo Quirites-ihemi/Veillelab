@@ -211,12 +211,6 @@ export default function AtlasGuide({
       onCollapse?.()
       return
     }
-    // Fiche ouverte et aucune place libre, même pour le bandeau : la fiche
-    // porte l'information, L'Éclaireur se range en pastille.
-    if (!strictFound && compactRef.current && !collapsed && step === 4 && selected && !userOpenedRef.current) {
-      onCollapse?.()
-      return
-    }
     if (crowded && !compactRef.current && !collapsed && !forceFull) {
       compactRef.current = true
       setCompact(true)
