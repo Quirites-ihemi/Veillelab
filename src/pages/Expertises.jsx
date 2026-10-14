@@ -1,14 +1,32 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ExpertiseConstellation from '../components/ExpertiseConstellation.jsx'
+import AtlasGuide from '../components/AtlasGuide.jsx'
+import {
+  expertiseGephiLayout,
+  expertiseClusters,
+} from '../components/expertiseGephiLayout.js'
+import { atlasClusterColor } from '../components/atlasPalette.js'
 import { normalize, sentenceCase } from '../lib/text.js'
+// Feuilles historiques conservées : d'autres règles globales peuvent en
+// dépendre. Le nouvel Atlas n'utilise que des classes « atlas-* ».
 import '../expertises-fenetres-originales.css'
 import '../eclaireur.css'
+// Polices embarquées (latin uniquement) : Manrope pour l'interface,
+// Source Serif 4 pour les titres. Aucun appel réseau externe.
+import '@fontsource/manrope/latin-400.css'
+import '@fontsource/manrope/latin-500.css'
+import '@fontsource/manrope/latin-600.css'
+import '@fontsource/manrope/latin-700.css'
+import '@fontsource/source-serif-4/latin-500.css'
+import '@fontsource/source-serif-4/latin-600.css'
+import '@fontsource/source-serif-4/latin-400-italic.css'
+import '../atlas-expertises.css'
 
 const familyColor = {
-  'Instrument / dispositif': '#7258d9',
-  'Méthode / savoir-faire': '#ffb20e',
-  'Problème public': '#14af75',
+  'Instrument / dispositif': '#9B7BFF',
+  'Méthode / savoir-faire': '#FFC24A',
+  'Problème public': '#2EF0C3',
 }
 
 const MINISTRY_ENTITIES = new Set([
@@ -23,75 +41,21 @@ const MINISTRY_ENTITIES = new Set([
   'Direction générale de la sécurité intérieure',
 ])
 
-
-const EXPERTISE_INTRO_STYLES = `
-.expertise-screen .expertise-transition-banner{
-  display:grid;
-  grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);
-  gap:26px;
-  align-items:center;
-  margin:0 0 22px;
-  padding:23px 26px;
-  border:1px solid #d9e3ef;
-  border-radius:16px;
-  background:linear-gradient(110deg,#ffffff 0%,#fbfdff 66%,#f7faff 100%);
-  box-shadow:0 5px 16px rgba(28,52,86,.05);
-  overflow:hidden;
-}
-.expertise-screen .expertise-transition-copy{min-width:0}
-.expertise-screen .expertise-transition-kicker{
-  display:block;margin:0 0 8px;color:#2563d8;font-size:12px;line-height:1;
-  font-weight:850;letter-spacing:.08em;
-}
-.expertise-screen .expertise-transition-copy h2{
-  margin:0 0 11px;color:#102a56;font-size:29px;line-height:1.13;
-  letter-spacing:-.025em;font-weight:850;
-}
-.expertise-screen .expertise-transition-copy p{
-  margin:0;max-width:790px;color:#35506f;font-size:16px;line-height:1.62;
-}
-.expertise-screen .expertise-transition-copy strong{color:#163b70;font-weight:850}
-.expertise-screen .expertise-transition-art{
-  min-width:0;height:150px;display:flex;justify-content:flex-end;align-items:center;overflow:hidden;
-}
-.expertise-screen .expertise-transition-art img{
-  display:block;width:100%;max-width:500px;height:100%;object-fit:contain;object-position:center right;
-}
-.expertise-screen .expertise-intro .intro-summary{
-  margin:0;color:#314a6b;font-size:14.5px;line-height:1.62;
-}
-.expertise-screen .expertise-intro .intro-full p{
-  font-size:14px;line-height:1.58;
-}
-.expertise-screen .expertise-intro-toggle{
-  appearance:none;border:0;background:transparent;padding:0;margin:12px 0 0;color:#1f5fc4;
-  font:800 12.5px/1.3 inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
-}
-.expertise-screen .expertise-intro-toggle:hover{text-decoration:underline}
-@media(max-width:1180px){
-  .expertise-screen .expertise-transition-banner{grid-template-columns:1fr}
-  .expertise-screen .expertise-transition-art{height:112px;justify-content:flex-start}
-  .expertise-screen .expertise-transition-art img{max-width:540px;object-position:left center}
-}
-@media(max-width:820px){
-  .expertise-screen .expertise-transition-banner{padding:20px}
-  .expertise-screen .expertise-transition-copy h2{font-size:25px}
-  .expertise-screen .expertise-transition-copy p{font-size:15px}
-}
-`
-
-function Accordion({ title, children }) {
-  const [open, setOpen] = useState(false)
+function Accordion({ title, count, children, defaultOpen = false, className = '' }) {
+  const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <div className={`ui-accordion ${open ? 'open' : ''}`}>
-      <button onClick={() => setOpen(v => !v)}>
-        <span>{title}</span>
-        <span>{open ? '⌃' : '⌄'}</span>
+    <div className={`atlas-accordion ${open ? 'open' : ''} ${className}`}>
+      <button type="button" onClick={() => setOpen(v => !v)} aria-expanded={open}>
+        <span>
+          {title}
+          {count !== undefined && <b className="atlas-accordion-count">{count}</b>}
+        </span>
+        <span aria-hidden="true" className="atlas-accordion-chevron">⌄</span>
       </button>
 
       {open && (
-        <div className="accordion-body">
+        <div className="atlas-accordion-body">
           {children}
         </div>
       )}
@@ -99,192 +63,301 @@ function Accordion({ title, children }) {
   )
 }
 
+// ---------------------------------------------------------------------------
+// Panneau gauche — Communautés d'expertise (clusters réels du layout Gephi)
+// ---------------------------------------------------------------------------
+function CommunitiesPanel({
+  open,
+  onToggle,
+  communities,
+  totalInCommunities,
+  isolatedCount,
+  activeId,
+  hoverId,
+  onHover,
+  onOpen,
+  onOverview,
+  guideTarget,
+}) {
+  const [query, setQuery] = useState('')
 
-function ExpertiseIntroBanner() {
+  const visible = useMemo(() => {
+    const q = normalize(query)
+    return q
+      ? communities.filter(c => normalize(c.label).includes(q))
+      : communities
+  }, [communities, query])
+
+  if (!open) {
+    return (
+      <aside className="atlas-communities is-collapsed" aria-label="Communautés d’expertise (panneau replié)">
+        <button
+          type="button"
+          className="atlas-communities-expand"
+          onClick={onToggle}
+          aria-label="Déplier le panneau Communautés d’expertise"
+          title="Déplier le panneau Communautés d’expertise"
+        >
+          <span aria-hidden="true">»</span>
+          <span className="atlas-communities-vertical">Communautés d’expertise</span>
+        </button>
+        <div className="atlas-communities-dots" aria-hidden="true">
+          {communities.map(c => (
+            <i key={c.id} style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }} />
+          ))}
+        </div>
+      </aside>
+    )
+  }
+
   return (
-    <section
-      className="expertise-transition-banner"
-      aria-label="Introduction aux expertises ministérielles"
-    >
-      <div className="expertise-transition-copy">
-        <span className="expertise-transition-kicker">
-          EXPERTISES MINISTÉRIELLES
-        </span>
+    <aside className={`atlas-communities ${guideTarget ? 'atlas-guide-target' : ''}`} aria-label="Communautés d’expertise">
+      <header className="atlas-panel-head">
+        <h2><i aria-hidden="true" />Communautés d’expertise</h2>
+        <button
+          type="button"
+          className="atlas-icon-button"
+          onClick={onToggle}
+          aria-label="Replier le panneau Communautés d’expertise"
+          title="Replier le panneau"
+        >
+          «
+        </button>
+      </header>
 
-        <h2>Des publications aux savoir-faire du ministère</h2>
+      <div className="atlas-input-wrap">
+        <input
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="Trouver une communauté"
+          aria-label="Rechercher une communauté"
+        />
+        <Icon name="search" size={17} />
+      </div>
 
-        <p>
-          Le ministère de l’Intérieur produit chaque année une grande variété
-          de travaux qui combinent <strong>culture de l’action</strong> et mise
-          en perspective des politiques publiques. Ce graphe donne à voir les
-          expertises mobilisées par cette production.
+      <ul className="atlas-community-list">
+        {!query && (
+          <li>
+            <button
+              type="button"
+              className={`atlas-community ${activeId === null ? 'is-active' : ''}`}
+              onClick={onOverview}
+            >
+              <i className="atlas-community-dot all" aria-hidden="true" />
+              <span className="atlas-community-name">Toutes les communautés</span>
+              <b>{totalInCommunities}</b>
+            </button>
+          </li>
+        )}
+
+        {visible.map(c => (
+          <li key={c.id}>
+            <button
+              type="button"
+              className={`atlas-community ${activeId === c.id ? 'is-active' : ''} ${hoverId === c.id ? 'is-hover' : ''}`}
+              disabled={c.count === 0}
+              onMouseEnter={() => onHover(c.id)}
+              onMouseLeave={() => onHover(null)}
+              onFocus={() => onHover(c.id)}
+              onBlur={() => onHover(null)}
+              onClick={() => onOpen(c.id)}
+              title={c.count === 0 ? 'Aucune expertise avec les filtres actuels' : `Explorer : ${c.label}`}
+            >
+              <i
+                className="atlas-community-dot"
+                style={{ background: c.color, boxShadow: `0 0 10px ${c.color}` }}
+                aria-hidden="true"
+              />
+              <span className="atlas-community-name">
+                {c.label}
+                {c.transdirectional && <em>Cluster transdirectionnel</em>}
+              </span>
+              <b>{c.count}</b>
+            </button>
+          </li>
+        ))}
+
+        {visible.length === 0 && (
+          <li className="atlas-community-empty">Aucune communauté ne correspond à « {query} ».</li>
+        )}
+      </ul>
+
+      {isolatedCount > 0 && (
+        <p className="atlas-isolated-note">
+          <i aria-hidden="true" />
+          {isolatedCount} micro-expertise{isolatedCount > 1 ? 's' : ''} isolée{isolatedCount > 1 ? 's' : ''}, rattachée{isolatedCount > 1 ? 's' : ''} à aucune communauté, figure{isolatedCount > 1 ? 'nt' : ''} aussi sur le graphe.
         </p>
-      </div>
-
-      <div className="expertise-transition-art" aria-hidden="true">
-        <img src="/veillelab/images/publications/expertises-intro-sobre.png" alt="" />
-      </div>
-    </section>
+      )}
+    </aside>
   )
 }
 
-
-function ExpertiseEclaireur({ step, mode, selected, onNext, onPrevious, onClose, onMinimize, onRestore }) {
-  const side = step === 4 && selected ? 'left' : 'right'
-
-  if (mode === 'closed') {
-    return (
-      <button
-        type="button"
-        className={`eclaireur-help-button eclaireur-help-button-expertise eclaireur-side-${side}`}
-        onClick={onRestore}
-        aria-label="Rouvrir L’Éclaireur"
-      >
-        <span aria-hidden="true">✦</span>
-        L’Éclaireur
-      </button>
-    )
-  }
-
-  if (mode === 'minimized') {
-    return (
-      <div className={`eclaireur-expertise-minimized eclaireur-side-${side}`} aria-label={`L’Éclaireur, étape ${step} sur 4, réduit`}>
-        <button type="button" className="eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer L’Éclaireur">
-          <span aria-hidden="true">✦</span>
-          <strong>L’Éclaireur</strong>
-          <small>{step}/4</small>
-        </button>
-        <button type="button" className="eclaireur-minimized-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
-      </div>
-    )
-  }
-
-  const content = {
-    1: {
-      title: 'Commencez par le sens du graphe',
-      body: (
-        <>
-          <p>
-            Le bloc <strong>« Des publications aux savoir-faire du ministère »</strong> explique ce que représente ce graphe et comment le lire.
-          </p>
-        </>
-      ),
-    },
-    2: {
-      title: 'Affinez votre exploration',
-      body: (
-        <>
-          <p>
-            Utilisez le volet de gauche pour <strong>rechercher</strong> une expertise ou filtrer par <strong>entité</strong> et par <strong>type d’expertise</strong>.
-          </p>
-        </>
-      ),
-    },
-    3: {
-      title: 'Explorez les regroupements d’expertises',
-      body: (
-        <>
-          <p>
-            Les expertises ont été regroupées selon leurs proximités dans le graphe. Ces regroupements forment des <strong>clusters</strong>.
-          </p>
-          <p className="eclaireur-prompt">
-            Par exemple : <strong>« Articulation entre recherche scientifique et pratiques de sécurité intérieure »</strong>. Cliquez sur un cluster pour l’ouvrir.
-          </p>
-        </>
-      ),
-    },
-    4: {
-      title: selected ? 'Lisez la fiche de l’expertise' : 'Cliquez sur une expertise',
-      body: selected ? (
-        <>
-          <p>
-            La fiche ouverte à droite rassemble l’expertise, les entités et les publications associées.
-          </p>
-          <p className="eclaireur-prompt">
-            Descendez dans le volet pour voir aussi les expertises associées et les domaines mobilisés.
-          </p>
-        </>
-      ) : (
-        <>
-          <p>
-            Dans le cluster ouvert, cliquez sur une expertise pour afficher sa fiche dans le volet de droite.
-          </p>
-        </>
-      ),
-    },
-  }[step]
+// ---------------------------------------------------------------------------
+// Fiche détaillée d'une expertise (contenu identique à l'ancien volet)
+// ---------------------------------------------------------------------------
+function ExpertiseCard({ selected, data, onClose, onOpen, guideTarget }) {
+  const layout = expertiseGephiLayout[selected.id]
+  const cluster = layout
+    ? expertiseClusters.find(c => c.id === layout.cluster)
+    : null
 
   return (
-    <section
-      className={`eclaireur-card eclaireur-expertise eclaireur-expertise-step-${step} eclaireur-side-${side}`}
-      aria-live="polite"
-      aria-label={`L’Éclaireur, étape ${step} sur 4`}
-    >
-      <header className="eclaireur-expertise-header">
-        <div className="eclaireur-expertise-brand">
-          <span className="eclaireur-expertise-compass" aria-hidden="true">✦</span>
-          <div>
-            <strong>L’Éclaireur</strong>
-            <small>VOTRE GUIDE DANS CET ESPACE</small>
-          </div>
-        </div>
+    <article className={`atlas-card ${guideTarget ? 'atlas-guide-target' : ''}`} aria-label={`Fiche : ${selected.label}`}>
+      <button
+        type="button"
+        className="atlas-card-close"
+        onClick={onClose}
+        aria-label="Fermer la fiche"
+      >
+        <Icon name="close" size={18} />
+      </button>
 
-        <div className="eclaireur-expertise-header-actions">
-          <span>{step}/4</span>
-          <button type="button" className="eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button>
-          <button type="button" className="eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
-        </div>
-
-        <div className="eclaireur-lighthouse" aria-hidden="true">
-          <span className="eclaireur-lighthouse-light" />
-          <span className="eclaireur-lighthouse-top" />
-          <span className="eclaireur-lighthouse-body" />
-          <span className="eclaireur-lighthouse-base" />
-        </div>
-      </header>
-
-      <div className="eclaireur-expertise-body">
-        <h3>{content.title}</h3>
-        {content.body}
-
-        <div className="eclaireur-expertise-footer">
-          <div className="eclaireur-dots" aria-hidden="true">
-            {[1, 2, 3, 4].map(n => <i key={n} className={n === step ? 'active' : ''} />)}
-          </div>
-
-          <div className="eclaireur-nav-actions">
-            {step > 1 && (
-              <button type="button" className="eclaireur-action eclaireur-prev" onClick={onPrevious}>
-                Précédent
-              </button>
-            )}
-            {step !== 3 && (step !== 4 || selected) && (
-              <button type="button" className="eclaireur-action eclaireur-next" onClick={onNext}>
-                {step < 4 ? 'Suivant' : 'Compris'}
-              </button>
-            )}
-          </div>
-        </div>
+      <div className="atlas-card-type">
+        <i style={{ background: familyColor[selected.family] || '#FFC24A' }} />
+        {selected.family}
       </div>
-    </section>
+
+      <h2>{selected.label}</h2>
+
+      {selected.definition && (
+        <p className="atlas-card-definition">
+          {selected.definition}
+        </p>
+      )}
+
+      {cluster && (
+        <Accordion title="Cluster">
+          <p className="atlas-card-cluster">
+            <i style={{ background: atlasClusterColor(cluster.id), boxShadow: `0 0 8px ${atlasClusterColor(cluster.id)}` }} />
+            <span>
+              {cluster.label}
+              {cluster.transdirectional && <em>Cluster transdirectionnel</em>}
+            </span>
+          </p>
+        </Accordion>
+      )}
+
+      <Accordion title="Entité(s)" count={(selected.entities || []).length}>
+        <div className="atlas-chips">
+          {(selected.entities || []).length === 0 && <span className="atlas-muted">Non renseignée</span>}
+          {(selected.entities || []).map(x => (
+            <span className="atlas-chip" key={x}>
+              {x}
+            </span>
+          ))}
+        </div>
+      </Accordion>
+
+      <Accordion title="Expertises directement associées" count={(selected.associated || []).filter(a => data.expertise_nodes.some(x => x.id === a.id)).slice(0, 12).length}>
+        <div className="atlas-chips">
+          {(selected.associated || [])
+            .slice(0, 12)
+            .map(a => {
+              const n = data.expertise_nodes.find(
+                x => x.id === a.id
+              )
+
+              return n ? (
+                <button
+                  type="button"
+                  className="atlas-chip clickable"
+                  key={a.id}
+                  onClick={() => onOpen(n)}
+                >
+                  {n.label}
+                </button>
+              ) : null
+            })}
+          {(selected.associated || []).length === 0 && <span className="atlas-muted">Aucune</span>}
+        </div>
+      </Accordion>
+
+      <Accordion title="Domaines mobilisés" count={(selected.domains || []).length}>
+        <div className="atlas-chips">
+          {(selected.domains || []).map(x => (
+            <span className="atlas-chip" key={x}>
+              {x}
+            </span>
+          ))}
+          {(selected.domains || []).length === 0 && <span className="atlas-muted">Non renseignés</span>}
+        </div>
+      </Accordion>
+
+      <Accordion title="Publications associées" count={(selected.publications || []).length}>
+      <div className="atlas-publications">
+        {(selected.publications || []).length === 0 && <span className="atlas-muted">Aucune publication associée</span>}
+        {(selected.publications || [])
+          .map(p => {
+            const href = p.url_contenu || p.url_source
+
+            const content = (
+              <>
+                {p.image_path ? (
+                  <img
+                    src={`.${p.image_path}`}
+                    alt=""
+                  />
+                ) : (
+                  <div className="atlas-pub-placeholder">
+                    {p.publication_id}
+                  </div>
+                )}
+
+                <div>
+                  <strong>
+                    {sentenceCase(p.titre)}
+                  </strong>
+
+                  <small>
+                    {p.organisme} · {p.annee}
+                  </small>
+                </div>
+              </>
+            )
+
+            return href ? (
+              <a
+                className="atlas-publication"
+                key={p.publication_id}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                title="Ouvrir la publication dans un nouvel onglet"
+              >
+                {content}
+              </a>
+            ) : (
+              <div className="atlas-publication" key={p.publication_id}>
+                {content}
+              </div>
+            )
+          })}
+      </div>
+      </Accordion>
+    </article>
   )
 }
 
 export default function Expertises({ data }) {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
+  const [searchFocused, setSearchFocused] = useState(false)
   const [entity, setEntity] = useState('Toutes les entités')
   const [family, setFamily] = useState('Tous')
-  const [introExpanded, setIntroExpanded] = useState(true)
-  const [readingOpen, setReadingOpen] = useState(false)
-  const [eclaireurMode, setEclaireurMode] = useState('open')
+  const [eclaireurCollapsed, setEclaireurCollapsed] = useState(false)
   const [eclaireurStep, setEclaireurStep] = useState(1)
   const [eclaireurCluster, setEclaireurCluster] = useState(null)
+  const [understandOpen, setUnderstandOpen] = useState(false)
+  const [communitiesOpen, setCommunitiesOpen] = useState(true)
+  const [panelHoverCluster, setPanelHoverCluster] = useState(null)
+  const [graphHoverCluster, setGraphHoverCluster] = useState(null)
+  const [focusRequest, setFocusRequest] = useState(null)
 
-  const [nodeSize, setNodeSize] = useState(2.45)
-  const [linkDensity, setLinkDensity] = useState(1)
   const [resetToken, setResetToken] = useState(0)
   const [fitToken, setFitToken] = useState(0)
+  const sideRef = useRef(null)
+  const screenRef = useRef(null)
+  const stageRef = useRef(null)
 
   const entities = useMemo(
     () => [
@@ -336,21 +409,57 @@ export default function Expertises({ data }) {
     )
   }, [filtered, data])
 
+  // Communautés réelles : les 15 clusters nommés du layout Gephi, avec leur
+  // nombre de micro-expertises calculé sur les nœuds actuellement filtrés.
+  const communities = useMemo(() => {
+    const counts = new Map()
+    filtered.forEach(n => {
+      const c = expertiseGephiLayout[n.id]?.cluster
+      if (c === undefined) return
+      counts.set(c, (counts.get(c) || 0) + 1)
+    })
+
+    return expertiseClusters
+      .map(c => ({
+        id: c.id,
+        label: c.label,
+        transdirectional: Boolean(c.transdirectional),
+        color: atlasClusterColor(c.id),
+        count: counts.get(c.id) || 0,
+      }))
+      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'fr'))
+  }, [filtered])
+
+  const namedIds = useMemo(() => new Set(expertiseClusters.map(c => c.id)), [])
+  const totalInCommunities = communities.reduce((a, c) => a + c.count, 0)
+  const isolatedCount = filtered.filter(n => {
+    const c = expertiseGephiLayout[n.id]?.cluster
+    return c !== undefined && !namedIds.has(c)
+  }).length
 
   const openExpertise = node => {
     setSelected(node)
-    setEclaireurStep(4)
-    setEclaireurMode('open')
+    // Pendant le parcours guidé, L'Éclaireur vient se placer près de la
+    // fiche. S'il a été réduit, il reste discret.
+    if (node && !eclaireurCollapsed) {
+      setEclaireurStep(4)
+    }
   }
+
+  // La fiche s'ouvre sous L'Éclaireur : on la fait défiler en vue.
+  useEffect(() => {
+    if (!selected || !sideRef.current) return
+    sideRef.current.scrollTo?.({ top: 0, behavior: 'smooth' })
+  }, [selected])
 
   const handleClusterChange = cluster => {
     setEclaireurCluster(cluster)
 
-    if (cluster && eclaireurMode === 'open' && eclaireurStep === 3) {
+    if (cluster && !eclaireurCollapsed && eclaireurStep === 3) {
       setEclaireurStep(4)
     }
 
-    if (!cluster && !selected && eclaireurMode === 'open' && eclaireurStep === 4) {
+    if (!cluster && !selected && eclaireurStep === 4) {
       setEclaireurStep(3)
     }
   }
@@ -359,159 +468,86 @@ export default function Expertises({ data }) {
     if (eclaireurStep < 4) {
       setEclaireurStep(step => step + 1)
     } else {
-      setEclaireurMode('minimized')
+      setEclaireurCollapsed(true)
     }
   }
 
   const previousEclaireur = () => {
     setEclaireurStep(step => Math.max(1, step - 1))
-    setEclaireurMode('open')
+    setEclaireurCollapsed(false)
   }
-
-  const restoreEclaireur = () => setEclaireurMode('open')
-  const minimizeEclaireur = () => setEclaireurMode('minimized')
-  const closeEclaireur = () => setEclaireurMode('closed')
 
   const clear = () => {
     setSelected(null)
     setSearch('')
     setEntity('Toutes les entités')
     setFamily('Tous')
-    setReadingOpen(false)
     setEclaireurCluster(null)
+    setPanelHoverCluster(null)
     setResetToken(x => x + 1)
   }
 
+  const requestCluster = id => {
+    setFocusRequest(current => ({ id, token: (current?.token || 0) + 1 }))
+  }
+
+  const guideActive = !eclaireurCollapsed
+
   return (
     <main
-      className={`screen graph-screen expertise-screen ${
-        selected ? 'has-drawer' : ''
-      }`}
+      ref={screenRef}
+      className={`expertise-screen atlas-screen ${communitiesOpen ? '' : 'communities-collapsed'} ${selected ? 'has-card' : ''}`}
     >
-      <style>{EXPERTISE_INTRO_STYLES}</style>
-
-      <aside className="left-rail">
-
-        <section className={`rail-section expertise-intro ${eclaireurMode === 'open' && eclaireurStep === 1 ? 'expertise-eclaireur-target' : ''}`}>
-          <h3>Pourquoi ce graphe ?</h3>
-
-          <img
-            className="sidebar-intro-visual"
-            src="./images/publications/expertises-intro-sobre.png"
-            alt=""
-            aria-hidden="true"
+      <div className={`atlas-toolbar ${guideActive && eclaireurStep === 2 ? 'atlas-guide-target' : ''}`} role="search">
+        <div className="atlas-search">
+          <Icon name="search" size={18} />
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && found[0]) {
+                openExpertise(found[0])
+                setSearch('')
+              }
+              if (e.key === 'Escape') setSearch('')
+            }}
+            placeholder="Rechercher une expertise, un mot-clé, une entité…"
+            aria-label="Rechercher une expertise ou un mot-clé"
           />
 
-          <h2 className="sidebar-intro-title">
-            Des publications aux savoir-faire du ministère
-          </h2>
-
-          {!introExpanded ? (
-            <p className="intro-summary">
-              Les publications du ministère mobilisent un très large éventail
-              d’expertises. Ce graphe permet d’explorer ces savoir-faire,
-              leurs proximités et les entités qui les mobilisent.
-            </p>
-          ) : (
-            <div className="intro-full">
-              <p>
-                Le ministère de l’Intérieur produit chaque année une grande
-                variété de travaux sur les sujets relevant de ses domaines
-                d’intervention. Il combine ainsi, d’une manière unique,{' '}
-                <strong>culture de l’action</strong> et capacité collective à
-                mettre en perspective les politiques publiques.
-              </p>
-
-              <p>
-                Cette production intellectuelle fait du ministère un
-                contributeur fondamental au débat public sur des sujets très
-                divers : sécurité (intérieure ; publique ; civile, routière),
-                migrations et citoyenneté, protection des populations,
-                anticipation et gestion des crises, cultes et laïcité, action
-                publique territoriale.
-              </p>
-
-              <p>
-                Ces publications mobilisent un très large éventail d’expertises
-                que nous souhaitons montrer ici. Vous pourrez y voir et
-                peut-être même y découvrir les savoir-faire spécifiques d’une
-                large diversité de métiers.
-              </p>
+          {searchFocused && search && (
+            <div className="atlas-search-results" role="listbox">
+              {found.length === 0 && (
+                <p className="atlas-muted">Aucune expertise ne correspond.</p>
+              )}
+              {found.map(n => {
+                const c = expertiseGephiLayout[n.id]?.cluster
+                return (
+                  <button
+                    type="button"
+                    key={n.id}
+                    onMouseDown={e => e.preventDefault()}
+                    onClick={() => {
+                      openExpertise(n)
+                      setSearch('')
+                    }}
+                  >
+                    <i style={{ background: atlasClusterColor(c) }} aria-hidden="true" />
+                    <span>
+                      {n.label}
+                      <small>{n.family}</small>
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           )}
+        </div>
 
-          <button
-            type="button"
-            className="expertise-intro-toggle"
-            onClick={() => setIntroExpanded(v => !v)}
-          >
-            {introExpanded
-              ? 'Réduire l’introduction'
-              : 'Lire l’introduction complète'}
-            <span aria-hidden="true">{introExpanded ? '⌃' : '›'}</span>
-          </button>
-        </section>
-
-        <section className={`rail-section ${eclaireurMode === 'open' && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
-          <h3>
-            <Icon name="search" size={19} />
-            Rechercher
-          </h3>
-
-          <div className="rail-search">
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Rechercher une expertise, mot-clé…"
-            />
-            <Icon name="search" size={18} />
-          </div>
-
-          {found.length > 0 && (
-            <div className="rail-results">
-              {found.map(n => (
-                <button
-                  key={n.id}
-                  onClick={() => {
-                    openExpertise(n)
-                    setSearch('')
-                  }}
-                >
-                  {n.label}
-                  <small>{n.family}</small>
-                </button>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section className="rail-section">
-          <h3>Afficher</h3>
-
-          <label className="radio-row">
-            <input
-              type="radio"
-              checked
-              readOnly
-            />
-            Toutes les expertises
-          </label>
-
-          <label
-            className="radio-row muted-option"
-            title="Disponible avec un profil utilisateur"
-          >
-            <input
-              type="radio"
-              disabled
-            />
-            Mes expertises uniquement
-          </label>
-        </section>
-
-        <section className={`rail-section ${eclaireurMode === 'open' && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
-          <h3>Entité(s)</h3>
-
+        <label className="atlas-select">
+          <span>Entité</span>
           <select
             value={entity}
             onChange={e => {
@@ -525,11 +561,10 @@ export default function Expertises({ data }) {
               </option>
             ))}
           </select>
-        </section>
+        </label>
 
-        <section className={`rail-section ${eclaireurMode === 'open' && eclaireurStep === 2 ? 'expertise-eclaireur-target' : ''}`}>
-          <h3>Type d’expertise</h3>
-
+        <label className="atlas-select atlas-select-type">
+          <span>Type d’expertise</span>
           <select
             value={family}
             onChange={e => {
@@ -542,292 +577,95 @@ export default function Expertises({ data }) {
             <option>Méthode / savoir-faire</option>
             <option>Problème public</option>
           </select>
-        </section>
+        </label>
 
-        <section className="rail-section display-section">
-          <h3>Affichage</h3>
-
-          <label>
-            Taille des nœuds
-
-            <input
-              type="range"
-              min="1.2"
-              max="3.4"
-              step="0.05"
-              value={nodeSize}
-              onChange={e =>
-                setNodeSize(Number(e.target.value))
-              }
-            />
-
-            <span>
-              <small>Petite</small>
-              <small>Grande</small>
-            </span>
-          </label>
-
-          <label>
-            Densité des liens
-
-            <input
-              type="range"
-              min="0.6"
-              max="1.8"
-              step="0.1"
-              value={linkDensity}
-              onChange={e =>
-                setLinkDensity(Number(e.target.value))
-              }
-            />
-
-            <span>
-              <small>Faible</small>
-              <small>Élevée</small>
-            </span>
-          </label>
-        </section>
-
-      </aside>
-
-      <section className="graph-workspace">
-
-        <div className="workspace-toolbar expertise-workspace-toolbar">
-
-          <div className="expertise-workspace-title">
-            <h1>Expertises et savoir-faire du ministère de l’Intérieur</h1>
-
-            <div className="expertise-metrics expertise-metrics-under-title" aria-label="Statistiques du graphe">
-              <div className="expertise-metric">
-                <span className="expertise-metric-icon"><Icon name="graph" size={21} /></span>
-                <span>
-                  <strong>{filtered.length}</strong>
-                  <small>nœuds</small>
-                </span>
-              </div>
-
-              <div className="expertise-metric">
-                <span className="expertise-metric-icon"><Icon name="link" size={21} /></span>
-                <span>
-                  <strong>{visibleEdges.length}</strong>
-                  <small>relations</small>
-                </span>
-              </div>
-            </div>
-
-            <p className="expertise-method-note">
-              <Icon name="info" size={16} />
-              <span>
-                Résultats fondés sur les publications du bulletin présentes dans le corpus actif qui ne donnent qu’une vision partielle.
-              </span>
-            </p>
-          </div>
-
-          <div className="expertise-workspace-side">
-            <div className="toolbar-actions">
-
-            <button onClick={clear}>
-              <Icon
-                name="reset"
-                size={17}
-              />
-              Réinitialiser
-            </button>
-
-            <button
-              onClick={() =>
-                setFitToken(x => x + 1)
-              }
-            >
-              <Icon
-                name="target"
-                size={17}
-              />
-              Ajuster à l’écran
-            </button>
-
-
-            </div>
-          </div>
-
+        <div className="atlas-counters" aria-label="Statistiques du graphe">
+          <span><strong>{filtered.length}</strong> nœuds</span>
+          <span aria-hidden="true">·</span>
+          <span><strong>{visibleEdges.length}</strong> relations</span>
         </div>
 
-        <ExpertiseConstellation
-          nodes={filtered}
-          edges={visibleEdges}
-          selected={selected}
-          onSelect={openExpertise}
-          onClusterChange={handleClusterChange}
-          guideOverviewStep={
-            eclaireurMode === 'open' && eclaireurStep === 3 && !selected
-              ? 2
-              : null
-          }
-          guidePulseNode={
-            eclaireurMode === 'open' &&
-            eclaireurStep === 4 &&
-            !selected &&
-            Boolean(eclaireurCluster)
-          }
-          nodeSize={nodeSize}
-          linkDensity={linkDensity}
-          resetToken={resetToken}
-          fitToken={fitToken}
-          readingOpen={readingOpen}
-          onToggleReading={() => {
-            setSelected(null)
-            setReadingOpen(open => !open)
-          }}
-          onCloseReading={() => setReadingOpen(false)}
+        <div className="atlas-toolbar-actions">
+          <button type="button" className="atlas-btn ghost" onClick={() => setFitToken(x => x + 1)} title="Ajuster à l’écran">
+            <Icon name="target" size={16} />
+            <span>Ajuster</span>
+          </button>
+          <button type="button" className="atlas-btn outline" onClick={clear}>
+            <Icon name="reset" size={16} />
+            <span>Réinitialiser</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="atlas-body">
+        <CommunitiesPanel
+          open={communitiesOpen}
+          onToggle={() => setCommunitiesOpen(v => !v)}
+          communities={communities}
+          totalInCommunities={totalInCommunities}
+          isolatedCount={isolatedCount}
+          activeId={eclaireurCluster?.id ?? null}
+          hoverId={panelHoverCluster ?? graphHoverCluster}
+          onHover={setPanelHoverCluster}
+          onOpen={requestCluster}
+          onOverview={() => requestCluster(null)}
+          guideTarget={guideActive && (eclaireurStep === 2 || eclaireurStep === 3)}
         />
 
-      </section>
+        <section className="atlas-stage" ref={stageRef} aria-label="Graphe des expertises">
+          <ExpertiseConstellation
+            nodes={filtered}
+            edges={visibleEdges}
+            selected={selected}
+            onSelect={openExpertise}
+            onClusterChange={handleClusterChange}
+            onHoverCluster={setGraphHoverCluster}
+            highlightClusterId={panelHoverCluster}
+            focusClusterRequest={focusRequest}
+            guideOverviewStep={
+              guideActive && eclaireurStep === 3 && !selected
+                ? 2
+                : null
+            }
+            guidePulseNode={
+              guideActive &&
+              eclaireurStep === 4 &&
+              !selected &&
+              Boolean(eclaireurCluster)
+            }
+            resetToken={resetToken}
+            fitToken={fitToken}
+          />
+        </section>
 
-      {selected && (
-        <aside className={`detail-drawer ${eclaireurMode === 'open' && eclaireurStep === 4 ? 'expertise-eclaireur-target' : ''}`}>
-
-          <button
-            className="drawer-close"
-            onClick={() => setSelected(null)}
-          >
-            <Icon name="close" />
-          </button>
-
-          <div className="drawer-type">
-            <i
-              style={{
-                background:
-                  familyColor[selected.family] ||
-                  '#ffb20e',
-              }}
+        {selected && (
+          <aside className="atlas-side" ref={sideRef} aria-label="Fiche de l’expertise">
+            <ExpertiseCard
+              selected={selected}
+              data={data}
+              onClose={() => setSelected(null)}
+              onOpen={openExpertise}
+              guideTarget={false}
             />
-            {selected.family}
-          </div>
+          </aside>
+        )}
+      </div>
 
-          <h2>{selected.label}</h2>
-
-          <p className="drawer-definition">
-            {selected.definition}
-          </p>
-
-          <h4>Entité(s)</h4>
-
-          <div className="chips">
-            {(selected.entities || []).map(x => (
-              <span
-                className="chip"
-                key={x}
-              >
-                {x}
-              </span>
-            ))}
-          </div>
-
-          <h4>Publications associées</h4>
-
-          <div className="publication-mini-list">
-            {(selected.publications || [])
-              .slice(0, 4)
-              .map(p => {
-                const href = p.url_contenu || p.url_source
-
-                const content = (
-                  <>
-                    {p.image_path ? (
-                      <img
-                        src={`.${p.image_path}`}
-                        alt=""
-                      />
-                    ) : (
-                      <div className="mini-placeholder">
-                        {p.publication_id}
-                      </div>
-                    )}
-
-                    <div>
-                      <strong>
-                        {sentenceCase(p.titre)}
-                      </strong>
-
-                      <small>
-                        {p.organisme} · {p.annee}
-                      </small>
-                    </div>
-                  </>
-                )
-
-                return href ? (
-                  <a
-                    className="publication-mini-link"
-                    key={p.publication_id}
-                    href={href}
-                    target="_blank"
-                    rel="noreferrer"
-                    title="Ouvrir la publication dans un nouvel onglet"
-                  >
-                    {content}
-                  </a>
-                ) : (
-                  <article key={p.publication_id}>
-                    {content}
-                  </article>
-                )
-              })}
-          </div>
-
-          <Accordion title="Expertises directement associées">
-            <div className="chips">
-
-              {(selected.associated || [])
-                .slice(0, 12)
-                .map(a => {
-                  const n = data.expertise_nodes.find(
-                    x => x.id === a.id
-                  )
-
-                  return n ? (
-                    <button
-                      className="chip clickable"
-                      key={a.id}
-                      onClick={() => openExpertise(n)}
-                    >
-                      {n.label}
-                    </button>
-                  ) : null
-                })}
-
-            </div>
-          </Accordion>
-
-          <Accordion title="Domaines mobilisés">
-            <div className="chips">
-
-              {(selected.domains || []).map(x => (
-                <span
-                  className="chip"
-                  key={x}
-                >
-                  {x}
-                </span>
-              ))}
-
-            </div>
-          </Accordion>
-
-        </aside>
-      )}
-
-      <ExpertiseEclaireur
+      <AtlasGuide
         step={eclaireurStep}
-        mode={eclaireurMode}
+        collapsed={eclaireurCollapsed}
         selected={selected}
+        activeCluster={eclaireurCluster?.id ?? null}
         onNext={nextEclaireur}
         onPrevious={previousEclaireur}
-        onClose={closeEclaireur}
-        onMinimize={minimizeEclaireur}
-        onRestore={restoreEclaireur}
+        onCollapse={() => setEclaireurCollapsed(true)}
+        onExpand={() => setEclaireurCollapsed(false)}
+        understandOpen={understandOpen}
+        setUnderstandOpen={setUnderstandOpen}
+        screenRef={screenRef}
+        stageRef={stageRef}
+        relayoutKey={`${entity}|${family}|${communitiesOpen}|${resetToken}|${fitToken}`}
       />
-
     </main>
   )
 }
