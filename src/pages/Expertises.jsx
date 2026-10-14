@@ -338,7 +338,7 @@ function ExpertiseCard({ selected, data, onClose, onOpen, guideTarget }) {
   )
 }
 
-export default function Expertises({ data }) {
+export default function Expertises({ data, focusExpertiseId = null, focusToken = 0 }) {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
@@ -358,6 +358,13 @@ export default function Expertises({ data }) {
   const sideRef = useRef(null)
   const screenRef = useRef(null)
   const stageRef = useRef(null)
+
+  // Arrivée depuis l’onglet 2 (« Voir dans l’Atlas ») : on ouvre la fiche.
+  useEffect(() => {
+    if (!focusExpertiseId) return
+    const node = data.expertise_nodes.find(n => n.id === focusExpertiseId)
+    if (node) setSelected(node)
+  }, [focusExpertiseId, focusToken]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const entities = useMemo(
     () => [

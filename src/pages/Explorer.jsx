@@ -1,302 +1,597 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
-import KnowledgeGraph from '../components/KnowledgeGraph.jsx'
 import ProofModal from '../components/ProofModal.jsx'
-import ExplorerEclaireur from '../components/ExplorerEclaireur.jsx'
+import PublicationOrbit, {
+  ORBIT_TYPES,
+  normalizeType,
+  typeLabel,
+  typeColor,
+  verbLabel,
+  pagesOf,
+} from '../components/PublicationOrbit.jsx'
+import ExplorerGuide from '../components/ExplorerGuide.jsx'
 import { askGraph } from '../services/chatApi.js'
-import { buildAdjacency, nodeMeta } from '../lib/graph.js'
 import { normalize, sentenceCase } from '../lib/text.js'
-import { EXPLORER_GUIDE_SESSION_KEY, EXPLORER_GUIDE_STEP_MS } from '../lib/explorerEclaireurRules.js'
+// Feuilles historiques conservées (règles éventuellement partagées).
 import '../explorer-eclaireur.css'
 import '../explorer-publication-controls.css'
+// Polices embarquées, identiques à l'Atlas.
+import '@fontsource/manrope/latin-400.css'
+import '@fontsource/manrope/latin-500.css'
+import '@fontsource/manrope/latin-600.css'
+import '@fontsource/manrope/latin-700.css'
+import '@fontsource/source-serif-4/latin-500.css'
+import '@fontsource/source-serif-4/latin-600.css'
+import '@fontsource/source-serif-4/latin-400-italic.css'
+import '../atlas-expertises.css'
+import '../explorer-orbits.css'
 
-const legendTypes=['acteur','expert_public','action','notion_idee','probleme','localisation','signal_faible','recommandation']
-const TYPE_COLOR={
-  acteur:'#3C6193',
-  expert_public:'#5691C0',
-  action:'#C36B48',
-  notion_idee:'#6D5DA6',
-  probleme:'#A8423E',
-  'Problème':'#A8423E',
-  localisation:'#2E8C80',
-  signal_faible:'#C08A33',
-  recommandation:'#9C4B86'
-}
-const colorForType=type=>TYPE_COLOR[type]||'#6D5DA6'
-const normalizeGraphType=type=>type==='Problème'?'probleme':type
+const GUIDE_DONE_KEY = 'quirites-explorer-orbits-guide-done'
 
-function chunkFor(proof,contents){
-  const ids=String(proof?.chunk_id_source||'').split(';').map(x=>x.trim()).filter(Boolean)
-  return ids.map(id=>contents.find(c=>c.chunk_id===id)).find(Boolean)
-}
-
-function KnowledgeIllustration(){
-  return <div className="explorer-knowledge-illustration" aria-hidden="true">
-    <svg viewBox="0 0 360 230" role="img">
-      <defs>
-        <linearGradient id="qvlBook" x1="0" x2="1"><stop offset="0" stopColor="#eef2f8"/><stop offset="1" stopColor="#dfe6f1"/></linearGradient>
-      </defs>
-      <path d="M72 178 Q132 149 180 174 Q228 149 288 178 L276 207 Q226 186 180 207 Q134 186 84 207 Z" fill="url(#qvlBook)" stroke="#9dabc0" strokeWidth="2"/>
-      <path d="M180 174 V207" stroke="#9dabc0" strokeWidth="2"/>
-      <g stroke="#7587a5" strokeWidth="2" opacity=".72">
-        <line x1="180" y1="134" x2="116" y2="92"/><line x1="180" y1="134" x2="245" y2="92"/>
-        <line x1="116" y1="92" x2="72" y2="51"/><line x1="116" y1="92" x2="155" y2="44"/>
-        <line x1="245" y1="92" x2="284" y2="48"/><line x1="245" y1="92" x2="302" y2="116"/>
-        <line x1="180" y1="134" x2="136" y2="145"/><line x1="180" y1="134" x2="224" y2="145"/>
-      </g>
-      <g fill="#3F5275">
-        <circle cx="180" cy="134" r="17"/><circle cx="116" cy="92" r="13"/><circle cx="245" cy="92" r="13"/>
-      </g>
-      <g fill="#617497">
-        <circle cx="72" cy="51" r="10"/><circle cx="155" cy="44" r="9"/><circle cx="284" cy="48" r="10"/><circle cx="302" cy="116" r="9"/>
-      </g>
-      <g fill="#a9b5c8"><circle cx="136" cy="145" r="7"/><circle cx="224" cy="145" r="7"/></g>
-    </svg>
-  </div>
-}
-
-const CHAT_SUGGESTIONS=[
+const CHAT_SUGGESTIONS = [
   'Quels sont les principaux problèmes identifiés ?',
   'Quelles recommandations sont formulées ?',
   'Quels acteurs sont mentionnés ?',
-  'Quelles relations relient les éléments importants ?'
+  'Quelles relations relient les éléments importants ?',
 ]
 
-function cleanChatText(value=''){
-  return String(value||'')
-    .replace(/\\?\*\*/g,'')
-    .replace(/`+/g,'')
-    .replace(/\b[NR]\d{3,}(?:_\d+)?\b/gi,'')
-    .replace(/\(\s*[,;:]?\s*\)/g,'')
-    .replace(/\s+([,;:.!?])/g,'$1')
-    .replace(/\s{2,}/g,' ')
+function cleanChatText(value = '') {
+  return String(value || '')
+    .replace(/\\?\*\*/g, '')
+    .replace(/`+/g, '')
+    .replace(/\b[NR]\d{3,}(?:_\d+)?\b/gi, '')
+    .replace(/\(\s*[,;:]?\s*\)/g, '')
+    .replace(/\s+([,;:.!?])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
     .trim()
 }
 
-function legacyChatItems(text=''){
-  const cleaned=cleanChatText(text)
-  if(!cleaned)return {intro:'',items:[]}
-  const parts=cleaned.split(/\s+(?=\d+\.\s+)/g)
-  if(parts.length<2)return {intro:cleaned,items:[]}
-  const intro=parts.shift().replace(/[:\s]+$/,'').trim()
-  const items=parts.map(x=>x.replace(/^\d+\.\s*/,'').trim()).filter(Boolean)
-  return {intro,items}
+function legacyChatItems(text = '') {
+  const cleaned = cleanChatText(text)
+  if (!cleaned) return { intro: '', items: [] }
+  const parts = cleaned.split(/\s+(?=\d+\.\s+)/g)
+  if (parts.length < 2) return { intro: cleaned, items: [] }
+  const intro = parts.shift().replace(/[:\s]+$/, '').trim()
+  const items = parts.map(x => x.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)
+  return { intro, items }
 }
 
-function ChatAnswer({chat}){
-  if(!chat)return null
-  if(chat.error)return <div className="chat-answer chat-answer-error"><p>{chat.reponse||chat.error}</p></div>
-
-  const sections=Array.isArray(chat.sections)?chat.sections.filter(s=>s&&Array.isArray(s.items)&&s.items.length):[]
-  const intro=cleanChatText(chat.reponse||'')
-  const legacy=sections.length?null:legacyChatItems(chat.reponse||'')
-
-  return <div className="chat-answer">
-    {(sections.length?intro:legacy?.intro)&&<p className="chat-answer-intro">{sections.length?intro:legacy.intro}</p>}
-    {sections.map((section,index)=><section className="chat-answer-section" key={`${section.titre}-${index}`}>
-      <h4>{cleanChatText(section.titre)}</h4>
-      <ul>{section.items.map((item,i)=><li key={i}>{cleanChatText(item)}</li>)}</ul>
-    </section>)}
-    {!sections.length&&legacy?.items?.length>0&&<section className="chat-answer-section"><ul>{legacy.items.map((item,i)=><li key={i}>{item}</li>)}</ul></section>}
-  </div>
+function ChatAnswer({ chat }) {
+  if (!chat) return null
+  if (chat.error) return <div className="chat-answer chat-answer-error"><p>{chat.reponse || chat.error}</p></div>
+  const sections = Array.isArray(chat.sections) ? chat.sections.filter(s => s && Array.isArray(s.items) && s.items.length) : []
+  const intro = cleanChatText(chat.reponse || '')
+  const legacy = sections.length ? null : legacyChatItems(chat.reponse || '')
+  return (
+    <div className="chat-answer">
+      {(sections.length ? intro : legacy?.intro) && <p className="chat-answer-intro">{sections.length ? intro : legacy.intro}</p>}
+      {sections.map((section, index) => (
+        <section className="chat-answer-section" key={`${section.titre}-${index}`}>
+          <h4>{cleanChatText(section.titre)}</h4>
+          <ul>{section.items.map((item, i) => <li key={i}>{cleanChatText(item)}</li>)}</ul>
+        </section>
+      ))}
+      {!sections.length && legacy?.items?.length > 0 && (
+        <section className="chat-answer-section"><ul>{legacy.items.map((item, i) => <li key={i}>{item}</li>)}</ul></section>
+      )}
+    </div>
+  )
 }
 
-function PublicationDrawer({open,onClose,publications,search,setSearch,onSelect,selectedId}){
-  const matches=useMemo(()=>{
-    const q=normalize(search)
-    if(!q)return publications
-    return publications.filter(p=>normalize(`${p.titre} ${p.organisme_producteur} ${p.domaine||''} ${p.année_publication||''}`).includes(q))
-  },[search,publications])
-  return <>
-    <button className={`explorer-drawer-scrim ${open?'open':''}`} aria-label="Fermer le volet publications" onClick={onClose}/>
-    <aside className={`explorer-publication-drawer ${open?'open':''}`} aria-hidden={!open}>
-      <div className="explorer-drawer-head">
-        <div><span className="explorer-kicker">CORPUS</span><h2>Choisir une publication</h2><p>{publications.length} publication{publications.length>1?'s':''} avec graphe</p></div>
-        <button onClick={onClose} className="explorer-drawer-close" title="Fermer"><Icon name="close" size={18}/></button>
-      </div>
-      <div className="explorer-drawer-search"><Icon name="search" size={18}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Titre, organisme, domaine…"/>{search&&<button onClick={()=>setSearch('')}><Icon name="close" size={14}/></button>}</div>
-      <div className="explorer-drawer-results"><span>{matches.length} résultat{matches.length>1?'s':''}</span></div>
-      <div className="explorer-publication-list">
-        {matches.map(p=><button key={p.publication_id} className={`explorer-publication-item ${selectedId===p.publication_id?'selected':''}`} onClick={()=>onSelect(p)}>
-          {p.has_image?<img src={`.${p.image_path}`} alt=""/>:<div className="explorer-mini-placeholder">{p.publication_id}</div>}
-          <div><b>{p.publication_id}</b><strong>{sentenceCase(p.titre)}</strong><span>{p.organisme_producteur}{p.année_publication?` · ${p.année_publication}`:''}</span></div>
-          <Icon name="chevron" size={17}/>
-        </button>)}
-      </div>
-    </aside>
-  </>
-}
-
-function ExplorerIntro({onChoose,guideActive=false}){
-  return <main className="page explorer-v02-home">
-    <section className="explorer-v02-hero">
-      <div className="explorer-v02-copy">
-        <span className="explorer-kicker">EXPLORER</span>
-        <h1>Naviguez dans les publications et dans les univers métiers du Ministère de l’intérieur</h1>
-        <p><strong>À la différence d’un graphe de réseaux</strong>, qui met principalement en évidence des connexions entre acteurs ou objets, le graphe de connaissances organise l’information sous la forme d’entités — idées, personnes, lieux, événements, dispositifs, etc. — reliées entre elles par des relations sémantiques explicites, souvent formulées à l’aide de verbes d’action.</p>
-        <p>Il permet ainsi de <strong>naviguer à l’intérieur d’un texte et des connaissances qu’il mobilise</strong>, en passant d’une entité à une autre et en suivant les relations qui les relient.</p>
-        <p>Le <strong>GraphRAG</strong> prolonge cette logique en permettant d’interroger les contenus documentaires et d’en extraire des objets spécifiques : <strong>acteurs, recommandations, localisations, actions, enjeux, concepts</strong>, etc.</p>
-        <div className="explorer-hero-action">
-          <button className={`btn explorer-primary ${guideActive?'explorer-guide-intro-target':''}`} onClick={onChoose}><Icon name="file" size={17}/>Choisir une publication</button>
+function PublicationDrawer({ open, onClose, publications, search, setSearch, onSelect, selectedId }) {
+  const matches = useMemo(() => {
+    const q = normalize(search)
+    if (!q) return publications
+    return publications.filter(p => normalize(`${p.publication_id} ${p.titre} ${p.organisme_producteur} ${p.domaine || ''} ${p.année_publication || ''}`).includes(q))
+  }, [search, publications])
+  return (
+    <>
+      <button className={`orbit-drawer-scrim ${open ? 'open' : ''}`} aria-label="Fermer le volet publications" onClick={onClose} tabIndex={open ? 0 : -1} />
+      <aside className={`orbit-drawer ${open ? 'open' : ''}`} aria-hidden={!open}>
+        <div className="orbit-drawer-head">
+          <div>
+            <span className="orbit-kicker">Corpus</span>
+            <h2>Choisir une publication</h2>
+            <p>{publications.length} publication{publications.length > 1 ? 's' : ''} avec graphe</p>
+          </div>
+          <button onClick={onClose} className="orbit-icon-btn" title="Fermer" aria-label="Fermer"><Icon name="close" size={18} /></button>
         </div>
-      </div>
-      <KnowledgeIllustration/>
-    </section>
-
-    <aside className="explorer-howto">
-      <div className="explorer-howto-title"><span>✦</span><div><span className="explorer-kicker">EXPLORER</span><h3>Comment fonctionne cet espace ?</h3></div></div>
-      <div className="explorer-howto-step"><b>1</b><div><strong>Choisissez une publication</strong><p>Ouvrez le volet et recherchez rapidement une source dans le corpus.</p></div></div>
-      <div className="explorer-howto-step"><b>2</b><div><strong>Explorez son graphe</strong><p>Naviguez entre les entités et les relations sémantiques qui les relient.</p></div></div>
-      <div className="explorer-howto-step"><b>3</b><div><strong>Consultez les preuves</strong><p>Revenez aux pages ou timecodes qui étayent les connaissances affichées.</p></div></div>
-      <div className="explorer-howto-step"><b>4</b><div><strong>Interrogez le graphe</strong><p>Le chatbot reste disponible dans la vue graphe pour poser vos questions en langage naturel.</p></div></div>
-    </aside>
-  </main>
+        <div className="orbit-drawer-search">
+          <Icon name="search" size={17} />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Titre, organisme, domaine, identifiant…" aria-label="Rechercher une publication" />
+        </div>
+        <div className="orbit-drawer-count">{matches.length} résultat{matches.length > 1 ? 's' : ''}</div>
+        <div className="orbit-drawer-list">
+          {matches.map(p => (
+            <button key={p.publication_id} className={`orbit-drawer-item ${selectedId === p.publication_id ? 'selected' : ''}`} onClick={() => onSelect(p)}>
+              {p.has_image ? <img src={`.${p.image_path}`} alt="" /> : <div className="orbit-mini-placeholder">{p.publication_id}</div>}
+              <div>
+                <small>{p.publication_id}</small>
+                <strong>{sentenceCase(p.titre)}</strong>
+                <span>{p.organisme_producteur}{p.année_publication ? ` · ${p.année_publication}` : ''}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </aside>
+    </>
+  )
 }
 
-export default function Explorer({data}){
-  const graphPubs=useMemo(()=>data.publications.filter(p=>p.has_graph),[data])
-  const [selectedPub,setSelectedPub]=useState(null),[search,setSearch]=useState(''),[nodeSearch,setNodeSearch]=useState('')
-  const [drawerOpen,setDrawerOpen]=useState(false)
-  const [selectedNode,setSelectedNode]=useState(null),[proof,setProof]=useState(null),[showWeak,setShowWeak]=useState(true),[showRelationLabels,setShowRelationLabels]=useState(false)
-  const [enabledTypes,setEnabledTypes]=useState(legendTypes),[nodeScale,setNodeScale]=useState(1),[labelScale,setLabelScale]=useState(1),[linkDensity,setLinkDensity]=useState(1),[resetToken,setResetToken]=useState(0),[fitToken,setFitToken]=useState(0)
-  const [question,setQuestion]=useState(''),[chat,setChat]=useState(null),[loading,setLoading]=useState(false),[chatOpen,setChatOpen]=useState(false)
-  const [detailCollapsed,setDetailCollapsed]=useState(false)
-  const [guideStep,setGuideStep]=useState(()=>{
-    try{return window.sessionStorage.getItem(EXPLORER_GUIDE_SESSION_KEY)?7:1}catch(_e){return 1}
+function OrbitIllustration() {
+  const pts = [[0, -78], [74, -26], [46, 64], [-46, 64], [-74, -26]]
+  const cols = ['#7FB2FF', '#FF6B81', '#3FE0C5', '#8CF08A', '#FFB86B']
+  return (
+    <svg className="orbit-home-art" viewBox="-160 -120 320 240" aria-hidden="true">
+      <ellipse cx="0" cy="0" rx="92" ry="80" fill="none" stroke="#3FE0C5" strokeOpacity=".25" strokeDasharray="2 6" />
+      <ellipse cx="0" cy="0" rx="146" ry="112" fill="none" stroke="#8fa8b4" strokeOpacity=".15" strokeDasharray="2 8" />
+      {pts.map(([x, y], i) => <line key={`l${i}`} x1="0" y1="0" x2={x} y2={y} stroke={cols[i]} strokeOpacity=".6" />)}
+      <circle r="44" fill="#B79CFF" opacity=".12" />
+      <circle r="16" fill="#e8deff" />
+      <circle r="16" fill="none" stroke="#fff" strokeDasharray="3 4" strokeOpacity=".8" transform="scale(1.45)" />
+      {pts.map(([x, y], i) => <g key={i}><circle cx={x} cy={y} r="18" fill={cols[i]} opacity=".18" /><circle cx={x} cy={y} r="7" fill={cols[i]} /></g>)}
+      {[[-130, -60], [128, 40], [-120, 70], [140, -70], [10, 110], [-20, -112]].map(([x, y], i) => <circle key={`d${i}`} cx={x} cy={y} r="3" fill="#8fa8b4" opacity=".5" />)}
+    </svg>
+  )
+}
+
+function ExplorerHome({ onChoose, count }) {
+  return (
+    <main className="orbit-home">
+      <section className="orbit-home-hero">
+        <div className="orbit-home-copy">
+          <span className="orbit-kicker">Explorer une publication</span>
+          <h1>Naviguez dans les publications et dans les univers métiers du ministère de l’Intérieur</h1>
+          <p>
+            <strong>À la différence d’un graphe de réseaux</strong>, qui met principalement en évidence des
+            connexions entre acteurs ou objets, le graphe de connaissances organise l’information sous la forme
+            d’entités — idées, personnes, lieux, événements, dispositifs, etc. — reliées entre elles par des
+            relations sémantiques explicites, souvent formulées à l’aide de verbes d’action.
+          </p>
+          <p>
+            Il permet ainsi de <strong>naviguer à l’intérieur d’un texte et des connaissances qu’il mobilise</strong>,
+            en passant d’une entité à une autre et en suivant les relations qui les relient.
+          </p>
+          <p>
+            Le <strong>GraphRAG</strong> prolonge cette logique en permettant d’interroger les contenus documentaires
+            et d’en extraire des objets spécifiques : <strong>acteurs, recommandations, localisations, actions,
+            enjeux, concepts</strong>, etc.
+          </p>
+          <button className="atlas-btn primary orbit-home-cta" onClick={onChoose}>
+            <Icon name="file" size={17} />Choisir une publication
+            <small>{count} publications avec graphe</small>
+          </button>
+        </div>
+        <OrbitIllustration />
+      </section>
+
+      <aside className="orbit-home-howto">
+        <h3>Comment fonctionne cet espace ?</h3>
+        {[
+          ['Choisissez une publication', 'Recherchez une source dans le corpus.'],
+          ['Placez un sujet au centre', 'Les entités liées gravitent autour, avec le verbe de chaque relation.'],
+          ['Suivez le fil du document', 'Les pages où le sujet apparaît, et l’extrait qui le prouve.'],
+          ['Interrogez la publication', 'Posez vos questions en langage naturel.'],
+        ].map(([t, d], i) => (
+          <div className="orbit-home-step" key={t}><b>{i + 1}</b><div><strong>{t}</strong><p>{d}</p></div></div>
+        ))}
+      </aside>
+    </main>
+  )
+}
+
+function Accordion({ title, count, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className={`atlas-accordion ${open ? 'open' : ''}`}>
+      <button type="button" onClick={() => setOpen(v => !v)} aria-expanded={open}>
+        <span>{title}{count !== undefined && <b className="atlas-accordion-count">{count}</b>}</span>
+        <span aria-hidden="true" className="atlas-accordion-chevron">⌄</span>
+      </button>
+      {open && <div className="atlas-accordion-body">{children}</div>}
+    </div>
+  )
+}
+
+export default function Explorer({ data, onOpenAtlas }) {
+  const graphPubs = useMemo(() => data.publications.filter(p => p.has_graph), [data])
+  const [selectedPub, setSelectedPub] = useState(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const [nodeSearch, setNodeSearch] = useState('')
+  const [searchFocused, setSearchFocused] = useState(false)
+  const [focusId, setFocusId] = useState(null)
+  const [trail, setTrail] = useState([])
+  const [disabledTypes, setDisabledTypes] = useState(() => new Set())
+  const [proof, setProof] = useState(null)
+  const [question, setQuestion] = useState('')
+  const [chat, setChat] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [chatOpen, setChatOpen] = useState(false)
+  const [resetToken, setResetToken] = useState(0)
+  const [understandOpen, setUnderstandOpen] = useState(false)
+  const [guideStep, setGuideStep] = useState(1)
+  const [guideCollapsed, setGuideCollapsed] = useState(() => {
+    try { return Boolean(window.sessionStorage.getItem(GUIDE_DONE_KEY)) } catch (_e) { return false }
   })
-  const [guidePaused,setGuidePaused]=useState(false)
-  const [guideCollapsed,setGuideCollapsed]=useState(()=>{
-    try{return Boolean(window.sessionStorage.getItem(EXPLORER_GUIDE_SESSION_KEY))}catch(_e){return false}
-  })
-  const [guideRunKey,setGuideRunKey]=useState(0)
+  const screenRef = useRef(null)
+  const stageRef = useRef(null)
 
-  useEffect(()=>{
-    if(!selectedPub||guideCollapsed||guidePaused||guideStep<2||guideStep>6)return
-    const timer=window.setTimeout(()=>setGuideStep(step=>Math.min(7,step+1)),EXPLORER_GUIDE_STEP_MS)
-    return ()=>window.clearTimeout(timer)
-  },[selectedPub?.publication_id,guideStep,guidePaused,guideCollapsed,guideRunKey])
+  // En vue publication, l'écran reste calé sur la fenêtre (pas de défilement).
+  useEffect(() => {
+    if (!selectedPub) return undefined
+    const prev = document.body.style.overflow
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [selectedPub?.publication_id])
 
-  useEffect(()=>{
-    if(guideStep!==7)return
-    try{window.sessionStorage.setItem(EXPLORER_GUIDE_SESSION_KEY,'1')}catch(_e){}
-  },[guideStep])
+  const pubId = selectedPub?.publication_id
+  const allNodes = useMemo(() => (pubId ? data.nodes.filter(n => n.publication_id === pubId) : []), [data, pubId])
+  const allRelations = useMemo(() => (pubId ? data.relations.filter(r => r.publication_id === pubId) : []), [data, pubId])
+  const contents = useMemo(() => (pubId ? data.contents.filter(c => c.publication_id === pubId) : []), [data, pubId])
+  const nodeMap = useMemo(() => Object.fromEntries(allNodes.map(n => [n.node_id, n])), [allNodes])
 
-  const replayGuide=()=>{setGuideCollapsed(false);setGuidePaused(false);setGuideStep(selectedPub?2:1);setGuideRunKey(x=>x+1)}
-  const collapseGuide=()=>setGuideCollapsed(true)
+  const presentTypes = useMemo(() => {
+    const counts = {}
+    allNodes.forEach(n => { const t = normalizeType(n.type_noeud); counts[t] = (counts[t] || 0) + 1 })
+    const order = Object.keys(ORBIT_TYPES)
+    return Object.entries(counts).sort((a, b) => (order.indexOf(a[0]) + 99 * (order.indexOf(a[0]) < 0)) - (order.indexOf(b[0]) + 99 * (order.indexOf(b[0]) < 0)))
+  }, [allNodes])
 
-  // En mode publication, l'écran Explorer doit rester calé sur le viewport.
-  // Le rail gauche et le tiroir droit défilent chacun de leur côté : ils ne
-  // doivent plus allonger la page et créer une grande zone blanche sous le graphe.
-  useEffect(()=>{
-    if(!selectedPub)return
-    const previousOverflow=document.body.style.overflow
-    const previousOverscroll=document.body.style.overscrollBehavior
-    window.scrollTo({top:0,left:0,behavior:'auto'})
-    document.body.style.overflow='hidden'
-    document.body.style.overscrollBehavior='none'
-    return ()=>{
-      document.body.style.overflow=previousOverflow
-      document.body.style.overscrollBehavior=previousOverscroll
-    }
-  },[selectedPub?.publication_id])
+  const nodes = useMemo(() => allNodes.filter(n => !disabledTypes.has(normalizeType(n.type_noeud))), [allNodes, disabledTypes])
+  const relations = useMemo(() => {
+    const ids = new Set(nodes.map(n => n.node_id))
+    return allRelations.filter(r => ids.has(r.source_id) && ids.has(r.cible_id))
+  }, [nodes, allRelations])
 
-  const choosePublication=p=>{setSelectedPub(p);setSelectedNode(null);setDetailCollapsed(false);setChat(null);setQuestion('');setNodeSearch('');setDrawerOpen(false);setShowRelationLabels(false);if(!guideCollapsed&&guideStep===1){setGuideStep(2);setGuidePaused(false);setGuideRunKey(x=>x+1)}}
+  const degree = useMemo(() => {
+    const d = {}
+    relations.forEach(r => { d[r.source_id] = (d[r.source_id] || 0) + 1; d[r.cible_id] = (d[r.cible_id] || 0) + 1 })
+    return d
+  }, [relations])
+  const hub = useMemo(() => [...nodes].sort((a, b) => (degree[b.node_id] || 0) - (degree[a.node_id] || 0))[0], [nodes, degree])
+  const focus = (focusId && nodes.find(n => n.node_id === focusId)) || hub || null
 
-  if(!selectedPub)return <div className="explorer-v02-shell"><ExplorerIntro onChoose={()=>setDrawerOpen(true)} guideActive={!guideCollapsed&&guideStep===1}/><ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed={guideCollapsed}/><PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication}/></div>
+  const expertises = useMemo(
+    () => (pubId ? data.expertise_nodes.filter(x => (x.publications || []).some(p => p.publication_id === pubId)) : []),
+    [data, pubId]
+  )
 
-  const nodes=data.nodes.filter(n=>n.publication_id===selectedPub.publication_id)
-  const relations=data.relations.filter(r=>r.publication_id===selectedPub.publication_id)
-  const nodeMap=Object.fromEntries(nodes.map(n=>[n.node_id,n]))
-  const highlighted=chat?.noeuds_selectionnes || []
-  const nodeRelations=selectedNode?relations.filter(r=>r.source_id===selectedNode.node_id||r.cible_id===selectedNode.node_id):[]
-  const linkedNodes=selectedNode?nodeRelations.map(r=>nodeMap[r.source_id===selectedNode.node_id?r.cible_id:r.source_id]).filter(Boolean).slice(0,6):[]
-  const qNode=normalize(nodeSearch); const nodeMatches=qNode?nodes.filter(n=>normalize(n.libelle).includes(qNode)).slice(0,8):[]
-  const adj=buildAdjacency(nodes,relations); const defaultFocus=[...nodes].sort((a,b)=>(adj.get(b.node_id)?.length||0)-(adj.get(a.node_id)?.length||0))[0]
-  const currentNode=selectedNode||defaultFocus
-  const evidence=currentNode?chunkFor(currentNode,data.contents):null
-  const currentLinked=currentNode?(selectedNode?linkedNodes:(adj.get(currentNode.node_id)||[]).map(x=>nodeMap[x.id]).filter(Boolean).slice(0,6)):[]
-  const graphNodes=nodes.filter(n=>enabledTypes.includes(normalizeGraphType(n.type_noeud)))
-  const visibleTypeIds=new Set(graphNodes.map(n=>n.node_id))
-  const graphRelations=relations.filter(r=>visibleTypeIds.has(r.source_id)&&visibleTypeIds.has(r.cible_id))
-  const graphAdj=buildAdjacency(graphNodes,graphRelations)
-  const graphDefaultFocus=[...graphNodes].sort((a,b)=>(graphAdj.get(b.node_id)?.length||0)-(graphAdj.get(a.node_id)?.length||0))[0]
-  const graphSelectedNode=selectedNode&&visibleTypeIds.has(selectedNode.node_id)?selectedNode:null
-  const graphCurrentNode=graphSelectedNode||graphDefaultFocus
-  const visibleRelationCount=showWeak?graphRelations.length:graphRelations.filter(r=>r.source_id===graphCurrentNode?.node_id||r.cible_id===graphCurrentNode?.node_id).length
-
-  const toggleType=t=>{if(normalizeGraphType(selectedNode?.type_noeud)===t&&enabledTypes.includes(t))setSelectedNode(null);setEnabledTypes(s=>s.includes(t)?s.filter(x=>x!==t):[...s,t])}
-  const selectAllTypes=()=>setEnabledTypes([...legendTypes])
-  const deselectAllTypes=()=>{setSelectedNode(null);setProof(null);setEnabledTypes([])}
-  const resetMap=()=>{setSelectedNode(null);setDetailCollapsed(false);setNodeSearch('');setEnabledTypes(legendTypes);setNodeScale(1);setLabelScale(1);setLinkDensity(1);setShowWeak(true);setShowRelationLabels(false);setResetToken(x=>x+1);setFitToken(x=>x+1)}
-  const selectNode=n=>{
-    setSelectedNode(n)
-    setDetailCollapsed(false)
-    if(!guideCollapsed&&guideStep===2){setGuideStep(3);setGuidePaused(false);setGuideRunKey(x=>x+1)}
-    else if(!guideCollapsed&&guideStep===5){setGuideStep(6);setGuidePaused(false);setGuideRunKey(x=>x+1)}
+  const choosePublication = p => {
+    setSelectedPub(p)
+    setFocusId(null)
+    setTrail([])
+    setDisabledTypes(new Set())
+    setChat(null)
+    setQuestion('')
+    setChatOpen(false)
+    setNodeSearch('')
+    setDrawerOpen(false)
+    setResetToken(x => x + 1)
+    if (!guideCollapsed) setGuideStep(s => (s === 1 ? 1 : 2))
   }
-  const selectRelation=r=>{
-    setProof(r)
-    if(!guideCollapsed&&guideStep===3){setGuideStep(6);setGuidePaused(false);setGuideRunKey(x=>x+1)}
+
+  const goTo = node => {
+    if (!node) return
+    const t = normalizeType(node.type_noeud)
+    if (disabledTypes.has(t)) setDisabledTypes(s => { const n = new Set(s); n.delete(t); return n })
+    setFocusId(node.node_id)
+    setTrail(prev => {
+      const base = prev.length ? prev : (focus ? [focus.node_id] : [])
+      const cut = base.indexOf(node.node_id)
+      const next = cut >= 0 ? base.slice(0, cut + 1) : [...base, node.node_id]
+      return next.slice(-6)
+    })
+    if (!guideCollapsed && guideStep === 2) setGuideStep(3)
   }
-  const openProof=item=>{setProof(item);if(!guideCollapsed&&guideStep===6)setGuideStep(7)}
-  async function runQuestion(value){
-    const q=String(value||'').trim()
-    if(!q||loading)return
+
+  const resetView = () => {
+    setFocusId(null)
+    setTrail([])
+    setDisabledTypes(new Set())
+    setNodeSearch('')
+    setResetToken(x => x + 1)
+  }
+
+  const toggleType = t => setDisabledTypes(s => { const n = new Set(s); n.has(t) ? n.delete(t) : n.add(t); return n })
+
+  async function runQuestion(value) {
+    const q = String(value || '').trim()
+    if (!q || loading) return
     setQuestion(q)
     setLoading(true)
     setChatOpen(true)
-    try{setChat(await askGraph(q,selectedPub,nodes,relations))}
-    catch(err){setChat({error:err.message,reponse:err.message||'Le service de dialogue n’est pas disponible.',noeuds_selectionnes:[]})}
-    finally{setLoading(false)}
+    try { setChat(await askGraph(q, selectedPub, allNodes, allRelations)) }
+    catch (err) { setChat({ error: err.message, reponse: err.message || 'Le service de dialogue n’est pas disponible.', noeuds_selectionnes: [] }) }
+    finally { setLoading(false) }
   }
-  async function submit(e){e.preventDefault();await runQuestion(question)}
 
-  return <div className="explorer-v02-shell"><main className={`screen graph-screen publication-screen explorer-v02-graph ${selectedNode&&!detailCollapsed?'has-drawer':''} ${selectedNode&&detailCollapsed?'detail-collapsed':''}`}>
-    <aside className="left-rail explorer-rail">
-      <button className="explorer-change-publication" onClick={()=>setDrawerOpen(true)}><Icon name="file" size={17}/><span><small>Publication</small><strong>Changer de publication</strong></span><Icon name="chevron" size={17}/></button>
-      <section className="rail-section"><h4>Publication sélectionnée</h4><article className="selected-publication-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article></section>
-      <section className="rail-section"><h4>Rechercher dans la publication</h4><div className="rail-search"><input value={nodeSearch} onChange={e=>setNodeSearch(e.target.value)} placeholder="Rechercher un terme, une entité…"/><Icon name="search" size={18}/></div>{nodeMatches.length>0&&<div className="rail-results">{nodeMatches.map(n=><button key={n.node_id} onClick={()=>{const t=normalizeGraphType(n.type_noeud);setEnabledTypes(v=>v.includes(t)?v:[...v,t]);selectNode(n);setNodeSearch('')}}>{n.libelle}<small>{nodeMeta(n.type_noeud).label}</small></button>)}</div>}</section>
-      <section className="rail-section"><div className="type-filter-heading"><h4>Type de nœud</h4><div className="type-filter-actions"><button type="button" onClick={selectAllTypes} disabled={enabledTypes.length===legendTypes.length}>Tout sélectionner</button><button type="button" onClick={deselectAllTypes} disabled={enabledTypes.length===0}>Tout désélectionner</button></div></div><div className="type-filter-list">{legendTypes.map(t=>{const m=nodeMeta(t),count=nodes.filter(n=>normalizeGraphType(n.type_noeud)===t).length;return <label key={t}><input type="checkbox" checked={enabledTypes.includes(t)} onChange={()=>toggleType(t)}/><i style={{background:colorForType(t)}}></i><span>{m.label}</span><b>{count}</b></label>})}</div></section>
-      <section className="rail-section weak-row"><label><span>Afficher les liens faibles <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showWeak} onChange={e=>setShowWeak(e.target.checked)}/></label></section>
-      <section className="rail-section weak-row relation-label-row"><label><span>Libellés des relations <Icon name="info" size={15}/></span><input className="switch" type="checkbox" checked={showRelationLabels} onChange={e=>setShowRelationLabels(e.target.checked)}/></label></section>
-      <section className="rail-section display-section"><h4>Affichage</h4><label>Taille des nœuds<input type="range" min="0.8" max="1.35" step="0.05" value={nodeScale} onChange={e=>setNodeScale(Number(e.target.value))}/><span><small>Petite</small><small>Grande</small></span></label><label>Taille des libellés<input type="range" min="0.85" max="1.8" step="0.05" value={labelScale} onChange={e=>setLabelScale(Number(e.target.value))}/><span><small>Normale</small><small>Très grande</small></span></label><label>Densité des liens<input type="range" min="0.6" max="1.8" step="0.1" value={linkDensity} onChange={e=>setLinkDensity(Number(e.target.value))}/><span><small>Faible</small><small>Élevée</small></span></label></section>
-    </aside>
+  const nextGuide = () => {
+    if (guideStep < 4) setGuideStep(s => s + 1)
+    else {
+      setGuideCollapsed(true)
+      try { window.sessionStorage.setItem(GUIDE_DONE_KEY, '1') } catch (_e) {}
+    }
+  }
 
-    <section className="graph-workspace publication-workspace">
-      <div className="workspace-toolbar"><div><span className="explorer-kicker">EXPLORER</span><h1>Explorateur de publication</h1><p className="workspace-subtitle">{sentenceCase(selectedPub.titre)}</p><div className="big-count"><strong>{visibleTypeIds.size}</strong><span>nœuds · {visibleRelationCount} liens visibles</span><Icon name="info" size={17}/>{guideCollapsed&&<ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed/>}</div></div><div className="toolbar-actions"><button onClick={resetMap}><Icon name="reset" size={17}/>Réinitialiser la carte</button><button onClick={()=>setFitToken(x=>x+1)}><Icon name="target" size={17}/>Ajuster à l’écran</button></div></div>
-      <div className="graph-stage">
-        <button className="explorer-map-reset" type="button" onClick={resetMap} title="Réinitialiser la carte"><Icon name="reset" size={16}/><span>Réinitialiser la carte</span></button>
-        <div className={`chat-dock explorer-chat explorer-chat-top ${chatOpen?'open':''}`}>
-          <button className="chat-dock-title" onClick={()=>{if(chatOpen){setChatOpen(false);setChat(null);setQuestion('')}else setChatOpen(true)}}><span>✦</span><strong>Interroger le graphe</strong><small>{chatOpen?'Réduire':'Ouvrir'}</small></button>
-          {chatOpen&&<div className="chat-dock-body">
-            <div className="chat-scroll-area">
-              {!chat&&!loading&&<div className="chat-welcome"><strong>Que voulez-vous explorer ?</strong><p>Posez une question sur les connaissances et les relations présentes dans cette publication.</p></div>}
-              {loading&&<div className="chat-loading"><span></span><p>Recherche dans le graphe documentaire…</p></div>}
-              {chat&&<div className="chat-response"><ChatAnswer chat={chat}/>{highlighted.length>0&&<div className="chat-evidence-links">{highlighted.slice(0,6).map(id=>nodeMap[id]?<button key={id} onClick={()=>selectNode(nodeMap[id])}>{nodeMap[id].libelle}</button>:null)}</div>}</div>}
-              <div className="chat-suggestions">{CHAT_SUGGESTIONS.map(suggestion=><button type="button" key={suggestion} disabled={loading} onClick={()=>runQuestion(suggestion)}>{suggestion}</button>)}</div>
+  if (!selectedPub) {
+    return (
+      <div className="atlas-screen orbit-screen orbit-screen-home">
+        <ExplorerHome onChoose={() => setDrawerOpen(true)} count={graphPubs.length} />
+        <PublicationDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} />
+      </div>
+    )
+  }
+
+  const q = normalize(nodeSearch)
+  const nodeMatches = q ? allNodes.filter(n => normalize(n.libelle).includes(q)).slice(0, 8) : []
+  const highlighted = chat?.noeuds_selectionnes || []
+
+  const focusRelations = focus ? allRelations.filter(r => r.source_id === focus.node_id || r.cible_id === focus.node_id) : []
+  const linked = [...new Map(focusRelations.map(r => {
+    const other = nodeMap[r.source_id === focus.node_id ? r.cible_id : r.source_id]
+    return [other?.node_id, other]
+  })).values()].filter(Boolean)
+  const chunk = focus
+    ? String(focus.chunk_id_source || '').split(';').map(s => s.trim()).map(id => contents.find(c => c.chunk_id === id)).find(Boolean)
+    : null
+  const focusPages = focus ? [...new Set(pagesOf(focus))].sort((a, b) => a - b) : []
+
+  return (
+    <div className="atlas-screen orbit-screen" ref={screenRef}>
+      <div className="orbit-toolbar" role="search">
+        <button type="button" className="orbit-pubbtn" onClick={() => setDrawerOpen(true)} title="Changer de publication">
+          <Icon name="file" size={17} />
+          <span><small>Publication · {selectedPub.publication_id}</small><strong>{sentenceCase(selectedPub.titre)}</strong></span>
+          <Icon name="chevron" size={16} />
+        </button>
+
+        <div className="atlas-search orbit-search">
+          <Icon name="search" size={18} />
+          <input
+            value={nodeSearch}
+            onChange={e => setNodeSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && nodeMatches[0]) { goTo(nodeMatches[0]); setNodeSearch('') }
+              if (e.key === 'Escape') setNodeSearch('')
+            }}
+            placeholder="Rechercher une entité dans la publication…"
+            aria-label="Rechercher une entité dans la publication"
+          />
+          {searchFocused && nodeSearch && (
+            <div className="atlas-search-results" role="listbox">
+              {nodeMatches.length === 0 && <p className="atlas-muted">Aucune entité ne correspond.</p>}
+              {nodeMatches.map(n => (
+                <button type="button" key={n.node_id} onMouseDown={e => e.preventDefault()} onClick={() => { goTo(n); setNodeSearch('') }}>
+                  <i style={{ background: typeColor(normalizeType(n.type_noeud)) }} aria-hidden="true" />
+                  <span>{n.libelle}<small>{typeLabel(normalizeType(n.type_noeud))}</small></span>
+                </button>
+              ))}
             </div>
-            <form onSubmit={submit} className="chat-question-form"><textarea rows="2" value={question} onChange={e=>setQuestion(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();e.currentTarget.form?.requestSubmit()}}} placeholder="Posez une question sur cette publication…"/><button disabled={loading||!question.trim()} title="Envoyer"><Icon name="send" size={20}/></button></form>
-          </div>}
+          )}
         </div>
-        <KnowledgeGraph nodes={graphNodes} relations={graphRelations} selectedId={graphSelectedNode?.node_id} onSelectNode={selectNode} onSelectRelation={selectRelation} highlightIds={highlighted} showWeak={showWeak} showRelationLabels={showRelationLabels} nodeScale={nodeScale} labelScale={labelScale} linkDensity={linkDensity} resetToken={resetToken} fitToken={fitToken} guideStep={guideCollapsed?0:guideStep}/>
-        {!guideCollapsed&&<ExplorerEclaireur step={guideStep} paused={guidePaused} onTogglePause={()=>setGuidePaused(v=>!v)} onCollapse={collapseGuide} onReplay={replayGuide} collapsed={false}/>}
-      </div>
-    </section>
 
-    {(selectedNode||(!guideCollapsed&&guideStep===6))&&!detailCollapsed&&<aside className={`detail-drawer publication-drawer ${!guideCollapsed&&guideStep===6?'explorer-proof-guide':''}`}>
-      <div className="drawer-type node-type"><i style={{background:colorForType((selectedNode||currentNode).type_noeud)}}></i>{nodeMeta((selectedNode||currentNode).type_noeud).label}</div>
-      <div className="publication-drawer-controls">
-        {selectedNode&&<button className="drawer-collapse" type="button" onClick={()=>setDetailCollapsed(true)} title="Replier la fiche"><Icon name="chevron" size={16}/><span>Replier</span></button>}
-        <button className="drawer-close" onClick={()=>{setSelectedNode(null);setDetailCollapsed(false)}} title="Fermer la fiche"><Icon name="close"/></button>
+        <div className="atlas-counters" aria-label="Statistiques du graphe">
+          <span><strong>{nodes.length}</strong> entités</span>
+          <span aria-hidden="true">·</span>
+          <span><strong>{relations.length}</strong> relations</span>
+        </div>
+
+        <button type="button" className={`orbit-chat-pill ${chatOpen ? 'is-open' : ''}`} onClick={() => setChatOpen(v => !v)} aria-expanded={chatOpen}>
+          <span className="orbit-chat-orb" aria-hidden="true" />Interroger la publication
+        </button>
+
+        <button type="button" className="atlas-btn outline" onClick={resetView}>
+          <Icon name="reset" size={16} /><span>Réinitialiser</span>
+        </button>
       </div>
-      <h2>{(selectedNode||currentNode).libelle}</h2><p className="drawer-definition">Élément documenté dans la publication. Consultez les relations et la preuve ci-dessous pour vérifier son contexte source.</p>
-      <h4>Nœuds liés ({currentLinked.length})</h4><div className="linked-node-list">{currentLinked.map(n=>{const m=nodeMeta(n.type_noeud);const c=colorForType(n.type_noeud);return <button key={n.node_id} onClick={()=>selectNode(n)}><i style={{background:c}}></i><span>{n.libelle}</span><b style={{color:c}}>{m.label}</b></button>})}</div>
-      <h4>Preuve documentaire</h4><article className="proof-source-card">{selectedPub.has_image?<img src={`.${selectedPub.image_path}`} alt=""/>:<div className="mini-placeholder">{selectedPub.publication_id}</div>}<div><strong>{sentenceCase(selectedPub.titre)}</strong><small>{selectedPub.organisme_producteur} · {selectedPub.année_publication}</small></div></article>
-      <div className="inline-proof"><strong>{(selectedNode||currentNode).page_source?`Page / timecode ${(selectedNode||currentNode).page_source}`:'Page / timecode non renseigné'}</strong>{evidence?<p>{evidence.texte.slice(0,420)}{evidence.texte.length>420?'…':''}</p>:<p>Aucun extrait associé n’est disponible pour cet élément.</p>}<button onClick={()=>openProof(selectedNode||currentNode)}><Icon name="eye" size={16}/>Voir la preuve complète</button></div>
-    </aside>}
-    {selectedNode&&detailCollapsed&&<button className="publication-drawer-reopen" type="button" onClick={()=>setDetailCollapsed(false)} title="Afficher la fiche"><Icon name="chevron" size={16}/><span>Afficher la fiche</span></button>}
-    <ProofModal proof={proof} publication={selectedPub} contents={data.contents} nodeMap={nodeMap} onClose={()=>setProof(null)}/>
-  </main>
-  <PublicationDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} selectedId={selectedPub.publication_id}/>
-  </div>
+
+      <div className="orbit-body">
+        <aside className="orbit-left" aria-label="Publication et types d’entités">
+          <h2 className="orbit-panel-title"><i aria-hidden="true" />Publication</h2>
+          <article className="orbit-pubcard">
+            {selectedPub.has_image ? <img src={`.${selectedPub.image_path}`} alt="" /> : <div className="orbit-mini-placeholder">{selectedPub.publication_id}</div>}
+            <div>
+              <strong>{sentenceCase(selectedPub.titre)}</strong>
+              <small>{selectedPub.organisme_producteur}{selectedPub.année_publication ? ` · ${selectedPub.année_publication}` : ''}</small>
+            </div>
+          </article>
+
+          <div className="orbit-types-head">
+            <h2 className="orbit-panel-title small">Types d’entités</h2>
+            {disabledTypes.size > 0 && <button type="button" className="orbit-link" onClick={() => setDisabledTypes(new Set())}>Tout afficher</button>}
+          </div>
+          <div className="orbit-types">
+            {presentTypes.map(([t, count]) => (
+              <button
+                type="button"
+                key={t}
+                className={`orbit-type ${disabledTypes.has(t) ? 'off' : ''}`}
+                onClick={() => toggleType(t)}
+                aria-pressed={!disabledTypes.has(t)}
+                title={disabledTypes.has(t) ? 'Afficher ce type' : 'Masquer ce type'}
+              >
+                <i style={{ background: typeColor(t), boxShadow: disabledTypes.has(t) ? 'none' : `0 0 8px ${typeColor(t)}` }} />
+                <span>{typeLabel(t)}</span>
+                <b>{count}</b>
+              </button>
+            ))}
+          </div>
+          <p className="orbit-hint">Cliquez sur un type pour le masquer ou l’afficher. Tous les types présents dans la publication sont listés.</p>
+        </aside>
+
+        <section className="orbit-stage" ref={stageRef} aria-label="Graphe de la publication">
+          {trail.length > 1 && (
+            <nav className="orbit-crumb" aria-label="Parcours">
+              <span className="orbit-crumb-k">Parcours</span>
+              {trail.map((id, i) => {
+                const n = nodeMap[id]
+                if (!n) return null
+                const last = i === trail.length - 1
+                return (
+                  <React.Fragment key={`${id}-${i}`}>
+                    {i > 0 && <span className="orbit-crumb-sep" aria-hidden="true">›</span>}
+                    <button type="button" className={last ? 'current' : ''} onClick={() => !last && goTo(n)} disabled={last} title={n.libelle}>
+                      {n.libelle.length > 34 ? `${n.libelle.slice(0, 32)}…` : n.libelle}
+                    </button>
+                  </React.Fragment>
+                )
+              })}
+            </nav>
+          )}
+
+          {focus ? (
+            <PublicationOrbit
+              nodes={nodes}
+              relations={relations}
+              focusId={focus.node_id}
+              onFocus={goTo}
+              onOpenRelation={r => setProof(r)}
+              onOpenProof={n => setProof(n)}
+              highlightIds={highlighted}
+              contents={contents}
+              resetToken={resetToken}
+            />
+          ) : (
+            <p className="orbit-empty">Aucune entité à afficher avec les filtres actuels.</p>
+          )}
+
+          {chatOpen && (
+            <div className="orbit-chat" role="dialog" aria-label="Interroger la publication">
+              <header>
+                <span className="orbit-chat-orb" aria-hidden="true" />
+                <strong>Interroger la publication</strong>
+                <button type="button" className="orbit-icon-btn" onClick={() => setChatOpen(false)} aria-label="Réduire">−</button>
+              </header>
+              <div className="orbit-chat-scroll">
+                {!chat && !loading && <p className="orbit-chat-welcome">Posez une question sur les connaissances et les relations présentes dans cette publication.</p>}
+                {loading && <div className="orbit-chat-loading"><span /><p>Recherche dans le graphe documentaire…</p></div>}
+                {chat && (
+                  <div className="orbit-chat-response">
+                    <ChatAnswer chat={chat} />
+                    {highlighted.length > 0 && (
+                      <div className="atlas-chips orbit-chat-links">
+                        {highlighted.slice(0, 8).map(id => nodeMap[id] ? (
+                          <button type="button" className="atlas-chip clickable" key={id} onClick={() => goTo(nodeMap[id])}>{nodeMap[id].libelle}</button>
+                        ) : null)}
+                      </div>
+                    )}
+                  </div>
+                )}
+                <div className="orbit-chat-suggestions">
+                  {CHAT_SUGGESTIONS.map(s => <button type="button" key={s} disabled={loading} onClick={() => runQuestion(s)}>{s}</button>)}
+                </div>
+              </div>
+              <form onSubmit={e => { e.preventDefault(); runQuestion(question) }} className="orbit-chat-form">
+                <textarea
+                  rows="2"
+                  value={question}
+                  onChange={e => setQuestion(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit() } }}
+                  placeholder="Posez une question sur cette publication…"
+                  aria-label="Votre question"
+                />
+                <button disabled={loading || !question.trim()} title="Envoyer" aria-label="Envoyer"><Icon name="send" size={18} /></button>
+              </form>
+            </div>
+          )}
+        </section>
+
+        <aside className="orbit-side" aria-label="Fiche de l’entité">
+          {focus && (
+            <article className="atlas-card orbit-card">
+              <div className="atlas-card-type">
+                <i style={{ background: typeColor(normalizeType(focus.type_noeud)) }} />
+                {typeLabel(normalizeType(focus.type_noeud))}
+              </div>
+              <h2>{focus.libelle}</h2>
+
+              <p className="orbit-card-meta">
+                {focusPages.length
+                  ? `Apparaît sur ${focusPages.length} page${focusPages.length > 1 ? 's' : ''} de la publication`
+                  : 'Pages non renseignées pour cette entité'}
+              </p>
+              {focusPages.length > 0 && (
+                <div className="orbit-pages">
+                  {focusPages.slice(0, 10).map(p => <span key={p}>p. {p}</span>)}
+                  {focusPages.length > 10 && <span>+{focusPages.length - 10}</span>}
+                </div>
+              )}
+
+              <div className="orbit-proof">
+                {chunk ? (
+                  <>
+                    <b>Preuve · p. {chunk.page_debut}{chunk.page_fin && chunk.page_fin !== chunk.page_debut ? `–${chunk.page_fin}` : ''}{chunk.section ? ` · ${chunk.section}` : ''}</b>
+                    <p>{chunk.texte.replace(/\s+/g, ' ').slice(0, 320)}{chunk.texte.length > 320 ? '…' : ''}</p>
+                  </>
+                ) : (
+                  <p>Aucun extrait associé n’est disponible pour cette entité.</p>
+                )}
+                <button type="button" className="orbit-link" onClick={() => setProof(focus)}>
+                  <Icon name="eye" size={15} /> Voir la preuve complète
+                </button>
+              </div>
+
+              <Accordion title="Entités liées" count={linked.length}>
+                <div className="orbit-linked">
+                  {linked.length === 0 && <span className="atlas-muted">Aucune</span>}
+                  {linked.map(n => (
+                    <button type="button" key={n.node_id} onClick={() => goTo(n)}>
+                      <i style={{ background: typeColor(normalizeType(n.type_noeud)) }} />
+                      <span>{n.libelle}<small>{typeLabel(normalizeType(n.type_noeud))}</small></span>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+
+              <Accordion title="Relations" count={focusRelations.length}>
+                <div className="orbit-relations">
+                  {focusRelations.length === 0 && <span className="atlas-muted">Aucune</span>}
+                  {focusRelations.map((r, i) => (
+                    <button type="button" key={r.relation_id || i} onClick={() => setProof(r)} title="Voir la preuve de cette relation">
+                      <span className={r.source_id === focus.node_id ? 'is-focus' : ''}>{nodeMap[r.source_id]?.libelle}</span>
+                      <em>{verbLabel(r.type_relation)}</em>
+                      <span className={r.cible_id === focus.node_id ? 'is-focus' : ''}>{nodeMap[r.cible_id]?.libelle}</span>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+
+              <Accordion title="Expertises révélées par la publication" count={expertises.length}>
+                <div className="orbit-expertises">
+                  {expertises.length === 0 && <span className="atlas-muted">Aucune expertise de l’Atlas n’est rattachée à cette publication.</span>}
+                  {expertises.map(x => (
+                    <button type="button" key={x.id} onClick={() => onOpenAtlas?.(x.id)} title="Ouvrir dans l’Atlas des expertises">
+                      <span>{x.label}</span>
+                      <small>Voir dans l’Atlas →</small>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+            </article>
+          )}
+        </aside>
+      </div>
+
+      <ExplorerGuide
+        step={guideStep}
+        collapsed={guideCollapsed}
+        onNext={nextGuide}
+        onPrevious={() => setGuideStep(s => Math.max(1, s - 1))}
+        onCollapse={() => setGuideCollapsed(true)}
+        onExpand={() => setGuideCollapsed(false)}
+        understandOpen={understandOpen}
+        setUnderstandOpen={setUnderstandOpen}
+        screenRef={screenRef}
+        stageRef={stageRef}
+        relayoutKey={`${pubId}|${focus?.node_id}|${chatOpen}|${disabledTypes.size}|${trail.length > 1}`}
+      />
+
+      <ProofModal proof={proof} publication={selectedPub} contents={contents} nodeMap={nodeMap} onClose={() => setProof(null)} />
+      <PublicationDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} selectedId={selectedPub.publication_id} />
+    </div>
+  )
 }
