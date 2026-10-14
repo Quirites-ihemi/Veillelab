@@ -11,6 +11,8 @@ import CrossDocuments from './pages/CrossDocuments.jsx'
 export default function App(){
   const [showLanding,setShowLanding]=useState(true)
   const [active,setActive]=useState('expertises')
+  // Lien « Voir dans l’Atlas » depuis l’onglet 2 : expertise à ouvrir.
+  const [atlasFocus,setAtlasFocus]=useState(null)
   const {data,error}=useData()
 
   useEffect(()=>{
@@ -41,8 +43,8 @@ export default function App(){
 
   return <>
     <Header active={active} onChange={setActive}/>
-    {active==='expertises'&&<Expertises data={data}/>} 
-    {active==='explorer'&&<Explorer data={data}/>} 
+    {active==='expertises'&&<Expertises data={data} focusExpertiseId={atlasFocus?.id} focusToken={atlasFocus?.token}/>} 
+    {active==='explorer'&&<Explorer data={data} onOpenAtlas={id=>{setAtlasFocus(f=>({id,token:(f?.token||0)+1}));setActive('expertises')}}/>} 
     {active==='atelier'&&<Atelier data={data}/>} 
     {active==='documents'&&<CrossDocuments data={data}/>}
     {active==='about'&&<About/>}
