@@ -8,7 +8,13 @@ import ExpertsWorkspace from './ExpertsWorkspace.jsx'
 import ScenarioWorkspace from './ScenarioWorkspace.jsx'
 import { generateTreatment } from '../services/treatmentApi.js'
 import { normalize } from '../lib/text.js'
-import atelierHomeVisual from '../atelier-home-visual.png'
+import '@fontsource/manrope/latin-400.css'
+import '@fontsource/manrope/latin-500.css'
+import '@fontsource/manrope/latin-600.css'
+import '@fontsource/manrope/latin-700.css'
+import '@fontsource/source-serif-4/latin-500.css'
+import '@fontsource/source-serif-4/latin-600.css'
+import '../atelier-etabli.css'
 
 const regimeClass={'Synthèse stricte':'strict','Extraction stricte':'extract','Enrichissement contrôlé':'enrich'}
 const ALLOWED_TREATMENTS=[
@@ -20,65 +26,6 @@ const ALLOWED_TREATMENTS=[
   {key:'scenario',title:'Scénario de veille',ids:['T06'],icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Construisez un scénario de veille à partir de votre besoin, des apports du corpus et de vos choix.'}
 ]
 
-const ATELIER_SCREEN_STYLES=`
-.workshop-page.qvl-v02{padding-top:10px;color:#102a56}
-.qvl-v02 .qvl-home-shell{max-width:1510px;margin:0 auto;border:1px solid #dce7f5;border-radius:20px;background:linear-gradient(180deg,#fbfdff 0%,#f7fbff 100%);padding:16px;box-shadow:0 8px 28px rgba(27,67,123,.06)}
-.qvl-v02 .qvl-home-top{display:grid;grid-template-columns:minmax(350px,430px) minmax(0,1fr);gap:18px;align-items:start}
-.qvl-v02 .qvl-home-visual{min-width:0;border-radius:17px;overflow:hidden;background:#edf5fb;box-shadow:inset 0 0 0 1px rgba(192,211,236,.65)}
-.qvl-v02 .qvl-home-visual img{display:block;width:100%;height:auto;min-height:0;object-fit:contain;object-position:center top}
-.qvl-v02 .qvl-home-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,auto);gap:12px;min-width:0}
-.qvl-v02 .qvl-treatment-card{appearance:none;text-align:left;position:relative;min-height:142px;padding:16px 40px 14px 16px;border:1px solid #dbe5f2;border-radius:14px;background:#fff;box-shadow:0 4px 13px rgba(30,67,116,.05);cursor:pointer;display:grid;grid-template-columns:50px minmax(0,1fr);gap:12px;align-items:start;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
-.qvl-v02 .qvl-treatment-card:hover{transform:translateY(-2px);border-color:#b9cff0;box-shadow:0 12px 26px rgba(28,70,138,.10);background:#fcfdff}
-.qvl-v02 .qvl-card-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#eaf3ff;color:#1760d1}
-.qvl-v02 .qvl-treatment-card[data-key='carte'] .qvl-card-icon{background:#f3ebff;color:#7c3aed}
-.qvl-v02 .qvl-treatment-card[data-key='recommandations'] .qvl-card-icon{background:#fff0e3;color:#ef6c00}
-.qvl-v02 .qvl-treatment-card[data-key='experts'] .qvl-card-icon{background:#eaf3ff;color:#1760d1}
-.qvl-v02 .qvl-treatment-card[data-key='scenario'] .qvl-card-icon{background:#e6f8f8;color:#0898af}
-.qvl-v02 .qvl-treatment-card h3{margin:2px 0 6px;color:#102a56;font-size:17px;line-height:1.22;letter-spacing:-.012em}
-.qvl-v02 .qvl-treatment-card p{margin:0;color:#587096;font-size:13.5px;line-height:1.48}
-.qvl-v02 .qvl-card-regimes{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.qvl-v02 .qvl-card-regime{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:11.5px;line-height:1.15;font-weight:700;border:1px solid transparent}
-.qvl-v02 .qvl-card-regime.strict{color:#4f46e5;background:#ede9fe;border-color:#ddd6fe}
-.qvl-v02 .qvl-card-regime.extract{color:#148148;background:#e6f7ed;border-color:#ccefd9}
-.qvl-v02 .qvl-card-regime.enrich{color:#1760d1;background:#e6f1ff;border-color:#d0e1ff}
-.qvl-v02 .qvl-card-chevron{position:absolute;right:13px;top:16px;color:#5c9af0;display:grid;place-items:center}
-.qvl-v02 .qvl-regime-strip{margin-top:16px;border:1px solid #d7e4f3;border-radius:15px;background:#fbfdff;display:grid;grid-template-columns:1.05fr repeat(3,1fr);align-items:stretch;overflow:hidden;box-shadow:0 4px 12px rgba(28,52,86,.035)}
-.qvl-v02 .qvl-regime-title{display:flex;align-items:flex-start;gap:12px;padding:19px 22px;color:#102a56;border-right:1px solid #dfe8f4}
-.qvl-v02 .qvl-regime-title-icon{width:36px;height:36px;flex:0 0 36px;border:2px solid #14366a;border-radius:50%;display:grid;place-items:center}
-.qvl-v02 .qvl-regime-title strong{display:block;font-size:18px;line-height:1.25;margin-bottom:5px}
-.qvl-v02 .qvl-regime-title p{margin:0;color:#647996;font-size:12.5px;line-height:1.45}
-.qvl-v02 .qvl-regime-strip .qvl-regime-info{margin:0;padding:18px 22px;border:0;border-right:1px solid #dfe8f4;border-radius:0;background:transparent}
-.qvl-v02 .qvl-regime-strip .qvl-regime-info:last-child{border-right:0}
-.qvl-v02 .qvl-regime-strip .qvl-regime-info strong{display:inline-flex;margin:0 0 8px;padding:5px 11px;border-radius:999px;font-size:13px;line-height:1.15}
-.qvl-v02 .qvl-regime-strip .qvl-regime-info p{margin:0;color:#587096;font-size:12.5px;line-height:1.48}
-.qvl-v02 .qvl-regime-strip .qvl-regime-info.strict strong{color:#4f46e5;background:#ede9fe}
-.qvl-v02 .qvl-regime-strip .qvl-regime-info.extract strong{color:#148148;background:#e6f7ed}
-.qvl-v02 .qvl-regime-strip .qvl-regime-info.enrich strong{color:#1760d1;background:#e6f1ff}
-
-@media(max-width:1180px){
-  .qvl-v02 .qvl-home-top{grid-template-columns:340px minmax(0,1fr)}
-  .qvl-v02 .qvl-treatment-card{min-height:136px;padding:14px 38px 13px 14px;grid-template-columns:46px minmax(0,1fr);gap:11px}
-  .qvl-v02 .qvl-card-icon{width:44px;height:44px}
-  .qvl-v02 .qvl-treatment-card h3{font-size:16px}
-  .qvl-v02 .qvl-treatment-card p{font-size:12.8px}
-  .qvl-v02 .qvl-regime-strip{grid-template-columns:1fr 1fr 1fr}
-  .qvl-v02 .qvl-regime-title{grid-column:1/-1;border-right:0;border-bottom:1px solid #dfe8f4}
-}
-@media(max-width:900px){
-  .qvl-v02 .qvl-home-top{grid-template-columns:1fr}
-  .qvl-v02 .qvl-home-visual img{height:auto;min-height:0;max-height:720px;object-fit:contain;background:#edf5fb}
-  .qvl-v02 .qvl-home-cards{grid-template-columns:1fr 1fr;grid-template-rows:auto}
-}
-@media(max-width:680px){
-  .workshop-page.qvl-v02{padding-left:10px;padding-right:10px}
-  .qvl-v02 .qvl-home-shell{padding:10px;border-radius:14px}
-  .qvl-v02 .qvl-home-cards{grid-template-columns:1fr}
-  .qvl-v02 .qvl-treatment-card{min-height:0}
-  .qvl-v02 .qvl-regime-strip{grid-template-columns:1fr}
-  .qvl-v02 .qvl-regime-title,.qvl-v02 .qvl-regime-strip .qvl-regime-info{border-right:0;border-bottom:1px solid #dfe8f4}
-  .qvl-v02 .qvl-regime-strip .qvl-regime-info:last-child{border-bottom:0}
-}
-`
 
 function treatmentText(t){return `${t?.nom_traitement||''} ${t?.fonction||''} ${t?.objectif||''}`}
 function resolveSixTreatments(treatments=[]){
@@ -91,43 +38,60 @@ function resolveSixTreatments(treatments=[]){
   }).filter(Boolean)
 }
 
+// Textes d'aide de l'accueil (affichage seulement) : ce que l'utilisateur apporte et ce qu'il obtient.
+const TOOL_FLOW={
+  carte:{input:'Une question, une idée, une note',output:'Un canevas modifiable, relié aux passages sources'},
+  resume:{input:'Une publication et votre besoin',output:'Un texte structuré court : sujet, problématique, résultats, enseignements'},
+  glossaire:{input:'Une à quatre publications, un angle facultatif',output:'Des termes expliqués dans le contexte de leur source, avec provenance'},
+  recommandations:{input:'Un ou plusieurs domaines, un sujet facultatif',output:'Les recommandations formulées dans les publications, avec provenance'},
+  experts:{input:'Un sujet ou un nom',output:'Les auteurs et entités du corpus, avec les sujets documentés'},
+  scenario:{input:'Votre besoin et vos choix successifs',output:'Une fiche de scénario : périmètre, axes, questions, experts et sources à suivre'}
+}
+
 export default function Atelier({data}){
   const [selected,setSelected]=useState(null),[need,setNeed]=useState('')
+  const [preview,setPreview]=useState('carte')
   const six=useMemo(()=>resolveSixTreatments(data?.treatments||[]),[data])
-  if(selected) return <Workspace treatment={selected} data={data} initialNeed={need} onBack={()=>setSelected(null)}/>
-  return <main className="page workshop-page qvl-v02">
-    <style>{ATELIER_SCREEN_STYLES}</style>
-    <section className="qvl-home-shell" aria-label="Accueil de l’Atelier de veille">
-      <div className="qvl-home-top">
-        <div className="qvl-home-visual">
-          <img src={atelierHomeVisual} alt="Atelier de veille : du besoin au corpus Quiritès, puis à une production pour vos travaux"/>
-        </div>
-        <div className="qvl-home-cards">
-          {six.map(({spec,t})=>{const regime=t.regime_IA||spec.fallbackRegime;return <button key={spec.key} data-key={spec.key} className="qvl-treatment-card" onClick={()=>setSelected(t)}>
-            <span className="qvl-card-icon"><Icon name={spec.icon} size={25}/></span>
-            <span>
-              <h3>{spec.title}</h3>
-              <p>{spec.description}</p>
-              {regime&&<span className="qvl-card-regimes"><span className={`qvl-card-regime ${regimeClass[regime]||'enrich'}`}>{regime}</span></span>}
-            </span>
-            <span className="qvl-card-chevron"><Icon name="chevron" size={18}/></span>
-          </button>})}
-        </div>
+  const corpus=useMemo(()=>{const p=data?.publications||[];return {total:p.length,segmented:p.filter(x=>x.chunk_count>0).length}},[data])
+  if(selected) return <div className="atelier-screen"><Workspace treatment={selected} data={data} initialNeed={need} onBack={()=>setSelected(null)}/></div>
+  const current=six.find(x=>x.spec.key===preview)||six[0]
+  const curRegime=current?(current.t.regime_IA||current.spec.fallbackRegime):''
+  return <div className="atelier-screen"><main className="workshop-page qvl-v02 etb-home">
+    <section className="etb-list" aria-label="Les six outils de l’Atelier">
+      <header className="etb-list-head">
+        <h1>Atelier de veille</h1>
+        <p>Six outils pour mobiliser le corpus du bulletin dans votre propre travail.</p>
+      </header>
+      <div className="etb-rows">
+        {six.map(({spec,t})=>{const regime=t.regime_IA||spec.fallbackRegime;return <button key={spec.key} type="button" data-key={spec.key} className={`qvl-treatment-card etb-row ${preview===spec.key?'on':''}`} onMouseEnter={()=>setPreview(spec.key)} onFocus={()=>setPreview(spec.key)} onClick={()=>setSelected(t)}>
+          <span className="etb-row-icon"><Icon name={spec.icon} size={21}/></span>
+          <span className="etb-row-title">{spec.title}</span>
+          {regime&&<span className={`etb-regime ${regimeClass[regime]||'enrich'}`}>{regime}</span>}
+        </button>})}
       </div>
-      <section className="qvl-regime-strip" aria-label="Les régimes IA disponibles">
-        <div className="qvl-regime-title">
-          <span className="qvl-regime-title-icon"><Icon name="info" size={20}/></span>
-          <div><strong>Les régimes IA disponibles</strong><p>Trois niveaux d’intervention selon la fonctionnalité choisie.</p></div>
-        </div>
+      <footer className="etb-legend" aria-label="Les régimes IA disponibles">
         <Regime cls="strict" title="Synthèse stricte">Résume fidèlement les contenus sélectionnés, sans ajout.</Regime>
         <Regime cls="extract" title="Extraction stricte">Extrait uniquement les éléments présents dans les documents.</Regime>
         <Regime cls="enrich" title="Enrichissement contrôlé">Enrichit et structure, en distinguant clairement les propositions documentées.</Regime>
-      </section>
+      </footer>
     </section>
-  </main>
+    {current&&<section className="etb-detail" data-key={current.spec.key} aria-live="polite">
+      <span className={`etb-tag ${regimeClass[curRegime]||'enrich'}`}><i/>{curRegime}{current.t.interaction_utilisateur?` · interaction ${String(current.t.interaction_utilisateur).toLowerCase()}`:''}</span>
+      <h2>{current.spec.title}</h2>
+      <p className="etb-lead">{current.spec.description}</p>
+      <div className="etb-flow">
+        <div><em>Vous apportez</em><strong>{TOOL_FLOW[current.spec.key]?.input}</strong></div>
+        <span className="etb-arrow" aria-hidden="true"><Icon name="chevron" size={24}/></span>
+        <div className="mid"><em>Le corpus</em><strong>{corpus.total} publications du bulletin, dont {corpus.segmented} avec contenu segmenté</strong></div>
+        <span className="etb-arrow" aria-hidden="true"><Icon name="chevron" size={24}/></span>
+        <div><em>Vous obtenez</em><strong>{TOOL_FLOW[current.spec.key]?.output}</strong></div>
+      </div>
+      <button type="button" className="etb-open" onClick={()=>setSelected(current.t)}>Ouvrir le dispositif<Icon name="chevron" size={19}/></button>
+    </section>}
+  </main></div>
 }
 
-function Regime({cls,title,children}){return <div className={`qvl-regime-info ${cls}`}><strong>{title}</strong><p>{children}</p></div>}
+function Regime({cls,title,children}){return <div className={`etb-legend-item ${cls}`} title={children}><i/>{title}</div>}
 
 function Workspace({treatment,data,onBack,initialNeed=''}){
  if(treatment.traitement_id==='T03') return <ReflectionWorkspaceV1 onBack={onBack}/>
