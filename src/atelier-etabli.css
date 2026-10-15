@@ -1,0 +1,335 @@
+/* =====================================================================
+   Atelier de veille (onglet 3) — concept « Établi »
+   Styles limités à .atelier-screen : aucun effet sur les autres onglets.
+   Interface uniquement : mêmes boutons, mêmes gestionnaires, mêmes flux.
+   ===================================================================== */
+
+.atelier-screen{
+  --etb-ink:#14213a;
+  --etb-ink-2:#3c4a60;
+  --etb-mute:#677385;
+  --etb-line:#d8dde5;
+  --etb-line-soft:#eceff3;
+  --etb-bg:#e9ecf1;
+  --etb-white:#ffffff;
+  --etb-accent:#2747b5;
+  --etb-accent-2:#1d3794;
+  --etb-accent-soft:#eef2fd;
+  --etb-strict:#6a5bd0;
+  --etb-extract:#2f8a5c;
+  --etb-enrich:#2f63c0;
+  --etb-sans:'Manrope',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --etb-serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --etb-float:0 18px 40px -18px rgba(20,33,58,.38),0 0 0 1px rgba(20,33,58,.06);
+}
+.atelier-screen .etb-home{font-family:var(--etb-sans);color:var(--etb-ink)}
+.atelier-screen .etb-home :is(button,input,textarea,select){font-family:var(--etb-sans)}
+
+/* =====================================================================
+   1. Accueil : liste des outils + fiche de l'outil survolé
+   ===================================================================== */
+.atelier-screen .etb-home{display:grid;grid-template-columns:minmax(440px,540px) minmax(0,1fr);min-height:calc(100vh - 80px);padding:0;margin:0;max-width:none;background:#f4f6f9}
+.atelier-screen .etb-list{display:flex;flex-direction:column;background:var(--etb-white);border-right:1px solid var(--etb-line);padding-top:44px}
+.atelier-screen .etb-list-head{padding:0 44px 26px}
+.atelier-screen .etb-list-head h1{margin:0 0 8px;font-size:34px;line-height:1.1;font-weight:800;letter-spacing:-.03em;color:var(--etb-ink)}
+.atelier-screen .etb-list-head p{margin:0;max-width:420px;color:var(--etb-mute);font-size:15.5px;line-height:1.5}
+.atelier-screen .etb-rows{display:flex;flex-direction:column;border-top:1px solid var(--etb-line-soft)}
+.atelier-screen .qvl-treatment-card.etb-row{
+  appearance:none;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:16px;
+  width:100%;min-height:76px;margin:0;padding:14px 44px;border:0;border-bottom:1px solid var(--etb-line-soft);border-radius:0;
+  background:transparent;box-shadow:none;color:var(--etb-ink);text-align:left;cursor:pointer;transform:none;
+  transition:background .14s ease,color .14s ease
+}
+.atelier-screen .etb-row-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#f0f2f6;color:var(--etb-ink-2);transition:background .14s ease,color .14s ease}
+.atelier-screen .etb-row-title{font-size:17.5px;font-weight:700;letter-spacing:-.01em;line-height:1.3}
+.atelier-screen .etb-regime{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--etb-mute);white-space:nowrap}
+.atelier-screen .etb-regime::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--dot)}
+.atelier-screen .strict{--dot:var(--etb-strict)}
+.atelier-screen .extract{--dot:var(--etb-extract)}
+.atelier-screen .enrich{--dot:var(--etb-enrich)}
+.atelier-screen .qvl-treatment-card.etb-row:hover{background:#f6f7fa}
+.atelier-screen .qvl-treatment-card.etb-row.on{background:var(--etb-ink);color:#fff}
+.atelier-screen .etb-row.on .etb-row-icon{background:rgba(255,255,255,.12);color:#fff}
+.atelier-screen .etb-row.on .etb-regime{color:#c3cce0}
+.atelier-screen .qvl-treatment-card.etb-row:focus-visible{outline:3px solid rgba(39,71,181,.45);outline-offset:-3px}
+.atelier-screen .etb-legend{margin-top:auto;display:flex;flex-wrap:wrap;gap:10px 22px;padding:22px 44px;border-top:1px solid var(--etb-line);font-size:13px;color:var(--etb-mute)}
+.atelier-screen .etb-legend-item{display:flex;align-items:center;gap:8px;cursor:help}
+.atelier-screen .etb-legend-item i{width:9px;height:9px;border-radius:50%;background:var(--dot)}
+
+.atelier-screen .etb-detail{position:relative;padding:56px 64px 48px;overflow:hidden}
+.atelier-screen .etb-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border:1px solid var(--etb-line);border-radius:999px;background:#fff;color:var(--etb-ink-2);font-size:13.5px;font-weight:600}
+.atelier-screen .etb-tag i{width:8px;height:8px;border-radius:50%;background:var(--dot)}
+.atelier-screen .etb-detail h2{margin:22px 0 16px;max-width:860px;font-size:clamp(44px,4.4vw,64px);line-height:1.02;font-weight:800;letter-spacing:-.045em;color:var(--etb-ink)}
+.atelier-screen .etb-lead{margin:0 0 40px;max-width:640px;color:var(--etb-ink-2);font-size:19px;line-height:1.55}
+.atelier-screen .etb-flow{display:grid;grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr) 54px minmax(0,1fr);align-items:stretch;max-width:940px}
+.atelier-screen .etb-flow>div{padding:20px;border:1px solid var(--etb-line);border-radius:16px;background:#fff}
+.atelier-screen .etb-flow em{display:block;margin-bottom:10px;font-style:normal;font-size:13px;font-weight:700;color:var(--etb-mute)}
+.atelier-screen .etb-flow strong{display:block;font-size:16px;line-height:1.45;font-weight:600;color:var(--etb-ink)}
+.atelier-screen .etb-flow .mid{background:var(--etb-ink);border-color:var(--etb-ink)}
+.atelier-screen .etb-flow .mid em{color:#a9b6d2}
+.atelier-screen .etb-flow .mid strong{color:#fff}
+.atelier-screen .etb-arrow{display:grid;place-items:center;color:#9aa4b4}
+.atelier-screen .etb-open{margin-top:38px;display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 24px;border:0;border-radius:14px;background:var(--etb-accent);color:#fff;font-size:16.5px;font-weight:700;cursor:pointer;box-shadow:0 12px 26px -12px rgba(39,71,181,.7);transition:background .15s ease}
+.atelier-screen .etb-open:hover{background:var(--etb-accent-2)}
+.atelier-screen .etb-open:focus-visible{outline:3px solid rgba(39,71,181,.4);outline-offset:3px}
+
+@media(max-width:1440px){
+  .atelier-screen .etb-home{grid-template-columns:440px minmax(0,1fr)}
+  .atelier-screen .etb-list-head,.atelier-screen .etb-legend{padding-left:32px;padding-right:32px}
+  .atelier-screen .qvl-treatment-card.etb-row{padding:14px 32px;grid-template-columns:40px minmax(0,1fr);row-gap:4px}
+  .atelier-screen .etb-row .etb-regime{grid-column:2}
+  .atelier-screen .etb-row-icon{width:40px;height:40px;grid-row:span 2}
+  .atelier-screen .etb-detail{padding:48px 44px}
+  .atelier-screen .etb-flow{grid-template-columns:1fr;gap:10px;max-width:520px}
+  .atelier-screen .etb-arrow{transform:rotate(90deg);height:22px}
+}
+
+/* =====================================================================
+   2. Avancer avec le corpus — canevas plein écran
+   ===================================================================== */
+.atelier-screen .qvl-reflection-page{
+  display:flex;flex-direction:column;height:calc(100vh - 124px);min-height:600px;padding:0;
+  background:var(--etb-bg);color:var(--etb-ink);font-family:var(--etb-sans)
+}
+.atelier-screen .qvl-reflection-page :is(button,input,textarea,select,h1,h2,h3,strong,p,span,small,em,a){font-family:var(--etb-sans)}
+
+/* Barre du haut */
+.atelier-screen .etb-bar{position:relative;z-index:20;flex:0 0 auto;display:flex;align-items:center;gap:14px;height:62px;padding:0 18px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--etb-line)}
+.atelier-screen .etb-bar .etb-back{display:inline-flex;align-items:center;gap:6px;height:36px;margin:0;padding:0 16px 0 4px;border:0;border-right:1px solid var(--etb-line);border-radius:0;background:none;color:var(--etb-ink-2);font-size:14px;font-weight:600;cursor:pointer}
+.atelier-screen .etb-bar .etb-back:hover{color:var(--etb-accent)}
+.atelier-screen .etb-bar h1{margin:0;font-size:19px!important;font-weight:800;letter-spacing:-.02em;color:var(--etb-ink)}
+.atelier-screen .etb-bar-regime{display:inline-flex;align-items:center;gap:7px;font-size:13px!important;font-weight:600;color:var(--etb-enrich)}
+.atelier-screen .etb-bar-regime::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--etb-enrich)}
+.atelier-screen .etb-bar-spacer{flex:1}
+.atelier-screen .etb-bar .qvl-link-tools{gap:8px!important}
+.atelier-screen .qvl-link-button,
+.atelier-screen .qvl-link-count{height:38px!important;padding:0 14px!important;border:1px solid var(--etb-line)!important;border-radius:10px!important;background:#fff!important;color:var(--etb-ink-2)!important;font-size:14px!important;font-weight:600!important;box-shadow:none!important;gap:8px!important}
+.atelier-screen .qvl-link-button:hover:not(:disabled),.atelier-screen .qvl-link-count:hover{border-color:#b9c2d0!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-link-button.active{background:var(--etb-accent)!important;border-color:var(--etb-accent)!important;color:#fff!important}
+.atelier-screen .qvl-reset-button:disabled{opacity:.45!important;background:#fff!important}
+.atelier-screen .qvl-link-list-popover{top:46px!important;right:0!important;width:320px!important;border:0!important;border-radius:14px!important;background:#fff!important;box-shadow:var(--etb-float)!important;padding:14px!important}
+.atelier-screen .qvl-link-list-popover>strong{font-size:14px!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-link-list-popover span{font-size:13px!important;color:var(--etb-ink-2)!important}
+
+/* Le plan de travail occupe tout l'espace restant */
+.atelier-screen .qvl-reflection-shell{
+  --pad-l:348px;--pad-r:372px;
+  position:relative;flex:1 1 auto;display:block!important;min-height:0;max-width:none!important;margin:0!important;padding:0!important
+}
+.atelier-screen .qvl-reflection-shell.left-collapsed{--pad-l:84px}
+.atelier-screen .qvl-reflection-shell.right-collapsed{--pad-r:84px}
+.atelier-screen .qvl-reflection-center{position:absolute!important;inset:0;min-height:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden}
+.atelier-screen .qvl-canvas-stage{
+  position:absolute;top:0;bottom:0;left:var(--pad-l);right:var(--pad-r);height:auto!important;overflow:auto;border:0!important;
+  padding:12px 0 128px;
+  background-color:var(--etb-bg)!important;
+  background-image:radial-gradient(circle at 1px 1px,#c3cad6 1.1px,transparent 1.5px)!important;
+  background-size:24px 24px!important;background-attachment:local;
+  scrollbar-color:#bcc4d1 transparent;transition:left .2s ease,right .2s ease
+}
+.atelier-screen .qvl-reflection-center{background-color:var(--etb-bg)!important;background-image:radial-gradient(circle at 1px 1px,#c3cad6 1.1px,transparent 1.5px)!important;background-size:24px 24px!important}
+.atelier-screen .qvl-canvas{background:transparent!important;background-image:none!important;min-width:max(100%,880px)!important;min-height:max(100%,760px)!important}
+.atelier-screen .qvl-canvas-stage .qvl-canvas{margin:0 auto}
+.atelier-screen .qvl-links-layer{color:#7d8aa3!important}
+.atelier-screen .qvl-link-line path{stroke-width:2!important;opacity:.9!important}
+.atelier-screen .qvl-link-line rect{fill:#fff!important;stroke:var(--etb-line)!important}
+.atelier-screen .qvl-link-line text{font-family:var(--etb-sans);font-size:12.5px!important;font-weight:700!important;fill:var(--etb-ink-2)!important}
+
+/* Canevas vide */
+.atelier-screen .qvl-empty-canvas{color:var(--etb-mute)!important;width:500px!important}
+.atelier-screen .qvl-empty-postits i{border-radius:4px!important;box-shadow:0 10px 20px -10px rgba(20,33,58,.45)!important}
+.atelier-screen .qvl-empty-postits .blue{background:#dbe5fb!important}
+.atelier-screen .qvl-empty-postits .yellow{background:#fbefc2!important}
+.atelier-screen .qvl-empty-postits .lilac{background:#ebe2f8!important}
+.atelier-screen .qvl-reflection-page .qvl-empty-canvas h3{font-family:var(--etb-sans)!important;font-weight:800!important;font-size:26px!important;letter-spacing:-.02em;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-empty-canvas p{font-size:15.5px!important;line-height:1.6!important;color:var(--etb-ink-2)!important;max-width:480px!important}
+.atelier-screen .qvl-reflection-page .qvl-empty-canvas>span{font-family:var(--etb-serif)!important;font-style:italic;font-size:15px!important;color:var(--etb-mute)!important}
+
+/* Post-it : papier teinté, ombre portée, texte en serif */
+.atelier-screen .qvl-canvas-card{
+  --tone:#2f56c4;--paper:#dbe5fb;
+  width:260px!important;padding:16px 16px 14px!important;border:0!important;border-radius:5px!important;outline:0!important;
+  background:var(--paper)!important;
+  box-shadow:0 1px 1px rgba(20,33,58,.08),0 14px 26px -12px rgba(20,33,58,.38)!important;
+  transition:box-shadow .16s ease!important
+}
+.atelier-screen .qvl-canvas-card.blue{--tone:#2f56c4;--paper:#dbe5fb}
+.atelier-screen .qvl-canvas-card.yellow{--tone:#93700b;--paper:#fbefc2}
+.atelier-screen .qvl-canvas-card.lilac{--tone:#6d4aa8;--paper:#ebe2f8}
+.atelier-screen .qvl-canvas-card.green{--tone:#2b7a4b;--paper:#daf0e1}
+.atelier-screen .qvl-canvas-card.sand,
+.atelier-screen .qvl-canvas-card.corpus-card{--tone:#3c4a60;--paper:#ffffff}
+.atelier-screen .qvl-canvas-card.corpus-card{border-left:4px solid var(--etb-ink)!important;border-radius:3px 6px 6px 3px!important}
+.atelier-screen .qvl-canvas-card:hover{box-shadow:0 2px 3px rgba(20,33,58,.08),0 20px 34px -12px rgba(20,33,58,.45)!important}
+.atelier-screen .qvl-canvas-card.selected{box-shadow:0 0 0 2.5px var(--etb-accent),0 18px 30px -12px rgba(39,71,181,.5)!important}
+.atelier-screen .qvl-canvas-card.link-selected{box-shadow:0 0 0 2.5px #c28a12,0 18px 30px -12px rgba(194,138,18,.5)!important}
+.atelier-screen .qvl-link-order{background:#c28a12!important;color:#fff!important;font-weight:800!important}
+.atelier-screen .qvl-canvas-card header{margin-bottom:9px!important}
+.atelier-screen .qvl-reflection-page .qvl-canvas-card header>span{font-size:12px!important;font-weight:800!important;letter-spacing:.03em!important;text-transform:none!important;color:var(--tone)!important}
+.atelier-screen .qvl-card-controls{gap:4px!important;opacity:.4;transition:opacity .15s ease}
+.atelier-screen .qvl-canvas-card:hover .qvl-card-controls,
+.atelier-screen .qvl-canvas-card.selected .qvl-card-controls,
+.atelier-screen .qvl-canvas-card:focus-within .qvl-card-controls{opacity:1}
+.atelier-screen .qvl-card-controls button{width:26px!important;height:26px!important;background:rgba(255,255,255,.75)!important;color:var(--etb-ink-2)!important}
+.atelier-screen .qvl-card-controls button:hover{background:#fff!important;color:var(--etb-accent)!important}
+.atelier-screen .qvl-reflection-page .qvl-card-title-display{display:block;margin-bottom:6px;font-family:var(--etb-sans)!important;font-size:14.5px!important;font-weight:700!important;line-height:1.3!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-canvas-card>p{font-family:var(--etb-serif)!important;font-size:16.5px!important;line-height:1.42!important;font-weight:400!important;color:#1d2a40!important}
+.atelier-screen .qvl-reflection-page .qvl-canvas-card.collapsed>p{font-family:var(--etb-sans)!important;font-size:13px!important;font-weight:600!important}
+.atelier-screen .qvl-canvas-card footer{border-top:1px solid rgba(20,33,58,.1)!important}
+.atelier-screen .qvl-reflection-page .qvl-canvas-card footer strong{font-size:12.5px!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-canvas-card footer span{font-size:12px!important;color:var(--etb-mute)!important}
+.atelier-screen .qvl-card-editor :is(input,textarea){border:1px solid rgba(20,33,58,.2)!important;border-radius:8px!important;background:#fff!important;font-size:14px!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-card-edit-actions button{border-radius:8px!important;font-size:13px!important}
+.atelier-screen .qvl-card-edit-actions button.primary{background:var(--etb-accent)!important;border-color:var(--etb-accent)!important;color:#fff!important}
+
+/* Panneaux flottants : besoins (gauche) et résultats (droite) */
+.atelier-screen .qvl-reflection-left,
+.atelier-screen .qvl-reflection-right{
+  position:absolute!important;z-index:6;top:18px;min-height:0!important;margin:0!important;
+  border:0!important;border-radius:18px!important;background:#fff!important;box-shadow:var(--etb-float)!important;
+  overflow:auto!important;scrollbar-width:thin
+}
+.atelier-screen .qvl-reflection-left{left:18px;width:312px;max-height:calc(100% - 36px);padding:18px 14px 14px!important}
+.atelier-screen .qvl-reflection-right{right:18px;width:336px;bottom:18px;padding:18px 16px 16px!important;display:flex;flex-direction:column}
+.atelier-screen .left-collapsed .qvl-reflection-left,
+.atelier-screen .right-collapsed .qvl-reflection-right{width:48px;padding:52px 0 14px!important;overflow:hidden!important}
+.atelier-screen .right-collapsed .qvl-reflection-right{bottom:auto;max-height:calc(100% - 36px)}
+.atelier-screen .qvl-collapsed-label{display:flex!important;writing-mode:vertical-rl;transform:rotate(180deg);align-items:center;justify-content:center;margin:0 auto;padding:6px 0;color:var(--etb-ink-2)!important;font-size:13.5px!important;font-weight:700!important;letter-spacing:.01em}
+.atelier-screen .qvl-panel-toggle{top:12px!important;width:30px!important;height:30px!important;border:1px solid var(--etb-line)!important;border-radius:9px!important;background:#fff!important;color:var(--etb-ink-2)!important;box-shadow:none!important;font-size:20px!important}
+.atelier-screen .qvl-panel-toggle.left{right:12px!important;left:auto!important}
+.atelier-screen .qvl-panel-toggle.right{left:12px!important;right:auto!important}
+.atelier-screen .left-collapsed .qvl-panel-toggle.left,
+.atelier-screen .right-collapsed .qvl-panel-toggle.right{left:9px!important;right:auto!important}
+.atelier-screen .qvl-panel-toggle:hover{color:var(--etb-accent)!important;border-color:#b9c2d0!important}
+.atelier-screen .qvl-side-heading{display:block!important;padding:0 40px 12px 6px!important;margin-bottom:6px;border-bottom:0!important}
+.atelier-screen .qvl-side-heading.corpus{padding:0 6px 12px 44px!important}
+.atelier-screen .qvl-side-icon{display:none!important}
+.atelier-screen .qvl-reflection-page .qvl-side-heading h2{margin:0 0 4px!important;font-family:var(--etb-sans)!important;font-size:16.5px!important;font-weight:800!important;line-height:1.25!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-side-heading p{margin:0!important;font-size:13px!important;line-height:1.45!important;color:var(--etb-mute)!important}
+.atelier-screen .qvl-need-list{gap:4px!important;margin-top:4px!important}
+.atelier-screen .qvl-need-card{display:grid!important;grid-template-columns:36px minmax(0,1fr) 14px!important;gap:12px!important;align-items:start!important;padding:10px 8px!important;border:0!important;border-radius:12px!important;background:transparent!important;box-shadow:none!important;transform:none!important}
+.atelier-screen .qvl-need-card:hover{background:#f4f6f9!important}
+.atelier-screen .qvl-need-card.active{background:var(--etb-accent-soft)!important;box-shadow:inset 0 0 0 1.5px var(--etb-accent)!important}
+.atelier-screen .qvl-need-icon{width:36px!important;height:36px!important;border-radius:10px!important;background:#f0f2f6!important;color:var(--etb-ink-2)!important}
+.atelier-screen .qvl-need-card.active .qvl-need-icon{background:var(--etb-accent)!important;color:#fff!important}
+.atelier-screen .qvl-reflection-page .qvl-need-copy strong{font-size:14px!important;line-height:1.35!important;font-weight:700!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-need-copy small{margin-top:3px!important;font-size:12.5px!important;line-height:1.45!important;color:var(--etb-mute)!important}
+.atelier-screen .qvl-need-card>svg{color:#a3acba!important}
+.atelier-screen .qvl-need-selected{background:var(--etb-accent)!important;color:#fff!important}
+.atelier-screen .qvl-scope-note{margin-top:10px!important;padding:11px 12px!important;border:0!important;border-radius:12px!important;background:#f4f6f9!important;color:var(--etb-mute)!important}
+.atelier-screen .qvl-scope-note :is(span,strong){font-size:12.5px!important;line-height:1.5!important}
+.atelier-screen .qvl-scope-note svg{color:var(--etb-ink-2)!important}
+
+.atelier-screen .qvl-results-tabs{margin:4px 0 14px!important;padding:4px!important;border:0!important;border-radius:11px!important;background:#f0f2f6!important;box-shadow:none!important}
+.atelier-screen .qvl-results-tabs button{border:0!important;border-radius:8px!important;background:transparent!important;color:var(--etb-mute)!important;font-size:13.5px!important;font-weight:600!important;box-shadow:none!important}
+.atelier-screen .qvl-results-tabs button.active{background:#fff!important;color:var(--etb-ink)!important;box-shadow:0 1px 3px rgba(20,33,58,.12)!important}
+.atelier-screen .qvl-results-tabs button.active::after{display:none!important}
+.atelier-screen .qvl-results-tabpanel{flex:1 1 auto;min-height:0}
+.atelier-screen .qvl-right-empty{min-height:0!important;margin-top:0!important;padding:26px 18px!important;border:1.5px dashed var(--etb-line)!important;border-radius:14px!important;background:transparent!important}
+.atelier-screen .qvl-round-book{background:#f0f2f6!important;color:var(--etb-ink-2)!important}
+.atelier-screen .qvl-reflection-page .qvl-right-empty strong{font-family:var(--etb-sans)!important;font-weight:800!important;font-size:16px!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-right-empty p{font-size:13.5px!important;line-height:1.55!important;color:var(--etb-mute)!important}
+.atelier-screen .qvl-free-search{margin-top:14px!important;border:1px solid var(--etb-line)!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important}
+.atelier-screen .qvl-free-search-toggle{border:0!important;box-shadow:none!important;background:transparent!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-free-search-toggle strong{font-size:14px!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-reflection-page .qvl-free-search-toggle small{font-size:12.5px!important;color:var(--etb-mute)!important}
+.atelier-screen .qvl-free-search textarea{border:1px solid var(--etb-line)!important;border-radius:10px!important;font-size:14px!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-free-search form button{border-radius:10px!important;background:var(--etb-accent)!important;color:#fff!important;font-size:14px!important;font-weight:700!important}
+.atelier-screen .qvl-reflection-page .qvl-char-count{font-size:12px!important}
+
+/* Bandeau de liaison : posé au-dessus du dock, là où l'on travaille */
+.atelier-screen .qvl-canvas-intro{position:absolute!important;z-index:9;bottom:114px;top:auto;left:calc(var(--pad-l) + (100% - var(--pad-l) - var(--pad-r)) / 2);transform:translateX(-50%);width:max-content;max-width:calc(100% - var(--pad-l) - var(--pad-r) + 40px);padding:0!important;border:0!important;background:none!important;pointer-events:none}
+.atelier-screen .qvl-canvas-intro:has(.qvl-link-builder)~.qvl-canvas-help{display:none!important}
+.atelier-screen .qvl-link-builder{pointer-events:auto;margin:0!important;padding:12px 14px!important;border:0!important;border-radius:16px!important;background:var(--etb-ink)!important;box-shadow:0 20px 40px -14px rgba(20,33,58,.6)!important;display:flex!important;align-items:center;gap:12px!important}
+.atelier-screen .qvl-link-builder>div{width:340px;max-width:340px}
+.atelier-screen .qvl-link-builder strong{display:block;font-size:14px!important;color:#fff!important}
+.atelier-screen .qvl-link-builder span{display:block;font-size:13px!important;line-height:1.4;color:#c3cce0!important}
+.atelier-screen .qvl-link-builder select{height:38px!important;border:0!important;border-radius:10px!important;background:#fff!important;color:var(--etb-ink)!important;font-size:13.5px!important}
+.atelier-screen .qvl-link-builder button{height:38px!important;padding:0 14px!important;border-radius:10px!important;font-size:13.5px!important;font-weight:700!important;white-space:nowrap}
+.atelier-screen .qvl-link-builder button.primary{border:0!important;background:var(--etb-accent)!important;color:#fff!important}
+.atelier-screen .qvl-link-builder button.primary:disabled{background:#4a5670!important;color:#aab4c8!important}
+.atelier-screen .qvl-link-builder button.ghost{border:1px solid rgba(255,255,255,.25)!important;background:transparent!important;color:#fff!important}
+
+/* Dock des post-it, en bas au centre */
+.atelier-screen .etb-dock{
+  position:absolute!important;z-index:9;left:calc(var(--pad-l) + (100% - var(--pad-l) - var(--pad-r)) / 2);bottom:20px;transform:translateX(-50%);
+  display:flex!important;align-items:stretch;gap:4px!important;margin:0!important;padding:8px!important;flex-wrap:nowrap!important;
+  border:0!important;border-radius:20px!important;background:var(--etb-ink)!important;box-shadow:0 20px 40px -14px rgba(20,33,58,.65)!important
+}
+.atelier-screen .etb-dock .qvl-postit-add{
+  --swatch:#dbe5fb;height:auto!important;min-width:94px;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px!important;
+  padding:9px 10px 8px!important;border:0!important;border-radius:13px!important;background:transparent!important;box-shadow:none!important;
+  color:#dfe5f0!important;font-size:12.5px!important;font-weight:600!important;line-height:1.2;white-space:nowrap;transform:none!important;filter:none!important;cursor:pointer
+}
+.atelier-screen .etb-dock .qvl-postit-add span{width:38px;height:30px;border-radius:4px;display:grid;place-items:center;font-size:13px!important;font-weight:800;color:rgba(20,33,58,.55);background:var(--swatch);box-shadow:0 5px 10px rgba(0,0,0,.28);transform:rotate(-3deg);transition:transform .15s ease}
+.atelier-screen .etb-dock .qvl-postit-add.blue{--swatch:#dbe5fb}
+.atelier-screen .etb-dock .qvl-postit-add.yellow{--swatch:#fbefc2}
+.atelier-screen .etb-dock .qvl-postit-add.lilac{--swatch:#ebe2f8}
+.atelier-screen .etb-dock .qvl-postit-add.green{--swatch:#daf0e1}
+.atelier-screen .etb-dock .qvl-postit-add.sand span{background:#fff;box-shadow:inset 4px 0 0 #8fa0c0,0 5px 10px rgba(0,0,0,.28)}
+.atelier-screen .etb-dock .qvl-postit-add:hover{background:rgba(255,255,255,.08)!important;color:#fff!important}
+.atelier-screen .etb-dock .qvl-postit-add:hover span{transform:rotate(0) translateY(-3px)}
+.atelier-screen .etb-dock .qvl-postit-add:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+
+/* Rédaction d'un post-it : fiche posée au-dessus du dock */
+.atelier-screen .qvl-canvas-composer{
+  --tone:#2f56c4;--paper:#dbe5fb;
+  position:absolute!important;z-index:10;bottom:116px;left:calc(var(--pad-l) + (100% - var(--pad-l) - var(--pad-r)) / 2);transform:translateX(-50%);
+  width:min(720px,calc(100% - var(--pad-l) - var(--pad-r) + 20px));margin:0!important;padding:16px!important;
+  display:grid!important;grid-template-columns:1fr!important;gap:12px!important;
+  border:0!important;border-top:5px solid var(--tone)!important;border-radius:6px 6px 16px 16px!important;background:var(--paper)!important;
+  box-shadow:0 26px 50px -18px rgba(20,33,58,.55)!important
+}
+.atelier-screen .qvl-canvas-composer.blue{--tone:#2f56c4;--paper:#e5ecfc}
+.atelier-screen .qvl-canvas-composer.yellow{--tone:#b48912;--paper:#fcf3d3}
+.atelier-screen .qvl-canvas-composer.lilac{--tone:#7451ad;--paper:#f1eafa}
+.atelier-screen .qvl-canvas-composer.green{--tone:#2b7a4b;--paper:#e4f4e9}
+.atelier-screen .qvl-canvas-composer.sand{--tone:#3c4a60;--paper:#ffffff}
+.atelier-screen .qvl-canvas-composer>div:first-child{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.atelier-screen .qvl-canvas-composer>div:first-child strong{font-size:16px!important;font-weight:800!important;color:var(--etb-ink)!important}
+.atelier-screen .qvl-canvas-composer>div:first-child span{margin:0!important;font-size:13px!important;color:var(--etb-mute)!important}
+.atelier-screen .qvl-composer-fields{display:grid!important;gap:8px!important}
+.atelier-screen .qvl-canvas-composer :is(input,textarea){width:100%;border:1px solid rgba(20,33,58,.16)!important;border-radius:10px!important;background:rgba(255,255,255,.85)!important;color:var(--etb-ink)!important;font-size:14.5px!important;padding:10px 12px!important}
+.atelier-screen .qvl-canvas-composer textarea{height:86px!important;font-family:var(--etb-serif)!important;font-size:16px!important;line-height:1.45!important}
+.atelier-screen .qvl-canvas-composer :is(input,textarea):focus{outline:0;border-color:var(--tone)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--tone) 18%,transparent)!important}
+.atelier-screen .qvl-composer-actions{display:flex!important;justify-content:flex-end;gap:8px!important}
+.atelier-screen .qvl-composer-actions button{height:40px!important;padding:0 16px!important;border:1px solid rgba(20,33,58,.18)!important;border-radius:10px!important;background:#fff!important;color:var(--etb-ink-2)!important;font-size:14px!important;font-weight:600!important}
+.atelier-screen .qvl-composer-actions button.primary{border-color:var(--etb-accent)!important;background:var(--etb-accent)!important;color:#fff!important;font-weight:700!important}
+
+/* Aide contextuelle : une ligne discrète au-dessus du dock */
+.atelier-screen .qvl-canvas-help{
+  position:absolute!important;z-index:8;bottom:104px;left:calc(var(--pad-l) + (100% - var(--pad-l) - var(--pad-r)) / 2);transform:translateX(-50%);
+  height:auto!important;width:max-content;max-width:calc(100% - var(--pad-l) - var(--pad-r));display:flex!important;justify-content:center;gap:6px!important;
+  padding:6px 14px!important;border-radius:999px;background:rgba(255,255,255,.88)!important;box-shadow:0 0 0 1px var(--etb-line);color:var(--etb-mute)!important
+}
+.atelier-screen .qvl-canvas-help span{font-size:12.5px!important;white-space:nowrap}
+.atelier-screen .qvl-canvas-help span+span{display:none}
+.atelier-screen .qvl-canvas-help.link-mode{background:#fff!important;color:var(--etb-accent)!important;font-weight:700}
+.atelier-screen .qvl-canvas-composer~.qvl-canvas-help{display:none!important}
+
+/* L'Éclaireur : posé sur le panneau latéral, jamais sur le plan de travail */
+.atelier-screen .qvl-reflection-page .qvl-eclaireur-guide{top:176px!important;width:336px!important;max-width:336px!important}
+.atelier-screen .qvl-reflection-page .qvl-eclaireur-lighthouse{display:none!important}
+.atelier-screen .qvl-reflection-page .qvl-eclaireur-guide small{font-size:12px!important}
+.atelier-screen .qvl-reflection-page .qvl-eclaireur-guide.qvl-eclaireur-side-right{right:18px!important;left:auto!important}
+.atelier-screen .qvl-reflection-page .qvl-eclaireur-guide.qvl-eclaireur-side-left{left:18px!important;right:auto!important;width:312px!important}
+.atelier-screen .qvl-reflection-page :is(.qvl-eclaireur-help,.qvl-eclaireur-minimized){top:156px!important;bottom:auto!important}
+.atelier-screen .qvl-reflection-page :is(.qvl-eclaireur-help,.qvl-eclaireur-minimized):is(.qvl-eclaireur-side-right,.qvl-eclaireur-side-left){left:auto!important;right:386px!important}
+.atelier-screen .qvl-reflection-page .qvl-eclaireur-target{box-shadow:0 0 0 3px rgba(194,138,18,.55),var(--etb-float)!important}
+.atelier-screen .qvl-reflection-page .etb-dock.qvl-eclaireur-target{box-shadow:0 0 0 3px rgba(240,190,80,.85),0 20px 40px -14px rgba(20,33,58,.65)!important}
+
+@media(max-width:1440px){
+  .atelier-screen .qvl-reflection-shell{--pad-l:318px;--pad-r:336px}
+  .atelier-screen .qvl-reflection-left{width:282px}
+  .atelier-screen .qvl-reflection-right{width:300px}
+  .atelier-screen .etb-dock .qvl-postit-add{min-width:84px;padding-left:6px!important;padding-right:6px!important}
+  .atelier-screen .qvl-reflection-page .qvl-eclaireur-guide{width:300px!important;max-width:300px!important}
+  .atelier-screen .qvl-reflection-page .qvl-eclaireur-guide.qvl-eclaireur-side-left{width:282px!important}
+  .atelier-screen .qvl-reflection-page :is(.qvl-eclaireur-help,.qvl-eclaireur-minimized):is(.qvl-eclaireur-side-right,.qvl-eclaireur-side-left){right:350px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .atelier-screen *{transition:none!important}
+}
+.atelier-screen .left-collapsed .qvl-reflection-left,
+.atelier-screen .right-collapsed .qvl-reflection-right{bottom:auto!important;height:auto;max-height:calc(100% - 36px)}
+.atelier-screen .qvl-reflection-page .qvl-collapsed-label{text-transform:none!important;padding:8px 0 4px!important}
