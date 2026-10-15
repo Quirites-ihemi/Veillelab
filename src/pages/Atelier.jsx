@@ -52,7 +52,7 @@ export default function Atelier({data}){
   const [selected,setSelected]=useState(null),[need,setNeed]=useState('')
   const [preview,setPreview]=useState('carte')
   const six=useMemo(()=>resolveSixTreatments(data?.treatments||[]),[data])
-  const corpus=useMemo(()=>{const p=data?.publications||[];return {total:p.length,segmented:p.filter(x=>x.chunk_count>0).length}},[data])
+  const corpus=useMemo(()=>{const p=(data?.publications||[]).filter(x=>x.has_graph);return {total:p.length,segmented:p.filter(x=>x.chunk_count>0).length}},[data])
   if(selected) return <div className="atelier-screen"><Workspace treatment={selected} data={data} initialNeed={need} onBack={()=>setSelected(null)}/></div>
   const current=six.find(x=>x.spec.key===preview)||six[0]
   const curRegime=current?(current.t.regime_IA||current.spec.fallbackRegime):''
