@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import { runReflectionAction, searchReflectionCorpus } from '../services/reflectionApi.js'
 import './reflection-workspace.css'
@@ -991,19 +991,83 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   </main>
 }
 
+// Déplacement libre de L'Éclaireur (interface uniquement) : l'utilisateur peut le
+// faire glisser où il veut ; il reste toujours dans la fenêtre.
+function useMovable(deps) {
+  const ref = useRef(null)
+  const dragRef = useRef(null)
+  const movedRef = useRef(false)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const fitInWindow = () => {
+    const el = ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    let dx = 0, dy = 0
+    if (r.right > innerWidth - 8) dx = innerWidth - 8 - r.right
+    if (r.left + dx < 8) dx = 8 - r.left
+    if (r.bottom > innerHeight - 8) dy = innerHeight - 8 - r.bottom
+    if (r.top + dy < 8) dy = 8 - r.top
+    if (dx || dy) setOffset(o => ({ x: o.x + dx, y: o.y + dy }))
+  }
+  useLayoutEffect(fitInWindow, deps)
+  useEffect(() => {
+    window.addEventListener('resize', fitInWindow)
+    return () => window.removeEventListener('resize', fitInWindow)
+  }, [])
+  const onPointerDown = event => {
+    movedRef.current = false
+    if (event.button !== 0 || event.target.closest('.qvl-eclaireur-header-actions button, .qvl-eclaireur-minimized-close')) return
+    const r = ref.current?.getBoundingClientRect()
+    if (!r) return
+    dragRef.current = { startX: event.clientX, startY: event.clientY, base: offset, rect: r }
+    movedRef.current = false
+    const onMove = moveEvent => {
+      const d = dragRef.current
+      if (!d) return
+      let dx = moveEvent.clientX - d.startX
+      let dy = moveEvent.clientY - d.startY
+      if (!movedRef.current && Math.hypot(dx, dy) < 4) return
+      movedRef.current = true
+      dx = Math.min(innerWidth - 8 - d.rect.right, Math.max(8 - d.rect.left, dx))
+      dy = Math.min(innerHeight - 8 - d.rect.bottom, Math.max(8 - d.rect.top, dy))
+      setOffset({ x: d.base.x + dx, y: d.base.y + dy })
+    }
+    const onUp = () => {
+      dragRef.current = null
+      // Le clic éventuel suit immédiatement le relâchement : on ne le bloque qu'une fois.
+      window.setTimeout(() => { movedRef.current = false }, 0)
+      document.body.classList.remove('qvl-eclaireur-dragging')
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+    }
+    document.body.classList.add('qvl-eclaireur-dragging')
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+  }
+  // Un glisser ne doit pas déclencher le bouton sur lequel il a commencé.
+  const onClickCapture = event => {
+    if (movedRef.current) { event.preventDefault(); event.stopPropagation(); movedRef.current = false }
+  }
+  const style = { '--qvl-drag-x': `${offset.x}px`, '--qvl-drag-y': `${offset.y}px` }
+  return { ref, style, onPointerDown, onClickCapture, moved: offset.x !== 0 || offset.y !== 0 }
+}
+
 function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, awaitingCard, onClose, onMinimize, onRestore }) {
   const steps = ['axis', 'needs', 'results']
   const index = Math.max(0, steps.indexOf(step))
   const number = index + 1
   const side = step === 'results' ? 'left' : 'right'
   const multiple = resultCount > 1
+  const movable = useMovable([mode, step])
+  const moveProps = { ref: movable.ref, style: movable.style, onClickCapture: movable.onClickCapture }
+  const movedClass = movable.moved ? ' qvl-eclaireur-moved' : ''
 
   if (mode === 'closed') {
-    return <button type="button" className={`qvl-eclaireur-help qvl-eclaireur-side-${side}`} onClick={onRestore} aria-label="Rouvrir L’Éclaireur"><span aria-hidden="true">✦</span>L’Éclaireur</button>
+    return <button type="button" {...moveProps} onPointerDown={movable.onPointerDown} title="Rouvrir L’Éclaireur · glisser pour le déplacer" className={`qvl-eclaireur-help qvl-eclaireur-side-${side}${movedClass}`} onClick={onRestore} aria-label="Rouvrir L’Éclaireur"><span aria-hidden="true">✦</span>L’Éclaireur</button>
   }
 
   if (mode === 'minimized') {
-    return <div className={`qvl-eclaireur-minimized qvl-eclaireur-side-${side}`} aria-label={`L’Éclaireur, étape ${number} sur 3, réduit`}>
+    return <div {...moveProps} onPointerDown={movable.onPointerDown} title="Glisser pour déplacer L’Éclaireur" className={`qvl-eclaireur-minimized qvl-eclaireur-side-${side}${movedClass}`} aria-label={`L’Éclaireur, étape ${number} sur 3, réduit`}>
       <button type="button" className="qvl-eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer L’Éclaireur"><span aria-hidden="true">✦</span><strong>L’Éclaireur</strong><small>{number}/3</small></button>
       <button type="button" className="qvl-eclaireur-minimized-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
     </div>
@@ -1023,8 +1087,8 @@ function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, aw
     </>
   }
 
-  return <aside className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}`} aria-live="polite" aria-label={`L’Éclaireur, étape ${number} sur 3`}>
-    <header className="qvl-eclaireur-visual-header">
+  return <aside {...moveProps} className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}${movedClass}`} aria-live="polite" aria-label={`L’Éclaireur, étape ${number} sur 3`}>
+    <header className="qvl-eclaireur-visual-header" onPointerDown={movable.onPointerDown} title="Glisser pour déplacer L’Éclaireur">
       <div className="qvl-eclaireur-brand"><span className="qvl-eclaireur-compass" aria-hidden="true">✦</span><div><strong>L’Éclaireur</strong><small>VOTRE GUIDE DANS CET ESPACE</small></div></div>
       <div className="qvl-eclaireur-header-actions"><span>{number}/3</span><button type="button" className="qvl-eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button><button type="button" className="qvl-eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button></div>
       <div className="qvl-eclaireur-lighthouse" aria-hidden="true"><span className="qvl-eclaireur-lighthouse-light"/><span className="qvl-eclaireur-lighthouse-top"/><span className="qvl-eclaireur-lighthouse-body"/><span className="qvl-eclaireur-lighthouse-base"/></div>
