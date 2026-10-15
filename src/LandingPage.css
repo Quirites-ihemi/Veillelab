@@ -444,3 +444,64 @@
   .qlab-radar-landing__radar-sweep::before,
   .qlab-radar-landing__pulse{animation:none!important}
 }
+
+/* Information temporaire : indisponibilité des échanges IA (prototype).
+   Styles strictement limités à la landing page. */
+.qlab-radar-landing{
+  height:auto;
+  min-height:100svh;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+.qlab-radar-landing__content{
+  min-height:100svh;
+  height:auto;
+}
+.qlab-radar-landing__api-notice{
+  width:100%;
+  max-width:650px;
+  margin:22px 0 0;
+  padding:17px 19px 16px;
+  border:1.5px solid #f1bd65;
+  border-left:5px solid #f1bd65;
+  border-radius:11px;
+  background:#182b3e;
+  color:#fff3dc;
+  box-shadow:0 8px 25px rgba(0,0,0,.24);
+}
+.qlab-radar-landing__api-notice-heading{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 10px;
+  color:#ffe1a5;
+  font-size:16px;
+  line-height:1.35;
+}
+.qlab-radar-landing__api-notice-symbol{
+  display:inline-grid;
+  place-items:center;
+  flex:0 0 25px;
+  width:25px;
+  height:25px;
+  border:2px solid #f1bd65;
+  border-radius:50%;
+  font-size:15px;
+  font-weight:850;
+  font-family:Georgia,serif;
+}
+.qlab-radar-landing__api-notice p{
+  margin:8px 0 0;
+  color:#f6eee2;
+  font-size:15px;
+  line-height:1.52;
+}
+.qlab-radar-landing__api-notice p strong{color:#ffe2a4}
+@media(max-width:900px){
+  .qlab-radar-landing__content{min-height:0}
+}
+@media(max-width:620px){
+  .qlab-radar-landing__api-notice{padding:15px}
+  .qlab-radar-landing__api-notice-heading{font-size:15px}
+  .qlab-radar-landing__api-notice p{font-size:14px}
+}

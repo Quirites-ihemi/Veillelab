@@ -54,6 +54,19 @@ export default function LandingPage({ onEnter }) {
             Explorez des publications, des expertises et des pistes de réflexion à partir du corpus actif de l’ensemble des bulletins de veille.
           </p>
 
+          <aside className="qlab-radar-landing__api-notice" role="status" aria-label="Information sur la disponibilité des fonctionnalités d’intelligence artificielle">
+            <div className="qlab-radar-landing__api-notice-heading">
+              <span className="qlab-radar-landing__api-notice-symbol" aria-hidden="true">i</span>
+              <strong>Prototype — Information sur les fonctionnalités d’IA</strong>
+            </div>
+            <p>
+              Les fonctionnalités conversationnelles sont temporairement indisponibles, les crédits de consommation de l’API d’intelligence artificielle étant actuellement épuisés.
+            </p>
+            <p>
+              Quiritès Veille Lab repose sur un modèle d’IA externe dont chaque utilisation génère un coût, <strong>modeste mais réel</strong>.
+            </p>
+          </aside>
+
           <p className="qlab-radar-landing__note">
             Résultats fondés sur le corpus actif des bulletins de veille.
           </p>
