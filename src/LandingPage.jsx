@@ -46,30 +46,27 @@ export default function LandingPage({ onEnter }) {
             </strong>
           </h1>
 
+          <p className="qlab-radar-landing__companion">
+            L’application compagne du bulletin de veille de Quiritès
+          </p>
+
           <p className="qlab-radar-landing__lead">
-            Naviguez dans les publications et dans les univers métiers du ministère de l’Intérieur.
+            Naviguez dans les univers métiers du ministère de l’Intérieur.
           </p>
 
-          <p className="qlab-radar-landing__intro">
-            Explorez des publications, des expertises et des pistes de réflexion à partir du corpus actif de l’ensemble des bulletins de veille.
+          <p className="qlab-radar-landing__signature">
+            Le bulletin donne à lire. L’application donne à explorer.
           </p>
 
-          <aside className="qlab-radar-landing__api-notice" role="status" aria-label="Information sur la disponibilité des fonctionnalités d’intelligence artificielle">
-            <div className="qlab-radar-landing__api-notice-heading">
-              <span className="qlab-radar-landing__api-notice-symbol" aria-hidden="true">i</span>
-              <strong>Prototype — Information sur les fonctionnalités d’IA</strong>
-            </div>
-            <p>
-              Les fonctionnalités conversationnelles sont temporairement indisponibles, les crédits de consommation de l’API d’intelligence artificielle étant actuellement épuisés.
-            </p>
-            <p>
-              Quiritès Veille Lab repose sur un modèle d’IA externe dont chaque utilisation génère un coût, <strong>modeste mais réel</strong>.
-            </p>
-          </aside>
-
-          <p className="qlab-radar-landing__note">
-            Résultats fondés sur le corpus actif des bulletins de veille.
-          </p>
+          <a
+            className="qlab-radar-landing__bulletin-link"
+            href="https://www.quirites.fr/actualites/veille"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span aria-hidden="true">↗</span>
+            Découvrir le bulletin de veille
+          </a>
 
           <button
             type="button"
