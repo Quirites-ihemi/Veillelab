@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import { runReflectionAction, searchReflectionCorpus } from '../services/reflectionApi.js'
 import './reflection-workspace.css'
-import heroImage from '../header-corpus-securite.png'
 
 const NEEDS = [
   {
@@ -792,19 +791,25 @@ export default function ReflectionWorkspaceV1({ onBack }) {
   const shellClass = `qvl-reflection-shell ${leftCollapsed ? 'left-collapsed' : ''} ${rightCollapsed ? 'right-collapsed' : ''}`
 
   return <main className="qvl-reflection-page">
-    <div className="qvl-reflection-back-wrap"><button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button></div>
-
-    <section className="qvl-reflection-hero">
-      <div className="qvl-hero-copy">
-        <div className="qvl-hero-text">
-          <h1>Avancer avec le corpus</h1>
-          <p>Une bibliothèque à portée de main pour explorer, documenter et relier les éléments utiles à votre travail.</p>
-        </div>
-        <div className="qvl-hero-visual" aria-hidden="true">
-          <img src={heroImage} alt=""/>
-        </div>
-      </div>
-    </section>
+    <header className="etb-bar">
+      <button className="back-link etb-back" onClick={onBack}><Icon name="back"/>Atelier</button>
+      <h1>Avancer avec le corpus</h1>
+      <span className="etb-bar-regime">Enrichissement contrôlé</span>
+      <span className="etb-bar-spacer"/>
+      <div className="qvl-link-tools">
+              <button type="button" className={`qvl-link-button ${linkMode ? 'active' : ''}`} onClick={toggleLinkMode}><Icon name="link" size={16}/>{linkMode ? 'Annuler la liaison' : 'Relier des cartes'}</button>
+              {links.length > 0 && <button type="button" className="qvl-link-count" onClick={() => setShowLinks(value => !value)}>Liens ({links.length})</button>}
+              <button type="button" className="qvl-link-button qvl-reset-button" onClick={resetCanvas} disabled={!cards.length && !links.length && !activeSubject}><Icon name="close" size={14}/>Réinitialiser</button>
+              {showLinks && links.length > 0 && <div className="qvl-link-list-popover">
+                <strong>Liens du canevas</strong>
+                {links.map(link => {
+                  const source = cards.find(card => card.id === link.source)
+                  const target = cards.find(card => card.id === link.target)
+                  return <div key={link.id}><span>{shortText(source?.title || source?.text, 26)} {link.label || '—'} {shortText(target?.title || target?.text, 26)}</span><button type="button" onClick={() => removeLink(link.id)}>×</button></div>
+                })}
+              </div>}
+            </div>
+    </header>
 
     <div className={shellClass}>
       <aside className={`qvl-reflection-left ${eclaireur.mode === 'open' && eclaireur.step === 'needs' ? 'qvl-eclaireur-target' : ''}`}>
@@ -832,25 +837,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
-          <div className="qvl-canvas-title"><span className="qvl-canvas-title-icon">↗</span><div><h2>Construisez votre réflexion</h2></div></div>
-          <div className={`qvl-canvas-toolbar ${eclaireur.mode === 'open' && eclaireur.step === 'axis' ? 'qvl-eclaireur-target' : ''}`}>
-            {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
-            <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
-            <span className="qvl-toolbar-spacer"/>
-            <div className="qvl-link-tools">
-              <button type="button" className={`qvl-link-button ${linkMode ? 'active' : ''}`} onClick={toggleLinkMode}><Icon name="link" size={16}/>{linkMode ? 'Annuler la liaison' : 'Relier des cartes'}</button>
-              {links.length > 0 && <button type="button" className="qvl-link-count" onClick={() => setShowLinks(value => !value)}>Liens ({links.length})</button>}
-              <button type="button" className="qvl-link-button qvl-reset-button" onClick={resetCanvas} disabled={!cards.length && !links.length && !activeSubject}><Icon name="close" size={14}/>Réinitialiser</button>
-              {showLinks && links.length > 0 && <div className="qvl-link-list-popover">
-                <strong>Liens du canevas</strong>
-                {links.map(link => {
-                  const source = cards.find(card => card.id === link.source)
-                  const target = cards.find(card => card.id === link.target)
-                  return <div key={link.id}><span>{shortText(source?.title || source?.text, 26)} {link.label || '—'} {shortText(target?.title || target?.text, 26)}</span><button type="button" onClick={() => removeLink(link.id)}>×</button></div>
-                })}
-              </div>}
-            </div>
-          </div>
           {linkMode && <div className="qvl-link-builder">
             <div>
               <strong>Créer une liaison entre deux post-it</strong>
@@ -933,6 +919,10 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             })}
           </div>
         </div>
+        <div className={`qvl-canvas-toolbar etb-dock ${eclaireur.mode === 'open' && eclaireur.step === 'axis' ? 'qvl-eclaireur-target' : ''}`}>
+            {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
+            <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
+          </div>
         <div className={`qvl-canvas-help ${linkMode ? 'link-mode' : ''}`}><span>{linkMode ? `Mode liaison : sélectionnez deux cartes (${selectedCards.length}/2).` : selectedCards.length ? `${selectedCards.length} carte${selectedCards.length > 1 ? 's' : ''} sélectionnée${selectedCards.length > 1 ? 's' : ''}` : 'Cliquez sur une carte pour la sélectionner.'}</span><span>{linkMode ? 'Cliquez simplement sur deux post-it, puis qualifiez le lien.' : 'Les volets peuvent être repliés pour agrandir le canevas · Chaque post-it peut être réduit.'}</span></div>
       </section>
 
