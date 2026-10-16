@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB114",
+  "source_publication": {
+    "publication_id": "PUB114",
+    "titre": "l'intégration précoce des demandeurs de protection internationale",
+    "année_publication": "2026",
+    "image_publication": "PUB114.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+    "type_document": "Note",
+    "domaine": "Migrations/intégration",
+    "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
+    "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
+    "node_count": 36,
+    "relation_count": 37,
+    "chunk_count": 18,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels ancrés dans la publication PUB114. Chaque fil correspond à une dimension structurante du document : (1) l'apprentissage linguistique comme action centrale et élément de continuité ; (2) l'évaluation systématique comme enjeu de suivi et d'impact ; (3) l'adaptation aux profils vulnérables comme principe transversal ; (4) la coordination multi-niveaux comme cadre de gouvernance ; (5) l'insertion professionnelle comme volet d'autonomisation. Ces fils couvrent les principales composantes de l'intégration précoce documentées dans la note et ouvrent des perspectives de lecture transpublication.",
+  "threads": [],
+  "leaves": []
+}

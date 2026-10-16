@@ -1,0 +1,159 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB012",
+  "source_publication": {
+    "publication_id": "PUB012",
+    "titre": "1945–2025 : 80 ans de formation cynophile à gramat",
+    "année_publication": "2025",
+    "image_publication": "PUB012.png",
+    "auteurs_MI": "Benoît HABERBUSCH",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.calameo.com/read/002719292fed72e70a1fa",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/note-du-crgn-121-80-ans-de-formation-cynophile-a-gramat",
+    "node_count": 30,
+    "relation_count": 23,
+    "chunk_count": 14,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB012.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels ancrés dans la publication PUB012. Les fils couvrent les dimensions structurantes du document : (1) la professionnalisation progressive de l'institution de formation, (2) l'expansion des compétences techniques, (3) l'organisation territoriale et hiérarchisée de la force, (4) la formation du binôme comme unité opérationnelle centrale, et (5) la perspective prospective de complémentarité technologique. Chaque fil est documenté par des passages explicites et des localisateurs précis, avec des requêtes de recherche conçues pour identifier des prolongements dans le corpus Quiritès.",
+  "threads": [
+    {
+      "thread_id": "FIL_003",
+      "fil_lecture": "Organisation hiérarchisée et déploiement territorial de la force cynophile",
+      "source_locator": "3",
+      "source_anchor": "En 2002, une refonte totale du dispositif crée une véritable force cynophile sur trois niveaux : au niveau local, les PSIG représentent l'unité de base des équipes cynophiles ; au plan régional, un Groupe d'investigation cynophile (GIC) organiquement rattaché à un PSIG en comprend plusieurs et possède des chiens qualifiés ; à l'échelon national, le GNIC de Gramat, fort de son expertise, peut être déployé en cas de crise. Un réseau de référents cynophiles régionaux, sous l'autorité d'un référent national, complète cette chaîne métier. Cette organisation permet une intégration progressive de la capacité cynophile dans la manœuvre quotidienne des unités.",
+      "retrieval_queries": [
+        "organisation force cynophile niveaux PSIG GIC",
+        "déploiement territorial équipes chiens gendarmerie",
+        "structure hiérarchique capacité cynophile"
+      ],
+      "candidate_ids": [
+        "PUB113"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "force cynophile",
+        "variantes": [
+          "capacité cynophile",
+          "équipes cynophiles"
+        ],
+        "angle": "organisation hiérarchisée et déploiement territorial sur trois niveaux (local,…",
+        "critere_raccord": "La cible doit développer substantiellement « force cynophile » lui-même. Si elle développe aussi le cœur de l'angle source « organisation hiérarchisée et déploiement territorial sur trois niveaux (local,… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "force cynophile",
+          "capacité cynophile",
+          "équipes cynophiles"
+        ]
+      },
+      "pool_ids": [
+        "PUB113",
+        "PUB002",
+        "PUB024",
+        "PUB015",
+        "PUB005",
+        "PUB026",
+        "PUB006",
+        "PUB013",
+        "PUB010",
+        "PUB033",
+        "PUB016",
+        "PUB022",
+        "PUB025",
+        "PUB054",
+        "PUB115",
+        "PUB118"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB113 apporte une connaissance substantielle et explicite sur la capacité cynophile (son domaine d'application spécialisé, sa formation, ses modalités opérationnelles, ses résultats concrets). Cependant, elle ne traite pas l'angle central du fil source : l'organisation hiérarchisée sur trois niveaux (PSIG, GIC, GNIC) et le déploiement territorial. Elle documente un usage particulier et un rôle spécifique de la capacité cynophile, ce qui justifie un classement ADJACENT plutôt que DIRECT. La documentation du pivot est substantielle, ce qui exclut INSUFFICIENT."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB012",
+      "fil_lecture": "Organisation hiérarchisée et déploiement territorial de la force cynophile",
+      "source_locator": "3",
+      "target_publication_id": "PUB113",
+      "pourquoi": "La cible documente substantiellement la capacité cynophile elle-même (formation Vulcain, détection d'accélérateurs, résultats opérationnels concrets), mais sous un angle différent : l'usage spécialisé en investigation d'incendies plutôt que l'organisation hiérarchisée et le déploiement territorial sur trois niveaux du fil source.",
+      "target_locator": "3",
+      "decision": "POSSIBLE",
+      "badges": [
+        "Même auteur"
+      ]
+    }
+  ]
+}

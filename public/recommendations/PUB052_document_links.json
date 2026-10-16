@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB052",
+  "source_publication": {
+    "publication_id": "PUB052",
+    "titre": "une généalogie des politiques publiques de sécurité",
+    "année_publication": "2026",
+    "image_publication": "PUB052.png",
+    "auteurs_MI": "Christophe Soullez",
+    "organisme_producteur": "Les cahiers français",
+    "type_document": "Articles et collections d'articles",
+    "domaine": "Sécurité publique",
+    "url_contenu": "",
+    "url_source": "https://www.lgdj.fr/cahiers-francais-mai-juin-2026-n451-9782111743533.html",
+    "node_count": 36,
+    "relation_count": 39,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB052.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication généalogique couvrant 1945-2025. Cinq fils identifiés, couvrant les dimensions structurantes : (1) transformation du contrat social sécuritaire, (2) tension sécurité-libertés, (3) professionnalisation des forces, (4) gouvernance partenariale et territorialisation, (5) sécurité préventive par renseignement. Chaque fil s'appuie sur des passages substantiels et des nœuds convergents documentant des évolutions majeures ou des problèmes persistants.",
+  "threads": [
+    {
+      "thread_id": "FIL_002",
+      "fil_lecture": "Tension structurelle entre efficacité sécuritaire et protection des libertés",
+      "source_locator": "article web",
+      "source_anchor": "Tension entre efficacité de la sécurité et respect des libertés publiques (N0974). Cette tension s'aggrave particulièrement à partir de 2012-2020 avec le déplacement durable de l'équilibre entre sécurité et libertés (N0998), notamment par l'intégration dans le droit commun de plusieurs instruments de l'état d'urgence (N1002).",
+      "retrieval_queries": [
+        "sécurité libertés publiques équilibre tension",
+        "instruments état d'urgence droit commun",
+        "renseignement encadrement légal libertés"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB005",
+        "PUB010",
+        "PUB011",
+        "PUB026",
+        "PUB002",
+        "PUB007",
+        "PUB118",
+        "PUB034",
+        "PUB054"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "legacy:pivot_absent_de_la_source",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats documentaires. Deux publications (PUB005 et PUB034, PUB054) présentent un raccord ADJACENT avec développement explicite de composantes utiles du fil : PUB005 articule la tension IA-efficacité-libertés, PUB034 pose la déontologie comme garantie des libertés dans l'action sécuritaire, PUB054 traite du régime dérogatoire et de ses principes d'encadrement. Les autres candidats restent insuffisants, reposant sur des proximités lexicales ou contextuelles sans développer substantiellement la tension structurelle entre efficacité sécuritaire et protection des libertés, ni le déplacement d'équilibre décrit dans le fil de départ."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB052",
+      "fil_lecture": "Tension structurelle entre efficacité sécuritaire et protection des libertés",
+      "source_locator": "article web",
+      "target_publication_id": "PUB034",
+      "pourquoi": "La contribution développe explicitement la déontologie des forces de sécurité comme garantie des droits et libertés, et pose la force publique au service des droits et libertés. Elle aborde directement la composante de protection des libertés dans l'exercice de la sécurité, utile pour comprendre l'équilibre sécurité-libertés.",
+      "target_locator": "6",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

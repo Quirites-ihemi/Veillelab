@@ -1,0 +1,133 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB051",
+  "source_publication": {
+    "publication_id": "PUB051",
+    "titre": "the geopolitics of infrastructure",
+    "année_publication": "2026",
+    "image_publication": "PUB051.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Institut de relations internationales et stratégiques (IRIS)",
+    "type_document": "Articles et collections d'articles",
+    "domaine": "Sécurité civile",
+    "url_contenu": "https://www.iris-france.org/the-geopolitics-of-infrastructure/",
+    "url_source": "https://www.iris-france.org/the-geopolitics-of-infrastructure/",
+    "node_count": 16,
+    "relation_count": 11,
+    "chunk_count": 5,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB051.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication PUB051 : analyse structurante de la géopolitique des infrastructures comme nouveau registre de puissance internationale. Cinq fils identifiés couvrant : (1) le rôle constitutif des infrastructures dans la souveraineté contemporaine ; (2) les mécanismes de dépendance créés par les blocs d'infrastructures concurrents ; (3) l'usage des corridors par les puissances intermédiaires pour diversifier leur autonomie ; (4) l'émergence de vulnérabilités liées à l'intégration de l'IA dans les systèmes critiques ; (5) la dimension politique cachée des choix d'infrastructures et leur potentiel de contrôle. Chaque fil s'appuie sur des sections substantielles et des exemples documentés (BRI, Global Gateway, Chabahar, Gaza).",
+  "threads": [
+    {
+      "thread_id": "FIL_004",
+      "fil_lecture": "Intelligence artificielle et vulnérabilités des infrastructures critiques",
+      "source_locator": "C0759",
+      "source_anchor": "L'intégration croissante de l'intelligence artificielle dans les infrastructures peut améliorer l'efficacité des réseaux électriques, prolonger la durée de vie des infrastructures de transport ou faciliter l'adaptation climatique. Elle crée cependant de nouvelles vulnérabilités. Le contrôle distant des systèmes d'optimisation peut devenir un moyen d'interrompre ou de perturber une infrastructure critique. Des algorithmes opaques ou biaisés peuvent également orienter la répartition territoriale des investissements. La question de la souveraineté ne concerne donc plus uniquement la propriété et le contrôle des équipements physiques : elle porte aussi sur les acteurs qui contrôlent la couche d'intelligence chargée de gouverner leur fonctionnement.",
+      "retrieval_queries": [
+        "intelligence artificielle infrastructures critiques vulnérabilités",
+        "contrôle algorithmique systèmes d'optimisation",
+        "couche d'intelligence souveraineté"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB033",
+        "PUB006",
+        "PUB057",
+        "PUB003",
+        "PUB062",
+        "PUB118",
+        "PUB090",
+        "PUB026"
+      ],
+      "candidate_count": 9,
+      "retained_count": 0,
+      "possible_count": 3,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "intelligence artificielle",
+        "variantes": [
+          "IA",
+          "systèmes d'intelligence artificielle"
+        ],
+        "angle": "intégration dans les infrastructures critiques et vulnérabilités de contrôle…",
+        "critere_raccord": "La cible doit développer substantiellement « intelligence artificielle » lui-même. Si elle développe aussi le cœur de l'angle source « intégration dans les infrastructures critiques et vulnérabilités de contrôle… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "intelligence artificielle",
+          "IA",
+          "systèmes d'intelligence artificielle"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB005",
+        "PUB033",
+        "PUB006",
+        "PUB026",
+        "PUB062",
+        "PUB010",
+        "PUB057",
+        "PUB118",
+        "PUB090",
+        "PUB024",
+        "PUB007"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seule PUB033 atteint le seuil ADJACENT. Elle documente substantiellement comment l'IA reconfigure les infrastructures et les architectures invisibles qui organisent les interactions, et aborde les garde-fous éthiques et juridiques (contrôle humain, non-discrimination, proportionnalité) qui rejoignent les vulnérabilités de contrôle du fil source. Tous les autres candidats mentionnent l'IA dans des contextes différents (cybercriminalité, désinformation, terrorisme, neurosciences, pédocriminalité, discrimination) sans développer son intégration dans les infrastructures critiques ni les vulnérabilités de contrôle des systèmes d'optimisation. PUB005 reste au niveau de l'énumération générale des opportunités et risques sans développement substantiel du pivot lui-même."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB051",
+      "fil_lecture": "Intelligence artificielle et vulnérabilités des infrastructures critiques",
+      "source_locator": "C0759",
+      "target_publication_id": "PUB033",
+      "pourquoi": "La cible documente substantiellement l'IA dans sa relation aux infrastructures et à la gouvernance territoriale. Elle développe explicitement comment l'IA reconfigure les infrastructures et les architectures invisibles, et comment elle s'intègre dans les métiers de sécurité. Elle aborde aussi les garde-fous éthiques et juridiques (dignité, proportionnalité, non-discrimination, contrôle humain), ce qui rejoint les vulnérabilités de contrôle du fil source, bien que sous l'angle de la gouvernance responsable plutôt que des risques de perturbation.",
+      "target_locator": "19",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB051",
+      "fil_lecture": "Intelligence artificielle et vulnérabilités des infrastructures critiques",
+      "source_locator": "C0759",
+      "target_publication_id": "PUB006",
+      "pourquoi": "L'IA est documentée uniquement dans le contexte de la cybercriminalité (AI-as-a-Service, génération de maliciels, hameçonnage). Bien que substantiel sur ce point, ce développement ne porte pas sur l'intégration de l'IA dans les infrastructures critiques ni sur les vulnérabilités de contrôle des systèmes d'optimisation. Le contexte (cybercriminalité) et le domaine (sécurité) diffèrent du fil source (intégration dans les infrastructures critiques).",
+      "target_locator": "28;29",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB051",
+      "fil_lecture": "Intelligence artificielle et vulnérabilités des infrastructures critiques",
+      "source_locator": "C0759",
+      "target_publication_id": "PUB057",
+      "pourquoi": "L'IA est documentée comme outil d'accélération et d'efficacité des activités cybercriminelles (baisse des barrières à l'entrée, augmentation de la vitesse et de l'ampleur). Ce développement reste limité au contexte de la cybercriminalité et ne traite pas l'intégration de l'IA dans les infrastructures critiques ni les vulnérabilités de contrôle des systèmes d'optimisation.",
+      "target_locator": "6;8",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

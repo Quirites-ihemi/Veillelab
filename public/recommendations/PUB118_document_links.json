@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB118",
+  "source_publication": {
+    "publication_id": "PUB118",
+    "titre": "neurosciences et comportements militaires",
+    "année_publication": "2026",
+    "image_publication": "PUB118.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Fondation pour l’innovation politique (Fondapol)",
+    "type_document": "Actes de colloque",
+    "domaine": "Sécurité nationale",
+    "url_contenu": "https://www.fondapol.org/etude/neurosciences-et-comportements-militaires/",
+    "url_source": "https://www.fondapol.org/etude/neurosciences-et-comportements-militaires/",
+    "node_count": 43,
+    "relation_count": 60,
+    "chunk_count": 33,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication PUB118 : actes de colloque Fondapol (2026) sur neurosciences et comportements militaires. Cinq fils de lecture identifiés, couvrant les dimensions structurantes du document : (1) lucidité décisionnelle sous contrainte, axe central de l'introduction et partie I ; (2) régulation collective du stress, dimension transversale parties II-V ; (3) interactions corps-cerveau et prévention, partie III avec implications cliniques ; (4) technologie et IA pour l'aide au discernement, partie VII avec positionnement éthique ; (5) enjeux juridiques des neurotechnologies, partie VIII. Chaque fil dispose d'un ancrage précis dans le document et de requêtes de recherche fidèles aux contenus substantiels documentés.",
+  "threads": [
+    {
+      "thread_id": "FIL_001",
+      "fil_lecture": "Lucidité décisionnelle sous stress et contrainte opérationnelle",
+      "source_locator": "Introduction;Partie I",
+      "source_anchor": "Dans un contexte de haute intensité, l'efficacité militaire dépend de la capacité humaine à décider lucidement sous stress, fatigue et incertitude. Les émotions influencent l'attention, la mémoire et le raisonnement avec des effets favorables ou défavorables selon leur intensité. La qualité d'une décision collective dépend de la circulation de l'information, de la possibilité d'exprimer une dissension et de la manière dont s'exerce l'autorité. L'organisation du processus décisionnel doit chercher à réduire les vulnérabilités cognitives individuelles et collectives.",
+      "retrieval_queries": [
+        "décision sous stress et émotions",
+        "biais cognitifs et jugement opérationnel",
+        "qualité décisionnelle en situation de crise"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB005",
+        "PUB054",
+        "PUB016",
+        "PUB006",
+        "PUB007",
+        "PUB026",
+        "PUB022",
+        "PUB062",
+        "PUB013"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 2,
+      "pivot_status": "legacy:pivot_repair_non_centrale",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats documentaires au fil « Lucidité décisionnelle sous stress et contrainte opérationnelle ». Deux publications (PUB005 et PUB054) offrent un raccord ADJACENT substantiel : PUB005 développe l'aide à la décision en crise et la complémentarité humain-machine ; PUB054 traite explicitement de gouvernance anticipée, confiance et adaptation décisionnelle collective. PUB016 présente également un raccord ADJACENT en documentant la formation sous stress et la construction de cohésion collective. Les sept autres candidats restent au niveau INSUFFICIENT : ils partagent un contexte de sécurité, crise ou gouvernance, mais ne développent pas explicitement les mécanismes centraux du fil (émotions, vulnérabilités cognitives individuelles et collectives, organisation du processus décisionnel pour les réduire)."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB118",
+      "fil_lecture": "Lucidité décisionnelle sous stress et contrainte opérationnelle",
+      "source_locator": "Introduction;Partie I",
+      "target_publication_id": "PUB054",
+      "pourquoi": "Le document développe explicitement les principes de gouvernance anticipée des crises sanitaires, l'importance de la confiance, l'adaptation des décisions à l'évolution des circonstances, et la nécessité d'associer les citoyens et acteurs territoriaux. Ces éléments constituent une composante substantielle du fil sur la qualité décisionnelle collective et l'organisation du processus décisionnel.",
+      "target_locator": "4; 8; 10",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

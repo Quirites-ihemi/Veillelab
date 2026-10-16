@@ -1,0 +1,490 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB034",
+  "source_publication": {
+    "publication_id": "PUB034",
+    "titre": "penser différemment la déontologie des forces de sécurité",
+    "année_publication": "2026",
+    "image_publication": "PUB034.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
+    "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
+    "node_count": 21,
+    "relation_count": 18,
+    "chunk_count": 9,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB034.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques structurantes identifiées, couvrant l'ensemble du document (pages 6-14). Chacune représente une problématique transversale susceptible d'être traitée dans d'autres contextes ou terrains : (1) le rôle de la déontologie comme cadre normatif protecteur plutôt que restrictif ; (2) l'articulation entre droits fondamentaux et action de sécurité ; (3) la précision croissante des règles d'intervention et ses enjeux ; (4) la formation comme instrument de protection des agents ; (5) la tension entre extension des pouvoirs et nécessité d'encadrement déontologique. Les expressions partagées « forces de sécurité intérieure », « déontologie », « formation initiale et continue » et « légitime défense » confirment la pertinence transversale de ces problématiques.",
+  "threads": [
+    {
+      "thread_id": "T1",
+      "fil_lecture": "Déontologie comme garantie et encadrement de l'action",
+      "source_locator": "6, 8, 14",
+      "source_anchor": "La déontologie des forces de sécurité intérieure est présentée comme une garantie plutôt qu'une contrainte, fondée sur un corpus de devoirs professionnels encadrant et protégeant les agents. Elle combine obligations juridiques et devoirs de morale professionnelle (dignité, impartialité, loyauté, réserve, exemplarité, obéissance légale). Cette déontologie doit reposer sur une confiance normative, accompagnée d'une défiance institutionnalisée par des mécanismes de contrôle.",
+      "retrieval_queries": [
+        "déontologie garantie encadrement forces sécurité",
+        "codes déontologie devoirs professionnels",
+        "confiance normative contrôle déontologique"
+      ],
+      "candidate_ids": [
+        "PUB013",
+        "PUB026"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Déontologie",
+        "variantes": [
+          "codes de déontologie"
+        ],
+        "angle": "Garantie et encadrement de l'action des forces de sécurité intérieure par un…",
+        "critere_raccord": "La cible doit développer substantiellement « Déontologie » lui-même. Si elle développe aussi le cœur de l'angle source « Garantie et encadrement de l'action des forces de sécurité intérieure par un… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Déontologie",
+          "codes de déontologie"
+        ]
+      },
+      "pool_ids": [
+        "PUB013",
+        "PUB026",
+        "PUB015",
+        "PUB014",
+        "PUB002",
+        "PUB010",
+        "PUB016",
+        "PUB018",
+        "PUB005",
+        "PUB007",
+        "PUB068"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB068",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Aucun des deux candidats ne développe substantiellement la déontologie comme objet : ni ses principes constitutifs, ni ses devoirs professionnels (dignité, impartialité, loyauté, réserve, exemplarité, obéissance légale), ni ses mécanismes de garantie et d'encadrement. PUB013 traite des perceptions publiques ; PUB026 mentionne la déontologie dans un contexte de contrôle et de lutte contre les discriminations. Les deux restent au niveau de la mention ou du contexte, sans apport documentaire sur le cœur du fil.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB026",
+          "PUB013",
+          "PUB010",
+          "PUB015",
+          "PUB006",
+          "PUB014",
+          "PUB005",
+          "PUB002",
+          "PUB016",
+          "PUB018"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Seule PUB013 développe explicitement et substantiellement le cœur du fil : la déontologie des forces de sécurité intérieure comme garantie fondée sur la confiance normative, mesurée par la perception citoyenne du respect des devoirs professionnels. PUB026 constitue un raccord adjacent utile en documentant l'encadrement déontologique des contrôles d'identité et l'impact sur la confiance, mais traite d'une composante spécifique (discriminations) plutôt que du cadre général. Les autres candidats reposent sur des analogies lexicales ou contextuelles (encadrement, protocoles, éthique) sans développer explicitement la déontologie professionnelle comme garantie de l'action policière."
+      }
+    },
+    {
+      "thread_id": "T2",
+      "fil_lecture": "Droits fondamentaux comme limite à l'action policière",
+      "source_locator": "6, 9",
+      "source_anchor": "La force publique doit demeurer au service des droits et libertés. La déontologie fournit une boussole orientée vers le respect des droits et libertés fondamentaux, se traduisant notamment par l'interdiction des discriminations et de la violence non légitime. Le respect de la Constitution et des conventions internationales constitue une obligation générale encadrant l'action des forces de sécurité intérieure.",
+      "retrieval_queries": [
+        "droits fondamentaux limites action forces sécurité",
+        "respect libertés fondamentales police gendarmerie",
+        "interdiction discriminations violence légitime"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB006",
+        "PUB026",
+        "PUB054",
+        "PUB090",
+        "PUB013"
+      ],
+      "candidate_count": 6,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "droits fondamentaux",
+        "variantes": [
+          "droits et libertés",
+          "respect des droits fondamentaux"
+        ],
+        "angle": "limite et cadre normatif de l'action des forces de sécurité intérieure",
+        "critere_raccord": "La cible doit développer substantiellement « droits fondamentaux » lui-même. Si elle développe aussi le cœur de l'angle source « limite et cadre normatif de l'action des forces de sécurité intérieure », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "droits fondamentaux",
+          "droits et libertés",
+          "respect des droits fondamentaux"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB006",
+        "PUB026",
+        "PUB054",
+        "PUB090",
+        "PUB007",
+        "PUB013",
+        "PUB016",
+        "PUB052",
+        "PUB002",
+        "PUB021",
+        "PUB010",
+        "PUB014",
+        "PUB033",
+        "PUB012",
+        "PUB101"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB052",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de six candidats sur le fil « Droits fondamentaux comme limite à l'action policière ». Deux candidats (PUB054, PUB013) apportent une documentation substantielle du pivot dans un contexte pertinent : l'un sur la gestion de crise sanitaire, l'autre sur la perception citoyenne de l'action policière. Quatre candidats (PUB005, PUB006, PUB026, PUB090) ne mentionnent le pivot que de manière isolée, sans développement explicite de son rôle comme limite ou cadre normatif de l'action des forces de sécurité. Aucun candidat ne traite directement le cœur du fil : la déontologie policière comme boussole orientée vers le respect des droits fondamentaux.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB013",
+          "PUB006",
+          "PUB005",
+          "PUB090",
+          "PUB026",
+          "PUB016",
+          "PUB010",
+          "PUB002",
+          "PUB054",
+          "PUB014"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Évaluation de 10 candidats sur le fil « Droits fondamentaux comme limite à l'action policière ». Trois publications retenues comme POSSIBLE (PUB013, PUB026, PUB054) documentent explicitement des composantes du fil : la confiance citoyenne envers le respect des droits par les forces de sécurité, l'interdiction des discriminations, et le respect des libertés comme première exigence de la gouvernance. Les sept autres candidats sont écartés : ils reposent sur des proximités lexicales ou contextuelles (domaine de la sécurité, mention des droits fondamentaux) sans développement substantiel du cadre normatif encadrant l'action policière ou de la déontologie comme limite au pouvoir de police."
+      }
+    },
+    {
+      "thread_id": "T4",
+      "fil_lecture": "Formation comme protection juridique et professionnelle",
+      "source_locator": "13, 14",
+      "source_anchor": "La formation initiale et continue constitue une protection juridique et professionnelle des policiers et gendarmes, permettant aux agents d'intégrer les exigences attachées à leurs missions et de prévenir les difficultés contentieuses. L'auteur propose de consacrer explicitement ce droit dans le code de déontologie applicable aux policiers municipaux. La protection fonctionnelle protège également les agents exposés à la violence, aux représailles et à la mise en cause de leur responsabilité personnelle.",
+      "retrieval_queries": [
+        "formation initiale continue protection juridique policiers",
+        "droit formation code déontologie",
+        "protection fonctionnelle violence représailles agents"
+      ],
+      "candidate_ids": [
+        "PUB026",
+        "PUB005",
+        "PUB002",
+        "PUB012",
+        "PUB090",
+        "PUB010",
+        "PUB114",
+        "PUB006",
+        "PUB054",
+        "PUB013"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "Formation",
+        "variantes": [
+          "formation initiale et continue",
+          "droit à la formation"
+        ],
+        "angle": "Formation comme protection juridique et professionnelle des forces de sécurité…",
+        "critere_raccord": "La cible doit développer substantiellement « Formation » lui-même. Si elle développe aussi le cœur de l'angle source « Formation comme protection juridique et professionnelle des forces de sécurité… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Formation",
+          "formation initiale et continue",
+          "droit à la formation"
+        ]
+      },
+      "pool_ids": [
+        "PUB002",
+        "PUB012",
+        "PUB005",
+        "PUB026",
+        "PUB016",
+        "PUB090",
+        "PUB006",
+        "PUB010",
+        "PUB114",
+        "PUB013",
+        "PUB021",
+        "PUB015",
+        "PUB033",
+        "PUB007",
+        "PUB054",
+        "PUB057",
+        "PUB058",
+        "PUB062"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB058",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 4,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB002 atteint le seuil ADJACENT. Il documente concrètement la mise en place de formations croisées et de sensibilisations pour les magistrats, élus et forces de sécurité face aux violences, ce qui constitue un développement explicite d'un rôle de la formation comme outil de prévention et de protection professionnelle. Tous les autres candidats mentionnent la formation dans des contextes différents (discrimination, IA, cynophilie, pédocriminalité, climat, migrations, cyber, santé) sans développer substantiellement son rôle comme protection juridique et professionnelle des forces de sécurité. Les formations documentées dans PUB090, PUB010, PUB114, PUB006 et PUB054 relèvent d'ANALOGIE : elles montrent des formations dans d'autres secteurs, mais ne transposent pas le mécanisme central du fil (protection juridique et professionnelle des policiers/gendarmes).",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB026",
+          "PUB005",
+          "PUB002",
+          "PUB090",
+          "PUB010",
+          "PUB006",
+          "PUB114",
+          "PUB012",
+          "PUB015",
+          "PUB021"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Seul PUB002 présente un raccord ADJACENT : il documente explicitement la protection fonctionnelle contre la violence et les représailles, composante réelle du fil. Tous les autres candidats sont INSUFFICIENT : ils reposent sur des proximités lexicales (formation, protection, déontologie), des domaines voisins (sécurité, administration) ou des analogies de structure, sans développer le cœur du fil (formation comme protection juridique et professionnelle des policiers et gendarmes face aux exigences de leurs missions)."
+      }
+    },
+    {
+      "thread_id": "T5",
+      "fil_lecture": "Extension des prérogatives et besoin de déontologie renforcée",
+      "source_locator": "7, 8",
+      "source_anchor": "Le besoin contemporain de déontologie est associé au renforcement continu des prérogatives des acteurs du continuum de sécurité et à l'affirmation d'une logique de service public. Les forces de sécurité intérieure sont habilitées à assurer des missions policières de sécurité intérieure : défense des institutions, respect des lois, maintien de l'ordre public et protection des personnes et des biens. Les codes de déontologie convergent vers une double finalité : rassurer la population et protéger ceux qui assurent sa sécurité.",
+      "retrieval_queries": [
+        "extension prérogatives forces sécurité déontologie",
+        "renforcement missions policières service public",
+        "double finalité codes déontologie protection"
+      ],
+      "candidate_ids": [
+        "PUB013",
+        "PUB026"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "déontologie",
+        "variantes": [
+          "codes de déontologie",
+          "devoirs professionnels"
+        ],
+        "angle": "encadrement normatif des prérogatives élargies des forces de sécurité intérieure",
+        "critere_raccord": "La cible doit développer substantiellement « déontologie » lui-même. Si elle développe aussi le cœur de l'angle source « encadrement normatif des prérogatives élargies des forces de sécurité intérieure », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "déontologie",
+          "codes de déontologie",
+          "devoirs professionnels"
+        ]
+      },
+      "pool_ids": [
+        "PUB013",
+        "PUB026",
+        "PUB002",
+        "PUB010",
+        "PUB011"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB068",
+          "PUB026",
+          "PUB010",
+          "PUB005",
+          "PUB002",
+          "PUB013",
+          "PUB016",
+          "PUB011",
+          "PUB025",
+          "PUB006"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats sur le fil « Extension des prérogatives et besoin de déontologie renforcée ». Trois publications retenues comme POSSIBLE (PUB068, PUB002, PUB013) documentent explicitement des composantes du fil : la formation au service public et à la désescalade, le renforcement de la protection fonctionnelle des acteurs du continuum de sécurité, et la perception de la déontologie des forces de sécurité. Les sept autres candidats restent insuffisants : ils partagent un vocabulaire ou un domaine commun (renforcement, sécurité, service public) mais ne développent pas substantiellement le mécanisme central du fil, à savoir le lien entre extension des prérogatives et besoin de déontologie renforcée dans le continuum de sécurité intérieure français."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB034",
+      "fil_lecture": "Déontologie comme garantie et encadrement de l'action",
+      "source_locator": "6, 8, 14",
+      "target_publication_id": "PUB013",
+      "pourquoi": "PUB013 développe explicitement le cœur du fil : la déontologie comme garantie fondée sur la confiance normative envers les forces de sécurité. Elle mesure comment les citoyens perçoivent le respect des devoirs professionnels et des règles déontologiques, ce qui correspond directement à la notion de garantie et d'encadrement.",
+      "target_locator": "16; 5; 33",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB034",
+      "fil_lecture": "Droits fondamentaux comme limite à l'action policière",
+      "source_locator": "6, 9",
+      "target_publication_id": "PUB054",
+      "pourquoi": "La cible développe substantiellement le respect des libertés et des droits fondamentaux comme principe de gouvernance anticipée des crises sanitaires, avec l'exigence que les restrictions restent exceptionnelles. Bien que le contexte soit celui de la gestion de crise sanitaire et non de l'action policière, la cible documente explicitement le pivot comme limite normative à l'action de l'État, ce qui constitue une composante pertinente du fil.",
+      "target_locator": "8",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB034",
+      "fil_lecture": "Extension des prérogatives et besoin de déontologie renforcée",
+      "source_locator": "7, 8",
+      "target_publication_id": "PUB026",
+      "pourquoi": "La publication documente substantiellement le rôle de contrôle du respect de la déontologie par les forces de sécurité dans le contexte des discriminations et des relations police/jeunes. Elle développe un usage concret de la déontologie comme cadre normatif d'intervention du Défenseur des droits, et identifie des manquements (contrôles discriminatoires, multiverbalisation, sous-protection). Bien que l'angle source (encadrement normatif des prérogatives élargies) ne soit pas explicitement traité, la cible apporte une connaissance substantielle sur le pivot lui-même et sa fonction de régulation.",
+      "target_locator": "69, 5",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB034",
+      "fil_lecture": "Formation comme protection juridique et professionnelle",
+      "source_locator": "13, 14",
+      "target_publication_id": "PUB002",
+      "pourquoi": "La cible documente explicitement la mise en place de formations croisées et de sensibilisations pour les magistrats, élus et forces de sécurité (gendarmerie, police) face aux violences. Elle développe concrètement un rôle de la formation comme outil de prévention et de protection professionnelle, bien que dans un contexte différent (violences aux élus plutôt que protection générale des agents).",
+      "target_locator": "17",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 9,
+    "extraits_total": 9,
+    "sections_couvertes": 9,
+    "sections_total": 9
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

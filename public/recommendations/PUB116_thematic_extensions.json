@@ -1,0 +1,176 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB116",
+  "source_publication": {
+    "publication_id": "PUB116",
+    "titre": "des policiers à la fac",
+    "année_publication": "2026",
+    "image_publication": "PUB116.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Les Films d’ici",
+    "type_document": "Documentaire",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.arte.tv/fr/videos/124394-000-A/des-policiers-a-la-fac/",
+    "url_source": "https://www.lesfilmsdici.fr/fr/en-production/5319-des-policiers-a-la-fac.html",
+    "node_count": 27,
+    "relation_count": 32,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Identification de 5 thématiques phares structurantes du documentaire « Des policiers à la fac », couvrant l'ensemble du document : la formation universitaire comme levier de réflexivité, l'objectivation de la pratique, les enjeux de genre, la gestion émotionnelle et le bien-être, et les tensions entre logiques institutionnelles et réalités du terrain.",
+  "threads": [
+    {
+      "thread_id": "T5",
+      "fil_lecture": "Tensions entre logiques institutionnelles et pratiques policières",
+      "source_locator": "13:19-14:24;13:59-14:24;09:12-10:35;37:00-37:31",
+      "source_anchor": "Le documentaire révèle les tensions entre les priorités politico-médiatiques et la temporalité réelle de l'enquête policière, entre la mise en chiffres de l'activité policière et la recherche de résultats visibles, et entre l'image institutionnelle de la police et la réalité du métier telle que vécue par les agents.",
+      "retrieval_queries": [
+        "tensions logiques institutionnelles pratiques",
+        "écart image réalité métier",
+        "indicateurs performance activité policière"
+      ],
+      "candidate_ids": [
+        "PUB015",
+        "PUB026"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "pratiques policières",
+        "variantes": [
+          "activité policière",
+          "institution policière"
+        ],
+        "angle": "Tensions entre logiques institutionnelles et réalités du terrain",
+        "critere_raccord": "La cible doit développer substantiellement « pratiques policières » lui-même. Si elle développe aussi le cœur de l'angle source « Tensions entre logiques institutionnelles et réalités du terrain », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "pratiques policières",
+          "activité policière",
+          "institution policière"
+        ]
+      },
+      "pool_ids": [
+        "PUB026",
+        "PUB015",
+        "PUB118",
+        "PUB002",
+        "PUB114",
+        "PUB013",
+        "PUB068",
+        "PUB034",
+        "PUB018",
+        "PUB010",
+        "PUB113",
+        "PUB060",
+        "PUB012"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB068",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB034",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB060",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Les deux candidats documentent substantiellement les pratiques policières elles-mêmes. PUB015 les aborde sous l'angle de l'intégration de la recherche criminologique à l'activité opérationnelle (composante utile mais angle différent du fil source). PUB026 les documente dans leur déploiement discriminatoire et leurs effets sur les populations, révélant une tension entre institution et terrain, mais sans traiter explicitement les tensions internes entre logiques institutionnelles et réalités du métier telles que vécues par les agents eux-mêmes (cœur du fil source). Les deux méritent ADJACENT : elles apportent une connaissance substantielle et explicite sur l'objet pivot sous des angles complémentaires mais distincts du fil source.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB015",
+          "PUB006",
+          "PUB026",
+          "PUB025",
+          "PUB118",
+          "PUB033",
+          "PUB115",
+          "PUB010",
+          "PUB114",
+          "PUB005"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Deux publications seulement documentent explicitement une composante du fil : PUB015 (tension entre temporalités institutionnelles et opérationnelles) et PUB026 (écart entre image institutionnelle et réalité des pratiques policières). Les autres candidats reposent sur des contextes communs (sécurité, criminalité, administration) ou des analogies structurelles sans développement substantiel des tensions spécifiques au fil : priorités politico-médiatiques, mise en chiffres de l'activité policière, temporalité d'enquête versus attentes médiatiques, image institutionnelle versus réalité du métier telle que vécue par les agents."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB116",
+      "fil_lecture": "Tensions entre logiques institutionnelles et pratiques policières",
+      "source_locator": "13:19-14:24;13:59-14:24;09:12-10:35;37:00-37:31",
+      "target_publication_id": "PUB015",
+      "pourquoi": "La cible documente substantiellement les pratiques policières sous l'angle de l'intégration de la recherche criminologique à l'activité opérationnelle. Elle développe comment les données et analyses criminologiques s'articulent avec le travail policier réel, mais ne traite pas les tensions entre logiques institutionnelles et réalités du terrain qui constituent le cœur du fil source.",
+      "target_locator": "38;39",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 0,
+    "extraits_total": 0,
+    "sections_couvertes": 0,
+    "sections_total": 0
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB119",
+  "source_publication": {
+    "publication_id": "PUB119",
+    "titre": "religion au travail - baromètre du fait religieux en entreprise 2026",
+    "année_publication": "2026",
+    "image_publication": "PUB119.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Institut Montaigne",
+    "type_document": "Rapport",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.institutmontaigne.org/publications/religion-au-travail-barometre-du-fait-religieux-en-entreprise-2026",
+    "url_source": "https://www.institutmontaigne.org/publications/religion-au-travail-barometre-du-fait-religieux-en-entreprise-2026",
+    "node_count": 29,
+    "relation_count": 31,
+    "chunk_count": 17,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels du baromètre 2026 sur le fait religieux en entreprise. Les fils couvrent : (1) la progression et visibilité croissante du phénomène, incluant les nouvelles formes numériques ; (2) la tension juridique et sociale entre liberté religieuse et demande de neutralité ; (3) les déficits organisationnels et managériaux dans la gestion du phénomène ; (4) le principe de tolérance encadrée basé sur les effets concrets ; (5) les discriminations différenciées selon les appartenances religieuses. Chaque fil est ancré dans des sections substantielles du rapport et ouvre des perspectives de recherche transversales au corpus.",
+  "threads": [],
+  "leaves": []
+}

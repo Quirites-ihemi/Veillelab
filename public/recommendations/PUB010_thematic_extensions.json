@@ -1,0 +1,177 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB010",
+  "source_publication": {
+    "publication_id": "PUB010",
+    "titre": "identification de lignes directrices pour des plans de résilience des alpes françaises en réponse aux conséquences des effets du changement climatique",
+    "année_publication": "2025",
+    "image_publication": "PUB010.png",
+    "auteurs_MI": "Stéphanie Beucher, Patrick Moreau",
+    "organisme_producteur": "Inspection générale de l’administration",
+    "type_document": "Rapport",
+    "domaine": "Administration territoriale de l'Etat",
+    "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/24121R%20-%20R%C3%A9silience%20Alpes%20Fran%C3%A7aises.pdf",
+    "url_source": "https://www.interieur.gouv.fr/documentation/rapports/identification-de-lignes-directrices-pour-des-plans-de-resilience-a-proposer-aux-autorites-et.html",
+    "node_count": 47,
+    "relation_count": 44,
+    "chunk_count": 118,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques structurantes identifiées. Elles couvrent l'ensemble du document : diagnostic des aléas et vulnérabilités (T001, T002), cadre conceptuel et opérationnel de la résilience (T003), critique des outils existants (T004), et gouvernance (T005). Chaque thématique est substantielle, présente sur plusieurs pages et dans plusieurs nœuds convergents. Elles sont formulées comme des problématiques transversales transférables à d'autres contextes montagneux ou territoriaux.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Approche territoriale et systémique de la résilience",
+      "source_locator": "45-47, 48-75",
+      "source_anchor": "Le document propose une conception de la résilience comme capacité d'un territoire à faire face à une perturbation, l'absorber, maintenir sa structure et ses fonctions, se relever et se reconstruire en tirant les leçons de l'expérience. Cette approche intègre un continuum : anticipation, gestion de crise, relèvement et transformation, articulée autour de cinq axes : choix d'échelle territoriale, anticipation des aléas, transformation de l'aménagement, gouvernance territoriale, intégration de la crise et culture du risque.",
+      "retrieval_queries": [
+        "résilience territoriale systémique",
+        "continuum anticipation crise relèvement",
+        "approche intégrée résilience"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB024",
+        "PUB118",
+        "PUB005",
+        "PUB054",
+        "PUB022",
+        "PUB053"
+      ],
+      "candidate_count": 7,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "résilience",
+        "variantes": [
+          "résilience territoriale",
+          "résilience des territoires alpins"
+        ],
+        "angle": "approche territoriale et systémique intégrant anticipation, gestion de crise,…",
+        "critere_raccord": "La cible doit développer substantiellement « résilience » lui-même. Si elle développe aussi le cœur de l'angle source « approche territoriale et systémique intégrant anticipation, gestion de crise,… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "résilience",
+          "résilience territoriale",
+          "résilience des territoires alpins"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB022",
+        "PUB006",
+        "PUB024",
+        "PUB026",
+        "PUB054",
+        "PUB118",
+        "PUB053",
+        "PUB011",
+        "PUB051",
+        "PUB033",
+        "PUB002",
+        "PUB114",
+        "PUB015"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 7 candidats sur la résilience territoriale et systémique. Deux candidats classés ADJACENT (PUB054 et PUB053) documentent substantiellement des composantes du fil : gouvernance anticipée et retours d'expérience territorialisés pour PUB054 ; transformation de l'aménagement et adaptation aux aléas pour PUB053. Cinq candidats classés INSUFFICIENT : PUB006 et PUB024 réduisent la résilience à l'adaptabilité tactique (cybercriminalité, trafics) ; PUB118 la limite aux mécanismes neurocognitifs du combattant ; PUB005 la mentionne isolément comme domaine d'IA ; PUB022 l'évoque sans développement dans un contexte insulaire spécifique. Aucun candidat ne documente le cœur du fil : l'approche territoriale et systémique intégrant anticipation, gestion de crise, relèvement et transformation à l'échelle d'un territoire.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB022",
+          "PUB026",
+          "PUB005",
+          "PUB054",
+          "PUB011",
+          "PUB113",
+          "PUB024",
+          "PUB002",
+          "PUB008"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Seul PUB054 (Crises sanitaires : prévenir, anticiper, coordonner) développe substantiellement et explicitement le même objet que le fil de départ : une approche territoriale et systémique de la résilience articulant anticipation, gestion de crise, relèvement et transformation. PUB022 (L'insularité) offre une illustration concrète d'une composante clé (gouvernance territoriale et gestion de crise), justifiant un classement ADJACENT. Les autres candidats reposent sur des analogies de vocabulaire, de contexte ou de fonction, sans développer explicitement la conception de résilience territoriale systémique du fil."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB010",
+      "fil_lecture": "Approche territoriale et systémique de la résilience",
+      "source_locator": "45-47, 48-75",
+      "target_publication_id": "PUB054",
+      "pourquoi": "Le document développe substantiellement le même objet que le fil : une approche territoriale et systémique de la résilience face aux crises sanitaires, articulant anticipation, gestion de crise, relèvement et adaptation locale. Les cinq axes du fil (échelle territoriale, anticipation, transformation, gouvernance, intégration de la crise) sont explicitement présents.",
+      "target_locator": "7, 11, 10",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB010",
+      "fil_lecture": "Approche territoriale et systémique de la résilience",
+      "source_locator": "45-47, 48-75",
+      "target_publication_id": "PUB053",
+      "pourquoi": "La cible documente substantiellement la résilience du bâti après catastrophe naturelle. C0765 développe explicitement la résilience comme levier de prévention : plans de prévention des risques, adaptation du bâti aux aléas climatiques, dispositif MIRAPI de financement des diagnostics de vulnérabilité et travaux d'adaptation. Bien que le focus soit sur l'assurance et le bâti plutôt que sur la gouvernance territoriale systémique, la cible apporte une connaissance concrète et substantielle d'une composante clé du fil : la transformation de l'aménagement et l'adaptation aux aléas.",
+      "target_locator": "13",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 101,
+    "extraits_total": 118,
+    "sections_couvertes": 17,
+    "sections_total": 17
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB119",
+  "source_publication": {
+    "publication_id": "PUB119",
+    "titre": "religion au travail - baromètre du fait religieux en entreprise 2026",
+    "année_publication": "2026",
+    "image_publication": "PUB119.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Institut Montaigne",
+    "type_document": "Rapport",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.institutmontaigne.org/publications/religion-au-travail-barometre-du-fait-religieux-en-entreprise-2026",
+    "url_source": "https://www.institutmontaigne.org/publications/religion-au-travail-barometre-du-fait-religieux-en-entreprise-2026",
+    "node_count": 29,
+    "relation_count": 31,
+    "chunk_count": 17,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du document : (1) la progression et la visibilité croissante du fait religieux, phénomène structurant qui traverse toutes les sections ; (2) la stigmatisation et discrimination selon les appartenances religieuses, problématique centrale de gestion des risques sociaux ; (3) la tension fondamentale entre liberté religieuse et demande de neutralité, enjeu juridique et normatif ; (4) l'insuffisance des capacités managériales et dispositifs organisationnels pour réguler le phénomène, particulièrement en PME ; (5) le principe d'acceptabilité différenciée basée sur les effets concrets sur le travail, qui structure la régulation du fait religieux. Ces thématiques sont toutes substantielles, documentées par plusieurs sections et nœuds, et transférables à d'autres contextes organisationnels ou sectoriels.",
+  "threads": [
+    {
+      "thread_id": "T4",
+      "fil_lecture": "Capacités managériales et dispositifs organisationnels insuffisants",
+      "source_locator": "88-98",
+      "source_anchor": "Le document constate que les encadrants de proximité sont directement confrontés aux demandes et difficultés liées au fait religieux sans disposer des connaissances juridiques, formations ou appuis organisationnels nécessaires. Les entreprises restent insuffisamment équipées : dispositifs internes, référents, procédures et formation des managers demeurent inégalement développés. Cette fragilité est particulièrement sensible dans les PME où les fonctions spécialisées sont moins développées. Les salariés pratiquants rencontrant une difficulté disposent aussi de peu de recours clairement identifiés.",
+      "retrieval_queries": [
+        "formation managers gestion religieux",
+        "dispositifs internes fait religieux",
+        "capacités encadrants PME"
+      ],
+      "candidate_ids": [
+        "PUB026"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "dispositifs organisationnels",
+        "variantes": [
+          "dispositifs internes",
+          "appuis organisationnels"
+        ],
+        "angle": "insuffisance des dispositifs internes, référents, procédures et formation des…",
+        "critere_raccord": "La cible doit développer substantiellement « dispositifs organisationnels » lui-même. Si elle développe aussi le cœur de l'angle source « insuffisance des dispositifs internes, référents, procédures et formation des… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "dispositifs organisationnels",
+          "dispositifs internes",
+          "appuis organisationnels"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB026",
+        "PUB007",
+        "PUB010",
+        "PUB005",
+        "PUB015",
+        "PUB090",
+        "PUB013",
+        "PUB012",
+        "PUB054",
+        "PUB114",
+        "PUB021",
+        "PUB115",
+        "PUB002",
+        "PUB001",
+        "PUB011",
+        "PUB025",
+        "PUB051",
+        "PUB101"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB026 documente les dispositifs internes d'écoute et de signalement en entreprise, mais dans le contexte des discriminations liées à l'origine, non du fait religieux. Le pivot (dispositifs organisationnels) est substantiellement traité : la cible montre concrètement leur multiplication mais aussi leur inefficacité (enquêtes insuffisantes, absence de sanctions). Cela constitue une composante explicite et utile du fil source, qui porte sur l'insuffisance des dispositifs organisationnels face au fait religieux. Le terrain et le type de discrimination diffèrent, mais le mécanisme d'insuffisance des dispositifs internes est documenté de manière substantielle et pertinente pour la compréhension du phénomène général.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB010",
+          "PUB005",
+          "PUB026",
+          "PUB002",
+          "PUB007",
+          "PUB011",
+          "PUB012",
+          "PUB024",
+          "PUB016"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Parmi les 10 candidats examinés, seul PUB026 (Défenseur des droits sur les discriminations des jeunes) présente un raccord documentaire utile. Il développe explicitement des dispositifs organisationnels et des formations dédiés au fait religieux (équipes « Valeurs de la République », formations INSPE, kit de prévention), constituant une composante réelle du fil bien que dans un contexte différent (enseignement vs entreprise). Les 9 autres candidats traitent de domaines distincts (cybercriminalité, risques naturels, IA générale, atteintes aux élus, transfert technologique, sécurité informationnelle, cynophilie, trafic de drogue, gestion de l'ordre public) et ne documentent aucun élément substantiel du fil sur les capacités managériales et dispositifs organisationnels insuffisants face au fait religieux en entreprise."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB119",
+      "fil_lecture": "Capacités managériales et dispositifs organisationnels insuffisants",
+      "source_locator": "88-98",
+      "target_publication_id": "PUB026",
+      "pourquoi": "La cible documente concrètement les dispositifs internes de signalement et d'enquête en matière de discriminations dans l'emploi, montrant leur insuffisance et leur inefficacité. Bien que le contexte soit les discriminations liées à l'origine plutôt que le fait religieux, elle développe substantiellement le même objet pivot (dispositifs organisationnels internes) et ses défaillances, ce qui constitue une composante utile pour comprendre les fragilités organisationnelles dans la gestion des enjeux sensibles en entreprise.",
+      "target_locator": "67;68",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 17,
+    "extraits_total": 17,
+    "sections_couvertes": 17,
+    "sections_total": 17
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

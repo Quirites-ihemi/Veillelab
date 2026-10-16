@@ -1,0 +1,89 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB014",
+  "source_publication": {
+    "publication_id": "PUB014",
+    "titre": "en 2025, une hausse marquée des refus de contrôle routier - ministère de l'intérieur, service statistique ministériel",
+    "année_publication": "2026",
+    "image_publication": "PUB014.png",
+    "auteurs_MI": "Lisa Troy",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité routière",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139720/1102152/file/IR66%20refus%20contro%CC%82le%20routier.pdf",
+    "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/En-2025-une-hausse-marquee-des-refus-de-controle-routier",
+    "node_count": 42,
+    "relation_count": 38,
+    "chunk_count": 17,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB014.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cette publication du SSMSI analyse la hausse marquée des refus de contrôle routier en 2025 (+9 %) à partir de données statistiques exhaustives. Elle identifie cinq thématiques transversales structurantes : (1) l'escalade de la délinquance routière via les refus aggravés, qui progressent plus vite que les refus simples ; (2) le rôle des infractions connexes (permis, assurance) et des changements de politique de contrôle dans l'augmentation observée ; (3) les fortes disparités territoriales, avec concentration en centres urbains intermédiaires ; (4) le profil démographique spécifique des auteurs (jeunes hommes français) ; (5) la temporalité nocturne et week-end de ces infractions. Ces thématiques sont documentées par des données chiffrées précises et des analyses causales, permettant des comparaisons avec d'autres terrains ou périodes.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Refus d'obtempérer routiers aggravés",
+      "source_locator": "1;2;3",
+      "source_anchor": "Les refus d'obtempérer routiers aggravés (accompagnés d'une mise en danger d'autrui) connaissent une hausse particulièrement marquée de 16 % entre 2024 et 2025, bien supérieure à celle des refus simples (+9 %). Leur part dans l'ensemble des refus d'obtempérer routiers progresse de 16 % en 2016 à 22 % en 2025. Cette catégorie représente une escalade de la délinquance routière, caractérisée par des manœuvres ou une vitesse excessive mettant en danger les usagers de la route ou les forces de sécurité.",
+      "retrieval_queries": [
+        "refus d'obtempérer routiers aggravés mise en danger",
+        "infractions routières avec mise en danger d'autrui",
+        "délinquance routière aggravée"
+      ],
+      "candidate_ids": [
+        "PUB062",
+        "PUB010",
+        "PUB090",
+        "PUB026",
+        "PUB018"
+      ],
+      "candidate_count": 5,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB062 établit un raccord documentaire substantiel en mentionnant explicitement la hausse des refus d'obtempérer routiers comme phénomène de perte d'autorité. Les autres candidats reposent sur des proximités lexicales (« routier », « délinquance ») ou des contextes généraux sans développer le cœur du fil : les refus d'obtempérer aggravés, leur hausse spécifique, et la mise en danger d'autrui qui les caractérise.",
+      "chemin_ouvert": {
+        "identique": "fil sans pivot valide : déjà examiné par le chemin historique de V1.0-F"
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB014",
+      "fil_lecture": "Refus d'obtempérer routiers aggravés",
+      "source_locator": "1;2;3",
+      "target_publication_id": "PUB062",
+      "pourquoi": "La cible mentionne explicitement la hausse des refus d'obtempérer routiers comme symptôme d'une perte d'autorité des forces de l'ordre. Elle documente une composante du phénomène (l'escalade de désobéissance) mais ne développe pas les refus aggravés spécifiquement, ni la mise en danger d'autrui qui caractérise le fil.",
+      "target_locator": "25;26",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 17,
+    "extraits_total": 17,
+    "sections_couvertes": 15,
+    "sections_total": 15
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

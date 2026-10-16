@@ -1,0 +1,112 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB054",
+  "source_publication": {
+    "publication_id": "PUB054",
+    "titre": "crises sanitaires : prévenir, anticiper, coordonner",
+    "année_publication": "2026",
+    "image_publication": "PUB054.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Conseil économique, social et environnemental",
+    "type_document": "Rapport",
+    "domaine": "Sécurité civile",
+    "url_contenu": "https://www.lecese.fr/sites/default/files/pdf/Avis/2026/2026_16_crises_sanitaires.pdf",
+    "url_source": "https://www.vie-publique.fr/files/rapport/pdf/302840.pdf",
+    "node_count": 21,
+    "relation_count": 18,
+    "chunk_count": 9,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB054.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport du CESE 2026 sur les crises sanitaires. Cinq fils de lecture identifiés couvrant les dimensions structurantes : (1) l'approche écosystémique intégrée One Health ; (2) la redéfinition de la gouvernance de crise autour des principes démocratiques et de l'anticipation ; (3) la pluralisation de l'expertise au-delà du seul savoir médical ; (4) le rôle des territoires et des acteurs locaux dans la résilience ; (5) le recentrage du système de santé sur la prévention comme enjeu transversal. Chaque fil s'appuie sur des passages substantiels et explicitement prospectifs du rapport.",
+  "threads": [
+    {
+      "thread_id": "FIL_002",
+      "fil_lecture": "Gouvernance anticipée des crises sanitaires et principes démocratiques",
+      "source_locator": "8;9",
+      "source_anchor": "En matière de gestion de crise, il constate un décalage entre les cadres préétablis et les choix effectivement réalisés lorsque survient une situation exceptionnelle. L'incertitude impose de pouvoir adapter les décisions à l'évolution des circonstances et des connaissances. Le CESE critique également une gestion de la Covid-19 trop verticale et descendante et souhaite davantage associer les citoyens et les acteurs territoriaux. Les principes de gouvernance doivent être définis par anticipation, avec comme première exigence le respect des libertés et des droits fondamentaux, les restrictions devant rester exceptionnelles.",
+      "retrieval_queries": [
+        "gouvernance crise sanitaire principes anticipés",
+        "gestion crise verticale descendante participation citoyens",
+        "libertés droits fondamentaux restrictions exceptionnelles"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB010",
+        "PUB006",
+        "PUB034",
+        "PUB008",
+        "PUB002",
+        "PUB022",
+        "PUB113",
+        "PUB015",
+        "PUB013"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de dix candidats sur la gouvernance anticipée des crises sanitaires et principes démocratiques. Seul PUB010 documente directement le mécanisme central du fil : le passage d'une approche top-down à une approche inclusive associant citoyens et acteurs territoriaux dans la gestion de crise. PUB005 offre un développement adjacent sur les principes de gouvernance anticipée (transparence, maîtrise humaine, droits citoyens) mais dans un contexte technologique (IA) distinct de la crise sanitaire. Les huit autres candidats ne documentent que des contextes, vocabulaires ou fonctions analogues sans développement substantiel du cœur du fil."
+    },
+    {
+      "thread_id": "FIL_004",
+      "fil_lecture": "Adaptation territoriale et capacités locales de réponse aux crises",
+      "source_locator": "10;11",
+      "source_anchor": "La crise de la Covid-19 a également montré les limites d'une gestion centrée sur l'État et l'hôpital et, inversement, les capacités d'initiative des collectivités territoriales et des acteurs locaux du soin et de l'accompagnement. Les réponses ne doivent donc pas être uniformes mais adaptées aux réalités des territoires, en améliorant la connaissance locale de l'état de santé des populations et l'appropriation des décisions par les acteurs concernés. Le CESE préconise d'organiser par anticipation, dans les territoires, une réponse médicale, sociale et médico-social globale et cohérente aux situations de crise.",
+      "retrieval_queries": [
+        "adaptation territoriale réponse crise sanitaire",
+        "collectivités territoriales acteurs locaux soin",
+        "organisation anticipée réponse médicale sociale territoriale"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB005",
+        "PUB022",
+        "PUB113",
+        "PUB012",
+        "PUB002",
+        "PUB026",
+        "PUB006",
+        "PUB013",
+        "PUB090"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats sur le fil « Adaptation territoriale et capacités locales de réponse aux crises ». Deux publications classées POSSIBLE (PUB010 et PUB022) documentent explicitement l'adaptation territoriale et la mobilisation des acteurs locaux face à des crises, mais traitent de domaines différents (climatique et hydrique) du cœur du fil (sanitaire). Les huit autres candidats restent insuffisants : ils évoquent la gouvernance territoriale, la coordination ou l'anticipation, mais sans développer explicitement les capacités locales de réponse aux crises sanitaires, ni la réponse médicale et médico-sociale adaptée aux territoires."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB054",
+      "fil_lecture": "Gouvernance anticipée des crises sanitaires et principes démocratiques",
+      "source_locator": "8;9",
+      "target_publication_id": "PUB010",
+      "pourquoi": "La cible documente explicitement le même mécanisme de gouvernance : le passage d'une gestion verticale et descendante à une approche inclusive associant citoyens et acteurs territoriaux. Elle traite de gestion de crise (résilience face aux risques climatiques) et énonce précisément l'objectif de dépasser l'approche top-down, correspondant directement au cœur du fil.",
+      "target_locator": "70;71",
+      "decision": "RETENIR",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB054",
+      "fil_lecture": "Adaptation territoriale et capacités locales de réponse aux crises",
+      "source_locator": "10;11",
+      "target_publication_id": "PUB022",
+      "pourquoi": "Le document illustre concrètement l'adaptation territoriale et la mobilisation des acteurs locaux (préfet, collectivités, syndicats) face à une crise. Il documente la coordination et l'appropriation locale des décisions. Cependant, la crise traitée est celle de l'eau, non sanitaire.",
+      "target_locator": "30;31;30;32",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

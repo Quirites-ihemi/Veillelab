@@ -1,0 +1,194 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB016",
+  "source_publication": {
+    "publication_id": "PUB016",
+    "titre": "« en immersion à l'école des commissaires de police »",
+    "année_publication": "2026",
+    "image_publication": "PUB016.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "École nationale supérieure de la police",
+    "type_document": "Podcast",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://audio.ausha.co/QQVm5Fw02070.mp3",
+    "url_source": "https://podcast.ausha.co/les-podcasts-de-l-ensp",
+    "node_count": 23,
+    "relation_count": 10,
+    "chunk_count": 6,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB016.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Podcast de l'ENSP documentant un stage de gestion de l'ordre public. Cinq thématiques transversales identifiées : (1) la formation pratique par simulation en conditions réelles, structurante pour la pédagogie ; (2) l'articulation entre autorité civile et commandement opérationnel, enjeu central du rôle de commissaire ; (3) la prise de décision en urgence et la gestion du stress, problématique opérationnelle majeure ; (4) l'apprentissage par changement de rôle comme méthode de construction de confiance ; (5) la construction du rôle de chef et le passage théorie-pratique. Toutes sont substantielles, documentées par plusieurs nœuds et extraits, et transférables à d'autres contextes de formation ou d'opérations de sécurité publique.",
+  "threads": [
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Articulation entre autorité civile et commandement opérationnel",
+      "source_locator": "03:29;06:22;09:08;06:29;06:37;09:11;09:19",
+      "source_anchor": "Le podcast souligne le positionnement du commissaire en tant qu'autorité civile et sa relation avec le commandant de la force publique. La formation travaille la traduction de la stratégie en manœuvre opérationnelle, c'est-à-dire comment l'autorité civile décline ses décisions en actions concrètes des forces. Cette articulation est centrale dans les simulations où les commissaires doivent adapter les dispositifs au cadre juridique et coordonner avec les services de secours.",
+      "retrieval_queries": [
+        "autorité civile commandement force publique",
+        "stratégie manœuvre opérationnelle police",
+        "articulation décision civile exécution opérationnelle"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB005",
+        "PUB026",
+        "PUB006",
+        "PUB113",
+        "PUB015",
+        "PUB002",
+        "PUB114",
+        "PUB062",
+        "PUB012"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Deux publications seulement documentent substantiellement une composante utile du fil : PUB010 sur l'articulation des échelons de commandement en gestion de crise, et PUB113 sur la relation entre gendarmerie et autorité civile. Les autres candidats restent au niveau du vocabulaire partagé (autorité, commandement, opérationnel) ou traitent de coordination interinstitutionnelle sans aborder le cœur du fil : la traduction de la stratégie civile en manœuvre opérationnelle et l'articulation spécifique entre décision civile et exécution opérationnelle.",
+      "chemin_ouvert": {
+        "identique": "fil sans pivot valide : déjà examiné par le chemin historique de V1.0-F"
+      }
+    },
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Prise de décision en urgence et gestion du stress",
+      "source_locator": "03:51;04:00;05:55;05:59;08:10;08:17",
+      "source_anchor": "Le podcast identifie la prise de décision dans l'urgence comme un enjeu majeur de la formation. Les simulations créent des conditions d'intensité croissante (événements plus violents, plus intenses, plus longs, avec hiérarchie complexe) pour préparer les commissaires à décider rapidement. Le risque de stress dépassé et d'effet tunnel est explicitement nommé comme un problème à gérer lors de ces simulations.",
+      "retrieval_queries": [
+        "prise de décision urgence stress",
+        "décision rapide conditions intenses",
+        "gestion stress effet tunnel opérations"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB005",
+        "PUB118",
+        "PUB007"
+      ],
+      "candidate_count": 4,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Prise de décision en urgence",
+        "variantes": [
+          "prise de décision",
+          "décision dans l'urgence"
+        ],
+        "angle": "Formation des cadres de police à la décision rapide en conditions de stress et…",
+        "critere_raccord": "La cible doit développer substantiellement « Prise de décision en urgence » lui-même. Si elle développe aussi le cœur de l'angle source « Formation des cadres de police à la décision rapide en conditions de stress et… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Prise de décision en urgence",
+          "prise de décision",
+          "décision dans l'urgence"
+        ]
+      },
+      "pool_ids": [
+        "PUB002",
+        "PUB005",
+        "PUB010",
+        "PUB118",
+        "PUB007",
+        "PUB054",
+        "PUB026",
+        "PUB006",
+        "PUB114"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB118 apporte un développement substantiel du pivot « prise de décision » en documentant explicitement le rôle du stress et des émotions dans le processus décisionnel. Les trois autres candidats ne mentionnent le pivot que comme contexte administratif, technologique ou de gestion, sans aborder le cœur du fil : la prise de décision en conditions d'urgence et de stress, ni la formation à cette compétence. PUB118 est classé ADJACENT car il traite le même objet (prise de décision en urgence) mais sous un angle neuroscientifique et militaire, non policier.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB054",
+          "PUB118",
+          "PUB006",
+          "PUB007",
+          "PUB026",
+          "PUB005",
+          "PUB002",
+          "PUB114",
+          "PUB033"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats sur le fil « Prise de décision en urgence et gestion du stress ». Deux publications seulement présentent un raccord documentaire substantiel : PUB118 (neurosciences et comportements militaires) offre un développement direct du mécanisme de gestion du stress en situation d'urgence ; PUB054 (crises sanitaires) développe une composante utile sur la prise de décision en contexte de crise complexe. Les autres candidats restent au niveau du contexte général (vocabulaire, domaine, acteurs) sans développer explicitement les éléments centraux du fil : simulations d'intensité croissante, gestion de l'effet tunnel, préparation au stress décisionnel."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB016",
+      "fil_lecture": "Articulation entre autorité civile et commandement opérationnel",
+      "source_locator": "03:29;06:22;09:08;06:29;06:37;09:11;09:19",
+      "target_publication_id": "PUB010",
+      "pourquoi": "Le document développe explicitement l'articulation entre autorité civile (préfets, maires) et commandement opérationnel (PCO, COD) dans la gestion de crise. Il traite de la traduction des décisions en dispositifs concrets et de la coordination interservices, composante centrale du fil.",
+      "target_locator": "74;69;70;65;67",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB016",
+      "fil_lecture": "Prise de décision en urgence et gestion du stress",
+      "source_locator": "03:51;04:00;05:55;05:59;08:10;08:17",
+      "target_publication_id": "PUB118",
+      "pourquoi": "Le document développe substantiellement le pivot « prise de décision » sous l'angle neuroscientifique et comportemental militaire. Il documente explicitement comment le stress et les émotions affectent l'encodage et la récupération des informations, et donc la prise de décision. Il traite aussi « Prise de décision en situation de crise » comme sujet structurant. Bien que l'angle source soit la formation policière et non le contexte militaire, la cible apporte une connaissance complémentaire substantielle sur le mécanisme cognitif et émotionnel de la prise de décision en urgence.",
+      "target_locator": "47;55",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 6,
+    "extraits_total": 6,
+    "sections_couvertes": 1,
+    "sections_total": 1
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

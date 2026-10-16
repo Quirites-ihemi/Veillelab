@@ -1,0 +1,388 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB062",
+  "source_publication": {
+    "publication_id": "PUB062",
+    "titre": "le futur de notre rapport à l'autorité et à la vérité à l'horizon 2050",
+    "année_publication": "2026",
+    "image_publication": "PUB062.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Sénat",
+    "type_document": "Rapport",
+    "domaine": "Démocraties et sujets informationnels",
+    "url_contenu": "",
+    "url_source": "https://www.senat.fr/notice-rapport/2025/r25-655-notice.html",
+    "node_count": 28,
+    "relation_count": 26,
+    "chunk_count": 24,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB062.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du rapport. Elles structurent le diagnostic (autorité, vérité, information) et les enjeux prospectifs (scénarios 2050). Chaque thématique est documentée par plusieurs nœuds et sections convergents, et représente une problématique susceptible d'être traitée dans d'autres contextes ou terrains du corpus.",
+  "threads": [
+    {
+      "thread_id": "T1",
+      "fil_lecture": "Crise de l'autorité institutionnelle et fragilisation de l'État de droit",
+      "source_locator": "29;30;31",
+      "source_anchor": "Les abus réels des anciens dépositaires de l'autorité publique ont entraîné une défiance généralisée et pathologique envers les autorités institutionnelles. Les attaques contre les élus, forces de l'ordre et magistrats fragilisent les fondations des démocraties. L'État de droit sort fragilisé de ces attaques contre les figures de l'autorité publique.",
+      "retrieval_queries": [
+        "crise des autorités institutionnelles",
+        "défiance envers les institutions publiques",
+        "fragilisation de l'État de droit"
+      ],
+      "candidate_ids": [
+        "PUB002",
+        "PUB115",
+        "PUB005",
+        "PUB114",
+        "PUB006"
+      ],
+      "candidate_count": 5,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "État de droit",
+        "variantes": [
+          "autorité institutionnelle",
+          "autorité publique"
+        ],
+        "angle": "fragilisation par la défiance envers les dépositaires de l'autorité et les…",
+        "critere_raccord": "La cible doit développer substantiellement « État de droit » lui-même. Si elle développe aussi le cœur de l'angle source « fragilisation par la défiance envers les dépositaires de l'autorité et les… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "État de droit",
+          "autorité institutionnelle",
+          "autorité publique"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB090",
+        "PUB002",
+        "PUB114",
+        "PUB006",
+        "PUB010",
+        "PUB013",
+        "PUB008",
+        "PUB026",
+        "PUB016",
+        "PUB022",
+        "PUB052",
+        "PUB054",
+        "PUB113",
+        "PUB115",
+        "PUB021",
+        "PUB012",
+        "PUB001",
+        "PUB101",
+        "PUB011"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB052",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB002 apporte une documentation substantielle sur une composante réelle du fil : les atteintes concrètes aux dépositaires de l'autorité publique. Les quatre autres candidats ne font que mentionner l'État de droit ou l'autorité publique dans des contextes sans rapport avec la fragilisation institutionnelle ou la défiance envers les autorités. Aucun candidat ne développe le cœur du fil : la fragilisation de l'État de droit par la défiance généralisée envers les dépositaires de l'autorité publique.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB005",
+          "PUB010",
+          "PUB026",
+          "PUB022",
+          "PUB013",
+          "PUB117",
+          "PUB008",
+          "PUB114",
+          "PUB115",
+          "PUB090"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Seul PUB026 présente un raccord documentaire substantiel : il développe explicitement comment les comportements discriminatoires et non déontologiques des forces de sécurité fragilisent la confiance dans les institutions publiques et la justice, ce qui constitue une composante réelle du fil sur la défiance envers l'autorité publique. Les autres candidats restent au niveau du contexte général (vocabulaire, domaine, acteurs) sans documenter le cœur du fil : les abus réels des autorités, les attaques contre les figures de l'autorité, ou le mécanisme de fragilisation de l'État de droit."
+      }
+    },
+    {
+      "thread_id": "T3",
+      "fil_lecture": "Dérégulation du marché de l'information et modèles économiques des plateformes",
+      "source_locator": "47;48;49;50;54;55;56",
+      "source_anchor": "Internet a provoqué une dérégulation massive du marché cognitif avec concurrence généralisée de sources de qualité inégale. Les réseaux sociaux reposent sur un modèle économique de microciblage publicitaire qui incite à capter l'attention des utilisateurs en amplifiant les contenus émotionnels et les informations fondées sur la peur, exploitant les biais cognitifs.",
+      "retrieval_queries": [
+        "dérégulation du marché de l'information",
+        "modèle économique des réseaux sociaux",
+        "captation de l'attention et amplification des contenus émotionnels"
+      ],
+      "candidate_ids": [],
+      "candidate_count": 0,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "modèles économiques des plateformes",
+        "variantes": [
+          "microciblage publicitaire"
+        ],
+        "angle": "fondement économique de la captation d'attention et de l'amplification des…",
+        "critere_raccord": "La cible doit développer substantiellement « modèles économiques des plateformes » lui-même. Si elle développe aussi le cœur de l'angle source « fondement économique de la captation d'attention et de l'amplification des… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "modèles économiques des plateformes",
+          "microciblage publicitaire"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB005",
+        "PUB010",
+        "PUB033",
+        "PUB022",
+        "PUB026",
+        "PUB018",
+        "PUB117"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB117",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Aucune publication candidate.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB010",
+          "PUB011",
+          "PUB026",
+          "PUB025",
+          "PUB115",
+          "PUB117",
+          "PUB101",
+          "PUB013",
+          "PUB002"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats sur la dérégulation du marché de l'information et les modèles économiques des plateformes. Seul PUB117 (La désinformation) documente directement le cœur du fil en traitant explicitement de la dégradation du modèle économique de l'information. PUB011 (Rapport à la sphère informationnelle) constitue un raccord adjacent utile en développant les stratégies d'influence informationnelle et la gouvernance d'Internet. Les autres candidats relèvent soit d'analogies structurelles (marchés parallèles, modèles économiques concurrentiels) soit de simples mentions contextuelles de réseaux sociaux ou de vocabulaire commun, sans développement substantiel des mécanismes de microciblage, d'amplification émotionnelle ou de dérégulation cognitive qui constituent le cœur du fil."
+      }
+    },
+    {
+      "thread_id": "T5",
+      "fil_lecture": "Ingérences numériques étrangères et menaces sur la cohésion démocratique",
+      "source_locator": "57;58;59",
+      "source_anchor": "Les ingérences numériques étrangères visent à fragiliser le consensus national, les médias et les autorités politiques en exacerbant les tensions et alimentant la peur. La France a créé Viginum en 2021, service de vigilance et de protection contre ces ingérences, rattaché au secrétaire général de la défense et de la sécurité nationale.",
+      "retrieval_queries": [
+        "ingérences numériques étrangères",
+        "menaces sur la cohésion démocratique",
+        "déstabilisation du débat public"
+      ],
+      "candidate_ids": [],
+      "candidate_count": 0,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Ingérences numériques étrangères",
+        "variantes": [
+          "ingérences numériques",
+          "ingérences étrangères"
+        ],
+        "angle": "Menace sur la cohésion démocratique, le consensus national et les autorités…",
+        "critere_raccord": "La cible doit développer substantiellement « Ingérences numériques étrangères » lui-même. Si elle développe aussi le cœur de l'angle source « Menace sur la cohésion démocratique, le consensus national et les autorités… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Ingérences numériques étrangères",
+          "ingérences numériques",
+          "ingérences étrangères"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB006",
+        "PUB026",
+        "PUB011"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Aucune publication candidate.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB005",
+          "PUB006",
+          "PUB026",
+          "PUB013",
+          "PUB011",
+          "PUB058"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Deux candidats seulement documentent des composantes du fil : PUB006 sur les opérations d'ingérence informationnelle étrangères et leurs effets de déstabilisation (ADJACENT), et PUB011 sur les mécanismes de contrôle informationnelle et de désinformation des régimes autoritaires (ADJACENT). Les autres candidats relèvent du contexte général (sécurité, débat public, numérique) sans développement explicite des ingérences étrangères ou de la stratégie française de vigilance."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB062",
+      "fil_lecture": "Dérégulation du marché de l'information et modèles économiques des plateformes",
+      "source_locator": "47;48;49;50;54;55;56",
+      "target_publication_id": "PUB117",
+      "pourquoi": "L'ouvrage traite explicitement de la dégradation du modèle économique de l'information et de la transformation de l'espace informationnel, développant substantiellement le cœur du fil sur la dérégulation du marché cognitif et ses conséquences.",
+      "target_locator": "14",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB062",
+      "fil_lecture": "Crise de l'autorité institutionnelle et fragilisation de l'État de droit",
+      "source_locator": "29;30;31",
+      "target_publication_id": "PUB002",
+      "pourquoi": "La publication documente concrètement les atteintes aux dépositaires de l'autorité publique (élus, magistrats, forces de l'ordre) et les réponses judiciaires renforcées. Elle traite un aspect central du fil : les attaques contre les figures de l'autorité publique, mais sous l'angle de la réponse pénale et de la protection, non de la fragilisation de l'État de droit qui en résulte.",
+      "target_locator": "30;31",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB062",
+      "fil_lecture": "Ingérences numériques étrangères et menaces sur la cohésion démocratique",
+      "source_locator": "57;58;59",
+      "target_publication_id": "PUB011",
+      "pourquoi": "Le rapport analyse les stratégies informationnelles des régimes autoritaires (Syrie, Chine, Iran) : contrôle d'Internet, désinformation, propagande et opérations d'influence. Il documente explicitement comment ces régimes utilisent le cyberespace pour fragiliser la stabilité et l'ordre démocratique. Cependant, il ne traite pas spécifiquement des ingérences étrangères contre la France ni du rôle de Viginum, restant centré sur les doctrines autoritaires comparées aux démocraties.",
+      "target_locator": "3;4",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 24,
+    "extraits_total": 24,
+    "sections_couvertes": 24,
+    "sections_total": 24
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

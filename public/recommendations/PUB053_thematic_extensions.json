@@ -1,0 +1,163 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB053",
+  "source_publication": {
+    "publication_id": "PUB053",
+    "titre": "l’assurance des catastrophes naturelles : un enjeu de soutenabilité financière",
+    "année_publication": "2026",
+    "image_publication": "PUB053.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Cour des comptes",
+    "type_document": "Rapport",
+    "domaine": "Sécurité civile",
+    "url_contenu": "https://www.ccomptes.fr/sites/default/files/2026-04/20260427-Assurance-des-catastrophes-naturelles.pdf\nPUB054 — Crises sanitaires : p",
+    "url_source": "https://www.vie-publique.fr/files/rapport/pdf/303004.pdf",
+    "node_count": 19,
+    "relation_count": 16,
+    "chunk_count": 6,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB053.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Quatre thématiques phares identifiées, couvrant l'ensemble du document : (1) la fragilisation financière du régime face aux impacts du changement climatique, problématique centrale structurant le diagnostic et les recommandations ; (2) l'inégalité territoriale d'assurabilité et le retrait des assureurs, phénomène émergent documenté aux pages 11 ; (3) le rôle stratégique de la prévention et de la résilience du bâti comme leviers de soutenabilité, développé aux pages 12-13 ; (4) l'architecture public-privé et le rôle de la garantie de l'État, fondement du dispositif expliqué aux pages 10 et 12. Chaque thématique est substantielle, transférable à d'autres contextes d'assurance ou de gestion des risques climatiques, et ancrée dans les matériaux fournis.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Prévention des risques naturels et résilience du bâti",
+      "source_locator": "12;13",
+      "source_anchor": "La prévention constitue un levier essentiel pour la soutenabilité du régime. La Cour recommande de produire des plans de prévention des risques naturels dans toutes les zones exposées et de les actualiser après les catastrophes naturelles en intégrant l'évolution climatique. La résilience du bâti est un autre levier : le dispositif MIRAPI finance des diagnostics de vulnérabilité et des travaux d'adaptation. La Cour recommande de l'évaluer et de le développer avec un cofinancement des assureurs.",
+      "retrieval_queries": [
+        "prévention risques naturels résilience bâti",
+        "plans prévention adaptation changement climatique",
+        "reconstruction résilience après catastrophe naturelle"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB113"
+      ],
+      "candidate_count": 2,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Prévention des risques naturels",
+        "variantes": [
+          "prévention des risques"
+        ],
+        "angle": "Levier de soutenabilité du régime d'assurance catastrophe naturelle face au…",
+        "critere_raccord": "La cible doit développer substantiellement « Prévention des risques naturels » lui-même. Si elle développe aussi le cœur de l'angle source « Levier de soutenabilité du régime d'assurance catastrophe naturelle face au… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Prévention des risques naturels",
+          "prévention des risques"
+        ]
+      },
+      "pool_ids": [
+        "PUB010",
+        "PUB054",
+        "PUB002",
+        "PUB005",
+        "PUB006",
+        "PUB026",
+        "PUB090",
+        "PUB113",
+        "PUB007",
+        "PUB015",
+        "PUB024",
+        "PUB013"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB010 développe substantiellement le pivot « Prévention des risques naturels » comme levier de résilience territoriale face au changement climatique, en proposant des stratégies d'adaptation et d'évolution des outils de prévention. C'est un raccord DIRECT au cœur du fil source. PUB113 mentionne la prévention mais dans un contexte opérationnel très différent (lutte contre les incendies provoqués par des gendarmes), sans lien documenté avec la résilience du bâti ou la soutenabilité du régime d'assurance catastrophe naturelle. Le raccord reste INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB005",
+          "PUB054",
+          "PUB026"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Seul PUB010 présente un raccord documentaire solide et direct. Il développe substantiellement les deux composantes centrales du fil : les plans de prévention des risques naturels et leur actualisation face au changement climatique, ainsi que la résilience et la vulnérabilité territoriale. Les trois autres candidats ne documentent que des contextes lexicaux ou thématiques éloignés du cœur du fil (sécurité civile/IA, crises sanitaires, discriminations) sans traiter explicitement la prévention des risques naturels ou la résilience du bâti."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB053",
+      "fil_lecture": "Prévention des risques naturels et résilience du bâti",
+      "source_locator": "12;13",
+      "target_publication_id": "PUB010",
+      "pourquoi": "La publication développe substantiellement la prévention des risques naturels comme levier de résilience territoriale face au changement climatique. Elle documente explicitement l'évolution des politiques de prévention, l'adaptation des territoires alpins, et propose des stratégies de résilience intégrant les outils de prévention des risques naturels majeurs, ce qui correspond directement au cœur du fil source.",
+      "target_locator": "6",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 6,
+    "extraits_total": 6,
+    "sections_couvertes": 6,
+    "sections_total": 6
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

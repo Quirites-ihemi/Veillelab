@@ -1,0 +1,97 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB003",
+  "source_publication": {
+    "publication_id": "PUB003",
+    "titre": "terrorisme en france. panorama des mouvances radicales en 2025",
+    "année_publication": "2026",
+    "image_publication": "PUB003.png",
+    "auteurs_MI": "Alexandre Rodde",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Radicalités / Terrorisme",
+    "url_contenu": "https://www.calameo.com/read/00271929218ac8078c92f",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/note-crgn-125-france-panorama-des-mouvances-radicales-en-2025",
+    "node_count": 25,
+    "relation_count": 15,
+    "chunk_count": 10,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB003.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Panorama 2025 des mouvances radicales en France. Document structuré en quatre sections principales : jihadisme (augmentation et diversification), ultra-gauche (activité stable, évolution des cibles), ultra-droite (attentat mortel, atomisation), et nouvelles mouvances (terrorisme d'État, êtres souverains, incel, EVN). Les fils identifiés couvrent les transformations structurantes du paysage terroriste français : atomisation des groupes, innovations technologiques opérationnelles, émergence de phénomènes inédits, rajeunissement des auteurs, et influence de la polarisation géopolitique sur les cibles et motivations.",
+  "threads": [
+    {
+      "thread_id": "FIL_005",
+      "fil_lecture": "Diversification des cibles et polarisation géopolitique",
+      "source_locator": "1;2;3;4",
+      "source_anchor": "Une volonté de prendre pour cible la communauté juive, en lien avec le conflit israélo-palestinien. La majorité des actions d'ultra-gauche prennent pour cibles des bâtiments ou des infrastructures : ceux liés à l'environnement, au monde politique, ainsi que les commerces. L'activité des trois mouvances principales (jihadisme, ultra-gauche, ultra-droite) sera influencée par la continuation du conflit russo-ukrainien et israélo-palestinien, ainsi que par les élections municipales de 2026 et présidentielles de 2027.",
+      "retrieval_queries": [
+        "cibles terrorisme conflit israélo-palestinien",
+        "infrastructure environnement cibles ultra-gauche",
+        "polarisation géopolitique radicalisation terroriste"
+      ],
+      "candidate_ids": [
+        "PUB026",
+        "PUB117"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "polarisation géopolitique",
+        "variantes": [
+          "polarisation"
+        ],
+        "angle": "influence de la polarisation géopolitique (conflits russo-ukrainien et…",
+        "critere_raccord": "La cible doit développer substantiellement « polarisation géopolitique » lui-même. Si elle développe aussi le cœur de l'angle source « influence de la polarisation géopolitique (conflits russo-ukrainien et… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "polarisation géopolitique",
+          "polarisation"
+        ]
+      },
+      "pool_ids": [
+        "PUB026",
+        "PUB058",
+        "PUB117",
+        "PUB001",
+        "PUB010"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB058",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB026 apporte une documentation substantielle de la polarisation dans un contexte spécifique (débat public, registres identitaires, discriminations scolaires) mais ne traite pas l'angle central du fil : l'influence de la polarisation géopolitique (conflits russo-ukrainien et israélo-palestinien) sur l'activité des trois mouvances (jihadisme, ultra-gauche, ultra-droite). PUB117 ne fournit que des titres ou des nœuds sans contenu développé ; la polarisation y est mentionnée comme contexte sans substance documentaire propre."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB003",
+      "fil_lecture": "Diversification des cibles et polarisation géopolitique",
+      "source_locator": "1;2;3;4",
+      "target_publication_id": "PUB026",
+      "pourquoi": "La cible documente substantiellement la polarisation géopolitique et identitaire dans le contexte scolaire français, notamment son lien avec les violences antisémites et les discriminations. Elle développe un aspect concret de la polarisation (débat public, registres identitaires) mais sous l'angle des discriminations scolaires plutôt que de l'influence sur les mouvances d'action violente.",
+      "target_locator": "13;14;77;78",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

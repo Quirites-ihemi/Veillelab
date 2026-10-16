@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB101",
+  "source_publication": {
+    "publication_id": "PUB101",
+    "titre": "le modèle économique de la sécurité privée",
+    "année_publication": "2026",
+    "image_publication": "PUB101.png",
+    "auteurs_MI": "Cyrille MAILLET, Philippe SIMEON-DREVON, Abderrahmane EL ABIED, François de RICOLFIS",
+    "organisme_producteur": "Inspection générale de l’administration",
+    "type_document": "Rapport",
+    "domaine": "Sécurité nationale",
+    "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/25079R%20-%20S%C3%A9curit%C3%A9%20priv%C3%A9e-web.pdf",
+    "url_source": "https://www.calameo.com/read/008180918d625c3e224b0",
+    "node_count": 30,
+    "relation_count": 26,
+    "chunk_count": 12,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB101.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport d'analyse du modèle économique de la sécurité privée (2026). Cinq fils de lecture identifiés couvrant les dimensions structurantes : (1) la fragilité économique du gardiennage et surveillance liée aux marges faibles et intensité de main-d'œuvre ; (2) le déséquilibre de pouvoir entre donneurs d'ordre et prestataires et ses effets sur la qualité ; (3) le besoin d'observation statistique et de clarification du périmètre du secteur ; (4) la limitation de la sous-traitance comme levier de transparence et de contrôle ; (5) l'évolution du principe d'exclusivité face à la professionnalisation du secteur. Ces fils correspondent à des sections substantielles du rapport et ouvrent des perspectives de prolongement documentaire sur la régulation économique, la gouvernance de chaînes de prestation, et l'adaptation du cadre juridique.",
+  "threads": [],
+  "leaves": []
+}

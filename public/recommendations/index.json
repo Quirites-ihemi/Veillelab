@@ -1,0 +1,246 @@
+{
+  "sources": {
+    "PUB001": {
+      "blue": "PUB001_document_links.json",
+      "turquoise": "PUB001_thematic_extensions.json"
+    },
+    "PUB002": {
+      "blue": "PUB002_document_links.json",
+      "turquoise": "PUB002_thematic_extensions.json"
+    },
+    "PUB003": {
+      "blue": "PUB003_document_links.json",
+      "turquoise": "PUB003_thematic_extensions.json"
+    },
+    "PUB004": {
+      "blue": "PUB004_document_links.json",
+      "turquoise": "PUB004_thematic_extensions.json"
+    },
+    "PUB005": {
+      "blue": "PUB005_document_links.json",
+      "turquoise": "PUB005_thematic_extensions.json"
+    },
+    "PUB006": {
+      "blue": "PUB006_document_links.json",
+      "turquoise": "PUB006_thematic_extensions.json"
+    },
+    "PUB007": {
+      "blue": "PUB007_document_links.json",
+      "turquoise": "PUB007_thematic_extensions.json"
+    },
+    "PUB008": {
+      "blue": "PUB008_document_links.json",
+      "turquoise": "PUB008_thematic_extensions.json"
+    },
+    "PUB010": {
+      "blue": "PUB010_document_links.json",
+      "turquoise": "PUB010_thematic_extensions.json"
+    },
+    "PUB011": {
+      "blue": "PUB011_document_links.json",
+      "turquoise": "PUB011_thematic_extensions.json"
+    },
+    "PUB012": {
+      "blue": "PUB012_document_links.json",
+      "turquoise": "PUB012_thematic_extensions.json"
+    },
+    "PUB013": {
+      "blue": "PUB013_document_links.json",
+      "turquoise": "PUB013_thematic_extensions.json"
+    },
+    "PUB014": {
+      "blue": "PUB014_document_links.json",
+      "turquoise": "PUB014_thematic_extensions.json"
+    },
+    "PUB015": {
+      "blue": "PUB015_document_links.json",
+      "turquoise": "PUB015_thematic_extensions.json"
+    },
+    "PUB016": {
+      "blue": "PUB016_document_links.json",
+      "turquoise": "PUB016_thematic_extensions.json"
+    },
+    "PUB018": {
+      "blue": "PUB018_document_links.json",
+      "turquoise": "PUB018_thematic_extensions.json"
+    },
+    "PUB021": {
+      "blue": "PUB021_document_links.json",
+      "turquoise": "PUB021_thematic_extensions.json"
+    },
+    "PUB022": {
+      "blue": "PUB022_document_links.json",
+      "turquoise": "PUB022_thematic_extensions.json"
+    },
+    "PUB024": {
+      "blue": "PUB024_document_links.json",
+      "turquoise": "PUB024_thematic_extensions.json"
+    },
+    "PUB025": {
+      "blue": "PUB025_document_links.json",
+      "turquoise": "PUB025_thematic_extensions.json"
+    },
+    "PUB026": {
+      "blue": "PUB026_document_links.json",
+      "turquoise": "PUB026_thematic_extensions.json"
+    },
+    "PUB031": {
+      "blue": "PUB031_document_links.json",
+      "turquoise": "PUB031_thematic_extensions.json"
+    },
+    "PUB033": {
+      "blue": "PUB033_document_links.json",
+      "turquoise": "PUB033_thematic_extensions.json"
+    },
+    "PUB034": {
+      "blue": "PUB034_document_links.json",
+      "turquoise": "PUB034_thematic_extensions.json"
+    },
+    "PUB051": {
+      "blue": "PUB051_document_links.json",
+      "turquoise": "PUB051_thematic_extensions.json"
+    },
+    "PUB052": {
+      "blue": "PUB052_document_links.json",
+      "turquoise": "PUB052_thematic_extensions.json"
+    },
+    "PUB053": {
+      "blue": "PUB053_document_links.json",
+      "turquoise": "PUB053_thematic_extensions.json"
+    },
+    "PUB054": {
+      "blue": "PUB054_document_links.json",
+      "turquoise": "PUB054_thematic_extensions.json"
+    },
+    "PUB057": {
+      "blue": "PUB057_document_links.json",
+      "turquoise": "PUB057_thematic_extensions.json"
+    },
+    "PUB058": {
+      "blue": "PUB058_document_links.json",
+      "turquoise": "PUB058_thematic_extensions.json"
+    },
+    "PUB060": {
+      "blue": "PUB060_document_links.json",
+      "turquoise": "PUB060_thematic_extensions.json"
+    },
+    "PUB062": {
+      "blue": "PUB062_document_links.json",
+      "turquoise": "PUB062_thematic_extensions.json"
+    },
+    "PUB068": {
+      "blue": "PUB068_document_links.json",
+      "turquoise": "PUB068_thematic_extensions.json"
+    },
+    "PUB090": {
+      "blue": "PUB090_document_links.json",
+      "turquoise": "PUB090_thematic_extensions.json"
+    },
+    "PUB101": {
+      "blue": "PUB101_document_links.json",
+      "turquoise": "PUB101_thematic_extensions.json"
+    },
+    "PUB111": {
+      "blue": "PUB111_document_links.json"
+    },
+    "PUB112": {
+      "blue": "PUB112_document_links.json",
+      "turquoise": "PUB112_thematic_extensions.json"
+    },
+    "PUB113": {
+      "blue": "PUB113_document_links.json",
+      "turquoise": "PUB113_thematic_extensions.json"
+    },
+    "PUB114": {
+      "blue": "PUB114_document_links.json",
+      "turquoise": "PUB114_thematic_extensions.json"
+    },
+    "PUB115": {
+      "blue": "PUB115_document_links.json",
+      "turquoise": "PUB115_thematic_extensions.json"
+    },
+    "PUB116": {
+      "blue": "PUB116_document_links.json",
+      "turquoise": "PUB116_thematic_extensions.json"
+    },
+    "PUB117": {
+      "blue": "PUB117_document_links.json",
+      "turquoise": "PUB117_thematic_extensions.json"
+    },
+    "PUB118": {
+      "blue": "PUB118_document_links.json",
+      "turquoise": "PUB118_thematic_extensions.json"
+    },
+    "PUB119": {
+      "blue": "PUB119_document_links.json",
+      "turquoise": "PUB119_thematic_extensions.json"
+    }
+  },
+  "audit": {
+    "blue": {
+      "excluded": [
+        "PUB005>PUB062",
+        "PUB005>PUB118",
+        "PUB005>PUB090",
+        "PUB014>PUB026",
+        "PUB014>PUB025",
+        "PUB018>PUB025",
+        "PUB052>PUB011",
+        "PUB052>PUB006",
+        "PUB054>PUB113",
+        "PUB054>PUB012",
+        "PUB057>PUB025",
+        "PUB111>PUB025",
+        "PUB111>PUB006",
+        "PUB112>PUB026",
+        "PUB114>PUB026",
+        "PUB118>PUB005",
+        "PUB013>PUB026",
+        "PUB016>PUB010"
+      ],
+      "review": [
+        "PUB013>PUB026",
+        "PUB016>PUB010"
+      ]
+    },
+    "turquoise": {
+      "excluded": [
+        "PUB003>PUB057",
+        "PUB003>PUB090",
+        "PUB003>PUB117",
+        "PUB005>PUB026",
+        "PUB008>PUB026",
+        "PUB008>PUB025",
+        "PUB013>PUB026",
+        "PUB015>PUB002",
+        "PUB016>PUB002",
+        "PUB025>PUB015",
+        "PUB025>PUB008",
+        "PUB026>PUB013",
+        "PUB031>PUB018",
+        "PUB052>PUB005",
+        "PUB052>PUB002",
+        "PUB052>PUB012",
+        "PUB054>PUB026",
+        "PUB057>PUB025",
+        "PUB101>PUB115",
+        "PUB101>PUB024",
+        "PUB112>PUB026",
+        "PUB112>PUB006",
+        "PUB114>PUB010",
+        "PUB115>PUB114",
+        "PUB115>PUB015",
+        "PUB115>PUB006",
+        "PUB118>PUB116",
+        "PUB057>PUB090",
+        "PUB058>PUB026",
+        "PUB118>PUB033"
+      ],
+      "pending": [
+        "PUB057>PUB090",
+        "PUB058>PUB026",
+        "PUB118>PUB033"
+      ]
+    }
+  }
+}

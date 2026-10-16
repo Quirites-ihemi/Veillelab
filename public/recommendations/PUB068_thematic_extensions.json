@@ -1,0 +1,322 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB068",
+  "source_publication": {
+    "publication_id": "PUB068",
+    "titre": "réconcilier police et citoyens, mission impossible ?",
+    "année_publication": "2026",
+    "image_publication": "",
+    "auteurs_MI": "",
+    "organisme_producteur": "Terra Nova",
+    "type_document": "Podcast",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.lagrandeconversation.com/podcast/reconcilier-police-et-citoyens-mission-impossible/",
+    "url_source": "https://www.lagrandeconversation.com/podcast/reconcilier-police-et-citoyens-mission-impossible/",
+    "node_count": 19,
+    "relation_count": 14,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Podcast Terra Nova (2026) sur la réconciliation entre police et citoyens. Cinq thématiques transversales identifiées : (1) la légitimité policière et la confiance citoyenne comme fondements de l'efficacité ; (2) la dégradation du lien police-population et la culture de défiance mutuelle ; (3) les violences policières comme résultant de responsabilités institutionnelles partagées ; (4) les pratiques discriminatoires dans les contrôles d'identité et leur impact sur la relation police-population ; (5) la formation policière à la désescalade et au service public comme levier de changement. Ces thématiques couvrent l'ensemble du diagnostic et des solutions proposées.",
+  "threads": [
+    {
+      "thread_id": "T1",
+      "fil_lecture": "Légitimité policière et confiance citoyenne",
+      "source_locator": "N1064, N1065, N1074",
+      "source_anchor": "La police démocratique est chargée de garantir les droits des citoyens. La relation police-population est le lieu où se construit la légitimité des institutions. La confiance entre police et population est une condition de l'efficacité policière.",
+      "retrieval_queries": [
+        "légitimité police confiance citoyens",
+        "relation police population efficacité",
+        "confiance institutions forces sécurité"
+      ],
+      "candidate_ids": [
+        "PUB015",
+        "PUB010",
+        "PUB011",
+        "PUB034",
+        "PUB062",
+        "PUB054"
+      ],
+      "candidate_count": 6,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Légitimité policière",
+        "variantes": [
+          "Légitimité",
+          "Confiance police-population"
+        ],
+        "angle": "Construction de la légitimité policière par la relation police-population et…",
+        "critere_raccord": "La cible doit développer substantiellement « Légitimité policière » lui-même. Si elle développe aussi le cœur de l'angle source « Construction de la légitimité policière par la relation police-population et… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Légitimité policière",
+          "Légitimité",
+          "Confiance police-population"
+        ]
+      },
+      "pool_ids": [
+        "PUB015",
+        "PUB010",
+        "PUB002",
+        "PUB013",
+        "PUB034",
+        "PUB011",
+        "PUB005",
+        "PUB116",
+        "PUB062",
+        "PUB016",
+        "PUB054",
+        "PUB033",
+        "PUB006",
+        "PUB024",
+        "PUB026",
+        "PUB025"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB116",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB034 apporte une contribution documentaire substantielle au fil. Il développe explicitement un mécanisme clé de légitimité policière (confiance normative fondée sur la déontologie et le contrôle institutionnalisé), bien que sous un angle différent de celui du fil source (relation police-population). Les autres candidats ne font que mentionner le mot « légitimité » dans des contextes radicalement différents (recherche criminologique, gestion climatique, régimes autoritaires, santé publique) sans développer le pivot lui-même ni ses mécanismes de construction.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB013",
+          "PUB033",
+          "PUB026",
+          "PUB034",
+          "PUB005",
+          "PUB002",
+          "PUB006",
+          "PUB010",
+          "PUB007",
+          "PUB090"
+        ],
+        "retained_count": 2,
+        "possible_count": 1,
+        "note": "Évaluation de 10 candidats sur le fil « Légitimité policière et confiance citoyenne ». Trois publications apportent un développement substantiel et explicite du cœur du fil ou de ses composantes essentielles : PUB013 (enquête directe sur la confiance citoyenne et l'efficacité policière), PUB034 (mécanisme de construction de la légitimité par la déontologie et le contrôle), et PUB026 (impact des pratiques discriminatoires sur la confiance). PUB033 développe une composante importante : la préservation de la confiance dans un contexte de transformation technologique. Les six autres candidats ne documentent que le contexte général (sécurité, institutions, confiance) sans traiter explicitement la relation police-population ou la légitimité policière."
+      }
+    },
+    {
+      "thread_id": "T4",
+      "fil_lecture": "Pratiques discriminatoires et efficacité des contrôles d'identité",
+      "source_locator": "N1076, N1077",
+      "source_anchor": "Les contrôles d'identité constituent une pratique discriminatoire touchant davantage les jeunes issus de minorités visibles. Leur efficacité policière est mise en doute au regard de leurs effets négatifs sur la relation entre police et population.",
+      "retrieval_queries": [
+        "contrôles identité discrimination",
+        "efficacité contrôles police population",
+        "discriminations jeunes minorités visibles"
+      ],
+      "candidate_ids": [
+        "PUB026",
+        "PUB013"
+      ],
+      "candidate_count": 2,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "contrôles d'identité",
+        "variantes": [
+          "pratiques discriminatoires",
+          "contrôles d'identité discriminatoires"
+        ],
+        "angle": "pratique discriminatoire et efficacité policière, effets sur la relation…",
+        "critere_raccord": "La cible doit développer substantiellement « contrôles d'identité » lui-même. Si elle développe aussi le cœur de l'angle source « pratique discriminatoire et efficacité policière, effets sur la relation… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "contrôles d'identité",
+          "pratiques discriminatoires",
+          "contrôles d'identité discriminatoires"
+        ]
+      },
+      "pool_ids": [
+        "PUB013",
+        "PUB026",
+        "PUB025",
+        "PUB005",
+        "PUB014",
+        "PUB113",
+        "PUB006",
+        "PUB011",
+        "PUB024",
+        "PUB033",
+        "PUB118",
+        "PUB010"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB026 constitue un raccord DIRECT : elle développe substantiellement l'objet pivot « contrôles d'identité » dans sa dimension discriminatoire, documentant précisément la discrimination envers les jeunes de minorités visibles, les obstacles au recours effectif, et les effets sur la relation police-population. PUB013 reste INSUFFICIENT : elle ne fait que lister les contrôles d'identité parmi les types de contacts policiers sans en développer aucune dimension substantielle, notamment pas le caractère discriminatoire ni les effets sur la relation police-population.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB026",
+          "PUB013",
+          "PUB014",
+          "PUB025",
+          "PUB118",
+          "PUB116",
+          "PUB015",
+          "PUB011",
+          "PUB010",
+          "PUB018"
+        ],
+        "retained_count": 1,
+        "possible_count": 2,
+        "note": "Évaluation de 10 candidats sur le fil « Pratiques discriminatoires et efficacité des contrôles d'identité ». Deux publications retiennent ou prolongent directement le cœur du fil : PUB026 (Défenseur des droits) développe substantiellement les contrôles d'identité discriminatoires et leur impact sur la relation police-population, avec recommandations explicites ; PUB013 (SSMSI) et PUB116 (Les Films d'ici) apportent des composantes utiles (données empiriques sur les disparités, sélectivité sociale). Les autres candidats traitent de domaines connexes (refus de contrôle routier, trafic de drogues, neurosciences militaires, sécurité informationnelle, résilience climatique, criminalité générale) ou de méthodologie de recherche, sans développement substantiel des contrôles d'identité discriminatoires ou de leur efficacité policière."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB068",
+      "fil_lecture": "Légitimité policière et confiance citoyenne",
+      "source_locator": "N1064, N1065, N1074",
+      "target_publication_id": "PUB034",
+      "pourquoi": "Le document développe le mécanisme central de construction de la légitimité policière : l'articulation entre confiance normative (fondée sur la déontologie) et contrôle institutionnalisé. Il traite directement de la relation entre légitimité, confiance et efficacité policière.",
+      "target_locator": "14;7",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB068",
+      "fil_lecture": "Légitimité policière et confiance citoyenne",
+      "source_locator": "N1064, N1065, N1074",
+      "target_publication_id": "PUB013",
+      "pourquoi": "Cette enquête documente directement la confiance citoyenne envers la police et la gendarmerie, ainsi que la satisfaction des usagers quant à la qualité des interactions. Elle mesure explicitement l'opinion de la population sur l'efficacité et la légitimité des forces de sécurité, cœur du fil.",
+      "target_locator": "20;21;5",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB068",
+      "fil_lecture": "Pratiques discriminatoires et efficacité des contrôles d'identité",
+      "source_locator": "N1076, N1077",
+      "target_publication_id": "PUB026",
+      "pourquoi": "PUB026 développe substantiellement l'objet pivot « contrôles d'identité » et son caractère discriminatoire, en documentant précisément la discrimination envers les jeunes perçus comme non blancs, les effets sur la relation police-population (sous-protection, inégalités d'accès), et les obstacles au recours effectif. Le cœur de l'angle source est explicitement traité.",
+      "target_locator": "70",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB068",
+      "fil_lecture": "Pratiques discriminatoires et efficacité des contrôles d'identité",
+      "source_locator": "N1076, N1077",
+      "target_publication_id": "PUB116",
+      "pourquoi": "PUB116 documente explicitement la sélectivité sociale des contrôles et son impact sur les relations police-population, composante centrale du fil. Cependant, la preuve est brève et le document ne développe pas substantiellement les mécanismes de discrimination ou l'efficacité des contrôles d'identité.",
+      "target_locator": "12:40-13:19",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 0,
+    "extraits_total": 0,
+    "sections_couvertes": 0,
+    "sections_total": 0
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

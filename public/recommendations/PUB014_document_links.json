@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB014",
+  "source_publication": {
+    "publication_id": "PUB014",
+    "titre": "en 2025, une hausse marquée des refus de contrôle routier - ministère de l'intérieur, service statistique ministériel",
+    "année_publication": "2026",
+    "image_publication": "PUB014.png",
+    "auteurs_MI": "Lisa Troy",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité routière",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139720/1102152/file/IR66%20refus%20contro%CC%82le%20routier.pdf",
+    "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/En-2025-une-hausse-marquee-des-refus-de-controle-routier",
+    "node_count": 42,
+    "relation_count": 38,
+    "chunk_count": 17,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB014.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication statistique du SSMSI analysant la hausse des refus de contrôle routier en 2025 (+9%). Cinq fils documentaires identifiés : (1) la robustesse méthodologique des refus aggravés comme indicateur de délinquance routière, face aux limites des refus simples ; (2) l'évolution du cadre répressif depuis 2017, culminant avec la création du délit d'homicide routier en 2025 ; (3) le rôle de l'intensification des contrôles ciblant des infractions connexes (permis, assurance) dans l'augmentation observée ; (4) l'impact transformateur des amendes forfaitaires délictuelles (AFD) introduites en 2019 sur les modalités de traitement et de comptabilisation des infractions ; (5) les disparités territoriales marquées et les profils démographiques distincts selon le type de refus (jeunes pour les refus d'obtempérer simples, population plus âgée pour alcool/stupéfiants).",
+  "threads": [
+    {
+      "thread_id": "FIL_004",
+      "fil_lecture": "Amendes forfaitaires délictuelles et transformation du traitement des infractions",
+      "source_locator": "4",
+      "source_anchor": "Cette progression s'explique par l'introduction des amendes forfaitaires délictuelles (AFD) en 2019, qui ont profondément modifié les modalités de traitement de ce type d'infraction. En effet, en simplifiant la procédure de sanction, les AFD permettent désormais aux forces de sécurité intérieure de constater et de sanctionner directement le délit de défaut d'assurance, sans passer systématiquement par une audience devant le tribunal. Il en résulte que, si le nombre de délits de défaut d'assurance traités hors AFD demeure relativement stable dans le temps, le recours aux AFD a en revanche fortement progressé.",
+      "retrieval_queries": [
+        "amendes forfaitaires délictuelles AFD procédure",
+        "simplification traitement infractions routières AFD",
+        "impact AFD défaut assurance permis"
+      ],
+      "candidate_ids": [
+        "PUB008",
+        "PUB026",
+        "PUB025",
+        "PUB111",
+        "PUB024"
+      ],
+      "candidate_count": 5,
+      "retained_count": 0,
+      "possible_count": 3,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Amendes forfaitaires délictuelles",
+        "variantes": [
+          "AFD"
+        ],
+        "angle": "Transformation des modalités de traitement des infractions routières par…",
+        "critere_raccord": "La cible doit développer substantiellement « Amendes forfaitaires délictuelles » lui-même. Si elle développe aussi le cœur de l'angle source « Transformation des modalités de traitement des infractions routières par… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Amendes forfaitaires délictuelles",
+          "AFD"
+        ]
+      },
+      "pool_ids": [
+        "PUB008",
+        "PUB026",
+        "PUB025",
+        "PUB024",
+        "PUB013",
+        "PUB111"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Trois publications (PUB008, PUB026, PUB025) documentent substantiellement les Amendes forfaitaires délictuelles comme objet pivot, mais toutes sous des angles différents du fil source : stupéfiants (PUB008, PUB025) et discriminations (PUB026) plutôt que infractions routières. Elles apportent néanmoins une connaissance complémentaire explicite sur le fonctionnement et les effets concrets des AFD en tant que procédure simplifiée. PUB111 ne mentionne les AFD que comme catégorie méthodologique sans les documenter. PUB024 contient une homonymie (Agence française de développement, non Amendes forfaitaires délictuelles)."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB014",
+      "fil_lecture": "Amendes forfaitaires délictuelles et transformation du traitement des infractions",
+      "source_locator": "4",
+      "target_publication_id": "PUB008",
+      "pourquoi": "La publication documente substantiellement les AFD dans leur application au contentieux des stupéfiants (mise en place 2020, effets sur la composition des mis en cause mineurs/majeurs). Elle développe un usage concret des AFD et ses conséquences statistiques, mais sous un angle différent du fil source (infractions routières vs stupéfiants).",
+      "target_locator": "2;3",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

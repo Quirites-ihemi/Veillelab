@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB112",
+  "source_publication": {
+    "publication_id": "PUB112",
+    "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+    "année_publication": "2026",
+    "image_publication": "PUB112.png",
+    "auteurs_MI": "Inès Karmous",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+    "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+    "node_count": 30,
+    "relation_count": 24,
+    "chunk_count": 18,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq fils de lecture ont été extraits de cette publication panoramique sur les disparités territoriales de victimation et de craintes. Le premier fil porte sur le décalage structurant entre victimation déclarée et peur d'être victime, particulièrement marqué pour les atteintes aux biens mais moins prononcé pour les atteintes aux personnes. Le deuxième fil documente la concentration urbaine des victimations, notamment en Île-de-France et dans les métropoles régionales. Le troisième fil souligne l'homogénéité territoriale des atteintes numériques et fraudes, contrastant avec la différenciation géographique d'autres infractions. Le quatrième fil établit le lien entre composition migratoire des territoires et surreprésentation des discriminations déclarées. Le cinquième fil porte sur les choix méthodologiques de cumul multi-annuel et de seuils de robustesse statistique qui conditionnent la possibilité d'une analyse départementale. Ces fils couvrent les dimensions substantielles du document : phénomènes de victimation, géographie de la peur, facteurs explicatifs territoriaux et choix méthodologiques.",
+  "threads": [],
+  "leaves": []
+}

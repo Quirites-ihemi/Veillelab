@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB115",
+  "source_publication": {
+    "publication_id": "PUB115",
+    "titre": "lutte contre le commerce illicite du tabac dans l’UE — éparpillement des efforts et lacunes persistantes",
+    "année_publication": "2026",
+    "image_publication": "PUB115.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Cour des comptes européenne",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.eca.europa.eu/ECAPublications/SR-2026-23/SR-2026-23_FR.pdf",
+    "url_source": "https://www.eca.europa.eu/fr/publications/sr-2026-23",
+    "node_count": 36,
+    "relation_count": 41,
+    "chunk_count": 22,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport d'audit de la Cour des comptes européenne (2026) sur la lutte contre le commerce illicite du tabac dans l'UE. Le document identifie cinq fils de lecture substantiels : (1) la fragmentation des données et du renseignement entre acteurs européens, limitant la connaissance fiable du marché illicite ; (2) l'hétérogénéité des cadres réglementaires et systèmes de contrôle nationaux, créant des vulnérabilités et favorisant le déplacement des activités criminelles ; (3) la montée de la production clandestine au sein de l'UE et le rapprochement stratégique des sites de fabrication vers les marchés de consommation ; (4) l'absence de coordination stratégique globale et d'évaluation systématique de l'incidence des mesures de lutte ; (5) les lacunes dans la coopération transfrontalière et l'interopérabilité des systèmes d'échange d'informations entre autorités. Ces fils couvrent les dimensions diagnostiques (données, cadres), les phénomènes criminels (production clandestine), et les défaillances institutionnelles (coordination, coopération) explicitement documentées dans le rapport.",
+  "threads": [],
+  "leaves": []
+}

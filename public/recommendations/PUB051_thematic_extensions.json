@@ -1,0 +1,354 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB051",
+  "source_publication": {
+    "publication_id": "PUB051",
+    "titre": "the geopolitics of infrastructure",
+    "année_publication": "2026",
+    "image_publication": "PUB051.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Institut de relations internationales et stratégiques (IRIS)",
+    "type_document": "Articles et collections d'articles",
+    "domaine": "Sécurité civile",
+    "url_contenu": "https://www.iris-france.org/the-geopolitics-of-infrastructure/",
+    "url_source": "https://www.iris-france.org/the-geopolitics-of-infrastructure/",
+    "node_count": 16,
+    "relation_count": 11,
+    "chunk_count": 5,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB051.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques structurantes identifiées, couvrant l'ensemble du document. Chacune représente une problématique transversale susceptible d'être traitée dans d'autres contextes géopolitiques ou sectoriels : la souveraineté par les infrastructures critiques, la compétition entre blocs, l'extension aux données et IA, l'autonomie stratégique régionale, et l'usage politique des infrastructures. Les expressions partagées (souveraineté, dépendances, équipements, standards, intelligence artificielle, corridors) confirment la pertinence de ces thématiques pour le corpus.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Infrastructures critiques comme enjeu de souveraineté",
+      "source_locator": "C0756, C0759, N0869, N0884",
+      "source_anchor": "Le document établit que les infrastructures critiques (ports, réseaux électriques, corridors ferroviaires, centres de données, chaînes d'approvisionnement en minerais) constituent le système opératoire de la souveraineté moderne. La souveraineté ne porte plus uniquement sur la propriété des équipements physiques, mais aussi sur le contrôle de la couche d'intelligence (algorithmes, systèmes d'optimisation) qui gouverne ces infrastructures. Le contrôle distant des systèmes peut interrompre ou perturber une infrastructure critique.",
+      "retrieval_queries": [
+        "infrastructures critiques souveraineté",
+        "contrôle des équipements et des systèmes",
+        "autonomie stratégique par les infrastructures"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB010"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Infrastructures critiques",
+        "variantes": [],
+        "angle": "Système opératoire de la souveraineté moderne, incluant le contrôle de la…",
+        "critere_raccord": "La cible doit développer substantiellement « Infrastructures critiques » lui-même. Si elle développe aussi le cœur de l'angle source « Système opératoire de la souveraineté moderne, incluant le contrôle de la… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Infrastructures critiques"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB005",
+        "PUB010",
+        "PUB033"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB006 apporte une connaissance complémentaire explicite sur les infrastructures critiques (secteurs, vecteurs d'attaque, conséquences opérationnelles), mais sous l'angle de la cybersécurité et de la protection, non de la souveraineté et du contrôle de la couche d'intelligence. PUB010 ne traite les infrastructures critiques que comme élément de résilience territoriale face au climat, sans développement substantiel du pivot lui-même. Seul PUB006 mérite POSSIBLE (ADJACENT).",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB005",
+          "PUB025",
+          "PUB026",
+          "PUB011",
+          "PUB115",
+          "PUB010",
+          "PUB033",
+          "PUB101",
+          "PUB012"
+        ],
+        "retained_count": 1,
+        "possible_count": 1,
+        "note": "Évaluation de 10 publications candidates. Deux documents RETENIR/POSSIBLE : PUB033 (souveraineté numérique et gouvernance de l'IA comme infrastructure de souveraineté) et PUB006 (vulnérabilité des systèmes SCADA au contrôle à distance). PUB011 apporte également un développement substantiel du même mécanisme appliqué aux infrastructures informationnelles. Les autres candidats reposent sur des proximités lexicales ou contextuelles sans développement explicite du lien entre infrastructures critiques et souveraineté par contrôle de la couche d'intelligence."
+      }
+    },
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Extension de la géopolitique aux données et intelligence artificielle",
+      "source_locator": "C0758, C0759, N0882, N0883",
+      "source_anchor": "Le document montre que la géopolitique des infrastructures dépasse désormais les équipements physiques et s'étend aux capacités de calcul, aux données et à l'intelligence artificielle. Les grandes entreprises technologiques investissent massivement dans les centres de données et les équipements spécialisés. La fabrication des semi-conducteurs devient un point de passage critique. L'intégration croissante de l'IA dans les infrastructures crée de nouvelles vulnérabilités : le contrôle distant des systèmes d'optimisation peut interrompre une infrastructure, et les algorithmes opaques peuvent orienter la répartition territoriale des investissements.",
+      "retrieval_queries": [
+        "géopolitique données intelligence artificielle",
+        "centres de données et semi-conducteurs",
+        "vulnérabilités algorithmiques des infrastructures"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB033",
+        "PUB006",
+        "PUB057",
+        "PUB003",
+        "PUB062",
+        "PUB118",
+        "PUB090",
+        "PUB026"
+      ],
+      "candidate_count": 9,
+      "retained_count": 0,
+      "possible_count": 2,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "intelligence artificielle",
+        "variantes": [
+          "IA",
+          "systèmes d'intelligence artificielle"
+        ],
+        "angle": "Intégration de l'IA dans les infrastructures critiques et ses implications…",
+        "critere_raccord": "La cible doit développer substantiellement « intelligence artificielle » lui-même. Si elle développe aussi le cœur de l'angle source « Intégration de l'IA dans les infrastructures critiques et ses implications… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "intelligence artificielle",
+          "IA",
+          "systèmes d'intelligence artificielle"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB005",
+        "PUB033",
+        "PUB006",
+        "PUB026",
+        "PUB057",
+        "PUB062",
+        "PUB118",
+        "PUB090",
+        "PUB015",
+        "PUB024",
+        "PUB007",
+        "PUB010"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation des 9 candidats au regard du fil « Extension de la géopolitique aux données et intelligence artificielle ». Le fil source développe l'intégration de l'IA dans les infrastructures critiques, le contrôle des systèmes d'optimisation, la fabrication des semi-conducteurs et les vulnérabilités géopolitiques. Les quatre premiers candidats (PUB005, PUB033, PUB006, PUB057) documentent substantiellement l'IA mais sous des angles distincts : gouvernance territoriale, transformation des métiers, cybercriminalité, fraudes. Ils constituent des développements complémentaires du pivot sans aborder le cœur du fil source (géopolitique des infrastructures). Les cinq derniers candidats (PUB003, PUB062, PUB118, PUB090, PUB026) mentionnent ou développent l'IA dans des contextes sans lien avec le fil : terrorisme, désinformation, neurosciences, pédocriminalité, discriminations. Aucun candidat ne traite explicitement la géopolitique des données, le contrôle des centres de données, la fabrication des semi-conducteurs ou les vulnérabilités des infrastructures critiques liées à l'IA.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB005",
+          "PUB118",
+          "PUB057",
+          "PUB062",
+          "PUB010",
+          "PUB090",
+          "PUB015",
+          "PUB033",
+          "PUB003"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats sur la géopolitique des données et de l'IA. Trois publications (PUB006, PUB057, PUB033) développent explicitement des composantes utiles du fil : respectivement l'exploitation de l'IA contre les infrastructures critiques, la transformation des menaces numériques par l'IA, et la reconfiguration des infrastructures par la fusion cyber-physique. Les sept autres candidats ne documentent pas substantiellement le phénomène géopolitique central (infrastructures de calcul, centres de données, semi-conducteurs, contrôle des systèmes d'optimisation) et reposent sur des rapprochements lexicaux ou contextuels insuffisants."
+      }
+    },
+    {
+      "thread_id": "T005",
+      "fil_lecture": "Infrastructures comme instruments de contrôle politique",
+      "source_locator": "C0760, N0883",
+      "source_anchor": "Le document souligne que les infrastructures ne produisent pas nécessairement autonomie et développement. À partir du cas de Gaza, il montre qu'une infrastructure peut favoriser la mobilité et la reconstruction mais aussi devenir un instrument de contrôle. Les choix concernant ports, énergie et réseaux de données comportent une dimension politique, même lorsqu'ils sont présentés comme techniques ou neutres. Les infrastructures peuvent ainsi servir à la fois des objectifs de développement et des objectifs de domination.",
+      "retrieval_queries": [
+        "infrastructures instruments de contrôle",
+        "dimension politique des choix d'infrastructure",
+        "infrastructures et domination territoriale"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB006",
+        "PUB005",
+        "PUB022",
+        "PUB018",
+        "PUB033",
+        "PUB011",
+        "PUB012",
+        "PUB003",
+        "PUB007"
+      ],
+      "candidate_count": 10,
+      "retained_count": 2,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "infrastructures",
+        "variantes": [
+          "blocs d'infrastructures",
+          "géopolitique des infrastructures"
+        ],
+        "angle": "dimension politique et contrôle : comment les infrastructures physiques et…",
+        "critere_raccord": "La cible doit développer substantiellement « infrastructures » lui-même. Si elle développe aussi le cœur de l'angle source « dimension politique et contrôle : comment les infrastructures physiques et… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "infrastructures",
+          "blocs d'infrastructures",
+          "géopolitique des infrastructures"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB010",
+        "PUB006",
+        "PUB005",
+        "PUB033",
+        "PUB011",
+        "PUB022",
+        "PUB018",
+        "PUB007",
+        "PUB118",
+        "PUB012",
+        "PUB114",
+        "PUB015",
+        "PUB026",
+        "PUB025",
+        "PUB024",
+        "PUB113",
+        "PUB068",
+        "PUB057"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB068",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 5,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 9 candidats sur le fil « Infrastructures comme instruments de contrôle politique ». Deux publications (PUB033 et PUB011) atteignent le seuil DIRECT : elles documentent explicitement comment les infrastructures (technologiques et Internet) sont conçues et utilisées comme instruments de contrôle politique et de domination. Une publication (PUB006) est classée ADJACENT : elle documente concrètement le rôle des infrastructures critiques comme cibles de cyberattaques motivées par des objectifs géopolitiques et politiques, établissant un lien explicite entre infrastructure et contrôle. Une publication (PUB022) documente substantiellement le pivot mais sous un angle purement gestionnaire et de développement, sans dimension politique de contrôle. Les six autres candidats ne documentent que des mentions contextuelles ou des usages fonctionnels des infrastructures, sans établir leur rôle en tant qu'instruments de contrôle ou de domination.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB005",
+          "PUB026",
+          "PUB033",
+          "PUB011",
+          "PUB022",
+          "PUB003",
+          "PUB006",
+          "PUB018",
+          "PUB114"
+        ],
+        "retained_count": 1,
+        "possible_count": 1,
+        "note": "Seul PUB011 documente substantiellement le cœur du fil : comment les infrastructures (réseau Internet, architecture des systèmes autonomes) fonctionnent explicitement comme instruments de contrôle politique et de domination. PUB033 développe une composante utile (dimension politique des choix d'infrastructure technologique) mais sous un angle de souveraineté plutôt que de domination directe. Les autres candidats traitent d'infrastructures dans des contextes variés (résilience climatique, gouvernance numérique, discriminations, gestion de l'eau, criminalité, cybersécurité) sans documenter le mécanisme central du fil : comment les choix d'infrastructure servent des objectifs de contrôle politique et de domination territoriale."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB051",
+      "fil_lecture": "Infrastructures comme instruments de contrôle politique",
+      "source_locator": "C0760, N0883",
+      "target_publication_id": "PUB033",
+      "pourquoi": "Le document développe explicitement comment les infrastructures technologiques et numériques reconfigent les modalités du contrôle politique, redéfinissent la citoyenneté et le contrat social. Il établit que la dépendance aux infrastructures technologiques américaines structure l'espace politique européen et que les choix architecturaux incorporent une dimension politique de domination.",
+      "target_locator": "19",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB051",
+      "fil_lecture": "Infrastructures comme instruments de contrôle politique",
+      "source_locator": "C0760, N0883",
+      "target_publication_id": "PUB011",
+      "pourquoi": "Le document documente précisément comment l'architecture des infrastructures Internet (structure de routage, points d'accès) en Chine et Iran a été délibérément conçue pour permettre le contrôle politique et la fermeture du réseau. Il établit explicitement le lien entre choix d'infrastructure et instrument de domination étatique.",
+      "target_locator": "3",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB051",
+      "fil_lecture": "Extension de la géopolitique aux données et intelligence artificielle",
+      "source_locator": "C0758, C0759, N0882, N0883",
+      "target_publication_id": "PUB005",
+      "pourquoi": "La publication documente substantiellement l'IA dans un contexte de gouvernance territoriale et sécurité publique (services d'urgence, traduction automatisée, gestion de crise). Elle développe explicitement le pivot « intelligence artificielle » mais sous l'angle de l'action publique territoriale, non de l'intégration dans les infrastructures critiques ni de la géopolitique des données.",
+      "target_locator": "14",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB051",
+      "fil_lecture": "Infrastructures critiques comme enjeu de souveraineté",
+      "source_locator": "C0756, C0759, N0869, N0884",
+      "target_publication_id": "PUB006",
+      "pourquoi": "Le document développe explicitement la vulnérabilité des infrastructures critiques (SCADA) au contrôle à distance et à la perturbation via des vecteurs cyber. Il documente une composante centrale du fil : le risque de perte de contrôle des infrastructures critiques par interruption ou perturbation des systèmes de pilotage.",
+      "target_locator": "23;24",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 5,
+    "extraits_total": 5,
+    "sections_couvertes": 5,
+    "sections_total": 5
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

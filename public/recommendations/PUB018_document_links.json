@@ -1,0 +1,218 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB018",
+  "source_publication": {
+    "publication_id": "PUB018",
+    "titre": "les disparités communales en matière de vols sans violence",
+    "année_publication": "2026",
+    "image_publication": "PUB018.png",
+    "auteurs_MI": "Claire Charavel, Kévin Milin, Aurélien Poissonnier",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139737/1102259/file/IA82.pdf",
+    "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Les-disparites-communales-en-matiere-de-vols-sans-violence-etat-des-lieux",
+    "node_count": 35,
+    "relation_count": 31,
+    "chunk_count": 25,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication du SSMSI analysant les disparités communales en matière de vols sans violence en France (2016-2022). Cinq fils de lecture ont été identifiés, couvrant : (1) la méthode de modélisation économétrique mobilisée ; (2) la concentration territoriale du phénomène ; (3) le rôle des infrastructures de transport ; (4) l'impact du tourisme et des résidences secondaires ; (5) les effets régionaux résiduels. Ces fils correspondent à des dimensions structurantes du document, documentées par des sections dédiées, des simulations chiffrées et des analyses multivariées explicites.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Modélisation économétrique des phénomènes de délinquance",
+      "source_locator": "5",
+      "source_anchor": "Un modèle de type « à excès de zéro » est utilisé pour estimer de façon simultanée la probabilité qu'il n'y ait pas de vols sans violence dans une commune via une spécification de type logit et le nombre de vols sans violence. Le modèle s'appuie sur des régressions pénalisées de type Lasso (Least Absolute Shrinkage and Selection Operator) pour retenir les variables les plus importantes. Les variables testées décrivent plusieurs aspects des communes : structure démographique, caractéristiques socio-économiques, situation géographique, infrastructures et équipements, activité des communes et logements. Des simulations sont réalisées pour mesurer chaque effet structurel, en remplaçant pour toutes les communes une variable par une valeur fictive.",
+      "retrieval_queries": [
+        "modélisation économétrique délinquance",
+        "modèle excès de zéro logit",
+        "simulations effets structurels variables communales"
+      ],
+      "candidate_ids": [
+        "PUB004"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "Modélisation économétrique",
+        "variantes": [
+          "modèle économétrique",
+          "analyse multivariée"
+        ],
+        "angle": "Estimation simultanée de la probabilité et du nombre de phénomènes de…",
+        "critere_raccord": "La cible doit développer substantiellement « Modélisation économétrique » lui-même. Si elle développe aussi le cœur de l'angle source « Estimation simultanée de la probabilité et du nombre de phénomènes de… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Modélisation économétrique",
+          "modèle économétrique",
+          "analyse multivariée"
+        ]
+      },
+      "pool_ids": [
+        "PUB010",
+        "PUB006",
+        "PUB004",
+        "PUB022",
+        "PUB062",
+        "PUB117",
+        "PUB005",
+        "PUB101"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB062",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB117",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB004 documente concrètement l'analyse multivariée (variante du pivot) en montrant son application à l'évaluation des effets de variables sur un phénomène social. Cependant, elle ne développe pas le cœur de l'angle source (estimation simultanée de probabilité ET nombre, modèle à excès de zéro, régressions Lasso). La cible traite une composante explicite de la modélisation multivariée sous un terrain et un phénomène différents (sentiment d'insécurité vs délinquance). Le raccord reste ADJACENT car la méthode y est substantiellement documentée, mais l'angle spécifique du fil (modèle à excès de zéro, Lasso) est absent."
+    },
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Concentration territoriale des vols sans violence",
+      "source_locator": "3",
+      "source_anchor": "Les 1 % des communes les plus touchées par les vols sans violence concentrent plus des deux tiers des vols sans violence en 2022. La taille des aires d'attraction des villes et le découpage entre zones rurales et urbaines sont très importants pour comprendre la répartition territoriale. Le taux de vols sans violence augmente avec la taille des aires d'attraction des villes : de 5,6 ‰ dans les aires de moins de 50 000 habitants jusqu'à 15,2 ‰ dans les grandes aires d'attraction de plus de 700 000 habitants.",
+      "retrieval_queries": [
+        "concentration territoriale délinquance",
+        "disparités spatiales vols",
+        "aires d'attraction villes délinquance"
+      ],
+      "candidate_ids": [
+        "PUB008",
+        "PUB111",
+        "PUB112",
+        "PUB013"
+      ],
+      "candidate_count": 4,
+      "retained_count": 0,
+      "possible_count": 3,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "vols sans violence",
+        "variantes": [],
+        "angle": "répartition territoriale et corrélations avec les caractéristiques communales",
+        "critere_raccord": "La cible doit développer substantiellement « vols sans violence » lui-même. Si elle développe aussi le cœur de l'angle source « répartition territoriale et corrélations avec les caractéristiques communales », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "vols sans violence"
+        ]
+      },
+      "pool_ids": [
+        "PUB008",
+        "PUB013",
+        "PUB111",
+        "PUB112",
+        "PUB002",
+        "PUB006",
+        "PUB025",
+        "PUB026",
+        "PUB090",
+        "PUB010"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de quatre candidats sur la concentration territoriale des vols sans violence. Seul PUB112 apporte un développement substantiel et explicite de la répartition territoriale du pivot (concentration dans les départements densément peuplés, corrélation avec l'urbanisation), bien que par enquête de victimation plutôt que par enregistrements administratifs. PUB008 et PUB111 documentent les vols sans violence sous d'autres angles (mineurs, transports en commun) sans traiter la répartition territoriale générale. PUB013 ne contient qu'une définition glossaire sans valeur documentaire pour le fil."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB018",
+      "fil_lecture": "Concentration territoriale des vols sans violence",
+      "source_locator": "3",
+      "target_publication_id": "PUB008",
+      "pourquoi": "La publication traite des victimes et mis en cause mineurs pour atteintes aux biens, dont les vols sans violence. Elle documente la structure démographique (sexe, âge) des mineurs victimes et auteurs, ainsi que les tendances temporelles (baisse de 8 % par an 2022-2025). Elle ne développe pas la répartition territoriale des vols sans violence ni les corrélations avec les caractéristiques communales (taille des aires d'attraction, zones rurales/urbaines).",
+      "target_locator": "11;12",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB018",
+      "fil_lecture": "Concentration territoriale des vols sans violence",
+      "source_locator": "3",
+      "target_publication_id": "PUB111",
+      "pourquoi": "La publication analyse la délinquance dans les réseaux de transports en commun. Elle documente que les vols sans violence y constituent 77 % des victimes de vols, violences ou escroqueries, et que 81 % des victimes sont concentrées dans 22 métropoles. Cependant, elle traite un terrain spécifique (transports en commun) et ne développe pas la répartition territoriale générale des vols sans violence ni les corrélations avec les caractéristiques communales au niveau national.",
+      "target_locator": "1",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB018",
+      "fil_lecture": "Concentration territoriale des vols sans violence",
+      "source_locator": "3",
+      "target_publication_id": "PUB112",
+      "pourquoi": "La publication analyse la répartition territoriale des victimations déclarées par département, incluant les vols sans violence. Elle documente explicitement que les vols sans violence sont surreprésentés dans les départements densément peuplés (7,7 % à Paris, 4,5 % dans le Rhône, contre 2,1 % en moyenne nationale) et concentrés en Île-de-France. Bien que basée sur des déclarations d'enquête plutôt que sur les enregistrements administratifs du fil source, elle développe substantiellement la même composante pivot : la concentration territoriale des vols sans violence et sa corrélation avec la densité/urbanisation.",
+      "target_locator": "1",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB018",
+      "fil_lecture": "Modélisation économétrique des phénomènes de délinquance",
+      "source_locator": "5",
+      "target_publication_id": "PUB004",
+      "pourquoi": "La cible documente substantiellement l'analyse multivariée appliquée au sentiment d'insécurité dans les QPV, en montrant comment cette méthode permet d'isoler l'effet de variables spécifiques (genre, lieu de résidence) sur le phénomène étudié. Bien que l'angle source porte sur l'estimation simultanée de probabilité et de nombre de phénomènes (modèle à excès de zéro), la cible apporte une connaissance explicite et concrète sur l'usage de la modélisation multivariée dans un contexte de sécurité différent.",
+      "target_locator": "11",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

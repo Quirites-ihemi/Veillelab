@@ -1,0 +1,243 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB113",
+  "source_publication": {
+    "publication_id": "PUB113",
+    "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
+    "année_publication": "2026",
+    "image_publication": "PUB113.png",
+    "auteurs_MI": "Benoît HABERBUSCH",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Sécurité civile",
+    "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+    "node_count": 17,
+    "relation_count": 16,
+    "chunk_count": 14,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication structurée autour d'une trajectoire historique de l'engagement de la gendarmerie face aux incendies de forêt, depuis le XVIe siècle jusqu'aux mégafeux de 2026. Les fils identifiés couvrent : (1) la transformation institutionnelle du rôle de la gendarmerie, (2) la formalisation d'une doctrine opérationnelle suite à des événements critiques, (3) le développement d'une expertise spécialisée (cynophile), (4) l'intégration de technologies innovantes, et (5) la structuration de la coopération interservices. Chaque fil est ancré dans des passages substantiels et représente une dimension structurante du document.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Transformation du rôle de la gendarmerie vers la gestion de crise",
+      "source_locator": "1",
+      "source_anchor": "La gendarmerie est progressivement associée à la gestion des incendies de forêt. Cette évolution conduit l'institution d'un rôle principalement centré sur la surveillance et le maintien de l'ordre dans les espaces forestiers à celui de partenaire à part entière de la gestion des crises liées aux incendies de forêt.",
+      "retrieval_queries": [
+        "évolution missions gendarmerie gestion crise",
+        "transition surveillance maintien ordre vers partenariat crise",
+        "rôle institutionnel gendarmerie incendies forêt"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB010",
+        "PUB054",
+        "PUB002",
+        "PUB118"
+      ],
+      "candidate_count": 5,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "gestion de crise",
+        "variantes": [],
+        "angle": "Transformation du rôle institutionnel vers la gestion des crises liées aux…",
+        "critere_raccord": "La cible doit développer substantiellement « gestion de crise » lui-même. Si elle développe aussi le cœur de l'angle source « Transformation du rôle institutionnel vers la gestion des crises liées aux… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "gestion de crise"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB010",
+        "PUB021",
+        "PUB012",
+        "PUB054",
+        "PUB022",
+        "PUB118",
+        "PUB002",
+        "PUB016",
+        "PUB007",
+        "PUB011",
+        "PUB013",
+        "PUB026"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation des cinq candidats au regard du fil « Transformation du rôle de la gendarmerie vers la gestion de crise ». Le pivot « gestion de crise » est présent dans tous les candidats (contient_pivot=true), mais avec des degrés de documentation très différents. PUB005 et PUB010 développent substantiellement la gestion de crise dans des contextes pertinents (sécurité publique, résilience territoriale) et méritent un classement ADJACENT. PUB054 traite la gestion de crise sanitaire, hors du champ du fil source. PUB002 ne mentionne la gestion de crise que comme élément secondaire de formations. PUB118 ne contient que des titres sans contenu développé. Seuls PUB005 et PUB010 sont recommandés pour poursuite de lecture."
+    },
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Développement de l'expertise cynophile en investigation",
+      "source_locator": "3",
+      "source_anchor": "À partir de 2002, la gendarmerie développe une capacité cynophile dédiée à la recherche des causes et circonstances des incendies, opérationnelle depuis 2010. La formation Vulcain permet d'abord de circonscrire la zone probable de départ, puis l'engagement du chien permet de détecter les accélérateurs d'incendie et d'en préciser le point de déclenchement.",
+      "retrieval_queries": [
+        "chien détection accélérateurs incendie",
+        "expertise cynophile investigation causes",
+        "capacité canine recherche criminelle"
+      ],
+      "candidate_ids": [
+        "PUB012",
+        "PUB010",
+        "PUB006",
+        "PUB007",
+        "PUB026",
+        "PUB005",
+        "PUB015",
+        "PUB025",
+        "PUB054",
+        "PUB008"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats sur le fil « Développement de l'expertise cynophile en investigation ». PUB012 constitue un raccord DIRECT : il documente explicitement la création et l'organisation du dispositif cynophile à partir de 2002, confirmant le cœur du fil. PUB007 et PUB015 offrent des raccords ADJACENT : ils documentent respectivement les mécanismes d'innovation institutionnelle à la Gendarmerie et les méthodes d'investigation criminelle, composantes utiles pour contextualiser le développement de l'expertise. Les 7 autres candidats sont classés INSUFFICIENT : ils relèvent de domaines distincts (crises naturelles, cybercriminalité, discriminations, IA, trafic de drogues, crises sanitaires, statistiques criminelles) sans développement explicite de l'expertise cynophile ou de l'investigation d'incendies."
+    },
+    {
+      "thread_id": "T004",
+      "fil_lecture": "Intégration de technologies innovantes en opérations",
+      "source_locator": "4",
+      "source_anchor": "À partir du 27 juillet 2026, une dizaine de Centaures, véhicules blindés polyvalents de la gendarmerie, sont déployés. Employés dès le début du mois de juillet 2026, les drones confirment leur utilité en complément des hélicoptères pour surveiller les zones forestières difficiles d'accès, repérer les départs de feu et effectuer des reconnaissances sans exposer directement les personnels.",
+      "retrieval_queries": [
+        "véhicules blindés zones enfumées",
+        "drones surveillance reconnaissance incendies",
+        "technologies opérationnelles gendarmerie terrain"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB101",
+        "PUB006",
+        "PUB007"
+      ],
+      "candidate_count": 4,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "technologies innovantes",
+        "variantes": [
+          "innovation technologique",
+          "moyens technologiques"
+        ],
+        "angle": "Déploiement de technologies innovantes (véhicules blindés, drones, moyens de…",
+        "critere_raccord": "La cible doit développer substantiellement « technologies innovantes » lui-même. Si elle développe aussi le cœur de l'angle source « Déploiement de technologies innovantes (véhicules blindés, drones, moyens de… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "technologies innovantes",
+          "innovation technologique",
+          "moyens technologiques"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB101",
+        "PUB007",
+        "PUB006",
+        "PUB011",
+        "PUB010",
+        "PUB033",
+        "PUB118"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seule PUB007 apporte une documentation substantielle du pivot « technologies innovantes » en montrant comment la Gendarmerie nationale intègre l'innovation technologique dans ses stratégies opérationnelles et ses modes d'action. Les trois autres candidats ne mentionnent le pivot que de manière superficielle, sans développement concret sur son déploiement ou ses usages opérationnels. PUB007 est classée ADJACENT car elle traite l'innovation sous l'angle de la valorisation et du transfert technologique plutôt que du déploiement direct en opérations, mais elle documente explicitement un rôle substantiel du pivot dans le contexte de la sécurité publique."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB113",
+      "fil_lecture": "Développement de l'expertise cynophile en investigation",
+      "source_locator": "3",
+      "target_publication_id": "PUB012",
+      "pourquoi": "PUB012 documente explicitement le développement de la capacité cynophile à partir de 2002 et la création du GNIC en février 2002, confirmant la chronologie et l'architecture institutionnelle du fil. Le document traite substantiellement de l'organisation et de la professionnalisation de cette expertise.",
+      "target_locator": "3",
+      "decision": "RETENIR",
+      "badges": [
+        "Même auteur"
+      ]
+    },
+    {
+      "source_publication_id": "PUB113",
+      "fil_lecture": "Intégration de technologies innovantes en opérations",
+      "source_locator": "4",
+      "target_publication_id": "PUB007",
+      "pourquoi": "La publication documente substantiellement les stratégies de valorisation et de transfert de technologies innovantes au sein de la Gendarmerie nationale, en réponse à des impératifs d'innovation opérationnelle (adaptation aux formes de criminalité, supériorité technologique, sécurisation des opérations). Bien que l'angle soit celui de la valorisation et du transfert plutôt que du déploiement direct, elle développe explicitement comment l'institution intègre l'innovation technologique dans ses missions et ses modes d'action.",
+      "target_locator": "3",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB113",
+      "fil_lecture": "Transformation du rôle de la gendarmerie vers la gestion de crise",
+      "source_locator": "1",
+      "target_publication_id": "PUB010",
+      "pourquoi": "La publication développe substantiellement la gestion de crise dans le contexte de la résilience territoriale alpine et des risques naturels, avec un rôle explicite de la gendarmerie (PGHM) dans les dispositifs de gouvernance. Elle documente comment la gestion de crise s'articule avec la prévention et l'anticipation, mais ne traite pas spécifiquement la transformation du rôle de la gendarmerie vers les incendies de forêt.",
+      "target_locator": "8",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

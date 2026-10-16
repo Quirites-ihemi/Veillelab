@@ -1,0 +1,132 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB024",
+  "source_publication": {
+    "publication_id": "PUB024",
+    "titre": "réseaux criminels et corridors des caraïbes vers l’europe",
+    "année_publication": "2026",
+    "image_publication": "PUB024.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Consortium (CARICOM IMPACS, Expertise France, FRONTEX and InSight Crime)",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://zenodo.org/records/18385156/files/ELPACCTO2-RutasCaribe-EN_low.pdf?download=1",
+    "url_source": "https://zenodo.org/records/18385156",
+    "node_count": 38,
+    "relation_count": 37,
+    "chunk_count": 62,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels du rapport sur les réseaux criminels et corridors des Caraïbes vers l'Europe. Ces fils couvrent les dimensions structurantes du document : (1) l'architecture décentralisée des réseaux et leur adaptabilité, (2) le rôle pivot des courtiers transnationaux, (3) la diversité des méthodes de transport comme facteur de résilience, (4) la corruption comme facilitateur systémique, et (5) la vulnérabilité spécifique des territoires ultramarins européens. Chaque fil est ancré dans des passages substantiels et explicitement documentés, avec des requêtes de récupération conçues pour identifier des prolongements documentaires dans le corpus.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Diversité des vecteurs de transport et résilience des corridors",
+      "source_locator": "6;8;12;44",
+      "source_anchor": "Les Caraïbes offrent une gamme exceptionnellement large d'options de contrebande : navires de fret commerciaux, conteneurs, yachts, bateaux de pêche, navires de croisière, transports inter-îles, semi-submersibles et narco-sous-marins, avions commerciaux, fret aérien et petits avions privés. Cette diversité de méthodes permet aux trafiquants de s'adapter rapidement quand la surveillance augmente sur une tactique donnée. Les conteneurs maritimes restent la méthode la plus pratique et rentable pour déplacer de grands volumes vers l'Europe, mais les semi-submersibles se développent pour les traversées directes transatlantiques.",
+      "retrieval_queries": [
+        "modes transport trafic cocaïne diversité",
+        "semi-submersibles conteneurs maritimes",
+        "adaptation routes trafic pression"
+      ],
+      "candidate_ids": [
+        "PUB025"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "vecteurs de transport",
+        "variantes": [
+          "méthodes de contrebande",
+          "modes de transport"
+        ],
+        "angle": "diversité et adaptabilité des vecteurs face à la pression des forces de sécurité",
+        "critere_raccord": "La cible doit développer substantiellement « vecteurs de transport » lui-même. Si elle développe aussi le cœur de l'angle source « diversité et adaptabilité des vecteurs face à la pression des forces de sécurité », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "vecteurs de transport",
+          "méthodes de contrebande",
+          "modes de transport"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB002",
+        "PUB025",
+        "PUB010",
+        "PUB026",
+        "PUB111",
+        "PUB021",
+        "PUB115",
+        "PUB031",
+        "PUB005",
+        "PUB101"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB111",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB031",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB025 documente concrètement les vecteurs de transport de drogues et leur adaptabilité face à la pression des forces de sécurité, mais dans un contexte géographique et avec des méthodes différentes du fil source (Caraïbes, semi-submersibles transatlantiques). Le pivot « vecteurs de transport » est développé substantiellement avec des informations précises sur les rôles, usages et évolutions (axe aérien, bus, transport in corpore), et l'angle « adaptabilité face à la pression » est explicitement documenté. Le classement ADJACENT est justifié : la cible apporte une connaissance complémentaire et substantielle sur le même objet pivot sous un terrain et des vecteurs différents, ce qui enrichit la compréhension du phénomène sans reproduire exactement le cœur du fil source."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB024",
+      "fil_lecture": "Diversité des vecteurs de transport et résilience des corridors",
+      "source_locator": "6;8;12;44",
+      "target_publication_id": "PUB025",
+      "pourquoi": "La cible documente substantiellement les vecteurs de transport de drogues en France (axe aérien Cayenne-Paris, bus de voyage, transport in corpore) et leur évolution face aux contrôles renforcés. Elle développe explicitement comment les réseaux criminels s'adaptent à la pression des forces de sécurité (baisse des mules via Cayenne après le dispositif « 100 % contrôle »), ce qui correspond au cœur de l'angle source. Cependant, le terrain (France métropolitaine et Guyane) et les vecteurs spécifiques diffèrent des Caraïbes et des semi-submersibles transatlantiques du fil source.",
+      "target_locator": "5",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB025",
+  "source_publication": {
+    "publication_id": "PUB025",
+    "titre": "l’ofdt publie son bilan de l’offre de stupéfiants en france",
+    "année_publication": "2026",
+    "image_publication": "PUB025.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Observatoire français des drogues et des tendances addictives",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.ofdt.fr/sites/ofdt/files/2026-02/note-offre-stupefiants-2024.pdf",
+    "url_source": "https://www.ofdt.fr/publication/2026/l-offre-de-stupefiants-en-france-en-2024-2656",
+    "node_count": 42,
+    "relation_count": 46,
+    "chunk_count": 40,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB025.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels du rapport OFDT 2026 sur l'offre de stupéfiants en France. Ces fils couvrent des dimensions structurantes du document : (1) l'adaptation tactique des réseaux criminels face aux renforcements de contrôle portuaire, (2) la réorientation géographique des flux de trafiquants par voie aérienne, (3) l'évolution commerciale du marché illicite vers des pratiques légales, (4) l'émergence d'un nouveau segment de trafic (médicaments stupéfiants), et (5) les perturbations chimiques et territoriales du marché de l'héroïne. Chaque fil est ancré dans des passages explicitement documentés et susceptible de prolongements transpublication.",
+  "threads": [
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Réorientation des flux de mules vers nouveaux territoires de transit",
+      "source_locator": "4;5",
+      "source_anchor": "La mise en œuvre du dispositif de contrôle renforcé dit « 100 % contrôle » à l'aéroport de Cayenne a permis une interception plus fréquente des tentatives de trafic au départ de Cayenne, se traduisant par une baisse significative du nombre de mules interpellées à Paris en provenance de Cayenne, passé de 334 en 2022 à 120 en 2024. Face à ce durcissement, les réseaux criminels ont cherché à contourner les dispositifs de contrôle en réorientant leurs flux via les Antilles, en privilégiant des territoires perçus comme moins surveillés, tels que la Guadeloupe ou la Martinique. En 2024, les interpellations de mules en provenance ou au départ de Martinique ont augmenté de 184 %. De nombreuses mules en provenance du Brésil ont été interpellées dans les aéroports français, et une montée en puissance du phénomène des mules en provenance du Pérou est signalée.",
+      "retrieval_queries": [
+        "réorientation flux mules trafic stupéfiants",
+        "contournement contrôles aériens Cayenne Antilles",
+        "nouvelles routes trafic aérien Brésil Pérou"
+      ],
+      "candidate_ids": [
+        "PUB024",
+        "PUB006"
+      ],
+      "candidate_count": 2,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "mules",
+        "variantes": [
+          "transport de drogues par mules",
+          "trafic par mules"
+        ],
+        "angle": "réorientation des flux et diversification des provenances en réaction au…",
+        "critere_raccord": "La cible doit développer substantiellement « mules » lui-même. Si elle développe aussi le cœur de l'angle source « réorientation des flux et diversification des provenances en réaction au… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "mules",
+          "transport de drogues par mules",
+          "trafic par mules"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB024"
+      ],
+      "gated_out": [],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": ""
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB025",
+      "fil_lecture": "Réorientation des flux de mules vers nouveaux territoires de transit",
+      "source_locator": "4;5",
+      "target_publication_id": "PUB024",
+      "pourquoi": "La cible documente substantiellement les mules comme vecteur de trafic de cocaïne via les aéroports des Caraïbes vers l'Europe, en détaillant les routes, les aéroports utilisés (République Dominicaine, Guadeloupe) et les stratégies de recrutement. Elle développe explicitement le même objet pivot (mules) et le cœur de l'angle source : la réorientation des flux via de nouveaux territoires de transit (Caraïbes, notamment Guadeloupe) en réaction aux contrôles renforcés.",
+      "target_locator": "12;15",
+      "decision": "RETENIR",
+      "badges": []
+    }
+  ]
+}

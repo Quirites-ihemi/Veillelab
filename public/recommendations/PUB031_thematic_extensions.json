@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB031",
+  "source_publication": {
+    "publication_id": "PUB031",
+    "titre": "les violences intrafamiliales non conjugales en 2024",
+    "année_publication": "2026",
+    "image_publication": "PUB031.png",
+    "auteurs_MI": "Maud Guillonneau, Maxine Voinson",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139224/1098858/file/IR59%20Les%20violences%20intrafamiliales%20non%20conjugales%20en%202024.pdf",
+    "url_source": "https://www.interieur.gouv.fr/documentation/etudes-et-statistiques/interstats-info-rapide-ndeg-59-violences-intrafamiliales-non-conjugales-enregistrees-par-services-de.html",
+    "node_count": 20,
+    "relation_count": 18,
+    "chunk_count": 11,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB031.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du document : la dénonciation tardive (pages 1, 3-4), les violences sexuelles sur mineurs (pages 2, 6-7, 11), les disparités territoriales (pages 7-9), l'écart entre victimes enregistrées et réalité (pages 3, 10), et le profil des auteurs (pages 6-7, 9). Chaque thématique est substantielle, documentée par plusieurs nœuds et sections, et formule une problématique transférable à d'autres contextes ou terrains.",
+  "threads": [
+    {
+      "thread_id": "T2",
+      "fil_lecture": "Violences sexuelles intrafamiliales sur mineurs",
+      "source_locator": "2, 6, 7, 11",
+      "source_anchor": "96 % des victimes de violences sexuelles intrafamiliales non conjugales sont mineures, dont 80 % de femmes. 89 % de ces violences sont des violences sexuelles physiques (viols, tentatives de viol, agressions ou atteintes sexuelles). Près des deux tiers sont commises par les parents ou beaux-parents. Les femmes déclarent deux fois plus souvent que les hommes avoir subi ces violences avant 18 ans, avec un écart particulièrement important pour les violences sexuelles.",
+      "retrieval_queries": [
+        "violences sexuelles intrafamiliales mineurs",
+        "abus sexuels intra-familiaux enfants",
+        "viols et agressions sexuelles familiales"
+      ],
+      "candidate_ids": [
+        "PUB008"
+      ],
+      "candidate_count": 1,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "violences sexuelles intrafamiliales",
+        "variantes": [],
+        "angle": "prévalence, profil des victimes mineures et caractéristiques des auteurs",
+        "critere_raccord": "La cible doit développer substantiellement « violences sexuelles intrafamiliales » lui-même. Si elle développe aussi le cœur de l'angle source « prévalence, profil des victimes mineures et caractéristiques des auteurs », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "violences sexuelles intrafamiliales"
+        ]
+      },
+      "pool_ids": [
+        "PUB008",
+        "PUB111",
+        "PUB090",
+        "PUB006",
+        "PUB013",
+        "PUB057",
+        "PUB026",
+        "PUB112",
+        "PUB015"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB111",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB057",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB008 constitue un raccord DIRECT au fil source. La publication du SSMSI documente substantiellement l'objet pivot « violences sexuelles intrafamiliales » sur mineurs en fournissant : (1) des données de prévalence précises et évolutives (53 % en 2025 vs 23 % en 2016) ; (2) le profil détaillé des victimes mineures par sexe (81 % de filles) et par âge (répartition en trois tranches) ; (3) des informations sur le contexte de commission (intrafamilial vs hors famille). Ces éléments correspondent directement au cœur de l'angle source : « prévalence, profil des victimes mineures et caractéristiques des auteurs ». Le pivot est nommé littéralement et développé de manière substantielle et chiffrée.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB008",
+          "PUB090",
+          "PUB111",
+          "PUB057",
+          "PUB013",
+          "PUB026",
+          "PUB112",
+          "PUB006",
+          "PUB015"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Seul PUB008 constitue un raccord DIRECT : il documente substantiellement et explicitement le même objet (violences sexuelles intrafamiliales sur mineurs) avec des données statistiques précises sur la prévalence, les types d'infractions, les profils de victimes et l'évolution temporelle. PUB090 offre un raccord ADJACENT utile en développant des composantes importantes (vulnérabilités, sous-signalement, coûts) mais sans traiter les violences intrafamiliales comme objet central. Tous les autres candidats reposent sur des rapprochements insuffisants : vocabulaire commun, domaine voisin, ou contextes distincts (cybercriminalité, transports en commun, environnement étudiant, méthodologie générale) sans développement substantiel du fil de départ."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB031",
+      "fil_lecture": "Violences sexuelles intrafamiliales sur mineurs",
+      "source_locator": "2, 6, 7, 11",
+      "target_publication_id": "PUB008",
+      "pourquoi": "La publication documente substantiellement les violences sexuelles intrafamiliales sur mineurs : elle fournit des données précises sur la prévalence (53 % des violences sexuelles intrafamiliales en 2025 contre 23 % en 2016), le profil des victimes (81 % de filles en 2025, répartition par âge : 23 % moins de 10 ans, 44 % de 10-14 ans, 33 % de 15-17 ans) et des informations sur les auteurs (contexte familial vs hors famille). Elle développe directement le cœur du fil source.",
+      "target_locator": "5",
+      "decision": "RETENIR",
+      "badges": [
+        "Même auteur"
+      ],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 11,
+    "extraits_total": 11,
+    "sections_couvertes": 11,
+    "sections_total": 11
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

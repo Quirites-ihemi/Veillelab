@@ -1,0 +1,157 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB090",
+  "source_publication": {
+    "publication_id": "PUB090",
+    "titre": "lutte contre la pédocriminalité",
+    "année_publication": "2026",
+    "image_publication": "PUB090.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
+    "node_count": 33,
+    "relation_count": 34,
+    "chunk_count": 35,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB090.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Identification de 5 thématiques phares structurantes du rapport PEPs 2026 sur la lutte contre la pédocriminalité. Chaque thématique représente une problématique transversale substantielle, documentée par plusieurs sections et nœuds convergents, susceptible d'être traitée dans d'autres contextes ou terrains du corpus Quiritès. Les thématiques couvrent l'ensemble du document : mutations numériques (axe 3), accompagnement des victimes (axes 1-2), prévention (axes 1-4), gouvernance institutionnelle (axe 2) et réponse judiciaire (axes 2-5).",
+  "threads": [
+    {
+      "thread_id": "T5",
+      "fil_lecture": "Réponse pénale et effectivité des sanctions en matière de pédocriminalité",
+      "source_locator": "65-67, 92-96, 128-131, 132-133",
+      "source_anchor": "Le rapport propose une refonte du système judiciaire centrée sur protection, sécurisation, accompagnement et indemnisation des victimes mineures, avec Charte des droits fondamentaux. Une doctrine nationale doit harmoniser et renforcer la réponse pénale pour infractions sexuelles contre mineurs, réduire écarts territoriaux, renforcer peines principales et encadrer réductions d'aménagements. Mesures visent effectivité et caractère dissuasif des sanctions, encadrement accru des remises de peine, limitation de la correctionnalisation, égalité des peines entre auteurs. Révision de l'appellation « classement sans suite » pour limiter victimisation secondaire.",
+      "retrieval_queries": [
+        "réponse pénale infractions sexuelles mineurs doctrine nationale harmonisation",
+        "effectivité sanctions pédocriminalité dissuasion peines",
+        "protection victimes mineures système judiciaire charte droits"
+      ],
+      "candidate_ids": [
+        "PUB002",
+        "PUB010",
+        "PUB004",
+        "PUB013"
+      ],
+      "candidate_count": 4,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Réponse pénale",
+        "variantes": [
+          "doctrine nationale",
+          "effectivité des sanctions"
+        ],
+        "angle": "Harmonisation, renforcement et effectivité de la réponse pénale en matière de…",
+        "critere_raccord": "La cible doit développer substantiellement « Réponse pénale » lui-même. Si elle développe aussi le cœur de l'angle source « Harmonisation, renforcement et effectivité de la réponse pénale en matière de… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Réponse pénale",
+          "doctrine nationale",
+          "effectivité des sanctions"
+        ]
+      },
+      "pool_ids": [
+        "PUB002",
+        "PUB026",
+        "PUB004",
+        "PUB010",
+        "PUB008",
+        "PUB006",
+        "PUB011",
+        "PUB113",
+        "PUB013",
+        "PUB101",
+        "PUB016"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB002 seul apporte une documentation substantielle et explicite du pivot « réponse pénale » : il développe concrètement ses modalités (rapidité, fermeté, systématicité), ses résultats mesurables (taux, quantum des peines) et sa mise en œuvre doctrinale (circulaires, plans, protocoles). Bien que le terrain soit différent (élus, non mineurs) et l'angle source absent, cette connaissance complémentaire sur le même objet pivot justifie un classement ADJACENT. PUB010, PUB004 et PUB013 ne font que citer le pivot ou des variantes sans en documenter aucun aspect concret : ils restent INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB026",
+          "PUB002",
+          "PUB008",
+          "PUB006",
+          "PUB013",
+          "PUB010",
+          "PUB004"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Contrôle effectué sur 7 publications candidates. Seul PUB008 atteint le seuil ADJACENT en documentant substantiellement une composante utile du fil (victimes et auteurs mineurs d'infractions sexuelles). PUB002 présente une analogie structurelle intéressante (politique pénale volontariste, effectivité, peines renforcées) mais reste insuffisant car il ne traite pas du domaine spécifique de la pédocriminalité. Les autres candidats relèvent du contexte général (sécurité, justice, victimation) sans développement explicite des éléments centraux du fil: réponse pénale, effectivité des sanctions, doctrine d'harmonisation, dissuasion en matière de pédocriminalité."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB090",
+      "fil_lecture": "Réponse pénale et effectivité des sanctions en matière de pédocriminalité",
+      "source_locator": "65-67, 92-96, 128-131, 132-133",
+      "target_publication_id": "PUB008",
+      "pourquoi": "PUB008 documente explicitement les victimes mineures d'infractions à caractère sexuel (76 200 en 2025, +156% en 10 ans) et les mineurs mis en cause pour ces infractions. Cette donnée statistique substantielle sur la pédocriminalité constitue une composante utile du fil, bien que le document ne traite pas de la réponse pénale, de l'effectivité des sanctions ou de la doctrine d'harmonisation.",
+      "target_locator": "1, 5",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 35,
+    "extraits_total": 35,
+    "sections_couvertes": 35,
+    "sections_total": 35
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

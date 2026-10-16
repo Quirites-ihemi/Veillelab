@@ -1,0 +1,119 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB031",
+  "source_publication": {
+    "publication_id": "PUB031",
+    "titre": "les violences intrafamiliales non conjugales en 2024",
+    "année_publication": "2026",
+    "image_publication": "PUB031.png",
+    "auteurs_MI": "Maud Guillonneau, Maxine Voinson",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139224/1098858/file/IR59%20Les%20violences%20intrafamiliales%20non%20conjugales%20en%202024.pdf",
+    "url_source": "https://www.interieur.gouv.fr/documentation/etudes-et-statistiques/interstats-info-rapide-ndeg-59-violences-intrafamiliales-non-conjugales-enregistrees-par-services-de.html",
+    "node_count": 20,
+    "relation_count": 18,
+    "chunk_count": 11,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB031.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication statistique du SSMSI documentant les violences intrafamiliales non conjugales enregistrées en 2024. Cinq fils de lecture ont été identifiés : (1) la dénonciation différée, phénomène structurant particulièrement marqué pour les violences sexuelles sur mineurs ; (2) l'écart entre victimes enregistrées et violences réellement subies, explicitement thématisé comme enjeu méthodologique ; (3) le profil spécifique des violences sexuelles intrafamiliales sur mineurs et leurs formes ; (4) les disparités territoriales significatives et leurs géographies distinctes selon le type de violence ; (5) la présence de mineurs parmi les auteurs de violences sexuelles intrafamiliales, phénomène minoritaire mais documenté. Ces fils couvrent les dimensions analytiques majeures du document sans réduire artificiellement la complexité des phénomènes documentés.",
+  "threads": [
+    {
+      "thread_id": "FIL_003",
+      "fil_lecture": "Violences sexuelles intrafamiliales sur mineurs : profil et formes",
+      "source_locator": "6;7",
+      "source_anchor": "Les victimes de violences sexuelles intrafamiliales non conjugales sont presque exclusivement mineures (96 %), avec une majorité de femmes. Parmi les victimes mineures, 89 % des violences sexuelles enregistrées sont des violences sexuelles physiques, prenant principalement la forme d'agressions ou d'atteintes sexuelles, puis de viols ou tentatives de viol. La corruption de mineurs représente 7 % des victimes enregistrées. D'autres formes, notamment pédopornographie et exhibition sexuelle, restent moins fréquentes mais certaines ont progressé depuis 2021. Près des deux tiers des violences sexuelles intrafamiliales sont commises par les parents ou les beaux-parents.",
+      "retrieval_queries": [
+        "violences sexuelles intrafamiliales mineurs",
+        "auteurs parents violences sexuelles enfants",
+        "formes violences sexuelles intrafamiliales pédopornographie"
+      ],
+      "candidate_ids": [
+        "PUB008"
+      ],
+      "candidate_count": 1,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "violences sexuelles intrafamiliales",
+        "variantes": [],
+        "angle": "profil des victimes mineures et formes de violences sexuelles physiques",
+        "critere_raccord": "La cible doit développer substantiellement « violences sexuelles intrafamiliales » lui-même. Si elle développe aussi le cœur de l'angle source « profil des victimes mineures et formes de violences sexuelles physiques », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "violences sexuelles intrafamiliales"
+        ]
+      },
+      "pool_ids": [
+        "PUB008",
+        "PUB111",
+        "PUB090",
+        "PUB013",
+        "PUB006",
+        "PUB057",
+        "PUB026",
+        "PUB112",
+        "PUB015"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB111",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB057",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB008 constitue un raccord DIRECT au fil source. La publication documente explicitement et substantiellement l'objet pivot « violences sexuelles intrafamiliales » en développant précisément le cœur de l'angle source : profil des victimes mineures (majorité de filles, 81 %) et formes de violences sexuelles physiques (viols et agressions sexuelles comme formes dominantes, avec évolution chiffrée). Les preuves fournissent des données statistiques détaillées sur la composition par sexe et âge des victimes, ainsi que sur la répartition des types d'infractions sexuelles intrafamiliales sur mineurs, ce qui correspond exactement au libellé et à l'ancrage du fil source."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB031",
+      "fil_lecture": "Violences sexuelles intrafamiliales sur mineurs : profil et formes",
+      "source_locator": "6;7",
+      "target_publication_id": "PUB008",
+      "pourquoi": "La publication développe substantiellement l'objet pivot « violences sexuelles intrafamiliales » en documentant précisément le profil des victimes mineures (majorité de filles, 81 % en 2025) et les formes de violences sexuelles physiques (viols, agressions sexuelles représentant 73 % des viols en 2025 contre 35 % en 2016). Elle fournit des données chiffrées sur l'évolution et la répartition des infractions sexuelles intrafamiliales sur mineurs.",
+      "target_locator": "5",
+      "decision": "RETENIR",
+      "badges": [
+        "Même auteur"
+      ]
+    }
+  ]
+}

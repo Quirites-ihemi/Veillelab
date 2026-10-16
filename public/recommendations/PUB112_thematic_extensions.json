@@ -1,0 +1,245 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB112",
+  "source_publication": {
+    "publication_id": "PUB112",
+    "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
+    "année_publication": "2026",
+    "image_publication": "PUB112.png",
+    "auteurs_MI": "Inès Karmous",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
+    "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+    "node_count": 30,
+    "relation_count": 24,
+    "chunk_count": 18,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Identification de 5 thématiques phares structurant le document. Le panorama départemental révèle des problématiques transversales : (1) le décalage systématique entre victimation et peur selon le type d'atteinte, (2) la concentration urbaine des victimations contrastant avec la diffusion territoriale des craintes, (3) les spécificités du harcèlement sexuel avec surreprésentation parisienne et cas ultramarins, (4) le lien entre composition migratoire et victimation pour discriminations, (5) l'absence de différenciation territoriale pour les atteintes numériques. Ces thématiques sont substantielles, documentées par plusieurs sections et nœuds convergents, et transférables à d'autres contextes territoriaux ou sectoriels.",
+  "threads": [
+    {
+      "thread_id": "T1",
+      "fil_lecture": "Décalage entre victimation et peur d'être victime selon le type d'atteinte",
+      "source_locator": "1;3;4;5;6;7;9;10;11",
+      "source_anchor": "Le document établit une distinction majeure entre atteintes aux biens et atteintes aux personnes. Pour les atteintes aux biens (cambriolages, vols), la victimation déclarée est concentrée dans les départements densément peuplés, tandis que la peur d'en être victime est diffuse sur le territoire, voire plus forte dans des départements moins touchés (Cher, Aube). Pour les atteintes aux personnes (injures, menaces), une correspondance territoriale plus forte existe entre victimation et peur. La Réunion illustre un cas de décalage pour une atteinte aux personnes : forte peur du harcèlement sexuel malgré une victimation inférieure à la moyenne.",
+      "retrieval_queries": [
+        "décalage entre victimation et peur d'être victime",
+        "corrélation victimation inquiétude selon type atteinte",
+        "victimation concentrée peur diffuse territoire"
+      ],
+      "candidate_ids": [
+        "PUB013",
+        "PUB006",
+        "PUB015",
+        "PUB002",
+        "PUB016",
+        "PUB008",
+        "PUB026",
+        "PUB031",
+        "PUB010",
+        "PUB004"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 1,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats sur le fil « Décalage entre victimation et peur d'être victime selon le type d'atteinte ». PUB013 est DIRECT : il développe explicitement et substantiellement le même objet avec distinction atteintes aux biens/personnes et analyse territoriale. PUB015 et PUB004 sont ADJACENT : ils documentent des composantes utiles (sources méthodologiques et relation victimation-sentiment selon le territoire). Les autres candidats (PUB006, PUB002, PUB016, PUB008, PUB026, PUB031, PUB010) sont INSUFFICIENT : ils relèvent du contexte sécuritaire ou criminel mais ne documentent pas explicitement le décalage victimation-peur selon le type d'atteinte.",
+      "chemin_ouvert": {
+        "identique": "fil sans pivot valide : déjà examiné par le chemin historique de V1.0-F"
+      }
+    },
+    {
+      "thread_id": "T2",
+      "fil_lecture": "Concentration urbaine des victimations déclarées et homogénéité territoriale des craintes",
+      "source_locator": "1;2;3;4;5;6;7",
+      "source_anchor": "Les victimations déclarées pour atteintes aux biens sont surreprésentées dans les départements les plus densément peuplés (Île-de-France, Rhône, Bouches-du-Rhône), avec des taux atteignant 7,7 % à Paris pour les vols sans violence et 5,4 % dans le Rhône pour les cambriolages. À l'inverse, la peur d'en être victime est relativement homogène sur le territoire national, concernant près d'un habitant sur deux pour les cambriolages et variant entre 24,8 % et 49,5 % pour les vols selon les départements.",
+      "retrieval_queries": [
+        "concentration urbaine victimations densité population",
+        "disparités territoriales atteintes aux biens",
+        "homogénéité peur territoire national"
+      ],
+      "candidate_ids": [
+        "PUB013",
+        "PUB015",
+        "PUB018",
+        "PUB026",
+        "PUB004",
+        "PUB090"
+      ],
+      "candidate_count": 6,
+      "retained_count": 1,
+      "possible_count": 2,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "victimations déclarées",
+        "variantes": [
+          "victimations",
+          "taux de victimation déclarée"
+        ],
+        "angle": "disparités territoriales entre concentration urbaine des victimations et…",
+        "critere_raccord": "La cible doit développer substantiellement « victimations déclarées » lui-même. Si elle développe aussi le cœur de l'angle source « disparités territoriales entre concentration urbaine des victimations et… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "victimations déclarées",
+          "victimations",
+          "taux de victimation déclarée"
+        ]
+      },
+      "pool_ids": [
+        "PUB004",
+        "PUB013",
+        "PUB015",
+        "PUB018",
+        "PUB026",
+        "PUB014",
+        "PUB031",
+        "PUB111",
+        "PUB001",
+        "PUB002",
+        "PUB090",
+        "PUB022",
+        "PUB006",
+        "PUB010",
+        "PUB008",
+        "PUB012"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB031",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB111",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 6 candidats. PUB018 est classé DIRECT : il développe substantiellement les victimations déclarées et leurs disparités territoriales selon la densité urbaine, correspondant au cœur du fil. PUB013, PUB015 et PUB004 sont classés ADJACENT : ils documentent explicitement le pivot (victimations déclarées) et ses modalités de mesure ou ses variations territoriales, mais sous des angles différents (méthodologie d'enquête, disparités QPV vs hors QPV). PUB026 et PUB090 sont classés INSUFFICIENT : le pivot y est seulement mentionné sans développement substantiel de son contenu ou de ses résultats.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB018",
+          "PUB013",
+          "PUB014",
+          "PUB111",
+          "PUB010",
+          "PUB001",
+          "PUB022",
+          "PUB002",
+          "PUB090",
+          "PUB006"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats sur le fil « Concentration urbaine des victimations déclarées et homogénéité territoriale des craintes ». Deux publications retenues ou possibles : PUB018 documente directement les disparités communales des vols sans violence selon la densité urbaine (DIRECT) ; PUB013 fournit l'enquête VRS source des données de victimation et perceptions (ADJACENT) ; PUB111 développe la concentration urbaine des victimations dans les transports en commun (ADJACENT). Les autres candidats traitent de phénomènes distincts (refus routiers, changement climatique, migrations, atteintes aux élus, pédocriminalité, cybercriminalité) ou ne documentent pas explicitement les victimations déclarées pour atteintes aux biens et les craintes territoriales."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB112",
+      "fil_lecture": "Concentration urbaine des victimations déclarées et homogénéité territoriale des craintes",
+      "source_locator": "1;2;3;4;5;6;7",
+      "target_publication_id": "PUB018",
+      "pourquoi": "La publication développe substantiellement les victimations déclarées et les disparités territoriales. Elle analyse les vols sans violence par commune, documente les taux de victimation (882 000 personnes déclarent avoir été victimes en 2022, 27 % déposent plainte), et examine les variations selon les caractéristiques territoriales (communes urbaines densément peuplées, zones côtières, montagneuses, touristiques). Cela correspond directement au cœur du fil sur la concentration urbaine des victimations.",
+      "target_locator": "2",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB112",
+      "fil_lecture": "Décalage entre victimation et peur d'être victime selon le type d'atteinte",
+      "source_locator": "1;3;4;5;6;7;9;10;11",
+      "target_publication_id": "PUB013",
+      "pourquoi": "PUB013 développe substantiellement le même objet : la relation entre victimation déclarée et ressenti de sécurité selon la nature de l'infraction, avec données territoriales et comparaisons entre types d'atteintes.",
+      "target_locator": "10;11",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB112",
+      "fil_lecture": "Concentration urbaine des victimations déclarées et homogénéité territoriale des craintes",
+      "source_locator": "1;2;3;4;5;6;7",
+      "target_publication_id": "PUB015",
+      "pourquoi": "La publication documente explicitement les enquêtes de victimation comme source de données statistiques publiques permettant d'estimer les taux de plainte et d'évaluer le « chiffre noir ». Elle explique le rôle des victimations déclarées dans la quantification du crime et leur distinction par rapport aux données administratives. Le pivot est développé substantiellement, bien que sous l'angle méthodologique et non territorial.",
+      "target_locator": "39",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB112",
+      "fil_lecture": "Décalage entre victimation et peur d'être victime selon le type d'atteinte",
+      "source_locator": "1;3;4;5;6;7;9;10;11",
+      "target_publication_id": "PUB004",
+      "pourquoi": "PUB004 documente une composante utile : la relation entre victimation déclarée et sentiment d'insécurité dans des contextes territoriaux spécifiques (QPV vs autres zones), ce qui éclaire le décalage victimation-peur selon le territoire.",
+      "target_locator": "11;12;5",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 18,
+    "extraits_total": 18,
+    "sections_couvertes": 18,
+    "sections_total": 18
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

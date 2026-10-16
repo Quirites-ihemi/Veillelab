@@ -1,0 +1,314 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB008",
+  "source_publication": {
+    "publication_id": "PUB008",
+    "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
+    "année_publication": "2026",
+    "image_publication": "PUB008.png",
+    "auteurs_MI": "Maud Guillonneau",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
+    "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
+    "node_count": 54,
+    "relation_count": 50,
+    "chunk_count": 35,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB008.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du document. Elles correspondent à des problématiques substantielles documentées par plusieurs sections et nœuds convergents : (1) la hausse spectaculaire des infractions sexuelles enregistrées sur mineurs, expliquée par des facteurs législatifs, sociaux et institutionnels ; (2) l'augmentation des violences physiques intrafamiliales, révélant un changement de structure des violences contre mineurs ; (3) l'explosion du harcèlement moral et scolaire suite à la loi de 2022 ; (4) la divergence majeure entre l'augmentation des victimes mineures et la baisse des mineurs mis en cause, phénomène transversal à plusieurs types d'infractions ; (5) la transformation du profil des mineurs impliqués dans les stupéfiants, avec un basculement vers le trafic. Chaque thématique est ancrée dans des pages précises et représente une problématique susceptible d'être traitée dans d'autres contextes ou terrains du corpus.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Infractions à caractère sexuel enregistrées sur mineurs",
+      "source_locator": "5;6;7;12",
+      "source_anchor": "Entre 2016 et 2025, le nombre de victimes mineures d'infractions à caractère sexuel a augmenté de 156 % (+11 % par an), avec une progression particulièrement forte des viols (multipliés par 3,4). Cette hausse est attribuée à plusieurs facteurs : élargissement juridique progressif de la notion de viol (lois de 2018, 2021, 2025), redéfinition en 2021 du périmètre des infractions sexuelles sur les mineurs de moins de 15 ans, libération de la parole sur les violences sexuelles, et amélioration de l'accueil des victimes par les services de sécurité intérieure. Parallèlement, le nombre de mineurs mis en cause pour infractions à caractère sexuel a augmenté de 132 % en 10 ans, avec 95 % de ces actes visant d'autres mineurs.",
+      "retrieval_queries": [
+        "infractions à caractère sexuel mineurs",
+        "viols agressions sexuelles enfants",
+        "violences sexuelles enregistrées mineurs"
+      ],
+      "candidate_ids": [
+        "PUB111",
+        "PUB090",
+        "PUB031",
+        "PUB013",
+        "PUB026"
+      ],
+      "candidate_count": 5,
+      "retained_count": 0,
+      "possible_count": 3,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "infractions à caractère sexuel",
+        "variantes": [
+          "infractions sexuelles",
+          "violences sexuelles"
+        ],
+        "angle": "enregistrement et évolution des victimes mineures",
+        "critere_raccord": "La cible doit développer substantiellement « infractions à caractère sexuel » lui-même. Si elle développe aussi le cœur de l'angle source « enregistrement et évolution des victimes mineures », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "infractions à caractère sexuel",
+          "infractions sexuelles",
+          "violences sexuelles"
+        ]
+      },
+      "pool_ids": [
+        "PUB111",
+        "PUB090",
+        "PUB013",
+        "PUB031",
+        "PUB003",
+        "PUB026",
+        "PUB006",
+        "PUB015",
+        "PUB057",
+        "PUB018",
+        "PUB010",
+        "PUB112",
+        "PUB025",
+        "PUB001",
+        "PUB002"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB003",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB057",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 5 candidats sur le fil « Infractions à caractère sexuel enregistrées sur mineurs ». Trois candidats (PUB111, PUB090, PUB031) apportent un développement substantiel et explicite du même objet pivot (infractions/violences sexuelles) sous des angles complémentaires : terrain spécifique (transports), réponse pénale et prévention, contexte intrafamilial. Deux candidats (PUB013, PUB026) ne mentionnent les violences sexuelles que de manière incidente, sans développement propre. Recommandation : RETENIR les trois premiers (DIRECT/ADJACENT), ÉCARTER les deux derniers (INSUFFICIENT).",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB031",
+          "PUB111",
+          "PUB090",
+          "PUB018",
+          "PUB057",
+          "PUB026",
+          "PUB006",
+          "PUB013",
+          "PUB112",
+          "PUB003"
+        ],
+        "retained_count": 0,
+        "possible_count": 2,
+        "note": "Évaluation de 10 candidats. Deux publications retenues comme POSSIBLE : PUB031 (violences sexuelles intrafamiliales sur mineurs, composante utile mais champ restreint) et PUB090 (réponses pénales et institutionnelles à la pédocriminalité, composante utile mais sans traitement statistique de l'évolution). Huit publications écartées : aucune ne documente substantiellement l'évolution des infractions sexuelles sur mineurs enregistrées, leurs formes, ou les facteurs explicatifs du fil. Les rapprochements reposent sur des contextes communs (vocabulaire, domaine, méthodologie) ou des mentions isolées, sans développement explicite du phénomène central."
+      }
+    },
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Violences physiques intrafamiliales envers mineurs",
+      "source_locator": "7;14;15",
+      "source_anchor": "Le nombre de victimes mineures de violences physiques a plus que doublé en 10 ans (+112 %, soit +9 % par an). Les violences intrafamiliales représentent une part croissante de ces violences, avec un poids accru des infractions commises par partenaire ou ex-partenaire, révélées plus fréquemment depuis le Grenelle des violences conjugales et le mouvement #MeToo. Parallèlement, le nombre de mineurs mis en cause pour violences physiques intrafamiliales a doublé entre 2016 et 2025, avec une surreprésentation des 16-17 ans (54 % en moyenne).",
+      "retrieval_queries": [
+        "violences physiques intrafamiliales mineurs",
+        "violences domestiques enfants",
+        "maltraitance familiale mineurs"
+      ],
+      "candidate_ids": [
+        "PUB031",
+        "PUB111"
+      ],
+      "candidate_count": 2,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "violences physiques intrafamiliales",
+        "variantes": [
+          "violences intrafamiliales"
+        ],
+        "angle": "progression et poids croissant des violences physiques commises au sein de la…",
+        "critere_raccord": "La cible doit développer substantiellement « violences physiques intrafamiliales » lui-même. Si elle développe aussi le cœur de l'angle source « progression et poids croissant des violences physiques commises au sein de la… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "violences physiques intrafamiliales",
+          "violences intrafamiliales"
+        ]
+      },
+      "pool_ids": [
+        "PUB031",
+        "PUB111",
+        "PUB002",
+        "PUB006",
+        "PUB013",
+        "PUB016",
+        "PUB026",
+        "PUB062",
+        "PUB112",
+        "PUB090",
+        "PUB010",
+        "PUB114",
+        "PUB057"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB062",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB057",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB031 constitue un développement direct et substantiel du fil source : même objet pivot (violences physiques intrafamiliales), même angle (progression et poids croissant), données chiffrées comparables (progression annuelle, surreprésentation des mineurs). PUB111 mentionne le pivot mais dans un contexte radicalement différent (transports en commun) sans apporter d'information propre sur les violences intrafamiliales elles-mêmes, ce qui justifie un classement INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB031",
+          "PUB111",
+          "PUB013",
+          "PUB026",
+          "PUB090",
+          "PUB002",
+          "PUB006",
+          "PUB016",
+          "PUB062",
+          "PUB112"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Contrôle de 10 candidats. Un seul raccord DIRECT identifié : PUB031 documente substantiellement et explicitement le même objet (violences physiques intrafamiliales envers mineurs) avec données d'évolution temporelle concordantes. Un raccord ADJACENT : PUB090 développe une composante utile (vulnérabilité des mineurs et défaillances institutionnelles) mais porte sur les violences sexuelles, non physiques. Les 8 autres candidats présentent des raccords insuffisants : mentions éparses, contextes distincts, ou absence de développement substantiel du phénomène central du fil."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB008",
+      "fil_lecture": "Violences physiques intrafamiliales envers mineurs",
+      "source_locator": "7;14;15",
+      "target_publication_id": "PUB031",
+      "pourquoi": "La cible développe substantiellement l'objet pivot « violences physiques intrafamiliales » avec des données chiffrées précises sur les victimes mineures (75 % des victimes de violences physiques), la progression annuelle (+9 %), la répartition par auteur (parents dans deux tiers des cas) et l'évolution depuis 2021. Elle traite directement le cœur du fil : progression et poids des violences physiques intrafamiliales envers mineurs.",
+      "target_locator": "6",
+      "decision": "RETENIR",
+      "badges": [
+        "Même auteur"
+      ],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB008",
+      "fil_lecture": "Infractions à caractère sexuel enregistrées sur mineurs",
+      "source_locator": "5;6;7;12",
+      "target_publication_id": "PUB111",
+      "pourquoi": "La cible documente les violences sexuelles enregistrées dans un terrain spécifique (transports en commun) avec des chiffres et évolutions (hausse de 3 % entre 2024-2025, augmentation de 10 % pour les mis en cause). Elle apporte une connaissance substantielle sur le même objet pivot sous un angle différent (lieu spécifique plutôt que mineurs), ce qui constitue un développement utile et complémentaire.",
+      "target_locator": "1",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB008",
+      "fil_lecture": "Infractions à caractère sexuel enregistrées sur mineurs",
+      "source_locator": "5;6;7;12",
+      "target_publication_id": "PUB090",
+      "pourquoi": "La cible développe substantiellement les infractions sexuelles sur mineurs sous l'angle de la réponse pénale et de la prévention (harmonisation de la réponse pénale, partage d'informations, détection des signaux faibles). Elle documente concrètement le même objet pivot mais sous des angles différents de celui du fil source (enregistrement et évolution des victimes).",
+      "target_locator": "92;96;106;108;98;99;100;101",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 35,
+    "extraits_total": 35,
+    "sections_couvertes": 20,
+    "sections_total": 20
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

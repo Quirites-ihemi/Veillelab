@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB013",
+  "source_publication": {
+    "publication_id": "PUB013",
+    "titre": "rapport d'enquête thématique 2022 vécu et ressenti en matière de sécurité",
+    "année_publication": "2026",
+    "image_publication": "PUB013.png",
+    "auteurs_MI": "Garance Gharbi, Lisa Troy",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Rapport",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139696/1101982/file/Rapport%20d%E2%80%99enque%CC%82te%20the%CC%81matique%202022%20V%C3%A9cu%20et%20ressenti%20en%20mati%C3%A8re%20de%20s%C3%A9curit%C3%A9.pdf",
+    "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Rapport-d-enquete-thematique-2022-Vecu-et-ressenti-en-matiere-de-securite-les-interactions-entre-les-forces-de-securite-interieure-et-la-population",
+    "node_count": 24,
+    "relation_count": 20,
+    "chunk_count": 45,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB013.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport d'enquête thématique 2022 sur le vécu et ressenti en matière de sécurité, produit par le SSMSI. Document structurant couvrant interactions population-forces de sécurité, satisfaction aux contacts, opinions générales, et attentes. Cinq fils identifiés : disparités sociodémographiques majeures dans perceptions et traitements ; écart structurant entre satisfaction aux contacts directs et opinions générales ; très faible recours aux mécanismes de plainte malgré mauvais traitements ; minimisation des faits lors déclarations ; satisfaction fortement dépendante de l'intervention effective suite appel d'urgence.",
+  "threads": [],
+  "leaves": []
+}

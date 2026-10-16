@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB034",
+  "source_publication": {
+    "publication_id": "PUB034",
+    "titre": "penser différemment la déontologie des forces de sécurité",
+    "année_publication": "2026",
+    "image_publication": "PUB034.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
+    "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
+    "node_count": 21,
+    "relation_count": 18,
+    "chunk_count": 9,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB034.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq fils de lecture substantiels extraits de cette note du Centre de recherche de la Gendarmerie nationale. Le document structure sa réflexion autour d'une redéfinition de la déontologie comme garantie plutôt que contrainte, avec trois axes majeurs : (1) le rôle protecteur et encadrant de la déontologie ; (2) la technicisation croissante des règles et des conditions d'intervention ; (3) les dispositifs de protection des agents (formation, protection fonctionnelle). Un quatrième axe transversal porte sur la tension entre confiance normative et contrôle institutionnalisé. Un cinquième fil couvre la convergence déontologique entre les trois principales forces de sécurité intérieure malgré leurs différences institutionnelles. Chaque fil est ancré dans des passages explicites et ouvre des perspectives de prolongement documentaire au sein du corpus.",
+  "threads": [
+    {
+      "thread_id": "FIL_001",
+      "fil_lecture": "Déontologie comme garantie et protection des forces de sécurité",
+      "source_locator": "6, 14",
+      "source_anchor": "La déontologie est présentée comme une garantie plutôt qu'une contrainte (p. 6). Elle encadre l'exercice des missions tout en protégeant les forces de sécurité intérieure dans et autour de l'intervention (p. 11). Elle fournit une boussole orientée vers le respect des droits et libertés fondamentaux (p. 9). L'auteur conclut que les missions de sécurité doivent reposer sur une confiance normative fondée sur un corpus déontologique encadrant et protégeant les agents (p. 14).",
+      "retrieval_queries": [
+        "déontologie forces sécurité protection encadrement",
+        "confiance normative corpus déontologique",
+        "garantie droits libertés action sécuritaire"
+      ],
+      "candidate_ids": [
+        "PUB013",
+        "PUB026"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Déontologie",
+        "variantes": [
+          "Codes de déontologie",
+          "Corpus déontologique"
+        ],
+        "angle": "Garantie et protection des forces de sécurité intérieure dans l'exercice de…",
+        "critere_raccord": "La cible doit développer substantiellement « Déontologie » lui-même. Si elle développe aussi le cœur de l'angle source « Garantie et protection des forces de sécurité intérieure dans l'exercice de… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Déontologie",
+          "Codes de déontologie",
+          "Corpus déontologique"
+        ]
+      },
+      "pool_ids": [
+        "PUB013",
+        "PUB026",
+        "PUB002",
+        "PUB005",
+        "PUB006",
+        "PUB033",
+        "PUB014",
+        "PUB015",
+        "PUB016",
+        "PUB018",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB013 : Enquête de perception publique. Mentionne la déontologie comme objet de sondage (confiance, respect des règles) mais ne documente pas le pivot lui-même : ni son contenu normatif, ni son rôle de garantie, ni son fonctionnement comme protection. Classification : INSUFFICIENT. PUB026 : Rapport du Défenseur des droits. Documente concrètement le rôle de la déontologie dans le contrôle des forces de sécurité et identifie des défaillances déontologiques (discriminations, contrôles abusifs) qui affectent la confiance publique. Bien que l'angle source « protection des agents » soit absent, la cible apporte une connaissance substantielle et explicite sur le pivot (son application, son contrôle, ses défaillances). Classification : ADJACENT."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB034",
+      "fil_lecture": "Déontologie comme garantie et protection des forces de sécurité",
+      "source_locator": "6, 14",
+      "target_publication_id": "PUB026",
+      "pourquoi": "Le document documente concrètement le rôle de la déontologie dans le contrôle des forces de sécurité (mission du Défenseur des droits) et identifie des comportements non déontologiques (contrôles d'identité discriminatoires, multiverbalisation). Il montre comment le non-respect de la déontologie sape la confiance publique et crée des inégalités d'accès au service public. Cela enrichit la compréhension du pivot sous l'angle de son application et de ses défaillances, bien que l'angle source « garantie et protection des agents » soit absent.",
+      "target_locator": "69, 71",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

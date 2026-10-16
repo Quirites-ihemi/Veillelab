@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB062",
+  "source_publication": {
+    "publication_id": "PUB062",
+    "titre": "le futur de notre rapport à l'autorité et à la vérité à l'horizon 2050",
+    "année_publication": "2026",
+    "image_publication": "PUB062.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Sénat",
+    "type_document": "Rapport",
+    "domaine": "Démocraties et sujets informationnels",
+    "url_contenu": "",
+    "url_source": "https://www.senat.fr/notice-rapport/2025/r25-655-notice.html",
+    "node_count": 28,
+    "relation_count": 26,
+    "chunk_count": 24,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB062.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport du Sénat (2026) sur le futur du rapport à l'autorité et à la vérité à l'horizon 2050. Cinq fils de lecture identifiés, couvrant les dimensions structurantes du document : (1) la crise diagnostiquée des autorités institutionnelles et ses conséquences pour l'État de droit ; (2) le phénomène technologique de post-réalité et ses vecteurs (IA, deepfakes, algorithmes) ; (3) le modèle économique des plateformes comme facteur d'amplification des contenus émotionnels ; (4) la réponse pédagogique par restauration de l'autorité épistémique et développement de l'esprit critique ; (5) les quatre scénarios prospectifs qui structurent l'analyse stratégique du rapport. Chaque fil dispose d'un ancrage précis dans le texte et de requêtes de recherche transversales.",
+  "threads": [],
+  "leaves": []
+}

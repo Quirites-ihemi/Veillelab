@@ -1,0 +1,207 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB022",
+  "source_publication": {
+    "publication_id": "PUB022",
+    "titre": "l’insularité",
+    "année_publication": "2026",
+    "image_publication": "PUB022.png",
+    "auteurs_MI": "François-Xavier Bieuville",
+    "organisme_producteur": "Association du corps préfectoral et des hauts fonctionnaires du ministère de l’Intérieur",
+    "type_document": "Articles et collections d'articles",
+    "domaine": "Administration territoriale de l'Etat",
+    "url_contenu": "https://droit.cairn.info/revue-administration-2026-1-page-30?lang=fr",
+    "url_source": "https://www.acphfmi.fr/la-revue-administration-2/",
+    "node_count": 28,
+    "relation_count": 23,
+    "chunk_count": 7,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB022.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du document (pages 30-32). Elles reflètent les problématiques structurantes de la gestion de l'eau en contexte insulaire : la crise elle-même, l'adaptation infrastructurelle, le renforcement des capacités, le financement public, et le rôle de gouvernance de l'État. Chaque thématique est documentée par plusieurs nœuds convergents et sections dédiées, et peut être retrouvée dans d'autres contextes territoriaux ou sectoriels du corpus.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Renforcement des capacités administratives et techniques",
+      "source_locator": "32",
+      "source_anchor": "Le document souligne que la sortie durable de la crise de l'eau est conditionnée par la mobilisation de l'ingénierie et la montée en compétence des acteurs publics et privés. Les actions préconisées incluent : renforcement des compétences des acteurs de la gestion de l'eau, appui technique administratif et juridique de l'État aux collectivités, accompagnement des usagers pour adapter leurs pratiques de consommation.",
+      "retrieval_queries": [
+        "montée en compétences des acteurs publics",
+        "appui technique et juridique de l'État",
+        "renforcement de l'ingénierie locale"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB026"
+      ],
+      "candidate_count": 2,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "capacités administratives et techniques",
+        "variantes": [
+          "renforcement des compétences",
+          "montée en compétence des acteurs",
+          "ingénierie"
+        ],
+        "angle": "renforcement des capacités des acteurs publics et privés pour la gestion…",
+        "critere_raccord": "La cible doit développer substantiellement « capacités administratives et techniques » lui-même. Si elle développe aussi le cœur de l'angle source « renforcement des capacités des acteurs publics et privés pour la gestion… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "capacités administratives et techniques",
+          "renforcement des compétences",
+          "montée en compétence des acteurs"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB006",
+        "PUB010",
+        "PUB007",
+        "PUB002",
+        "PUB114",
+        "PUB101",
+        "PUB026",
+        "PUB033",
+        "PUB013",
+        "PUB090",
+        "PUB016",
+        "PUB011",
+        "PUB034",
+        "PUB012",
+        "PUB025",
+        "PUB051",
+        "PUB115",
+        "PUB021"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB034",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB010 établit un raccord DIRECT : elle développe substantiellement le renforcement des capacités administratives et techniques des acteurs publics (équipes techniques, ingénierie d'État, mutualisation) pour la gestion des risques naturels, ce qui correspond au cœur du fil source. PUB026 mentionne seulement « capacités locales d'ingénierie » comme facteur de vulnérabilité administrative générale, sans documenter le renforcement de ces capacités lui-même ; le raccord reste INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB007",
+          "PUB006",
+          "PUB005",
+          "PUB026",
+          "PUB021",
+          "PUB011",
+          "PUB002",
+          "PUB101",
+          "PUB114"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Évaluation de 10 candidats sur le fil « Renforcement des capacités administratives et techniques » (sortie durable de crise de l'eau). Deux publications classées ADJACENT (PUB010 et PUB006) documentent explicitement le renforcement des capacités et la montée en compétence d'acteurs publics, mais dans des contextes sectoriels distincts (résilience alpine, cybercriminalité). Les huit autres candidats sont classés INSUFFICIENT : ils traitent soit de contextes sans lien direct avec la gestion de crise (PUB005, PUB026, PUB021, PUB011, PUB002, PUB101), soit de phénomènes analogues mais sans développement substantiel du cœur du fil (PUB007, PUB114). Aucun candidat ne documente le renforcement des capacités spécifiquement pour la gestion de l'eau ou l'accompagnement des usagers à adapter leurs pratiques de consommation."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB022",
+      "fil_lecture": "Renforcement des capacités administratives et techniques",
+      "source_locator": "32",
+      "target_publication_id": "PUB010",
+      "pourquoi": "La publication développe substantiellement le renforcement des capacités administratives et techniques des acteurs publics pour la gestion des risques naturels en montagne. Elle documente explicitement la montée en compétence des équipes techniques, l'ingénierie d'État et intercommunale, et l'accompagnement des collectivités, ce qui correspond directement au cœur du fil source sur le renforcement des capacités pour la gestion.",
+      "target_locator": "67;68",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 7,
+    "extraits_total": 7,
+    "sections_couvertes": 4,
+    "sections_total": 4
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

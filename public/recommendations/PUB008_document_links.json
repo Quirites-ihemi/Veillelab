@@ -1,0 +1,279 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB008",
+  "source_publication": {
+    "publication_id": "PUB008",
+    "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
+    "année_publication": "2026",
+    "image_publication": "PUB008.png",
+    "auteurs_MI": "Maud Guillonneau",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
+    "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
+    "node_count": 54,
+    "relation_count": 50,
+    "chunk_count": 35,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB008.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication statistique du SSMSI couvrant 10 ans (2016-2025) d'enregistrements de mineurs victimes et mis en cause par les services de sécurité intérieure. Cinq fils de lecture ont été identifiés, couvrant les dimensions majeures du document : (1) l'impact des redéfinitions légales sur les infractions sexuelles et leur enregistrement ; (2) le rôle de la libération de la parole et de l'amélioration de l'accueil des victimes dans la révélation tardive des violences ; (3) la divergence structurelle entre la hausse de la victimisation et la baisse de la délinquance juvénile ; (4) la transformation des violences intrafamiliales, devenues majoritaires et marquées par l'émergence des violences conjugales juvéniles ; (5) les fortes disparités territoriales de la délinquance juvénile selon les types d'infractions. Ces fils correspondent à des axes explicitement documentés et structurants dans la publication, susceptibles de prolongements dans d'autres publications du corpus.",
+  "threads": [
+    {
+      "thread_id": "FIL_001",
+      "fil_lecture": "Hausse des infractions sexuelles sur mineurs et redéfinitions légales",
+      "source_locator": "5;6;7;12",
+      "source_anchor": "Entre 2016 et 2025, le nombre de victimes mineures d'infractions à caractère sexuel a augmenté de 156 % (+11 % par an). Cette progression très soutenue de 2016 à 2021 (+13 % par an) puis plus modérée (+8 % par an) est à mettre en regard de la loi du 21 avril 2021 visant à protéger les mineurs des crimes et délits sexuels et de l'inceste, qui a redéfini le périmètre des infractions sexuelles sur mineurs de moins de 15 ans (devenant viols ou agressions sexuelles dès lors que la différence d'âge est d'au moins 5 ans). Le poids croissant des viols parmi les infractions sexuelles (de 26 % en 2016 à 34 % en 2025) résulte en partie de l'élargissement progressif de la notion de viol introduit par les lois de 2018, 2021 et 2025. Parallèlement, le nombre de mineurs mis en cause pour infractions à caractère sexuel a augmenté de 132 % en 10 ans, avec une hausse particulièrement marquée des viols (+184 %).",
+      "retrieval_queries": [
+        "redéfinition légale infractions sexuelles mineurs",
+        "élargissement notion viol loi 2021",
+        "impact législatif enregistrement victimes sexuelles"
+      ],
+      "candidate_ids": [
+        "PUB111",
+        "PUB090",
+        "PUB031",
+        "PUB013",
+        "PUB026"
+      ],
+      "candidate_count": 5,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "infractions à caractère sexuel",
+        "variantes": [
+          "infractions sexuelles",
+          "violences sexuelles"
+        ],
+        "angle": "redéfinition légale du périmètre et évolution des catégories (viols, agressions…",
+        "critere_raccord": "La cible doit développer substantiellement « infractions à caractère sexuel » lui-même. Si elle développe aussi le cœur de l'angle source « redéfinition légale du périmètre et évolution des catégories (viols, agressions… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "infractions à caractère sexuel",
+          "infractions sexuelles",
+          "violences sexuelles"
+        ]
+      },
+      "pool_ids": [
+        "PUB111",
+        "PUB090",
+        "PUB013",
+        "PUB003",
+        "PUB026",
+        "PUB006",
+        "PUB031",
+        "PUB015",
+        "PUB018",
+        "PUB112",
+        "PUB057"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB003",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB057",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 5 candidats sur le fil « Hausse des infractions sexuelles sur mineurs et redéfinitions légales ». Deux publications (PUB090 et PUB031) apportent un développement substantiel du pivot « infractions à caractère sexuel » sous des angles complémentaires (réponse pénale institutionnelle et contexte intrafamilial) : classées ADJACENT. Trois publications (PUB111, PUB013, PUB026) ne mentionnent les violences sexuelles que comme catégorie statistique ou contexte général sans développement propre : classées INSUFFICIENT. Aucune publication ne traite directement la redéfinition légale du périmètre des infractions (angle source du fil)."
+    },
+    {
+      "thread_id": "FIL_004",
+      "fil_lecture": "Violences intrafamiliales sur mineurs : progression et féminisation",
+      "source_locator": "7;14;15",
+      "source_anchor": "Entre 2016 et 2025, le nombre de victimes mineures de violences physiques intrafamiliales a augmenté de 217 % (+14 % par an), bien plus fortement que hors cadre familial (+51 %, +5 % par an). La part des violences physiques intrafamiliales parmi l'ensemble des violences physiques sur mineurs a progressé de 18 points, passant de 37 % en 2016 à 55 % en 2025. Parallèlement, le nombre de mineurs mis en cause pour violences physiques intrafamiliales a doublé entre 2016 et 2025, passant de 7 % à 14 % de l'ensemble des mineurs mis en cause pour violences physiques. Cette augmentation est en partie due aux mineurs mis en cause pour violences envers leur partenaire, dont la part parmi les mineurs mis en cause pour violences intrafamiliales a été multipliée par 5 en 10 ans (passant de 14 % en 2016 à 35 % en 2025), dans un contexte de libération de la parole des victimes.",
+      "retrieval_queries": [
+        "violences intrafamiliales mineurs progression",
+        "violences conjugales mineurs mis en cause",
+        "contexte familial victimisation mineurs"
+      ],
+      "candidate_ids": [
+        "PUB031",
+        "PUB111"
+      ],
+      "candidate_count": 2,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "violences physiques intrafamiliales",
+        "variantes": [
+          "violences intrafamiliales",
+          "violences physiques familiales"
+        ],
+        "angle": "progression quantitative et féminisation des victimes et auteurs mineurs entre…",
+        "critere_raccord": "La cible doit développer substantiellement « violences physiques intrafamiliales » lui-même. Si elle développe aussi le cœur de l'angle source « progression quantitative et féminisation des victimes et auteurs mineurs entre… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "violences physiques intrafamiliales",
+          "violences intrafamiliales",
+          "violences physiques familiales"
+        ]
+      },
+      "pool_ids": [
+        "PUB031",
+        "PUB111",
+        "PUB026",
+        "PUB006",
+        "PUB002",
+        "PUB057",
+        "PUB013",
+        "PUB090",
+        "PUB016",
+        "PUB001",
+        "PUB062",
+        "PUB010",
+        "PUB112",
+        "PUB025",
+        "PUB018"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB057",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB062",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB031 documente directement le cœur du fil : violences physiques intrafamiliales sur mineurs avec progression quantitative et féminisation. PUB111 mentionne seulement le pivot comme catégorie statistique dans un contexte différent (transports en commun) sans apporter d'information substantielle sur le phénomène lui-même.\""
+    },
+    {
+      "thread_id": "FIL_005",
+      "fil_lecture": "Variabilité territoriale de la délinquance juvénile selon les infractions",
+      "source_locator": "18;19;20;21",
+      "source_anchor": "La part départementale des mineurs parmi les mis en cause varie fortement selon la nature des infractions. Pour les atteintes aux personnes (violences physiques ou sexuelles), la variabilité est modérée (coefficient de variation 15-21 %), mais elle est bien plus importante pour les atteintes aux biens, notamment les cambriolages de logement (coefficient de variation 45 %) et le trafic de stupéfiants (42 %). Par exemple, pour les cambriolages, la part des mineurs varie de moins de 5 % en Corse et Creuse à plus de 40 % en Yonne, Mayotte et Paris. Pour le trafic de stupéfiants, trois départements du sud-est (Vaucluse, Bouches-du-Rhône, Alpes-Maritimes) affichent une part de 30 %, tandis que les départements d'outre-mer et la Corse présentent les taux les plus bas (3-6 %). Cette variabilité territoriale reflète des différences structurelles dans la composition de la délinquance élucidée par département.",
+      "retrieval_queries": [
+        "variabilité territoriale délinquance mineurs",
+        "disparités départementales cambriolage trafic",
+        "géographie délinquance juvénile France"
+      ],
+      "candidate_ids": [
+        "PUB018",
+        "PUB002",
+        "PUB025",
+        "PUB010",
+        "PUB015",
+        "PUB014",
+        "PUB115",
+        "PUB112",
+        "PUB026",
+        "PUB111"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats sur la variabilité territoriale de la délinquance juvénile selon les infractions. Trois publications retenues comme POSSIBLE (PUB018, PUB025, PUB015, PUB112) documentent explicitement des composantes utiles du fil : variabilité territoriale d'infractions spécifiques (vols sans violence, trafic de stupéfiants), méthodes d'analyse géospatiale, ou victimation selon type d'atteinte. Les autres candidats restent insuffisants : soit ils traitent de domaines différents (risques naturels, tabac, discriminations), soit ils manquent de développement explicite sur la délinquance juvénile ou la différenciation par infractions."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB008",
+      "fil_lecture": "Violences intrafamiliales sur mineurs : progression et féminisation",
+      "source_locator": "7;14;15",
+      "target_publication_id": "PUB031",
+      "pourquoi": "La cible développe substantiellement l'objet pivot « violences physiques intrafamiliales » avec des données chiffrées précises sur les victimes mineures (80 % des cas, deux tiers moins de 15 ans), la féminisation (58 % de femmes), et les auteurs mineurs (trois quarts d'hommes). Elle documente explicitement la progression quantitative (9 % en un an, 10 % pour les violences physiques) et les caractéristiques des victimes et auteurs, alignées avec l'angle source.",
+      "target_locator": "1;2;6",
+      "decision": "RETENIR",
+      "badges": [
+        "Même auteur"
+      ]
+    },
+    {
+      "source_publication_id": "PUB008",
+      "fil_lecture": "Hausse des infractions sexuelles sur mineurs et redéfinitions légales",
+      "source_locator": "5;6;7;12",
+      "target_publication_id": "PUB090",
+      "pourquoi": "La publication documente substantiellement les infractions sexuelles sur mineurs (viols, agressions) sous l'angle de la prise en charge institutionnelle, de la réponse pénale et de la prévention de la récidive. Elle développe explicitement le pivot (taux de plainte, classements sans suite, harmonisation de la réponse pénale) mais ne traite pas directement la redéfinition légale du périmètre des catégories.",
+      "target_locator": "61",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB008",
+      "fil_lecture": "Variabilité territoriale de la délinquance juvénile selon les infractions",
+      "source_locator": "18;19;20;21",
+      "target_publication_id": "PUB112",
+      "pourquoi": "PUB112 documente explicitement la variabilité départementale de la délinquance selon le type d'atteinte (biens vs personnes), avec des différences régionales marquées. C'est une composante utile du fil, bien que basée sur la victimation déclarée plutôt que sur les mis en cause mineurs.",
+      "target_locator": "1;2",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

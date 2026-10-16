@@ -1,0 +1,178 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB003",
+  "source_publication": {
+    "publication_id": "PUB003",
+    "titre": "terrorisme en france. panorama des mouvances radicales en 2025",
+    "année_publication": "2026",
+    "image_publication": "PUB003.png",
+    "auteurs_MI": "Alexandre Rodde",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Radicalités / Terrorisme",
+    "url_contenu": "https://www.calameo.com/read/00271929218ac8078c92f",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/note-crgn-125-france-panorama-des-mouvances-radicales-en-2025",
+    "node_count": 25,
+    "relation_count": 15,
+    "chunk_count": 10,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB003.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées. La publication traite le terrorisme en France selon quatre mouvances (jihadisme, ultra-gauche, ultra-droite, nouvelles mouvances) et deux facteurs structurants (technologies, contexte politique). Les thématiques retenues couvrent les problématiques majeures : la menace jihadiste comme menace principale, la fragmentation croissante des mouvances, les facilitateurs technologiques du passage à l'acte, l'émergence du terrorisme d'État comme problématique nouvelle, et l'influence du contexte politique polarisé. Chaque thématique est documentée par plusieurs pages et nœuds convergents.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Évolutions technologiques et passages à l'acte violent",
+      "source_locator": "1;4",
+      "source_anchor": "Les évolutions technologiques facilitent les passages à l'acte violents. Le document mentionne l'utilisation de drones et d'intelligence artificielle comme facteurs pouvant accélérer les passages à l'acte. Ces technologies sont identifiées comme des risques supplémentaires nécessitant une attention particulière.",
+      "retrieval_queries": [
+        "évolutions technologiques passages à l'acte",
+        "technologie radicalisation terrorisme",
+        "drones intelligence artificielle menace"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB006",
+        "PUB057",
+        "PUB033",
+        "PUB090",
+        "PUB062",
+        "PUB118",
+        "PUB024",
+        "PUB010",
+        "PUB012"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 3,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Évolutions technologiques",
+        "variantes": [
+          "drones",
+          "intelligence artificielle"
+        ],
+        "angle": "Facteurs technologiques facilitant ou accélérant les passages à l'acte violents…",
+        "critere_raccord": "La cible doit développer substantiellement « Évolutions technologiques » lui-même. Si elle développe aussi le cœur de l'angle source « Facteurs technologiques facilitant ou accélérant les passages à l'acte violents… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Évolutions technologiques",
+          "drones",
+          "intelligence artificielle"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB010",
+        "PUB006",
+        "PUB012",
+        "PUB051",
+        "PUB057",
+        "PUB033",
+        "PUB024",
+        "PUB090",
+        "PUB054",
+        "PUB113",
+        "PUB058",
+        "PUB062",
+        "PUB118",
+        "PUB011",
+        "PUB015",
+        "PUB007",
+        "PUB025",
+        "PUB026"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB058",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 1,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats sur le fil « Évolutions technologiques et passages à l'acte violent ». Trois candidats (PUB006, PUB057, PUB090) documentent substantiellement le mécanisme central du fil : comment l'IA facilite et accélère des actes nuisibles (cyberattaques, contenus pédocriminels). Bien que le terrain diffère (cybercriminalité, pédocriminalité numérique plutôt que violence physique), le mécanisme d'accélération et de facilitation par l'IA est explicitement développé, justifiant un classement ADJACENT. Les autres candidats mentionnent l'IA ou les drones dans des contextes variés (gouvernance, démocratie, surveillance climatique, sécurité publique) sans développer le lien avec les passages à l'acte violents : classement INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB026",
+          "PUB057",
+          "PUB090",
+          "PUB051",
+          "PUB005",
+          "PUB033",
+          "PUB062",
+          "PUB118",
+          "PUB010"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats sur le fil « Évolutions technologiques et passages à l'acte violent ». Trois publications documentent substantiellement le mécanisme : PUB006 (cybercriminalité et IA agentique) en DIRECT, PUB057 (Europol, cybercrimes autonomes) et PUB090 (pédocriminalité et IA générative) en ADJACENT. Les sept autres candidats ne développent pas explicitement le lien entre technologies et facilitation des passages à l'acte : ils mentionnent soit l'IA de manière générale, soit des violences sans lien technologique, soit des domaines sans rapport (risques naturels, désinformation, neurosciences militaires)."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB003",
+      "fil_lecture": "Évolutions technologiques et passages à l'acte violent",
+      "source_locator": "1;4",
+      "target_publication_id": "PUB006",
+      "pourquoi": "Le rapport documente substantiellement comment l'IA facilite et accélère les cyberattaques (production de contenus malveillants, optimisation des campagnes, autonomisation progressive des attaques). Bien que le contexte soit la cybercriminalité et non la violence physique, le mécanisme central du fil—l'IA comme facteur d'accélération et de facilitation d'actes nuisibles—est explicitement développé.",
+      "target_locator": "28;29;55;57",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 10,
+    "extraits_total": 10,
+    "sections_couvertes": 7,
+    "sections_total": 7
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

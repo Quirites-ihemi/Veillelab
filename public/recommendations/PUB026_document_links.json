@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB026",
+  "source_publication": {
+    "publication_id": "PUB026",
+    "titre": "jeunesses et discriminations fondées sur l’origine : répondre à l’impératif d’égalité",
+    "année_publication": "2026",
+    "image_publication": "PUB026.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Défenseur des droits",
+    "type_document": "Rapport",
+    "domaine": "Migrations/intégration",
+    "url_contenu": "https://www.defenseurdesdroits.fr/sites/default/files/2026-02/Rapport%20-%20Jeunesses%20et%20discriminations%20fond%C3%A9es%20sur%20l%27origine.pdf",
+    "url_source": "https://www.defenseurdesdroits.fr/jeunesses-et-discriminations-fondees-sur-lorigine-repondre-limperatif-degalite-1070",
+    "node_count": 50,
+    "relation_count": 49,
+    "chunk_count": 147,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB026.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport du Défenseur des droits (2026) sur les discriminations fondées sur l'origine chez les jeunes (15-26 ans). Le document adopte une approche systémique des discriminations, documentée à travers plusieurs domaines de la vie des jeunes (éducation, enseignement supérieur, logement, santé, emploi, espace public). Cinq fils majeurs ont été identifiés : (1) l'approche systémique elle-même, explicitement théorisée et structurante du rapport ; (2) le paradoxe du non-recours massif malgré une meilleure perception des discriminations ; (3) la ségrégation scolaire et ses effets sur les orientations et trajectoires ; (4) les risques discriminatoires des algorithmes dans l'accès à l'enseignement supérieur ; (5) l'imbrication croissante entre discriminations d'origine et de religion. Ces fils couvrent des dimensions structurantes du rapport : cadre conceptuel, obstacles à l'effectivité des droits, mécanismes institutionnels, technologies de sélection, et évolutions du phénomène discriminatoire.",
+  "threads": [
+    {
+      "thread_id": "FIL_002",
+      "fil_lecture": "Non-recours massif des jeunes aux droits et dispositifs de recours",
+      "source_locator": "5;6;75",
+      "source_anchor": "En dépit d'une exposition accrue et d'une meilleure perception de ces discriminations, les démarches de recours, pour les faire reconnaître, les contester ou obtenir réparation, restent rares. Dans le champ de l'emploi par exemple, le critère de l'origine est celui pour lequel les recours restent les moins investis, et ce, a fortiori, par les jeunes, ce dont atteste la très faible proportion de saisines adressées au Défenseur des droits émanant de cette tranche d'âge. Ces données convergent avec le constat d'un non-recours massif des jeunes à leurs droits, phénomène complexe et multifactoriel.",
+      "retrieval_queries": [
+        "non-recours jeunes droits discrimination",
+        "méconnaissance dispositifs recours signalement",
+        "barrières accès justice discrimination"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB025",
+        "PUB014",
+        "PUB057",
+        "PUB062",
+        "PUB013",
+        "PUB008",
+        "PUB005",
+        "PUB007",
+        "PUB018"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "non-recours aux droits",
+        "variantes": [
+          "recours",
+          "démarches de recours"
+        ],
+        "angle": "phénomène de non-engagement des jeunes dans les démarches de reconnaissance,…",
+        "critere_raccord": "La cible doit développer substantiellement « non-recours aux droits » lui-même. Si elle développe aussi le cœur de l'angle source « phénomène de non-engagement des jeunes dans les démarches de reconnaissance,… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "non-recours aux droits",
+          "recours",
+          "démarches de recours"
+        ]
+      },
+      "pool_ids": [
+        "PUB013",
+        "PUB005",
+        "PUB006",
+        "PUB025",
+        "PUB007",
+        "PUB008",
+        "PUB090",
+        "PUB014",
+        "PUB118",
+        "PUB018",
+        "PUB002",
+        "PUB010",
+        "PUB053",
+        "PUB054",
+        "PUB057",
+        "PUB114",
+        "PUB113",
+        "PUB115",
+        "PUB062"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 4,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB013 documente substantiellement le phénomène de non-recours aux droits, en l'occurrence aux instances de contrôle (Défenseur des droits, IGPN, IGGN) suite à des mauvais traitements policiers. Les raisons du non-engagement (inutilité perçue, gravité insuffisante, démarche jugée non pertinente) constituent une composante explicite et utile du fil source, bien que le terrain soit différent (mauvais traitements vs discriminations à l'emploi). Tous les autres candidats utilisent le mot « recours » dans des sens totalement différents (stratégies criminelles, pratiques administratives, définitions philosophiques, innovations technologiques) sans documenter le phénomène central du fil : le non-recours massif des jeunes aux droits et dispositifs de reconnaissance des discriminations."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB026",
+      "fil_lecture": "Non-recours massif des jeunes aux droits et dispositifs de recours",
+      "source_locator": "5;6;75",
+      "target_publication_id": "PUB013",
+      "pourquoi": "Cette enquête documente explicitement les raisons du non-recours aux instances de contrôle (Défenseur des droits, IGPN, IGGN) : inutilité perçue, gravité insuffisante, démarche jugée non pertinente. Elle développe substantiellement le phénomène de non-engagement dans les démarches de recours, bien que dans le contexte des mauvais traitements policiers plutôt que des discriminations à l'emploi.",
+      "target_locator": "12",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

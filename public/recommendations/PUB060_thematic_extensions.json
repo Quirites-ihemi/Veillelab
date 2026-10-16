@@ -1,0 +1,205 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB060",
+  "source_publication": {
+    "publication_id": "PUB060",
+    "titre": "sécurité nationale : à l'épreuve du réel] - la clef de voûte des politiques publiques",
+    "année_publication": "2026",
+    "image_publication": "PUB060.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Institut Montaigne",
+    "type_document": "Articles et collections d'articles",
+    "domaine": "Sécurité nationale",
+    "url_contenu": "https://www.institutmontaigne.org/expressions/securite-nationale-lepreuve-du-reel-la-clef-de-voute-des-politiques-publiques",
+    "url_source": "https://www.institutmontaigne.org/expressions/securite-nationale-lepreuve-du-reel-la-clef-de-voute-des-politiques-publiques",
+    "node_count": 9,
+    "relation_count": 8,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB060.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication très synthétique (9 nœuds, pas d'extraits fournis, pas de sections détaillées). Les nœuds couvrent trois problématiques transversales : (1) la sécurité nationale comme cadre intégrateur des politiques publiques, (2) la sécurité économique comme dimension stratégique, (3) l'articulation des moyens (militaires, diplomatiques, policiers) au service d'une finalité commune. Aucune thématique marginale détectée. Les trois thématiques identifiées sont substantielles et transférables à d'autres contextes.",
+  "threads": [
+    {
+      "thread_id": "T1",
+      "fil_lecture": "Sécurité nationale comme intégration des politiques publiques",
+      "source_locator": "article web",
+      "source_anchor": "La sécurité nationale est présentée comme la fonction de l'État visant à préserver les intérêts fondamentaux de la Nation, intégrant les différentes dimensions de l'action étatique (défense, affaires étrangères, sécurité intérieure, sécurité économique) selon une finalité commune. Elle constitue la clef de voûte des politiques publiques.",
+      "retrieval_queries": [
+        "sécurité nationale intégration politiques publiques",
+        "coordination défense diplomatie sécurité intérieure",
+        "finalité commune action étatique"
+      ],
+      "candidate_ids": [
+        "PUB011",
+        "PUB062",
+        "PUB010",
+        "PUB114"
+      ],
+      "candidate_count": 4,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Sécurité nationale",
+        "variantes": [
+          "intégration des politiques publiques",
+          "intégration des politiques"
+        ],
+        "angle": "Fonction de l'État intégrant les différentes dimensions de l'action étatique…",
+        "critere_raccord": "La cible doit développer substantiellement « Sécurité nationale » lui-même. Si elle développe aussi le cœur de l'angle source « Fonction de l'État intégrant les différentes dimensions de l'action étatique… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Sécurité nationale",
+          "intégration des politiques publiques",
+          "intégration des politiques"
+        ]
+      },
+      "pool_ids": [
+        "PUB011",
+        "PUB010",
+        "PUB005",
+        "PUB062",
+        "PUB026",
+        "PUB052",
+        "PUB101",
+        "PUB002",
+        "PUB114",
+        "PUB006",
+        "PUB053",
+        "PUB008",
+        "PUB013",
+        "PUB007",
+        "PUB015",
+        "PUB018",
+        "PUB022",
+        "PUB033",
+        "PUB051",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB052",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB053",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Deux publications (PUB011 et PUB062) documentent substantiellement la sécurité nationale comme fonction d'État intégrant plusieurs dimensions de l'action publique, mais sous des angles sectoriels spécifiques (doctrine informationnelle russe pour PUB011 ; lutte contre les ingérences numériques pour PUB062). Elles sont classées ADJACENT car elles apportent une connaissance concrète du pivot dans un contexte différent du fil source générique. Deux publications (PUB010 et PUB114) ne mentionnent « sécurité nationale » que comme métadonnée de recherche sans la développer ; elles traitent d'autres domaines (résilience climatique, intégration des migrants) et sont classées INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB026",
+          "PUB052",
+          "PUB005",
+          "PUB006",
+          "PUB007",
+          "PUB018",
+          "PUB013",
+          "PUB011",
+          "PUB034"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats. Un seul classement ADJACENT (PUB052) qui documente explicitement une composante du fil : l'intégration de la sécurité intérieure et du renseignement. Tous les autres candidats restent INSUFFICIENT : ils traitent de sécurité publique, de politiques publiques ou de gouvernance, mais sans développer explicitement le concept de sécurité nationale comme intégration des dimensions défense, affaires étrangères, sécurité intérieure et sécurité économique selon une finalité commune. Les rapprochements reposent principalement sur des analogies de structure, un vocabulaire partagé ou un contexte général commun, sans traiter le cœur du fil."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB060",
+      "fil_lecture": "Sécurité nationale comme intégration des politiques publiques",
+      "source_locator": "article web",
+      "target_publication_id": "PUB011",
+      "pourquoi": "La cible documente substantiellement la sécurité nationale russe en tant que fonction d'État intégrant explicitement plusieurs dimensions (renseignement, soft power, contrôle informatif). Elle développe un cas concret d'intégration des politiques publiques autour d'un enjeu stratégique, mais sous l'angle spécifique de la sphère informationnelle et de la doctrine russe, non sous l'angle générique français du fil source.",
+      "target_locator": "2;3",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 0,
+    "extraits_total": 0,
+    "sections_couvertes": 0,
+    "sections_total": 0
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

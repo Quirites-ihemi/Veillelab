@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB116",
+  "source_publication": {
+    "publication_id": "PUB116",
+    "titre": "des policiers à la fac",
+    "année_publication": "2026",
+    "image_publication": "PUB116.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Les Films d’ici",
+    "type_document": "Documentaire",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.arte.tv/fr/videos/124394-000-A/des-policiers-a-la-fac/",
+    "url_source": "https://www.lesfilmsdici.fr/fr/en-production/5319-des-policiers-a-la-fac.html",
+    "node_count": 27,
+    "relation_count": 32,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Documentaire de 2026 analysant l'expérience de policiers en formation universitaire. Les fils identifiés couvrent : (1) le rôle transformateur de la formation en sciences sociales ; (2) le mémoire comme dispositif réflexif ; (3) les mécanismes de sélectivité et de quantification dans l'activité policière ; (4) les enjeux de genre dans la socialisation professionnelle ; (5) la gestion émotionnelle et ses impacts sur le bien-être. Chaque fil est ancré dans des passages substantiels et structurants du documentaire, susceptibles de prolongements dans d'autres publications du corpus.",
+  "threads": [
+    {
+      "thread_id": "FIL_1",
+      "fil_lecture": "Formation des policiers par les sciences sociales",
+      "source_locator": "02:34-04:06;20:12-20:48",
+      "source_anchor": "Le documentaire montre comment l'accès à la formation universitaire en sciences sociales transforme la perception des policiers sur leur métier. Élodie Lemaire intervient pour expliquer la distinction entre problème social et problème sociologique (02:49-03:21), permettant aux policiers de mettre à distance les catégories ordinaires de perception de leur pratique (03:10-04:06). Cette formation vise à développer une autonomie de pensée au sein de l'institution policière (20:23-20:59) et à favoriser une réflexivité sur les préjugés professionnels (21:17-22:02).",
+      "retrieval_queries": [
+        "formation universitaire policiers sciences sociales",
+        "réflexivité professionnelle police",
+        "autonomie pensée institution policière"
+      ],
+      "candidate_ids": [
+        "PUB002",
+        "PUB026",
+        "PUB015",
+        "PUB005",
+        "PUB013",
+        "PUB010",
+        "PUB034",
+        "PUB054",
+        "PUB090",
+        "PUB118"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Parmi les 10 candidats, un seul (PUB015) documente directement le cœur du fil : l'intégration de chercheurs formés aux sciences sociales au sein des institutions policières et leur rôle dans la transformation de la perception professionnelle. Un second (PUB034) développe une composante utile mais secondaire : la formation continue des policiers dans un cadre déontologique. Les huit autres candidats ne documentent que des contextes voisins (sécurité, formation, gouvernance) sans établir de raccord substantiel avec le mécanisme spécifique de transformation par les sciences sociales."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB116",
+      "fil_lecture": "Formation des policiers par les sciences sociales",
+      "source_locator": "02:34-04:06;20:12-20:48",
+      "target_publication_id": "PUB015",
+      "pourquoi": "Le document développe explicitement l'intégration de chercheurs formés aux méthodes de recherche au sein des institutions policières. Ces 'chercheurs d'institution' ou 'chercheurs praticiens' construisent des analyses à partir de situations concrètes, ce qui documente substantiellement le mécanisme de transformation de la perception policière par l'accès à la formation en sciences sociales et la mise à distance des catégories ordinaires.",
+      "target_locator": "38;40",
+      "decision": "RETENIR",
+      "badges": []
+    }
+  ]
+}

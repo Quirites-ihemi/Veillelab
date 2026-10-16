@@ -1,0 +1,94 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB115",
+  "source_publication": {
+    "publication_id": "PUB115",
+    "titre": "lutte contre le commerce illicite du tabac dans l’UE — éparpillement des efforts et lacunes persistantes",
+    "année_publication": "2026",
+    "image_publication": "PUB115.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Cour des comptes européenne",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.eca.europa.eu/ECAPublications/SR-2026-23/SR-2026-23_FR.pdf",
+    "url_source": "https://www.eca.europa.eu/fr/publications/sr-2026-23",
+    "node_count": 36,
+    "relation_count": 41,
+    "chunk_count": 22,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales structurent ce rapport d'audit sur le commerce illicite du tabac dans l'UE. Elles couvrent l'ensemble du document : (1) la fragmentation des données et du renseignement (sections 3-4, nœuds N1329, N1337, N1338) ; (2) l'absence d'estimation fiable de la taille et de l'impact économique des marchés illicites (sections 4, nœuds N1330, N1331) ; (3) l'hétérogénéité des cadres réglementaires et des systèmes de contrôle nationaux (sections 5-8, nœuds N1332, N1333, N1334, N1335) ; (4) la fragmentation des responsabilités et l'absence de coordination stratégique au niveau de l'Union (sections 12-13, nœuds N1339, N1340, N1341) ; (5) l'insuffisance du suivi et de l'évaluation de l'incidence des mesures (sections 13-15, nœud N1341). Ces problématiques sont toutes documentées par plusieurs nœuds convergents, des sections dédiées et des passages substantiels. Elles constituent des enjeux transversaux applicables à d'autres domaines de lutte contre la criminalité ou la fraude dans l'UE.",
+  "threads": [
+    {
+      "thread_id": "T2",
+      "fil_lecture": "Absence d'estimation fiable de la taille et de l'impact économique des marchés illicites",
+      "source_locator": "13-15; 6; 13; 14; 15",
+      "source_anchor": "La Commission ne dispose pas d'une estimation indépendante, fiable et régulièrement actualisée de la taille, de la structure et de l'impact économique du marché illicite. Les données disponibles reposent largement sur les saisies, qui ne donnent qu'une vision partielle du phénomène. Une étude de 2020 recommandait de combiner plusieurs méthodologies. Les estimations externes, notamment celles financées par l'industrie, doivent être interprétées avec prudence.",
+      "retrieval_queries": [
+        "estimation de la taille et de l'impact économique des marchés illicites",
+        "mesure de l'ampleur réelle des phénomènes criminels",
+        "méthodologies d'évaluation des marchés clandestins"
+      ],
+      "candidate_ids": [
+        "PUB026",
+        "PUB015",
+        "PUB006",
+        "PUB007",
+        "PUB010",
+        "PUB025",
+        "PUB018",
+        "PUB002",
+        "PUB101",
+        "PUB033"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 1,
+      "pivot_status": "legacy:pivot_absent_de_la_source",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Parmi les dix candidats, seul PUB025 (OFDT - bilan de l'offre de stupéfiants) documente directement et substantiellement le cœur du fil : la taille et l'impact économique des marchés illicites. PUB015 (recherche criminologique) et PUB006 (cybercriminalité) constituent des lectures adjacentes utiles, respectivement sur les méthodologies de quantification des phénomènes criminels et sur la structure des marchés illicites numériques, mais sans traiter spécifiquement de l'absence d'estimation fiable ou des défis méthodologiques de mesure économique. Les autres candidats relèvent du contexte général (mesure, sécurité, économie) sans développement substantiel du phénomène central.",
+      "chemin_ouvert": {
+        "identique": "fil sans pivot valide : déjà examiné par le chemin historique de V1.0-F"
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB115",
+      "fil_lecture": "Absence d'estimation fiable de la taille et de l'impact économique des marchés illicites",
+      "source_locator": "13-15; 6; 13; 14; 15",
+      "target_publication_id": "PUB025",
+      "pourquoi": "PUB025 documente directement et substantiellement la taille et l'impact économique des marchés illicites de stupéfiants, fournissant des estimations chiffrées, des tendances et des analyses de structure de marché. C'est une illustration concrète de ce que le fil identifie comme manquant : des estimations fiables et régulièrement actualisées.",
+      "target_locator": "6;17;2",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 22,
+    "extraits_total": 22,
+    "sections_couvertes": 22,
+    "sections_total": 22
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

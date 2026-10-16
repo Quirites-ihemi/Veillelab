@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB002",
+  "source_publication": {
+    "publication_id": "PUB002",
+    "titre": "rapport d'activité 2023-2025 du centre d'analyse et de lutte contre les atteintes aux élus",
+    "année_publication": "2026",
+    "image_publication": "PUB002.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Centre d’analyse et de lutte contre les atteintes aux élus",
+    "type_document": "Rapport",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-01/Mai-2025-rapport-calae.pdf",
+    "url_source": "https://www.interieur.gouv.fr/documentation/rapports/rapport-dactivite-2023-2025-du-centre-danalyse-et-de-lutte-contre-atteintes-aux-elus-calae.html",
+    "node_count": 29,
+    "relation_count": 15,
+    "chunk_count": 43,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB002.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées. Le document traite de manière structurante : (1) une forme nouvelle d'atteinte (cyber) qui requiert des réponses spécifiques ; (2) une stratégie de prévention en amont fondée sur la formation et la sensibilisation ; (3) un accompagnement complet des victimes combinant justice, psychologie et sécurité ; (4) une gouvernance multi-acteurs (État, justice, élus) qui doit se coordonner ; (5) une reconnaissance que ces problématiques se déploient différemment selon les territoires. Chaque thématique est documentée par plusieurs nœuds, sections et recommandations, et plusieurs sont nommées par des expressions partagées avec d'autres publications du corpus.",
+  "threads": [],
+  "leaves": [],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 43,
+    "extraits_total": 43,
+    "sections_couvertes": 17,
+    "sections_total": 17
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

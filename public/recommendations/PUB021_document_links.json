@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB021",
+  "source_publication": {
+    "publication_id": "PUB021",
+    "titre": "chaîne podcast de la préfecture de la région auvergne-rhône-alpes",
+    "année_publication": "2026",
+    "image_publication": "PUB021.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Préfecture de la région Auvergne-Rhône-Alpes",
+    "type_document": "Podcast",
+    "domaine": "Administration territoriale de l'Etat",
+    "url_contenu": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
+    "url_source": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
+    "node_count": 26,
+    "relation_count": 29,
+    "chunk_count": 6,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB021.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Podcast de présentation du travail quotidien des agents de l'Office français de la biodiversité (OFB) en région Auvergne-Rhône-Alpes. Cinq fils identifiés couvrant les dimensions structurantes du document : l'appui technique aux projets, la police judiciaire environnementale, la connaissance des espèces et des milieux aquatiques, les problèmes d'atteintes aux milieux aquatiques, et le déficit de connaissance réglementaire du public. Chaque fil est ancré dans des passages substantiels et correspond à des missions ou enjeux explicitement documentés par les trois agents interviewés.",
+  "threads": [],
+  "leaves": []
+}

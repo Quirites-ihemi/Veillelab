@@ -1,0 +1,121 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB057",
+  "source_publication": {
+    "publication_id": "PUB057",
+    "titre": "the evolving threat landscape. how encryption, proxies and ai are expanding cybercrime.",
+    "année_publication": "2026",
+    "image_publication": "PUB057.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Europol",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.europol.europa.eu/cms/sites/default/files/documents/IOCTA-2026.pdf",
+    "url_source": "https://www.europol.europa.eu/cms/sites/default/files/documents/IOCTA-2026.pdf",
+    "node_count": 47,
+    "relation_count": 28,
+    "chunk_count": 24,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB057.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq fils de lecture identifiés couvrant les dimensions structurantes du rapport Europol 2026 : (1) l'IA autonome comme vecteur d'automatisation croissante des cybercrimes, explicitement documentée comme signal faible prospectif ; (2) le chiffrement et l'anonymisation comme obstacles systémiques aux enquêtes, traversant plusieurs sections (dark web, messageries, infrastructures) ; (3) les cryptomonnaies et techniques de blanchiment, avec enjeux de régulation transfrontalière ; (4) l'industrialisation du crime via des modèles de service (CaaS, RaaS) réduisant les barrières à l'entrée ; (5) l'exploitation sexuelle des mineurs amplifiée par l'IA générative et la monétisation. Chaque fil repose sur des passages substantiels et multiples du document, évitant les occurrences marginales.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Intelligence artificielle autonome et automatisation des cybercrimes",
+      "source_locator": "14;20;36",
+      "source_anchor": "L'IA est utilisée pour augmenter la vitesse, l'efficacité et l'ampleur des activités cybercriminelles (C0783). Elle permet la production massive de messages frauduleux (N0943), l'automatisation croissante des activités cybercriminelles (N0938), et les fraudes en ligne de plus en plus automatisées (N0963). Le rapport identifie comme signal faible le développement possible de cybercrimes largement autonomes grâce à l'IA agentique (N0962, C0799), où l'IA serait capable de préparer et d'exécuter presque seule certaines opérations criminelles (N0944).",
+      "retrieval_queries": [
+        "intelligence artificielle autonome cybercrimes",
+        "automatisation fraudes IA générative",
+        "IA agentique menaces cybercriminelles"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB006",
+        "PUB033",
+        "PUB003",
+        "PUB062",
+        "PUB118",
+        "PUB090",
+        "PUB026"
+      ],
+      "candidate_count": 8,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Intelligence artificielle",
+        "variantes": [
+          "IA",
+          "intelligence artificielle agentique"
+        ],
+        "angle": "Automatisation et autonomisation des activités cybercriminelles",
+        "critere_raccord": "La cible doit développer substantiellement « Intelligence artificielle » lui-même. Si elle développe aussi le cœur de l'angle source « Automatisation et autonomisation des activités cybercriminelles », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Intelligence artificielle",
+          "IA",
+          "intelligence artificielle agentique"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB005",
+        "PUB006",
+        "PUB033",
+        "PUB002",
+        "PUB026",
+        "PUB051",
+        "PUB013",
+        "PUB011",
+        "PUB062",
+        "PUB118",
+        "PUB115",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 8 candidats documentaires sur le fil « Intelligence artificielle autonome et automatisation des cybercrimes ». Seul PUB006 (rapport annuel sur la cybercriminalité 2026) établit un raccord DIRECT, développant substantiellement l'IA agentique dans l'automatisation et l'autonomisation des cyberattaques. PUB090 (lutte contre la pédocriminalité) offre un raccord ADJACENT en documentant l'IA générative dans la production massive de contenus criminels. Les six autres candidats (PUB005, PUB033, PUB003, PUB062, PUB118, PUB026) restent INSUFFICIENT : ils mentionnent l'IA mais dans des contextes sans lien avec les cybercrimes automatisés (gouvernance territoriale, souveraineté numérique, terrorisme, désinformation, neurosciences, discriminations)."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB057",
+      "fil_lecture": "Intelligence artificielle autonome et automatisation des cybercrimes",
+      "source_locator": "14;20;36",
+      "target_publication_id": "PUB006",
+      "pourquoi": "PUB006 développe substantiellement l'IA dans son rôle d'automatisation et d'autonomisation des cybercrimes. Les preuves documentent explicitement l'AIaaS (AI-as-a-Service) pour l'hameçonnage automatisé, la génération de maliciels, et surtout l'émergence d'IA agentique capable de planifier et exécuter des attaques autonomes sans intervention humaine directe. Cela correspond précisément au cœur du fil source.",
+      "target_locator": "28;29",
+      "decision": "RETENIR",
+      "badges": []
+    }
+  ]
+}

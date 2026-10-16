@@ -1,0 +1,317 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB113",
+  "source_publication": {
+    "publication_id": "PUB113",
+    "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
+    "année_publication": "2026",
+    "image_publication": "PUB113.png",
+    "auteurs_MI": "Benoît HABERBUSCH",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Sécurité civile",
+    "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+    "node_count": 17,
+    "relation_count": 16,
+    "chunk_count": 14,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales structurent cette publication : (1) l'enquête judiciaire sur les causes d'incendie, qui montre l'évolution d'une expertise criminelle appliquée à un risque naturel ; (2) la transformation des missions de sécurité vers la gestion de crise, illustrant le passage d'un rôle répressif à un rôle préventif et coordinateur ; (3) la coopération interservices et la coordination territoriale, fondamentales pour une réponse efficace ; (4) l'innovation technologique et la mobilité opérationnelle, qui deviennent des conditions essentielles d'intervention dans des environnements hostiles ; (5) la prévention et l'identification des responsables, stratégie centrale face à l'origine humaine de la majorité des incendies. Ces thématiques sont toutes substantiellement documentées et transférables à d'autres contextes de gestion de crise ou de sécurité civile.",
+  "threads": [
+    {
+      "thread_id": "T1",
+      "fil_lecture": "Enquête judiciaire sur les causes d'incendie",
+      "source_locator": "3",
+      "source_anchor": "La gendarmerie développe progressivement sa propre expertise en matière d'enquête judiciaire sur l'origine des incendies. À partir de 1970, elle expérimente des rapprochements judiciaires appliqués aux incendies de forêt. Les années 1990 constituent une étape majeure grâce aux compétences de l'Institut de recherche criminelle et des techniciens d'investigation criminelle. En 1997, une équipe pluridisciplinaire zonale de recherche des causes d'incendies de forêt expérimente le croisement des disciplines. À partir de 2002, la gendarmerie développe une capacité cynophile dédiée à la recherche des causes et circonstances des incendies, opérationnelle depuis 2010.",
+      "retrieval_queries": [
+        "enquête judiciaire incendies causes",
+        "investigation criminelle incendies forêt",
+        "expertise détection causes incendie"
+      ],
+      "candidate_ids": [
+        "PUB026",
+        "PUB015",
+        "PUB002",
+        "PUB006",
+        "PUB010",
+        "PUB021",
+        "PUB013",
+        "PUB090",
+        "PUB012",
+        "PUB025"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB012 documente substantiellement et explicitement le développement de la capacité cynophile gendarme pour la recherche des causes d'incendie, qui constitue le cœur du fil. PUB015 apporte une composante méthodologique utile sur la recherche criminologique intégrée à la pratique policière. Les autres candidats ne développent que des contextes lexicaux ou institutionnels sans aborder l'enquête judiciaire sur les causes d'incendie.",
+      "chemin_ouvert": {
+        "identique": "fil sans pivot valide : déjà examiné par le chemin historique de V1.0-F"
+      }
+    },
+    {
+      "thread_id": "T2",
+      "fil_lecture": "Transformation des missions de sécurité vers la gestion de crise",
+      "source_locator": "1-2",
+      "source_anchor": "La gendarmerie évolue d'un rôle de maintien de l'ordre vers un rôle de partenaire de la gestion de crise. À partir des années 1920, elle développe une approche préventive des feux de forêt. Le grand feu de 1949 dans les Landes formalise sa doctrine en trois missions : prévention, lutte contre les incendies et enquête judiciaire. Après le drame de Grasse en 1956, elle redéfinit sa place dans le dispositif de lutte contre les feux et devient un interlocuteur privilégié de l'autorité civile grâce à sa connaissance des circonscriptions et sa capacité à coordonner les renforts.",
+      "retrieval_queries": [
+        "transformation missions gendarmerie gestion crise",
+        "évolution rôle maintien ordre vers prévention",
+        "formalisation doctrine lutte incendies"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB010",
+        "PUB054",
+        "PUB002",
+        "PUB118"
+      ],
+      "candidate_count": 5,
+      "retained_count": 0,
+      "possible_count": 2,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "gestion de crise",
+        "variantes": [
+          "gestion de crise incendie"
+        ],
+        "angle": "Transformation progressive des missions institutionnelles de sécurité vers la…",
+        "critere_raccord": "La cible doit développer substantiellement « gestion de crise » lui-même. Si elle développe aussi le cœur de l'angle source « Transformation progressive des missions institutionnelles de sécurité vers la… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "gestion de crise",
+          "gestion de crise incendie"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB010",
+        "PUB002",
+        "PUB021",
+        "PUB022",
+        "PUB054",
+        "PUB118",
+        "PUB012",
+        "PUB007",
+        "PUB016"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation complétée. Deux candidats classés ADJACENT (PUB010, PUB054) apportent une connaissance substantielle et documentée sur la transformation des modalités de gestion de crise vers des approches plus inclusives et décentralisées, bien que sur des terrains différents (Alpes/risques naturels, santé). Trois candidats classés INSUFFICIENT : PUB005 traite l'IA comme outil sans développer la gestion de crise elle-même ; PUB002 mentionne la gestion de crise uniquement en contexte de formation aux incivilités ; PUB118 ne contient que des titres sans contenu documentaire réel.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB005",
+          "PUB010",
+          "PUB016",
+          "PUB026",
+          "PUB013",
+          "PUB022",
+          "PUB054",
+          "PUB002",
+          "PUB007",
+          "PUB118"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Seul PUB010 présente un raccord ADJACENT substantiel : il développe explicitement la transformation des approches de gestion de crise et la coordination interservices pour la prévention, composante utile du fil. Les autres candidats reposent sur des rapprochements lexicaux ou contextuels insuffisants (vocabulaire commun de « gestion de crise », même domaine de sécurité publique, ou analogies de structure) sans documenter la transformation historique des missions de sécurité ni la formalisation d'une doctrine spécifique à la gendarmerie."
+      }
+    },
+    {
+      "thread_id": "T3",
+      "fil_lecture": "Coopération interservices et coordination territoriale",
+      "source_locator": "3-4",
+      "source_anchor": "La gendarmerie redéfinit sa place dans le dispositif de lutte contre les feux en développant une coopération avec les services d'incendie et de secours, les acteurs forestiers et les autorités civiles. Dès 1973, les groupements méditerranéens contribuent à alimenter la base de données Prométhée. Dans les années 1980, la coopération se renforce avec les Bureaux d'études et les Comités communaux feux de forêt. Les mégafeux de 2026 confirment cette évolution et font de la coopération interservices une condition essentielle d'une réponse territoriale efficace.",
+      "retrieval_queries": [
+        "coopération interservices lutte incendies",
+        "coordination pompiers gendarmes forestiers",
+        "complémentarité services sécurité civile"
+      ],
+      "candidate_ids": [
+        "PUB033",
+        "PUB114"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "coopération interservices",
+        "variantes": [
+          "coordination territoriale",
+          "coopération interdisciplinaire"
+        ],
+        "angle": "redéfinition progressive du rôle institutionnel et structuration de l'action…",
+        "critere_raccord": "La cible doit développer substantiellement « coopération interservices » lui-même. Si elle développe aussi le cœur de l'angle source « redéfinition progressive du rôle institutionnel et structuration de l'action… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "coopération interservices",
+          "coordination territoriale",
+          "coopération interdisciplinaire"
+        ]
+      },
+      "pool_ids": [
+        "PUB033",
+        "PUB005",
+        "PUB010",
+        "PUB006",
+        "PUB114",
+        "PUB007",
+        "PUB002",
+        "PUB025",
+        "PUB026",
+        "PUB115",
+        "PUB024",
+        "PUB015"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Les deux candidats mentionnent le pivot « coopération interdisciplinaire » ou « coopération interservices » mais dans des contextes radicalement différents (gouvernance numérique et intégration des migrants) et sans développement substantiel du mécanisme de coopération lui-même. Aucun ne traite de la redéfinition progressive du rôle institutionnel ni de la structuration de l'action territoriale face aux crises. Les deux restent au niveau de l'énumération ou du contexte général, sans apporter de connaissance concrète sur la coopération interservices comme objet documentaire.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB005",
+          "PUB016",
+          "PUB006",
+          "PUB002",
+          "PUB013",
+          "PUB114",
+          "PUB026",
+          "PUB011",
+          "PUB008"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Seul PUB010 établit un raccord DIRECT avec le fil de départ. Ce document développe explicitement et substantiellement la coopération interservices et la coordination territoriale en matière de sécurité civile et de gestion de crise, avec des exemples concrets (hubs de sécurité civile, Plans Communaux de Sauvegarde, feuille de route départementale). Tous les autres candidats relèvent soit du contexte seul (vocabulaire commun, domaine voisin), soit d'une analogie de structure sans développement explicite du phénomène central du fil. Aucun ne documente substantiellement la coopération interservices en matière de gestion des feux de forêt ou de coordination territoriale multi-acteurs telle que décrite dans le fil de départ."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB113",
+      "fil_lecture": "Coopération interservices et coordination territoriale",
+      "source_locator": "3-4",
+      "target_publication_id": "PUB010",
+      "pourquoi": "Le document développe explicitement la coordination interservices en matière de sécurité civile et de gestion de crise territoriale. Les chunks C0261 et C0262 documentent précisément comment les acteurs locaux (pompiers, associations, communes, préfecture, SDIS) se coordonnent à l'échelle de la vallée et du département pour renforcer la résilience, notamment via les Plans Communaux de Sauvegarde et les hubs de sécurité civile.",
+      "target_locator": "71;72;72;73",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB113",
+      "fil_lecture": "Enquête judiciaire sur les causes d'incendie",
+      "source_locator": "3",
+      "target_publication_id": "PUB012",
+      "pourquoi": "Le document documente explicitement le développement de la capacité cynophile gendarme dédiée à la recherche des causes d'incendie (produits accélérateurs en 2004), qui est le cœur exact du fil de départ mentionnant la capacité cynophile opérationnelle depuis 2010.",
+      "target_locator": "2;3",
+      "decision": "RETENIR",
+      "badges": [
+        "Même auteur"
+      ],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB113",
+      "fil_lecture": "Transformation des missions de sécurité vers la gestion de crise",
+      "source_locator": "1-2",
+      "target_publication_id": "PUB054",
+      "pourquoi": "PUB054 documente substantiellement la gestion de crise sanitaire en développant explicitement ses principes de gouvernance, l'adaptation territoriale, l'implication des acteurs locaux et le passage d'une approche verticale à une approche inclusive. Bien que le domaine soit sanitaire et non incendie, elle apporte une connaissance concrète et documentée sur la transformation des modalités institutionnelles de gestion de crise, parallèle pertinent au fil source.",
+      "target_locator": "7",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 14,
+    "extraits_total": 14,
+    "sections_couvertes": 14,
+    "sections_total": 14
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

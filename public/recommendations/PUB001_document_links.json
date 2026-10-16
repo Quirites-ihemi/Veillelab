@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB001",
+  "source_publication": {
+    "publication_id": "PUB001",
+    "titre": "présence des ukrainiens adultes ayant une autorisation de séjour en france",
+    "année_publication": "2026",
+    "image_publication": "PUB001.png",
+    "auteurs_MI": "Pratheswar Nadesu, Eliza Ghiorghita",
+    "organisme_producteur": "Direction générale des étrangers en France",
+    "type_document": "Note",
+    "domaine": "Migrations/intégration",
+    "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-03/IM_127_Presence_des_Ukrainiens_adultes_ayant_une_autorisation_de_sejour_en_France.pdf",
+    "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/presence-des-ukrainiens-adultes-ayant-autorisation-de-sejour-en-france.html",
+    "node_count": 18,
+    "relation_count": 11,
+    "chunk_count": 15,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB001.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq fils de lecture identifiés, couvrant les dimensions structurantes du document : (1) le dispositif de protection temporaire comme réponse institutionnelle à l'afflux massif ; (2) la géographie de l'installation et l'attractivité différenciée des territoires ; (3) la surreprésentation féminine et ses implications démographiques ; (4) la transformation des statuts administratifs et les trajectoires vers l'insertion durable ; (5) le maintien et la stabilisation de la présence sur le long terme. Chaque fil s'appuie sur des passages substantiels et récurrents du document, susceptibles de prolongements dans d'autres publications du corpus.",
+  "threads": [],
+  "leaves": []
+}

@@ -1,0 +1,310 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB024",
+  "source_publication": {
+    "publication_id": "PUB024",
+    "titre": "réseaux criminels et corridors des caraïbes vers l’europe",
+    "année_publication": "2026",
+    "image_publication": "PUB024.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Consortium (CARICOM IMPACS, Expertise France, FRONTEX and InSight Crime)",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://zenodo.org/records/18385156/files/ELPACCTO2-RutasCaribe-EN_low.pdf?download=1",
+    "url_source": "https://zenodo.org/records/18385156",
+    "node_count": 38,
+    "relation_count": 37,
+    "chunk_count": 62,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques structurantes identifiées, couvrant l'ensemble du document : l'architecture décentralisée des réseaux criminels (pages 10, 42, 44), la diversité des modes de transport comme facteur de résilience (pages 6-8, 12, 44), le rôle de la corruption et des facteurs socio-économiques (pages 8, 42, 44), le rôle des courtiers internationaux dans la coordination (pages 8, 10, 42), et la vulnérabilité spécifique des territoires ultramarins européens (pages 12, 32-33, 40, 44). Ces thématiques sont transversales et pourraient éclairer d'autres publications du corpus traitant de criminalité organisée, de trafics ou de gouvernance territoriale dans d'autres contextes géographiques.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Réseaux criminels décentralisés et adaptables",
+      "source_locator": "10;42;44",
+      "source_anchor": "Le paysage du crime organisé dans les Caraïbes se caractérise par des réseaux fluides, transactionnels et discrets plutôt que par de grandes organisations hiérarchiques. Cette structure décentralisée rend les entreprises criminelles hautement adaptables et résilientes, fonctionnant comme des prestataires de services externalisés. Les réseaux criminels répondent rapidement à la pression de l'application de la loi en changeant les routes, les méthodes et les alliances.",
+      "retrieval_queries": [
+        "réseaux criminels décentralisés adaptables",
+        "structures transactionnelles crime organisé",
+        "résilience réseaux criminels pression"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB025",
+        "PUB012",
+        "PUB057"
+      ],
+      "candidate_count": 4,
+      "retained_count": 0,
+      "possible_count": 2,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Réseaux criminels décentralisés",
+        "variantes": [
+          "réseaux criminels",
+          "criminalité organisée décentralisée",
+          "réseaux transactionnels"
+        ],
+        "angle": "Structure adaptable et résiliente face à la pression de l'application de la…",
+        "critere_raccord": "La cible doit développer substantiellement « Réseaux criminels décentralisés » lui-même. Si elle développe aussi le cœur de l'angle source « Structure adaptable et résiliente face à la pression de l'application de la… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Réseaux criminels décentralisés",
+          "réseaux criminels",
+          "criminalité organisée décentralisée"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB025",
+        "PUB012",
+        "PUB007",
+        "PUB010",
+        "PUB011",
+        "PUB015",
+        "PUB057",
+        "PUB013",
+        "PUB111",
+        "PUB115",
+        "PUB052",
+        "PUB022",
+        "PUB026",
+        "PUB053",
+        "PUB051"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB111",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB052",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB053",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Deux candidats (PUB006 et PUB025) documentent substantiellement le même objet pivot — réseaux criminels décentralisés et adaptables — mais dans des secteurs différents (cybercriminalité et trafic de drogue) et sur des terrains différents (international/France vs Caraïbes). Tous deux montrent comment ces réseaux se restructurent et changent de stratégie face à la pression de l'application de la loi, ce qui correspond au cœur du fil source. Ils sont classés ADJACENT car l'angle source (Caraïbes, trafic) diffère, mais le pivot et son mécanisme d'adaptation sont documentés explicitement. PUB012 et PUB057 ne font que mentionner les réseaux criminels sans en documenter les caractéristiques structurelles ou adaptatives : INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB010",
+          "PUB025",
+          "PUB015",
+          "PUB026",
+          "PUB012",
+          "PUB011",
+          "PUB022",
+          "PUB053",
+          "PUB057"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Trois candidats seulement documentent substantiellement le fil. PUB025 établit un raccord DIRECT : elle documente explicitement l'adaptation des réseaux criminels (changement de routes et méthodes) en réponse à la pression de l'application de la loi, ce qui est le cœur du fil. PUB006 et PUB057 offrent des raccords ADJACENT : elles documentent le mécanisme de décentralisation et d'adaptabilité criminelle, mais dans des domaines différents (cybercriminalité) et sans traiter spécifiquement de la résilience face à la pression policière. Les autres candidats reposent sur des analogies structurelles, du vocabulaire commun ou des contextes voisins sans développement substantiel du phénomène criminel décentralisé."
+      }
+    },
+    {
+      "thread_id": "T005",
+      "fil_lecture": "Territoires ultramarins européens comme points de vulnérabilité",
+      "source_locator": "12;32;33;40;44",
+      "source_anchor": "Les territoires ultramarins français et néerlandais (Martinique, Guadeloupe, Guyane française, Curaçao, Aruba, Sint Maarten) occupent une position particulièrement vulnérable. Ils offrent un accès direct à l'Europe tout en contournant souvent les contrôles douaniers standards. La Guyane française dispose d'une liaison aérienne directe Cayenne-Paris exploitée pour le trafic. Les Antilles françaises et la Guyane française représentaient 55 % des saisies entrant en France métropolitaine en 2022.",
+      "retrieval_queries": [
+        "territoires ultramarins européens trafic",
+        "vulnérabilité accès direct Europe",
+        "Guyane française Antilles saisies cocaïne"
+      ],
+      "candidate_ids": [],
+      "candidate_count": 0,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Territoires ultramarins européens",
+        "variantes": [
+          "EU overseas territories"
+        ],
+        "angle": "Position de vulnérabilité dans les corridors de trafic de cocaïne vers…",
+        "critere_raccord": "La cible doit développer substantiellement « Territoires ultramarins européens » lui-même. Si elle développe aussi le cœur de l'angle source « Position de vulnérabilité dans les corridors de trafic de cocaïne vers… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Territoires ultramarins européens",
+          "EU overseas territories"
+        ]
+      },
+      "pool_ids": [
+        "PUB025",
+        "PUB002",
+        "PUB010",
+        "PUB006",
+        "PUB026",
+        "PUB013",
+        "PUB001",
+        "PUB112",
+        "PUB053",
+        "PUB005",
+        "PUB115",
+        "PUB008"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB053",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Aucune publication candidate.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB025",
+          "PUB006",
+          "PUB026",
+          "PUB112",
+          "PUB113",
+          "PUB018",
+          "PUB001",
+          "PUB051",
+          "PUB005"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Parmi les 10 candidats, seul PUB025 (OFDT) développe explicitement et substantiellement le cœur du fil : l'exploitation des territoires ultramarins français (Guyane, Antilles) comme points de vulnérabilité pour contourner les contrôles douaniers, via la liaison aérienne Cayenne-Paris et la réorientation des flux. PUB018 (SSMSI) constitue un apport adjacent utile en documentant la vulnérabilité criminelle spécifique de ces trois territoires. Les autres candidats ne traitent que du contexte (vocabulaire, domaine général) sans développement substantiel du phénomène central."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB024",
+      "fil_lecture": "Territoires ultramarins européens comme points de vulnérabilité",
+      "source_locator": "12;32;33;40;44",
+      "target_publication_id": "PUB025",
+      "pourquoi": "Le document développe explicitement et substantiellement le même phénomène : l'exploitation des territoires ultramarins français comme points de vulnérabilité pour contourner les contrôles douaniers, via la liaison aérienne Cayenne-Paris et les Antilles. Les chiffres et mécanismes correspondent directement au fil de départ.",
+      "target_locator": "4;5",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB024",
+      "fil_lecture": "Réseaux criminels décentralisés et adaptables",
+      "source_locator": "10;42;44",
+      "target_publication_id": "PUB006",
+      "pourquoi": "La cible documente substantiellement les réseaux criminels décentralisés dans l'écosystème cybercriminel : fragmentation accrue, instabilité croissante, recomposition permanente suite aux pressions judiciaires. Elle montre comment ces réseaux s'adaptent et se restructurent face aux démantèlements répétés, ce qui correspond au cœur du pivot. Cependant, l'angle source porte sur les Caraïbes et le trafic de drogue, tandis que cette cible traite la cybercriminalité : même objet (réseaux décentralisés adaptables), terrain et secteur différents.",
+      "target_locator": "38",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 62,
+    "extraits_total": 62,
+    "sections_couvertes": 47,
+    "sections_total": 47
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

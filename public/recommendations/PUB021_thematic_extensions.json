@@ -1,0 +1,131 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB021",
+  "source_publication": {
+    "publication_id": "PUB021",
+    "titre": "chaîne podcast de la préfecture de la région auvergne-rhône-alpes",
+    "année_publication": "2026",
+    "image_publication": "PUB021.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Préfecture de la région Auvergne-Rhône-Alpes",
+    "type_document": "Podcast",
+    "domaine": "Administration territoriale de l'Etat",
+    "url_contenu": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
+    "url_source": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
+    "node_count": 26,
+    "relation_count": 29,
+    "chunk_count": 6,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB021.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Podcast de la préfecture Auvergne-Rhône-Alpes présentant le travail quotidien de l'Office français de la biodiversité (OFB). Le document couvre cinq thématiques structurantes : la police judiciaire environnementale comme fonction d'enquête et de sanction ; les atteintes aux milieux aquatiques comme problème prioritaire dans le Rhône ; la connaissance des espèces et des milieux comme base de l'expertise technique ; la sensibilisation à une réglementation environnementale complexe et mal connue ; et le rôle pivot de l'OFB dans la coordination entre acteurs et enjeux. Ces thématiques sont transversales et susceptibles d'être traitées dans d'autres contextes territoriaux ou sectoriels.",
+  "threads": [
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Atteintes aux milieux aquatiques",
+      "source_locator": "06:24;06:48;07:15",
+      "source_anchor": "Le document identifie les atteintes aux milieux aquatiques comme le problème environnemental le plus fréquent dans le Rhône, incluant les pollutions accidentelles, les rejets chroniques et les travaux non déclarés ou non autorisés dans les cours d'eau. C'est le domaine où l'OFB concentre ses efforts de détection et d'intervention.",
+      "retrieval_queries": [
+        "atteintes milieux aquatiques",
+        "pollution cours d'eau",
+        "travaux non autorisés cours d'eau"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB022"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "milieux aquatiques",
+        "variantes": [
+          "cours d'eau",
+          "masses d'eau"
+        ],
+        "angle": "atteintes et pressions (pollutions accidentelles, rejets chroniques, travaux…",
+        "critere_raccord": "La cible doit développer substantiellement « milieux aquatiques » lui-même. Si elle développe aussi le cœur de l'angle source « atteintes et pressions (pollutions accidentelles, rejets chroniques, travaux… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "milieux aquatiques",
+          "cours d'eau",
+          "masses d'eau"
+        ]
+      },
+      "pool_ids": [
+        "PUB010",
+        "PUB022",
+        "PUB006",
+        "PUB026",
+        "PUB001"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB010 apporte une connaissance substantielle et explicite sur les milieux aquatiques (régimes, rôle hydrologique, aléas torrentiels), mais sous un angle différent du fil source (résilience climatique et inondations vs. pollutions et rejets). Le pivot est développé ; le raccord est ADJACENT. PUB022 ne mentionne les cours d'eau que comme ressource en crise hydrique, sans aucun développement sur les milieux aquatiques ou leurs atteintes : INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB006",
+          "PUB001",
+          "PUB022",
+          "PUB026"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Seul PUB010 présente un raccord documentaire substantiel, en tant que composante explicite de la gestion des cours d'eau et des travaux hydrauliques, bien que son cœur thématique (résilience alpine et risques torrentiels) diffère du fil de départ (atteintes aux milieux aquatiques et intervention de l'OFB). Les quatre autres candidats ne documentent aucunement les atteintes aux milieux aquatiques : PUB006 traite de cybercriminalité, PUB001 de migrations, PUB022 de crise hydrique insulaire, et PUB026 de discriminations scolaires. Aucun ne mérite une recommandation DIRECT ou POSSIBLE."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB021",
+      "fil_lecture": "Atteintes aux milieux aquatiques",
+      "source_locator": "06:24;06:48;07:15",
+      "target_publication_id": "PUB010",
+      "pourquoi": "La publication documente substantiellement les milieux aquatiques alpins (régimes hydrologiques, rôle des glaciers, disponibilité en eau) et les atteintes liées aux inondations (PPR débordement, modélisation torrentielle, aléas torrentiels). Elle traite les cours d'eau sous l'angle des risques naturels et de la résilience climatique, non sous celui des pollutions accidentelles, rejets chroniques ou travaux non autorisés du fil source.",
+      "target_locator": "104",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 6,
+    "extraits_total": 6,
+    "sections_couvertes": 1,
+    "sections_total": 1
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

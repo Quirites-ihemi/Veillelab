@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB010",
+  "source_publication": {
+    "publication_id": "PUB010",
+    "titre": "identification de lignes directrices pour des plans de résilience des alpes françaises en réponse aux conséquences des effets du changement climatique",
+    "année_publication": "2025",
+    "image_publication": "PUB010.png",
+    "auteurs_MI": "Stéphanie Beucher, Patrick Moreau",
+    "organisme_producteur": "Inspection générale de l’administration",
+    "type_document": "Rapport",
+    "domaine": "Administration territoriale de l'Etat",
+    "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/24121R%20-%20R%C3%A9silience%20Alpes%20Fran%C3%A7aises.pdf",
+    "url_source": "https://www.interieur.gouv.fr/documentation/rapports/identification-de-lignes-directrices-pour-des-plans-de-resilience-a-proposer-aux-autorites-et.html",
+    "node_count": 47,
+    "relation_count": 44,
+    "chunk_count": 118,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels du rapport sur la résilience des Alpes françaises. Chaque fil correspond à une dimension structurante du document : (1) l'évolution climatique et ses impacts sur les aléas, (2) l'exposition croissante liée aux choix d'aménagement et à la pression foncière, (3) les fragilités économiques dues à la spécialisation, (4) les déficits d'ingénierie technique et de capacités locales, (5) les enjeux de gouvernance multi-échelle. Ces fils sont ancrés dans des sections substantielles du rapport (diagnostic des vulnérabilités, analyse des aléas, recommandations) et ouvrent vers d'autres publications du corpus traitant de changement climatique, aménagement territorial, gouvernance locale, ou ingénierie des risques.",
+  "threads": [],
+  "leaves": []
+}

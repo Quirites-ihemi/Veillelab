@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB068",
+  "source_publication": {
+    "publication_id": "PUB068",
+    "titre": "réconcilier police et citoyens, mission impossible ?",
+    "année_publication": "2026",
+    "image_publication": "",
+    "auteurs_MI": "",
+    "organisme_producteur": "Terra Nova",
+    "type_document": "Podcast",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.lagrandeconversation.com/podcast/reconcilier-police-et-citoyens-mission-impossible/",
+    "url_source": "https://www.lagrandeconversation.com/podcast/reconcilier-police-et-citoyens-mission-impossible/",
+    "node_count": 19,
+    "relation_count": 14,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Podcast Terra Nova 2026 sur la réconciliation police-citoyens. Cinq fils identifiés couvrant les dimensions structurantes : (1) l'analyse systémique des violences policières au-delà de la responsabilité individuelle ; (2) le modèle de police communautaire comme fondement de légitimité ; (3) la pratique des contrôles d'identité comme cristallisation de discriminations et d'inefficacité relationnelle ; (4) l'inadéquation de la doctrine française de maintien de l'ordre aux évolutions des formes de protestation ; (5) la tension entre politique du chiffre et résolution effective des problèmes de sécurité. Ces fils couvrent les niveaux micro (interactions quotidiennes), méso (pratiques et doctrines) et macro (choix politiques et responsabilités institutionnelles).",
+  "threads": [
+    {
+      "thread_id": "FIL_003",
+      "fil_lecture": "Contrôles d'identité : discriminations et efficacité policière questionnée",
+      "source_locator": "N1076, N1077",
+      "source_anchor": "Contrôles d'identité, pratiques discriminatoires touchant davantage les jeunes issus de minorités visibles. Contrôles d'identité, efficacité policière mise en doute au regard de leurs effets sur la relation avec la population. La pratique des contrôles cristallise à la fois un problème de discrimination et une contradiction entre efficacité formelle et efficacité relationnelle.",
+      "retrieval_queries": [
+        "contrôles identité discrimination",
+        "efficacité policière relation population",
+        "pratiques discriminatoires minorités"
+      ],
+      "candidate_ids": [
+        "PUB026",
+        "PUB013"
+      ],
+      "candidate_count": 2,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Contrôles d'identité",
+        "variantes": [],
+        "angle": "Pratique policière cristallisant discrimination et tension entre efficacité…",
+        "critere_raccord": "La cible doit développer substantiellement « Contrôles d'identité » lui-même. Si elle développe aussi le cœur de l'angle source « Pratique policière cristallisant discrimination et tension entre efficacité… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Contrôles d'identité"
+        ]
+      },
+      "pool_ids": [
+        "PUB013",
+        "PUB026",
+        "PUB025",
+        "PUB005",
+        "PUB014",
+        "PUB113",
+        "PUB006",
+        "PUB011",
+        "PUB024",
+        "PUB033",
+        "PUB118",
+        "PUB010"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB026 développe directement l'objet pivot « Contrôles d'identité » en tant que pratique policière cristallisant discrimination et tensions d'efficacité, aligné précisément avec le fil source. PUB013 mentionne les contrôles d'identité uniquement comme catégorie méthodologique d'interaction sans en documenter les mécanismes, discriminations ou effets relationnels."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB068",
+      "fil_lecture": "Contrôles d'identité : discriminations et efficacité policière questionnée",
+      "source_locator": "N1076, N1077",
+      "target_publication_id": "PUB026",
+      "pourquoi": "La publication développe substantiellement les contrôles d'identité eux-mêmes, en documentant explicitement leur cadre juridique, leur ampleur (47 millions en 2021), les usages discrétionnaires et surtout les discriminations qu'ils cristallisent, notamment envers les jeunes hommes perçus comme non blancs. Elle traite directement le cœur du fil : la pratique policière des contrôles d'identité comme lieu de discrimination et de tension entre efficacité formelle et relationnelle.",
+      "target_locator": "69",
+      "decision": "RETENIR",
+      "badges": []
+    }
+  ]
+}

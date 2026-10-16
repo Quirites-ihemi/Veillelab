@@ -1,0 +1,146 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB012",
+  "source_publication": {
+    "publication_id": "PUB012",
+    "titre": "1945–2025 : 80 ans de formation cynophile à gramat",
+    "année_publication": "2025",
+    "image_publication": "PUB012.png",
+    "auteurs_MI": "Benoît HABERBUSCH",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.calameo.com/read/002719292fed72e70a1fa",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/note-du-crgn-121-80-ans-de-formation-cynophile-a-gramat",
+    "node_count": 30,
+    "relation_count": 23,
+    "chunk_count": 14,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB012.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Identification de 5 thématiques transversales substantielles dans cette note historique sur 80 ans de formation cynophile à Gramat. Chaque thématique est ancrée dans des sections et nœuds distincts du document, couvre plusieurs pages et représente une problématique susceptible d'être traitée dans d'autres contextes du corpus (formation d'équipes opérationnelles, spécialisation des capacités, intégration institutionnelle, professionnalisation de structures, adaptation à l'évolution des menaces). Les expressions partagées « formation du personnel », « technicité », « recrutement », « instruction » et « intégration » soutiennent la pertinence transversale de ces thématiques.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Intégration de la capacité cynophile dans les opérations",
+      "source_locator": "3",
+      "source_anchor": "La capacité cynophile s'est progressivement intégrée dans les différentes formations de la gendarmerie (gendarmerie mobile, PSIG, GIGN, GTA, gendarmerie maritime, Garde républicaine) et dans la manœuvre quotidienne, avec une réactivité reconnue qui en fait un atout pour optimiser l'action sur l'ensemble du spectre missionnel.",
+      "retrieval_queries": [
+        "intégration de la capacité cynophile dans la manœuvre",
+        "insertion des équipes cynophiles dans les formations",
+        "réactivité et optimisation opérationnelle"
+      ],
+      "candidate_ids": [
+        "PUB113"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "capacité cynophile",
+        "variantes": [
+          "force cynophile",
+          "équipes cynophiles"
+        ],
+        "angle": "intégration opérationnelle dans les formations et la manœuvre quotidienne",
+        "critere_raccord": "La cible doit développer substantiellement « capacité cynophile » lui-même. Si elle développe aussi le cœur de l'angle source « intégration opérationnelle dans les formations et la manœuvre quotidienne », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "capacité cynophile",
+          "force cynophile",
+          "équipes cynophiles"
+        ]
+      },
+      "pool_ids": [
+        "PUB113",
+        "PUB010",
+        "PUB026",
+        "PUB016",
+        "PUB011",
+        "PUB114"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB114",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB113 apporte une documentation concrète et substantielle sur la capacité cynophile : sa création (2002), son opérationnalité (2010), sa formation spécialisée (Vulcain), ses usages précis (détection d'accélérateurs) et ses résultats mesurables (71 interventions, 34 résultats positifs en 2017). Cependant, elle traite cette capacité sous l'angle très spécialisé de la recherche des causes d'incendies, et non sous l'angle plus large de l'intégration opérationnelle dans l'ensemble des formations (gendarmerie mobile, PSIG, GIGN, GTA, gendarmerie maritime, Garde républicaine) et de la manœuvre quotidienne générale du fil source. Il s'agit donc d'une composante explicite et documentée du pivot, mais développée dans un terrain et un usage particuliers, ce qui justifie le classement ADJACENT plutôt que DIRECT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB010",
+          "PUB026",
+          "PUB005",
+          "PUB016",
+          "PUB006",
+          "PUB113",
+          "PUB011",
+          "PUB015",
+          "PUB114",
+          "PUB057"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Parmi les 10 candidats évalués, un seul présente un raccord DIRECT : PUB113 documente explicitement et substantiellement la capacité cynophile de la gendarmerie (formation Vulcain) et son intégration progressive dans les opérations. PUB016 offre un raccord ADJACENT utile : il développe l'intégration de capacités dans les formations de police/gendarmerie, bien que sans spécificité cynophile. Les 8 autres candidats reposent sur des rapprochements lexicaux ou contextuels insuffisants (vocabulaire commun, domaine voisin, analogie de structure) sans développement explicite du cœur du fil."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB012",
+      "fil_lecture": "Intégration de la capacité cynophile dans les opérations",
+      "source_locator": "3",
+      "target_publication_id": "PUB113",
+      "pourquoi": "Le document développe explicitement et substantiellement la capacité cynophile de la gendarmerie, notamment sa formation Vulcain dédiée à la recherche des causes d'incendie depuis 2010, et son intégration progressive dans les missions de gendarmerie. Cela correspond directement au cœur du fil sur l'intégration de la capacité cynophile dans les opérations.",
+      "target_locator": "3, 1",
+      "decision": "RETENIR",
+      "badges": [
+        "Même auteur"
+      ],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 14,
+    "extraits_total": 14,
+    "sections_couvertes": 11,
+    "sections_total": 11
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

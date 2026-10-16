@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB053",
+  "source_publication": {
+    "publication_id": "PUB053",
+    "titre": "l’assurance des catastrophes naturelles : un enjeu de soutenabilité financière",
+    "année_publication": "2026",
+    "image_publication": "PUB053.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Cour des comptes",
+    "type_document": "Rapport",
+    "domaine": "Sécurité civile",
+    "url_contenu": "https://www.ccomptes.fr/sites/default/files/2026-04/20260427-Assurance-des-catastrophes-naturelles.pdf\nPUB054 — Crises sanitaires : p",
+    "url_source": "https://www.vie-publique.fr/files/rapport/pdf/303004.pdf",
+    "node_count": 19,
+    "relation_count": 16,
+    "chunk_count": 6,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB053.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport de la Cour des comptes (2026) sur l'assurance des catastrophes naturelles. Cinq fils de lecture identifiés, couvrant les dimensions structurantes du document : (1) la fragilisation financière du régime face aux projections climatiques et au risque budgétaire pour l'État ; (2) la prévention par prospective territoriale fine et actualisation des plans de risques ; (3) la résilience du bâti comme levier de prévention post-catastrophe ; (4) les tensions d'assurabilité territoriale, notamment en outre-mer ; (5) l'évolution des critères d'exceptionnalité et la gouvernance de la reconnaissance Cat-Nat. Chaque fil est ancré dans des passages substantiels et multiples du rapport, et ouvre des perspectives de lecture transpublication.",
+  "threads": [
+    {
+      "thread_id": "FIL_002",
+      "fil_lecture": "Prévention territoriale et prospective des risques à maille fine",
+      "source_locator": "12;13",
+      "source_anchor": "Une information prospective sur les risques, à une maille géographique fine et tenant compte du changement climatique, doit permettre d'orienter les décisions d'aménagement. La Cour préconise notamment une prospective territorialisée des risques Cat-Nat fondée sur la trajectoire de réchauffement de référence pour l'adaptation au changement climatique et articulée avec les plans de prévention des risques naturels. La Cour estime nécessaire de produire des plans de prévention des risques naturels dans toutes les zones exposées et de les actualiser après les catastrophes naturelles en intégrant l'évolution climatique.",
+      "retrieval_queries": [
+        "prospective territoriale risques naturels maille fine",
+        "plans prévention risques actualisation changement climatique",
+        "aménagement territoire adaptation risques climatiques"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB015",
+        "PUB005",
+        "PUB054",
+        "PUB026",
+        "PUB025",
+        "PUB113",
+        "PUB002",
+        "PUB090",
+        "PUB051"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB010 établit un raccord DIRECT : il développe explicitement une prospective territorialisée des risques naturels intégrant le changement climatique, avec cartographie, surveillance continue et actualisation des plans de résilience. PUB005 offre un raccord ADJACENT en documentant l'anticipation des risques climatiques via l'IA et la coordination territoriale, composante utile mais sans traiter spécifiquement de la maille fine des risques naturels. Les autres candidats reposent sur des analogies de vocabulaire, de contexte général ou de domaine, sans développement substantiel du cœur du fil (prospective territorialisée des risques naturels à maille fine)."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB053",
+      "fil_lecture": "Prévention territoriale et prospective des risques à maille fine",
+      "source_locator": "12;13",
+      "target_publication_id": "PUB010",
+      "pourquoi": "La cible développe explicitement une prospective territorialisée des risques naturels à maille fine, intégrant le changement climatique et articulée avec des plans de prévention. Elle documente l'anticipation des aléas, la cartographie territoriale, la surveillance continue et l'actualisation des stratégies de résilience, correspondant directement au cœur du fil.",
+      "target_locator": "53;55;56;11;12",
+      "decision": "RETENIR",
+      "badges": []
+    }
+  ]
+}

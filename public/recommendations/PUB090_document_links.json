@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB090",
+  "source_publication": {
+    "publication_id": "PUB090",
+    "titre": "lutte contre la pédocriminalité",
+    "année_publication": "2026",
+    "image_publication": "PUB090.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
+    "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
+    "node_count": 33,
+    "relation_count": 34,
+    "chunk_count": 35,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB090.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Rapport PEPS 2026 du Centre de recherche de la Gendarmerie nationale sur la lutte contre la pédocriminalité. Cinq fils de lecture ont été extraits, couvrant les dimensions structurantes du document : (1) les mutations numériques et l'IA générative comme vecteur émergent de pédocriminalité ; (2) l'automatisation du traitement des preuves numériques dans un cadre souverain ; (3) la centralisation numérique des signalements et du suivi ; (4) la protection et la valorisation de la parole des victimes mineures ; (5) la détection précoce des risques par identification de signaux faibles. Ces fils correspondent à des sections substantielles du rapport et ouvrent des perspectives de recherche transversales au corpus Quiritès sur les enjeux numériques, la protection de l'enfance et les innovations institutionnelles.",
+  "threads": [],
+  "leaves": []
+}

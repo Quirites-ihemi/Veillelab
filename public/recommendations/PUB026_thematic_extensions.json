@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB026",
+  "source_publication": {
+    "publication_id": "PUB026",
+    "titre": "jeunesses et discriminations fondées sur l’origine : répondre à l’impératif d’égalité",
+    "année_publication": "2026",
+    "image_publication": "PUB026.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Défenseur des droits",
+    "type_document": "Rapport",
+    "domaine": "Migrations/intégration",
+    "url_contenu": "https://www.defenseurdesdroits.fr/sites/default/files/2026-02/Rapport%20-%20Jeunesses%20et%20discriminations%20fond%C3%A9es%20sur%20l%27origine.pdf",
+    "url_source": "https://www.defenseurdesdroits.fr/jeunesses-et-discriminations-fondees-sur-lorigine-repondre-limperatif-degalite-1070",
+    "node_count": 50,
+    "relation_count": 49,
+    "chunk_count": 147,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB026.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques phares identifiées, couvrant les domaines structurants du rapport : l'éducation, la sécurité publique, l'emploi, l'accès aux droits, et le logement. Chacune représente une problématique transversale documentée de manière substantielle dans le rapport, avec des nœuds convergents et des sections dédiées. Les expressions partagées « discriminations », « origines », « jeunes » et « signalement » soutiennent la pertinence transversale de ces thématiques.",
+  "threads": [],
+  "leaves": [],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 96,
+    "extraits_total": 147,
+    "sections_couvertes": 35,
+    "sections_total": 35
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB114",
+  "source_publication": {
+    "publication_id": "PUB114",
+    "titre": "l'intégration précoce des demandeurs de protection internationale",
+    "année_publication": "2026",
+    "image_publication": "PUB114.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+    "type_document": "Note",
+    "domaine": "Migrations/intégration",
+    "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
+    "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
+    "node_count": 36,
+    "relation_count": 37,
+    "chunk_count": 18,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cette publication du REM synthétise les pratiques d'intégration précoce des demandeurs de protection internationale dans 24 pays européens. Elle couvre l'ensemble du cycle des mesures (apprentissage linguistique, formation civique, orientation professionnelle, soutien psychosocial) et identifie cinq thématiques transversales structurantes : (1) l'évaluation et le suivi systématique des mesures, largement insuffisants ; (2) la continuité des parcours entre phase précoce et dispositifs généraux, fragmentée ; (3) l'adaptation des mesures aux profils et vulnérabilités, inégalement mise en œuvre ; (4) les défis organisationnels et financiers de mise en œuvre ; (5) l'information et la communication auprès des demandeurs. Ces thématiques sont transférables à d'autres contextes de politique migratoire ou d'intégration en Europe.",
+  "threads": [],
+  "leaves": [],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 18,
+    "extraits_total": 18,
+    "sections_couvertes": 18,
+    "sections_total": 18
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

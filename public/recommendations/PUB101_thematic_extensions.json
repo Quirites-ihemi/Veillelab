@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB101",
+  "source_publication": {
+    "publication_id": "PUB101",
+    "titre": "le modèle économique de la sécurité privée",
+    "année_publication": "2026",
+    "image_publication": "PUB101.png",
+    "auteurs_MI": "Cyrille MAILLET, Philippe SIMEON-DREVON, Abderrahmane EL ABIED, François de RICOLFIS",
+    "organisme_producteur": "Inspection générale de l’administration",
+    "type_document": "Rapport",
+    "domaine": "Sécurité nationale",
+    "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/25079R%20-%20S%C3%A9curit%C3%A9%20priv%C3%A9e-web.pdf",
+    "url_source": "https://www.calameo.com/read/008180918d625c3e224b0",
+    "node_count": 30,
+    "relation_count": 26,
+    "chunk_count": 12,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB101.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du rapport : la fragilité économique structurelle du secteur (pages 5, 28-33), l'insuffisance des données et le besoin d'observation (pages 25-27), le déséquilibre de pouvoir entre acheteurs et prestataires (pages 33-37), la faiblesse des outils d'évaluation de la qualité (pages 38-42), et les enjeux de transparence et de contrôle via la limitation de la sous-traitance (pages 48-50). Chaque thématique est documentée par plusieurs nœuds convergents et sections dédiées, et représente une problématique susceptible d'être traitée dans d'autres contextes sectoriels ou territoriaux.",
+  "threads": [],
+  "leaves": [],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 12,
+    "extraits_total": 12,
+    "sections_couvertes": 12,
+    "sections_total": 12
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB033",
+  "source_publication": {
+    "publication_id": "PUB033",
+    "titre": "la souveraineté numérique. gouverner l'espace symbiotique",
+    "année_publication": "2026",
+    "image_publication": "PUB033.png",
+    "auteurs_MI": "Ysens de France",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Sécurité nationale",
+    "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
+    "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
+    "node_count": 28,
+    "relation_count": 25,
+    "chunk_count": 18,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB033.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels ancrés dans la publication PUB033. Les fils couvrent les dimensions structurantes du document : (1) la fragmentation informationnelle comme problème de souveraineté, (2) la gouvernance de l'IA comme infrastructure opérationnelle de la souveraineté, (3) la transformation des métiers par la collaboration homme-machine, (4) la dépendance technologique comme enjeu géopolitique, (5) la redéfinition du contrat social par la symbiose homme-machine. Chaque fil est documenté par des passages explicites et substantiels, avec des requêtes de recherche ciblant le noyau transférable vers d'autres publications du corpus.",
+  "threads": [
+    {
+      "thread_id": "FIL_004",
+      "fil_lecture": "Dépendance technologique et configuration externe de l'espace sociotechnique",
+      "source_locator": "20",
+      "source_anchor": "La dépendance européenne aux infrastructures technologiques américaines donne une dimension concrète aux tensions entre différents modèles politiques et technologiques. Les capacités de calcul, les plateformes d'intermédiation et les environnements de cloud structurent déjà l'espace dans lequel évoluent administrations, entreprises et citoyens. Une partie de l'espace sociotechnique dans lequel s'exerce la souveraineté européenne est ainsi configurée par des logiques qui ne sont pas nécessairement celles des États européens.",
+      "retrieval_queries": [
+        "dépendance infrastructures technologiques américaines",
+        "espace sociotechnique configuration externe",
+        "souveraineté européenne modèles technologiques"
+      ],
+      "candidate_ids": [
+        "PUB005"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Souveraineté numérique",
+        "variantes": [
+          "espace sociotechnique",
+          "espace homme-machine"
+        ],
+        "angle": "Capacité collective à configurer et gouverner l'environnement technologique…",
+        "critere_raccord": "La cible doit développer substantiellement « Souveraineté numérique » lui-même. Si elle développe aussi le cœur de l'angle source « Capacité collective à configurer et gouverner l'environnement technologique… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Souveraineté numérique",
+          "espace sociotechnique",
+          "espace homme-machine"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB026",
+        "PUB025",
+        "PUB006",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB005 développe explicitement la souveraineté numérique comme objet (maîtrise des données, infrastructures, solutions nationales/régionales, protection des droits). Cependant, le contexte est celui de la gouvernance territoriale et de l'équité administrative en Afrique, non celui de la dépendance technologique européenne aux infrastructures américaines ni de la configuration externe de l'espace sociotechnique par des logiques externes. La cible traite le même objet pivot mais sous un angle différent (gouvernance interne et équité) : elle apporte une connaissance complémentaire sur la souveraineté numérique sans aborder le cœur du fil source (tensions géopolitiques, dépendance externe, configuration imposée). Classification : ADJACENT."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB033",
+      "fil_lecture": "Dépendance technologique et configuration externe de l'espace sociotechnique",
+      "source_locator": "20",
+      "target_publication_id": "PUB005",
+      "pourquoi": "La cible documente substantiellement la souveraineté numérique comme condition de gouvernance territoriale et de protection des données, notamment via l'IA et l'identité numérique. Cependant, elle traite cet objet pivot sous l'angle de la gouvernance territoriale et de l'équité administrative en Afrique, non sous celui de la dépendance externe et de la configuration de l'espace sociotechnique par des logiques externes.",
+      "target_locator": "10;11",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

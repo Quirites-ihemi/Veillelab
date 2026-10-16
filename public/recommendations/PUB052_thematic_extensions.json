@@ -1,0 +1,344 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB052",
+  "source_publication": {
+    "publication_id": "PUB052",
+    "titre": "une généalogie des politiques publiques de sécurité",
+    "année_publication": "2026",
+    "image_publication": "PUB052.png",
+    "auteurs_MI": "Christophe Soullez",
+    "organisme_producteur": "Les cahiers français",
+    "type_document": "Articles et collections d'articles",
+    "domaine": "Sécurité publique",
+    "url_contenu": "",
+    "url_source": "https://www.lgdj.fr/cahiers-francais-mai-juin-2026-n451-9782111743533.html",
+    "node_count": 36,
+    "relation_count": 39,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB052.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées couvrant l'ensemble de la généalogie des politiques publiques de sécurité en France. Chaque thématique représente une problématique structurante susceptible d'être traitée dans d'autres contextes ou terrains du corpus : les tensions normatives (sécurité vs libertés), les transformations institutionnelles (contrat social, attentes de résultats), les évolutions paradigmatiques (prévention, renseignement, globalité), les trajectoires professionnelles (spécialisation des forces), et les reconfigurations de la gouvernance (partenariat, responsabilité collective).",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Équilibre sécurité-libertés dans les politiques publiques",
+      "source_locator": "N0974, N0998, N1002",
+      "source_anchor": "Le document identifie une tension structurante entre l'efficacité de la sécurité et le respect des libertés publiques, qui s'accentue particulièrement à partir de 2012 avec le terrorisme et le renseignement. Cette tension culmine avec l'intégration dans le droit commun de plusieurs instruments de l'état d'urgence, marquant un déplacement durable de l'équilibre entre sécurité et libertés.",
+      "retrieval_queries": [
+        "équilibre sécurité libertés publiques",
+        "tension efficacité sécurité respect libertés",
+        "instruments état d'urgence droit commun"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB010",
+        "PUB026",
+        "PUB013",
+        "PUB006",
+        "PUB034",
+        "PUB002",
+        "PUB054",
+        "PUB008",
+        "PUB090"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 1,
+      "pivot_status": "legacy:pivot_absent_de_la_source",
+      "pivot": null,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 publications candidates sur le fil « Équilibre sécurité-libertés dans les politiques publiques ». Le fil de départ identifie une tension structurante entre efficacité sécuritaire et respect des libertés, accentuée par le terrorisme et le renseignement à partir de 2012, culminant avec l'intégration d'instruments d'état d'urgence dans le droit commun. Trois publications sont retenues ou jugées possibles : PUB005 documente directement le mécanisme d'équilibre dans le contexte de l'IA et de la sécurité publique (DIRECT/RETENIR) ; PUB013 développe la composante de confiance citoyenne envers le respect des libertés par les forces de sécurité (ADJACENT/POSSIBLE) ; PUB034 traite la déontologie comme garantie des libertés face à l'action sécuritaire (ADJACENT/POSSIBLE) ; PUB054 documente l'intégration des instruments d'urgence et les risques pour les libertés (ADJACENT/POSSIBLE). Les sept autres publications sont écartées : elles abordent des domaines connexes (climat, discriminations, cybercriminalité, protection de l'enfance, atteintes aux élus) mais ne développent pas explicitement la tension sécurité-libertés qui constitue le cœur du fil.",
+      "chemin_ouvert": {
+        "identique": "fil sans pivot valide : déjà examiné par le chemin historique de V1.0-F"
+      }
+    },
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Transformation du contrat social et attentes de résultats mesurables",
+      "source_locator": "N0973, N0997",
+      "source_anchor": "Le document décrit un déplacement fondamental du contrat social : l'État passe du rôle de garant de l'ordre à celui d'acteur tenu de produire un résultat de sécurité visible et mesurable. Cette évolution génère un problème de pilotage statistique susceptible de privilégier les résultats immédiats au détriment des enquêtes de fond.",
+      "retrieval_queries": [
+        "contrat social État sécurité résultat mesurable",
+        "pilotage statistique sécurité résultats immédiats",
+        "État garant ordre production sécurité"
+      ],
+      "candidate_ids": [
+        "PUB033"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "contrat social",
+        "variantes": [
+          "transformation du contrat social",
+          "déplacement du contrat social"
+        ],
+        "angle": "Transformation de la responsabilité de l'État : passage du rôle de garant de…",
+        "critere_raccord": "La cible doit développer substantiellement « contrat social » lui-même. Si elle développe aussi le cœur de l'angle source « Transformation de la responsabilité de l'État : passage du rôle de garant de… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "contrat social",
+          "transformation du contrat social",
+          "déplacement du contrat social"
+        ]
+      },
+      "pool_ids": [
+        "PUB033",
+        "PUB118",
+        "PUB010",
+        "PUB006",
+        "PUB026",
+        "PUB022",
+        "PUB015",
+        "PUB005",
+        "PUB001",
+        "PUB008",
+        "PUB002",
+        "PUB024",
+        "PUB007",
+        "PUB013",
+        "PUB025",
+        "PUB101",
+        "PUB054"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB033 développe le contrat social comme objet central, en montrant sa transformation par les facteurs technologiques et la relation symbiotique humain-machine. Les deux preuves fournies documentent concrètement comment le contrat social se reconfigure dans un contexte de fusion techno-physique. Cependant, le fil source porte spécifiquement sur la transformation de la responsabilité de l'État (passage de garant de l'ordre à producteur de résultats mesurables), ce qui n'est pas abordé dans la cible. La cible traite donc le même objet pivot sous un angle différent (transformation technologique vs transformation de la responsabilité étatique), ce qui justifie le classement ADJACENT plutôt que DIRECT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB025",
+          "PUB118",
+          "PUB005",
+          "PUB008",
+          "PUB013",
+          "PUB010",
+          "PUB002",
+          "PUB033",
+          "PUB026",
+          "PUB004"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Parmi les 10 candidats, 3 sont classés ADJACENT (PUB008, PUB013, PUB033) et 7 INSUFFICIENT. PUB008 et PUB013 documentent explicitement le pilotage statistique de la sécurité par l'État, illustrant une composante centrale du fil. PUB033 théorise directement la transformation du contrat social à l'ère numérique. Les autres candidats restent au niveau du contexte ou de l'analogie sans développer substantiellement le cœur du fil ou ses composantes utiles."
+      }
+    },
+    {
+      "thread_id": "T004",
+      "fil_lecture": "Professionnalisation et spécialisation des forces de sécurité",
+      "source_locator": "N0975, N0977, N0978, N0979, N0982, N0983, N0987, N0989, N0995, N0999, N1005, N1006",
+      "source_anchor": "Le document documente une trajectoire continue de professionnalisation et de spécialisation des forces de sécurité : création de la Police nationale (1966), développement de la police judiciaire et des unités d'intervention (GIPN, GIGN), modernisation technologique (police technique et scientifique, fichiers informatisés), renforcement du renseignement (DGSI), et réforme de 2024 visant l'unité de commandement territorial et le décloisonnement des services.",
+      "retrieval_queries": [
+        "professionnalisation forces sécurité spécialisation",
+        "Police nationale Gendarmerie modernisation",
+        "unités intervention GIPN GIGN renseignement"
+      ],
+      "candidate_ids": [
+        "PUB002",
+        "PUB003",
+        "PUB013",
+        "PUB026",
+        "PUB014",
+        "PUB034",
+        "PUB018",
+        "PUB008",
+        "PUB007",
+        "PUB033"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 3,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "forces de sécurité",
+        "variantes": [
+          "Police nationale",
+          "Gendarmerie nationale"
+        ],
+        "angle": "professionnalisation et spécialisation : création d'unités spécialisées,…",
+        "critere_raccord": "La cible doit développer substantiellement « forces de sécurité » lui-même. Si elle développe aussi le cœur de l'angle source « professionnalisation et spécialisation : création d'unités spécialisées,… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "forces de sécurité",
+          "Police nationale",
+          "Gendarmerie nationale"
+        ]
+      },
+      "pool_ids": [
+        "PUB002",
+        "PUB006",
+        "PUB012",
+        "PUB005",
+        "PUB003",
+        "PUB013",
+        "PUB008",
+        "PUB015",
+        "PUB010",
+        "PUB026",
+        "PUB014",
+        "PUB007",
+        "PUB033",
+        "PUB034",
+        "PUB018",
+        "PUB016",
+        "PUB025",
+        "PUB111",
+        "PUB116",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 9,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats sur la trajectoire de professionnalisation et spécialisation des forces de sécurité. Trois candidats classés DIRECT/RETENIR : aucun ne développe substantiellement le cœur du fil (création d'unités spécialisées, GIPN, GIGN, police judiciaire, renseignement, réforme 2024). Cinq candidats classés ADJACENT/POSSIBLE : PUB002 (dispositif spécialisé de protection des élus), PUB013 (qualité de service et efficacité perçue), PUB026 (pratiques et manquements des forces), PUB034 (déontologie professionnelle), PUB007 (innovation technologique), PUB033 (transformation numérique et IA). Deux candidats classés INSUFFICIENT/ECARTER : PUB003 (simple mention contextuelle), PUB014 (forces de sécurité comme cadre administratif), PUB018 (forces de sécurité comme variables de modélisation), PUB008 (forces de sécurité comme cadre de collecte de données). Aucun candidat ne traite explicitement la trajectoire historique de création d'unités spécialisées (GIPN, GIGN, police judiciaire) ou la réforme 2024 d'unité de commandement territorial.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB012",
+          "PUB002",
+          "PUB013",
+          "PUB014",
+          "PUB026",
+          "PUB034",
+          "PUB018",
+          "PUB111",
+          "PUB025"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Deux candidats seulement documentent substantiellement une composante du fil : PUB006 sur la professionnalisation de la lutte contre la cybercriminalité (centre de formation spécialisé, développement de compétences rares) et PUB012 sur la professionnalisation et la spécialisation de la force cynophile (création d'écoles, modernisation, structuration hiérarchique). Tous les autres candidats partagent le domaine (police/gendarmerie) ou le vocabulaire mais ne documentent pas explicitement la professionnalisation, la spécialisation ou la modernisation des forces de sécurité. Ils traitent soit de statistiques criminelles, soit de relations police-population, soit de déontologie, soit de formations ponctuelles, sans développer la trajectoire organisationnelle centrale du fil."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB052",
+      "fil_lecture": "Équilibre sécurité-libertés dans les politiques publiques",
+      "source_locator": "N0974, N0998, N1002",
+      "target_publication_id": "PUB034",
+      "pourquoi": "PUB034 traite une composante essentielle du fil : le mécanisme de garantie des libertés face à l'action sécuritaire. Elle documente comment la déontologie fonctionne comme boussole pour maintenir l'équilibre entre efficacité et respect des droits fondamentaux.",
+      "target_locator": "9; 6",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB052",
+      "fil_lecture": "Professionnalisation et spécialisation des forces de sécurité",
+      "source_locator": "N0975, N0977, N0978, N0979, N0982, N0983, N0987, N0989, N0995, N0999, N1005, N1006",
+      "target_publication_id": "PUB007",
+      "pourquoi": "Le document documente concrètement l'innovation et la modernisation technologique de la Gendarmerie nationale : stratégies de valorisation, R&D, transfert de technologies, codéveloppement de robots sous-marins. C'est une composante explicite de la professionnalisation (modernisation technologique), mais sous l'angle de l'innovation et du transfert technologique, non de la création d'unités spécialisées.",
+      "target_locator": "1",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB052",
+      "fil_lecture": "Transformation du contrat social et attentes de résultats mesurables",
+      "source_locator": "N0973, N0997",
+      "target_publication_id": "PUB033",
+      "pourquoi": "La cible documente substantiellement le contrat social lui-même, en particulier sa reconfiguration par les transformations technologiques et la relation techno-humaine. Elle développe explicitement comment les architectures techniques redéfinissent les conditions d'exercice de la citoyenneté et les modalités du contrat social. Cependant, elle n'aborde pas le cœur de l'angle source : le passage du rôle de l'État de garant de l'ordre à acteur tenu de produire un résultat de sécurité visible et mesurable.",
+      "target_locator": "21",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 0,
+    "extraits_total": 0,
+    "sections_couvertes": 0,
+    "sections_total": 0
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB006",
+  "source_publication": {
+    "publication_id": "PUB006",
+    "titre": "rapport annuel sur la cybercriminalité 2026",
+    "année_publication": "2026",
+    "image_publication": "PUB006.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Commandement du ministère de l’Intérieur dans le cyberespace / Centre d’analyse des cybermenaces",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/Rapport-cybercriminalite2026-WebA.pdf",
+    "url_source": "https://www.interieur.gouv.fr/documentation/rapports/rapport-annuel-sur-cybercriminalite-2026.html",
+    "node_count": 32,
+    "relation_count": 16,
+    "chunk_count": 45,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB006.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels du rapport annuel sur la cybercriminalité 2026. Ces fils couvrent les dimensions structurantes du document : (1) l'industrialisation du cybercrime via des modèles de service, (2) la convergence cyberespace-monde physique dans les attaques critiques, (3) l'émergence de l'IA autonome comme vecteur d'attaque, (4) les risques cryptographiques post-quantiques, et (5) l'hacktivisme comme expression de tensions géopolitiques. Chaque fil est ancré dans des passages substantiels et explicitement documentés, avec des requêtes de recherche conçues pour identifier des prolongements documentaires dans le corpus.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Intelligence artificielle agentique et autonomisation des cyberattaques",
+      "source_locator": "28;29;44;45;55;56;57;58",
+      "source_anchor": "L'IA agentique marque le passage d'une IA réactive vers une IA opérationnelle, intégrée à des systèmes capables de planifier des actions, d'interagir avec d'autres outils, d'évaluer leurs résultats et d'adapter leur comportement en continu. Appliquée à des fins malveillantes, l'IA agentique permet d'automatiser l'ensemble de la chaîne d'attaque : analyser une cible, identifier des vulnérabilités, sélectionner et tester différentes techniques d'intrusion, adapter le comportement aux dispositifs de sécurité rencontrés. Certaines familles de maliciels recourent à des modèles de langage pour générer automatiquement du code et mettre en œuvre des techniques d'obfuscation avancées. On observe l'émergence de logiciels malveillants plus autonomes, capables d'adapter leur comportement aux dispositifs de sécurité.",
+      "retrieval_queries": [
+        "IA agentique autonome cyberattaques automatisation",
+        "Modèles langage génération code malveillant obfuscation",
+        "Agents autonomes planification exécution adaptation attaques"
+      ],
+      "candidate_ids": [
+        "PUB057"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "IA agentique",
+        "variantes": [
+          "intelligence artificielle agentique",
+          "agents autonomes"
+        ],
+        "angle": "Autonomisation des cyberattaques par IA capable de planifier, exécuter et…",
+        "critere_raccord": "La cible doit développer substantiellement « IA agentique » lui-même. Si elle développe aussi le cœur de l'angle source « Autonomisation des cyberattaques par IA capable de planifier, exécuter et… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "IA agentique",
+          "intelligence artificielle agentique",
+          "agents autonomes"
+        ]
+      },
+      "pool_ids": [
+        "PUB057",
+        "PUB003",
+        "PUB005",
+        "PUB033",
+        "PUB051",
+        "PUB062",
+        "PUB090",
+        "PUB118"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB003",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB062",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB057 (Europol, 2026) documente explicitement l'IA agentique comme vecteur d'autonomisation des cybercrimes. Le pivot est nommé et associé à un rôle concret (autonomisation des cybercrimes). Cependant, la cible ne développe pas les mécanismes détaillés du fil source (planification d'actions, interaction avec d'autres outils, évaluation des résultats, adaptation du comportement, automatisation de la chaîne d'attaque complète, génération de code, obfuscation). Elle énonce l'enjeu général sans en détailler les composantes opérationnelles. Classement : ADJACENT (le pivot est documenté substantiellement, mais sous un angle plus général que le cœur du fil source)."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB006",
+      "fil_lecture": "Intelligence artificielle agentique et autonomisation des cyberattaques",
+      "source_locator": "28;29;44;45;55;56;57;58",
+      "target_publication_id": "PUB057",
+      "pourquoi": "La cible documente substantiellement l'IA agentique appliquée aux cybercrimes autonomes (chunk C0799 : « cybercrimes largement autonomes grâce à l'intelligence artificielle agentique »), ce qui constitue un développement explicite du pivot. Cependant, elle ne traite pas le cœur de l'angle source : la planification, l'exécution et l'adaptation des attaques par IA agentique. Elle aborde plutôt l'autonomisation générale des cybercrimes et les menaces hybrides.",
+      "target_locator": "36;37",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

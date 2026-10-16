@@ -1,0 +1,225 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB004",
+  "source_publication": {
+    "publication_id": "PUB004",
+    "titre": "sentiment d’insécurité exprimé par les habitants des quartiers prioritaires de la politique de la ville",
+    "année_publication": "2026",
+    "image_publication": "PUB004.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.onpv.fr/uploads/media_items/onpv-etude-insecurite.original.pdf",
+    "url_source": "https://anct.gouv.fr/ressources/publications/etude-onpv-sentiment-d-insecurite-exprime-par-les-habitants-des-quartiers",
+    "node_count": 16,
+    "relation_count": 10,
+    "chunk_count": 14,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB004.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels et structurants de la publication PUB004. Les fils couvrent : (1) le phénomène central de surreprésentation territoriale, (2) le genre comme facteur majeur et différencié, (3) les profils socio-économiques et leur lien à la victimation, (4) l'âge comme variable structurante avec un pic 30-39 ans, (5) la méthode statistique permettant d'isoler l'effet du territoire. Chaque fil est ancré dans des passages substantiels (plusieurs pages, analyses convergentes ou sections dédiées) et ouvre des perspectives de lecture transpublication.",
+  "threads": [
+    {
+      "thread_id": "FIL002",
+      "fil_lecture": "Genre comme facteur structurant d'insécurité",
+      "source_locator": "8;9;11;12",
+      "source_anchor": "16 % des femmes résidant en QPV déclarent ne pas se sentir en sécurité à leur domicile, soit deux fois plus que hors QPV. Près de 34 % des femmes vivant en QPV disent ne pas se sentir en sécurité dans leur quartier, soit trois fois plus que hors QPV. Les femmes habitant seules ressentent davantage d'insécurité en QPV (36,9 % dans le quartier). Par régression logistique, les femmes se sentent près de deux fois plus en insécurité que les hommes, dans leur quartier comme à domicile (odds ratio 2,3 au domicile).",
+      "retrieval_queries": [
+        "genre femmes sentiment insécurité",
+        "monoparentalité insécurité résidentielle",
+        "vulnérabilité différenciée sécurité"
+      ],
+      "candidate_ids": [
+        "PUB026",
+        "PUB013",
+        "PUB008",
+        "PUB116",
+        "PUB114",
+        "PUB012",
+        "PUB001",
+        "PUB018",
+        "PUB054",
+        "PUB090"
+      ],
+      "candidate_count": 10,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Genre",
+        "variantes": [
+          "sexe"
+        ],
+        "angle": "Facteur structurant du sentiment d'insécurité, avec surreprésentation chez les…",
+        "critere_raccord": "La cible doit développer substantiellement « Genre » lui-même. Si elle développe aussi le cœur de l'angle source « Facteur structurant du sentiment d'insécurité, avec surreprésentation chez les… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Genre",
+          "sexe"
+        ]
+      },
+      "pool_ids": [
+        "PUB012",
+        "PUB001",
+        "PUB026",
+        "PUB013",
+        "PUB008",
+        "PUB010",
+        "PUB021",
+        "PUB018",
+        "PUB114",
+        "PUB054",
+        "PUB052",
+        "PUB090",
+        "PUB031",
+        "PUB058",
+        "PUB111",
+        "PUB116"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB052",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB058",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 2,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation de 10 candidats sur le fil « Genre comme facteur structurant d'insécurité ». Trois publications (PUB013, PUB026, PUB116, PUB090) documentent substantiellement le genre comme facteur structurant, soit directement (PUB013 : motifs d'appel au 17 selon le genre), soit comme composante explicite dans d'autres contextes (PUB026 : discriminations scolaires ; PUB116 : normes de virilité dans la police ; PUB090 : stéréotypes de genre et vulnérabilité). Les sept autres candidats ne font que mentionner le sexe ou le genre sans documenter son rôle structurant : PUB008 énumère des statistiques sans analyser le mécanisme ; PUB114, PUB012, PUB001, PUB018, PUB054 utilisent le terme comme variable administrative, contexte lexical ou recommandation sans développement substantiel."
+    },
+    {
+      "thread_id": "FIL005",
+      "fil_lecture": "Régression logistique pour isoler effet territorial",
+      "source_locator": "11;12",
+      "source_anchor": "L'analyse multivariée par régression logistique permet d'évaluer l'effet de chacune des caractéristiques des répondants et en particulier du lieu d'habitation sur le sentiment d'insécurité. Deux variables se distinguent : le genre et le lieu de résidence (QPV / hors QPV). Les habitants de QPV se sentent quatre fois plus souvent en insécurité dans leur quartier que les habitants hors QPV (facteur 4,2), et deux fois plus souvent à domicile. La régression logistique quantifie le risque relatif via l'odds ratio, permettant de contrôler les associations d'autres variables explicatives.",
+      "retrieval_queries": [
+        "régression logistique insécurité",
+        "analyse multivariée sentiment sécurité",
+        "odds ratio facteurs insécurité"
+      ],
+      "candidate_ids": [
+        "PUB018"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "régression logistique",
+        "variantes": [
+          "analyse multivariée",
+          "odds ratio"
+        ],
+        "angle": "méthode statistique pour isoler l'effet territorial du sentiment d'insécurité…",
+        "critere_raccord": "La cible doit développer substantiellement « régression logistique » lui-même. Si elle développe aussi le cœur de l'angle source « méthode statistique pour isoler l'effet territorial du sentiment d'insécurité… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "régression logistique",
+          "analyse multivariée",
+          "odds ratio"
+        ]
+      },
+      "pool_ids": [
+        "PUB018",
+        "PUB010",
+        "PUB002",
+        "PUB005",
+        "PUB006",
+        "PUB007",
+        "PUB008",
+        "PUB011",
+        "PUB013",
+        "PUB026",
+        "PUB062",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB062",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB018 documente explicitement la régression logistique (spécification logit) comme outil d'analyse multivariée pour isoler l'effet propre d'une caractéristique territoriale sur un phénomène de sécurité, en contrôlant les autres variables. C'est exactement le même mécanisme que celui du fil source, appliqué à un phénomène différent (vols sans violence au lieu de sentiment d'insécurité). Le raccord est ADJACENT car le pivot et son usage méthodologique sont substantiellement documentés, mais sous un angle et un terrain différents de ceux du fil source."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB004",
+      "fil_lecture": "Genre comme facteur structurant d'insécurité",
+      "source_locator": "8;9;11;12",
+      "target_publication_id": "PUB013",
+      "pourquoi": "Cette enquête du SSMSI sur le vécu et ressenti en matière de sécurité documente explicitement comment le genre structure les motifs d'appel au 17 et les contacts avec les services de sécurité. Elle établit des différences notables selon le genre, ce qui correspond directement au cœur du fil : genre comme facteur structurant du sentiment d'insécurité.",
+      "target_locator": "26;27",
+      "decision": "RETENIR",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB004",
+      "fil_lecture": "Régression logistique pour isoler effet territorial",
+      "source_locator": "11;12",
+      "target_publication_id": "PUB018",
+      "pourquoi": "La cible développe substantiellement l'analyse multivariée et la régression logistique (spécification logit) comme méthode pour isoler l'effet propre de chaque caractéristique territoriale sur un phénomène de sécurité (vols sans violence), en neutralisant les autres variables. Le mécanisme et l'objectif sont identiques à ceux du fil source, mais appliqués à un phénomène différent (vols sans violence vs sentiment d'insécurité).",
+      "target_locator": "5",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

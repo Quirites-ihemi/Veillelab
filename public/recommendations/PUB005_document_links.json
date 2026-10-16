@@ -1,0 +1,213 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB005",
+  "source_publication": {
+    "publication_id": "PUB005",
+    "titre": "actes du 5e forum de l’association des préfets et représentants de l’état de la francophonie",
+    "année_publication": "2026",
+    "image_publication": "PUB005.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Association des préfets et représentants de l’État de la francophonie",
+    "type_document": "Actes de colloque",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
+    "url_source": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
+    "node_count": 37,
+    "relation_count": 36,
+    "chunk_count": 24,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB005.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Extraction de 5 fils de lecture substantiels à partir des actes du 5e forum APREF (Dakar, décembre 2025). Chaque fil correspond à une dimension structurante du document, documentée par plusieurs sections et experts. Les fils couvrent les trois tables rondes (simplification administrative, sécurité/crise, éthique/régulation) ainsi que des enjeux transversaux (souveraineté, identité numérique). Les requêtes de récupération visent à identifier des prolongements documentaires dans le corpus Quiritès sans élargir artificiellement les thèmes.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "IA et simplification de la gouvernance territoriale",
+      "source_locator": "8;9;10;11",
+      "source_anchor": "La table ronde n°1 explore comment l'IA peut transformer les modes de fonctionnement administratifs : automatisation des tâches répétitives, guichets uniques intelligents, assistants conversationnels multilingues, simplification des circuits de décision. Plusieurs exemples concrets sont développés : production automatisée de comptes rendus, assistance juridique interne, contrôle des titres, rédaction de discours, assistants virtuels fiscaux, plateformes de centralisation des données publiques, outils d'audit automatisé. L'IA est présentée comme un levier majeur pour une gouvernance plus inclusive et accessible, notamment en réduisant la fracture entre zones urbaines et rurales.",
+      "retrieval_queries": [
+        "IA automatisation tâches administratives",
+        "guichets uniques intelligents services publics",
+        "simplification gouvernance territoriale données"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB057",
+        "PUB033",
+        "PUB003",
+        "PUB062",
+        "PUB090",
+        "PUB118",
+        "PUB026"
+      ],
+      "candidate_count": 8,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "intelligence artificielle",
+        "variantes": [
+          "IA",
+          "intelligence artificielle générative"
+        ],
+        "angle": "transformation des modes de fonctionnement administratifs et simplification de…",
+        "critere_raccord": "La cible doit développer substantiellement « intelligence artificielle » lui-même. Si elle développe aussi le cœur de l'angle source « transformation des modes de fonctionnement administratifs et simplification de… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "intelligence artificielle",
+          "IA",
+          "intelligence artificielle générative"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB006",
+        "PUB057",
+        "PUB026",
+        "PUB033",
+        "PUB062",
+        "PUB090",
+        "PUB051",
+        "PUB118",
+        "PUB010"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Analyse synthétique : Seul PUB033 (souveraineté numérique, Gendarmerie) atteint le seuil ADJACENT. Il documente substantiellement l'IA comme levier de transformation des modes de fonctionnement institutionnels, d'automatisation des tâches répétitives et de collaboration homme-machine, bien que dans le contexte des forces de sécurité intérieure plutôt que de la gouvernance territoriale générale. Tous les autres candidats traitent l'IA sous des angles sans rapport avec la simplification administrative : cybercriminalité (PUB006, PUB057), désinformation (PUB062), terrorisme (PUB003), pédocriminalité (PUB090), neurosciences militaires (PUB118), ou discriminations éducatives (PUB026). Les mentions isolées d'IA ne suffisent pas à établir un raccord documentaire solide avec le fil source."
+    },
+    {
+      "thread_id": "T003",
+      "fil_lecture": "IA pour l'anticipation et la gestion des crises complexes",
+      "source_locator": "13;14;15;16",
+      "source_anchor": "La table ronde n°2 développe trois usages complémentaires de l'IA en sécurité publique et gestion de crise : analyse descriptive des situations passées, capacité prédictive fondée sur l'exploitation de grandes masses de données, aide prescriptive à la décision en situation de crise. Des projets concrets sont présentés : évacuation de masse assistée par l'IA en Région bruxelloise, hub national dédié à l'IA pour la sécurité civile, outils d'aide à la décision et systèmes prédictifs pour la lutte contre les feux de forêt. L'IA est mobilisée pour détecter les signaux faibles, modéliser l'évolution des risques et appuyer les décisions en temps réel.",
+      "retrieval_queries": [
+        "IA prédictive gestion crise",
+        "aide décision situation urgence",
+        "détection signaux faibles anticipation risques"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB033",
+        "PUB057",
+        "PUB003",
+        "PUB062",
+        "PUB118",
+        "PUB090",
+        "PUB026"
+      ],
+      "candidate_count": 8,
+      "retained_count": 0,
+      "possible_count": 6,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Intelligence artificielle",
+        "variantes": [
+          "IA"
+        ],
+        "angle": "Usages opérationnels en sécurité publique et gestion de crise : analyse…",
+        "critere_raccord": "La cible doit développer substantiellement « Intelligence artificielle » lui-même. Si elle développe aussi le cœur de l'angle source « Usages opérationnels en sécurité publique et gestion de crise : analyse… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Intelligence artificielle",
+          "IA"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB006",
+        "PUB010",
+        "PUB026",
+        "PUB002",
+        "PUB033",
+        "PUB062",
+        "PUB021",
+        "PUB051",
+        "PUB118",
+        "PUB022",
+        "PUB057",
+        "PUB054",
+        "PUB113",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": ""
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB005",
+      "fil_lecture": "IA et simplification de la gouvernance territoriale",
+      "source_locator": "8;9;10;11",
+      "target_publication_id": "PUB033",
+      "pourquoi": "PUB033 documente substantiellement l'IA comme outil de transformation des modes de fonctionnement institutionnels et de redéfinition de l'action de l'État. Elle traite explicitement l'automatisation des tâches à faible valeur ajoutée, la collaboration homme-machine, et la réhumanisation de l'environnement métier. Bien que le contexte soit celui des forces de sécurité intérieure et non de la gouvernance territoriale générale, le mécanisme de transformation administrative par l'IA et la simplification des processus sont substantiellement développés.",
+      "target_locator": "19",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB005",
+      "fil_lecture": "IA pour l'anticipation et la gestion des crises complexes",
+      "source_locator": "13;14;15;16",
+      "target_publication_id": "PUB006",
+      "pourquoi": "PUB006 documente l'exploitation de l'IA par les cybercriminels (AIaaS, génération de maliciels, deepfakes) dans un contexte de cybercriminalité. Le pivot IA est substantiellement documenté, mais uniquement sous l'angle de la menace criminelle, sans aucun lien avec les usages opérationnels en sécurité publique et gestion de crise (analyse descriptive, prédiction, aide à la décision en temps réel). Les deux domaines sont distincts et antagonistes.",
+      "target_locator": "28;29",
+      "decision": "POSSIBLE",
+      "badges": []
+    },
+    {
+      "source_publication_id": "PUB005",
+      "fil_lecture": "IA pour l'anticipation et la gestion des crises complexes",
+      "source_locator": "13;14;15;16",
+      "target_publication_id": "PUB057",
+      "pourquoi": "PUB057 documente l'IA comme facteur d'accélération et d'amplification de la cybercriminalité (baisse des barrières, augmentation de la vitesse et de l'efficacité des attaques, fraudes personnalisées). Le pivot est substantiellement documenté, mais exclusivement sous l'angle de la menace criminelle, sans aucun développement des usages opérationnels en sécurité publique et gestion de crise.",
+      "target_locator": "6;8",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB001",
+  "source_publication": {
+    "publication_id": "PUB001",
+    "titre": "présence des ukrainiens adultes ayant une autorisation de séjour en france",
+    "année_publication": "2026",
+    "image_publication": "PUB001.png",
+    "auteurs_MI": "Pratheswar Nadesu, Eliza Ghiorghita",
+    "organisme_producteur": "Direction générale des étrangers en France",
+    "type_document": "Note",
+    "domaine": "Migrations/intégration",
+    "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-03/IM_127_Presence_des_Ukrainiens_adultes_ayant_une_autorisation_de_sejour_en_France.pdf",
+    "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/presence-des-ukrainiens-adultes-ayant-autorisation-de-sejour-en-france.html",
+    "node_count": 18,
+    "relation_count": 11,
+    "chunk_count": 15,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB001.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Analyse basée sur l'ensemble des sections et nœuds du document. Les cinq thématiques identifiées couvrent les problématiques transversales structurantes : (1) le dispositif de protection temporaire comme réponse à un afflux massif, (2) la géographie de l'accueil et l'ancrage territorial, (3) la composition démographique féminisée des flux, (4) la stabilisation durable des populations accueillies, (5) la transformation des cadres juridiques de séjour en contexte de crise prolongée. Chaque thématique est documentée par plusieurs sections et nœuds convergents, et peut être retrouvée dans d'autres publications du corpus traitant des migrations, de l'asile ou de l'intégration dans des contextes différents.",
+  "threads": [
+    {
+      "thread_id": "T004",
+      "fil_lecture": "Stabilisation et installation durable des réfugiés",
+      "source_locator": "1;2;5;6;8;10",
+      "source_anchor": "Quatre ans après le déclenchement du conflit, une majorité des Ukrainiens ayant fui demeure sur le territoire français : en décembre 2025, 69 000 personnes soit 60 % des 118 800 bénéficiaires de protection temporaire restent présentes. Cette stabilisation durable est confirmée par le maintien de 54 % des Ukrainiens arrivés trois ans auparavant. Plus de sept bénéficiaires sur dix conservent le statut initial de protection temporaire. Les demandes de naturalisation traduisent une tendance soutenue à l'installation durable, avec plus de 400 Ukrainiens naturalisés chaque année depuis 2018.",
+      "retrieval_queries": [
+        "installation durable réfugiés",
+        "maintien population territoire",
+        "naturalisation intégration long terme"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB090",
+        "PUB010",
+        "PUB011",
+        "PUB026",
+        "PUB012"
+      ],
+      "candidate_count": 6,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "installation durable",
+        "variantes": [
+          "stabilisation durable",
+          "installation"
+        ],
+        "angle": "Maintien et ancrage territorial des réfugiés ukrainiens en France après leur…",
+        "critere_raccord": "La cible doit développer substantiellement « installation durable » lui-même. Si elle développe aussi le cœur de l'angle source « Maintien et ancrage territorial des réfugiés ukrainiens en France après leur… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "installation durable",
+          "stabilisation durable",
+          "installation"
+        ]
+      },
+      "pool_ids": [
+        "PUB090",
+        "PUB010",
+        "PUB006",
+        "PUB011",
+        "PUB026",
+        "PUB012",
+        "PUB002",
+        "PUB003",
+        "PUB018",
+        "PUB021"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB003",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seule PUB026 apporte une documentation substantielle du pivot « installation » en tant que concept juridique et administratif d'ancrage territorial (présence effective, domiciliation). Les autres candidats utilisent le terme dans des contextes sans rapport (cybercriminalité, traumatisme, géographie alpine, cybersécurité, infrastructures militaires) ou comme simple mention lexicale. PUB026 reste classée ADJACENT car elle traite l'installation dans un contexte différent (enfants scolarisés, discriminations) et non spécifiquement des réfugiés ukrainiens, mais elle documente réellement le mécanisme d'installation comme présence effective sur un territoire.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB022",
+          "PUB010",
+          "PUB006",
+          "PUB114",
+          "PUB007",
+          "PUB026",
+          "PUB015",
+          "PUB013",
+          "PUB014",
+          "PUB018"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Parmi les dix candidats examinés, deux publications présentent un raccord ADJACENT : PUB114 sur l'intégration précoce des demandeurs de protection internationale (qui documente explicitement les mesures et effets long terme de l'intégration, composante substantielle du fil) et PUB026 sur les discriminations fondées sur l'origine (qui aborde l'installation sur le territoire et les mesures d'intégration long terme, bien que sous l'angle des obstacles). Les huit autres candidats ne documentent pas explicitement le cœur du fil ou ses composantes utiles : ils relèvent soit de domaines entièrement différents (eau à Mayotte, cybercriminalité, innovation technologique, criminologie, refus de contrôle routier, vols sans violence), soit traitent de résilience territoriale ou de sécurité sans lien direct avec la stabilisation de réfugiés. Le rapprochement repose dans ces cas sur une analogie de vocabulaire ou un contexte général commun, insuffisant pour un raccord documentaire."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB001",
+      "fil_lecture": "Stabilisation et installation durable des réfugiés",
+      "source_locator": "1;2;5;6;8;10",
+      "target_publication_id": "PUB114",
+      "pourquoi": "Le document traite explicitement de l'intégration précoce des demandeurs de protection internationale, avec des évaluations longitudinales des effets à long terme en Allemagne et des bonnes pratiques en France concernant l'intégration rapide dans le système éducatif et l'apprentissage linguistique. Cela constitue une composante substantielle de l'installation durable, bien que le cœur du fil (stabilisation et maintien sur le territoire français des Ukrainiens) soit traité sous un angle différent (mesures d'intégration précoce plutôt que données de maintien).",
+      "target_locator": "15;16",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 15,
+    "extraits_total": 15,
+    "sections_couvertes": 12,
+    "sections_total": 12
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

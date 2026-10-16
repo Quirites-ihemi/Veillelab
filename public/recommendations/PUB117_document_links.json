@@ -1,0 +1,116 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB117",
+  "source_publication": {
+    "publication_id": "PUB117",
+    "titre": "la désinformation",
+    "année_publication": "2026",
+    "image_publication": "PUB117.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Éditions La Découverte",
+    "type_document": "Ouvrage",
+    "domaine": "Démocraties et sujets informationnels",
+    "url_contenu": "",
+    "url_source": "https://www.editionsladecouverte.fr/la_desinformation-9782348090820",
+    "node_count": 21,
+    "relation_count": 24,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication PUB117 « La désinformation » (2026, Éditions La Découverte). Analyse des pages 13-14 portant sur les fondements conceptuels et les facteurs de vulnérabilité à la désinformation, la transformation de l'espace informationnel, et l'écart entre approches publiques et scientifiques. Cinq fils identifiés couvrant : (1) les déterminants sociaux de la vulnérabilité au-delà du cognitif ; (2) le rôle structurant de la polarisation ; (3) la fragilisation de l'espace informationnel ; (4) les distinctions conceptuelles fondamentales ; (5) la tension entre simplifications publiques et savoirs scientifiques.",
+  "threads": [
+    {
+      "thread_id": "FIL_004",
+      "fil_lecture": "Distinction conceptuelle entre désinformation et mésinformation",
+      "source_locator": "13",
+      "source_anchor": "Le document établit une distinction explicite entre désinformation et mésinformation, fondée sur le critère de l'intention de nuire. Cette distinction conceptuelle est présentée comme fondamentale pour une compréhension rigoureuse du phénomène et pour éviter les simplifications dans le traitement public de la désinformation.",
+      "retrieval_queries": [
+        "désinformation mésinformation distinction intention",
+        "définition désinformation critère nuire",
+        "clarification conceptuelle désinformation"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB062",
+        "PUB011"
+      ],
+      "candidate_count": 3,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "désinformation",
+        "variantes": [
+          "mésinformation",
+          "distinction désinformation-mésinformation"
+        ],
+        "angle": "distinction conceptuelle fondée sur l'intention de nuire et ses implications…",
+        "critere_raccord": "La cible doit développer substantiellement « désinformation » lui-même. Si elle développe aussi le cœur de l'angle source « distinction conceptuelle fondée sur l'intention de nuire et ses implications… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "désinformation",
+          "mésinformation",
+          "distinction désinformation-mésinformation"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB062",
+        "PUB011",
+        "PUB015",
+        "PUB010",
+        "PUB013",
+        "PUB026",
+        "PUB007",
+        "PUB033"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seul PUB062 documente substantiellement le cœur du fil : la distinction conceptuelle entre désinformation et mésinformation fondée sur l'intention de nuire. PUB006 et PUB011 mentionnent la désinformation dans des contextes opérationnels ou géopolitiques distincts, sans aborder la distinction conceptuelle qui est l'objet central du fil source."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB117",
+      "fil_lecture": "Distinction conceptuelle entre désinformation et mésinformation",
+      "source_locator": "13",
+      "target_publication_id": "PUB062",
+      "pourquoi": "Le document établit explicitement la distinction entre mésinformation (involontaire) et désinformation (volonté de tromper), fondée précisément sur le critère de l'intention. Cette distinction conceptuelle correspond au cœur du fil source. Le passage documente substantiellement l'objet pivot et l'angle fondamental du fil.",
+      "target_locator": "10;11",
+      "decision": "RETENIR",
+      "badges": []
+    }
+  ]
+}

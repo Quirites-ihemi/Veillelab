@@ -1,0 +1,144 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB117",
+  "source_publication": {
+    "publication_id": "PUB117",
+    "titre": "la désinformation",
+    "année_publication": "2026",
+    "image_publication": "PUB117.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Éditions La Découverte",
+    "type_document": "Ouvrage",
+    "domaine": "Démocraties et sujets informationnels",
+    "url_contenu": "",
+    "url_source": "https://www.editionsladecouverte.fr/la_desinformation-9782348090820",
+    "node_count": 21,
+    "relation_count": 24,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Identification de 5 thématiques phares structurantes du document « La désinformation » (PUB117). Ces thématiques couvrent : (1) la clarification conceptuelle de la désinformation, (2) les facteurs de vulnérabilité au-delà du seul déficit éducatif, (3) le rôle de la polarisation et des fonctions identitaires, (4) les transformations de l'écosystème informationnel, (5) le rôle de la défiance institutionnelle. Elles sont toutes ancrées dans les nœuds du document et constituent des problématiques transversales susceptibles d'être traitées dans d'autres contextes du corpus.",
+  "threads": [
+    {
+      "thread_id": "T1",
+      "fil_lecture": "Désinformation : définition et critères de distinction",
+      "source_locator": "13",
+      "source_anchor": "Le document établit une distinction fondamentale entre désinformation et mésinformation, en posant l'intention de nuire comme critère définitoire de la désinformation. Cette clarification conceptuelle structure l'analyse de la problématique.",
+      "retrieval_queries": [
+        "désinformation intention nuire",
+        "distinction désinformation mésinformation",
+        "définition désinformation critères"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB062",
+        "PUB011"
+      ],
+      "candidate_count": 3,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Désinformation",
+        "variantes": [
+          "Intention de nuire"
+        ],
+        "angle": "Définition conceptuelle et critères de distinction (intention de nuire comme…",
+        "critere_raccord": "La cible doit développer substantiellement « Désinformation » lui-même. Si elle développe aussi le cœur de l'angle source « Définition conceptuelle et critères de distinction (intention de nuire comme… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Désinformation",
+          "Intention de nuire"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB062",
+        "PUB011",
+        "PUB010",
+        "PUB026",
+        "PUB007",
+        "PUB013",
+        "PUB033"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB062 offre un raccord DIRECT : elle reprend le cœur du fil (distinction mésinformation/désinformation fondée sur l'intention de nuire). PUB011 apporte une connaissance substantielle sur la désinformation mais sous un angle stratégique différent (usage géopolitique), d'où ADJACENT. PUB006 ne mentionne la désinformation que comme phénomène contextuel sans développer sa définition ni ses critères distinctifs, d'où INSUFFICIENT.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB013",
+          "PUB062",
+          "PUB026",
+          "PUB006",
+          "PUB010",
+          "PUB007",
+          "PUB033",
+          "PUB025"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Seul PUB062 (Sénat, « Le futur de notre rapport à l'autorité et à la vérité ») développe explicitement et substantiellement la distinction conceptuelle centrale du fil : la différenciation entre mésinformation (involontaire) et désinformation (volonté de tromper). Tous les autres candidats mentionnent le mot « définition » ou « critères » dans des domaines sans rapport (résilience climatique, transfert technologique, discrimination, cybercriminalité, drogues) ou ne documentent pas le cœur du fil. PUB006 mentionne « désinformation » mais uniquement comme activité cybercriminelle, sans développer sa définition conceptuelle."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB117",
+      "fil_lecture": "Désinformation : définition et critères de distinction",
+      "source_locator": "13",
+      "target_publication_id": "PUB062",
+      "pourquoi": "Le document établit explicitement la distinction entre mésinformation (involontaire) et désinformation (volonté de tromper), reprenant exactement le critère d'intention de nuire du fil source. Il développe substantiellement la définition conceptuelle et les critères de distinction qui structurent l'angle du fil.",
+      "target_locator": "10;11",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 0,
+    "extraits_total": 0,
+    "sections_couvertes": 0,
+    "sections_total": 0
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

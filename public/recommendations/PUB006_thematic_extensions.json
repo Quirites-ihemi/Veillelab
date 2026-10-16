@@ -1,0 +1,138 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB006",
+  "source_publication": {
+    "publication_id": "PUB006",
+    "titre": "rapport annuel sur la cybercriminalité 2026",
+    "année_publication": "2026",
+    "image_publication": "PUB006.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Commandement du ministère de l’Intérieur dans le cyberespace / Centre d’analyse des cybermenaces",
+    "type_document": "Rapport",
+    "domaine": "Criminalités",
+    "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/Rapport-cybercriminalite2026-WebA.pdf",
+    "url_source": "https://www.interieur.gouv.fr/documentation/rapports/rapport-annuel-sur-cybercriminalite-2026.html",
+    "node_count": 32,
+    "relation_count": 16,
+    "chunk_count": 45,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB006.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du rapport. Elles reflètent les problématiques structurantes du document : (1) l'évolution organisationnelle du cybercrime vers des modèles industriels ; (2) les nouveaux modèles économiques souterrains ; (3) l'appropriation de l'IA par les cybercriminels ; (4) la fusion croissante entre attaques numériques et impacts physiques ; (5) les ruptures technologiques futures (quantique). Chaque thématique est documentée par plusieurs nœuds convergents et sections du rapport, sans occurrence marginale.",
+  "threads": [
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Intelligence artificielle au service de la cybercriminalité",
+      "source_locator": "28;29;44;45;55;56;57",
+      "source_anchor": "Le rapport identifie l'IA comme facteur d'accélération du cybercrime : facilitation de la production de contenus malveillants, génération de scripts, optimisation des campagnes d'intrusion. En prospective, l'IA agentique capable d'automatiser certaines étapes d'une cyberattaque représente une rupture majeure. Des malwares adaptatifs modifient automatiquement leur comportement pour échapper à la détection ; les campagnes d'hameçonnage automatisées ajustent leurs messages selon le profil de la victime. Des signaux faibles documentent déjà cette matérialisation progressive.",
+      "retrieval_queries": [
+        "intelligence artificielle cybercriminalité",
+        "IA agentique cyberattaques autonomes",
+        "malwares adaptatifs détection"
+      ],
+      "candidate_ids": [
+        "PUB005",
+        "PUB057",
+        "PUB033",
+        "PUB003",
+        "PUB062",
+        "PUB118",
+        "PUB090",
+        "PUB026"
+      ],
+      "candidate_count": 8,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Intelligence artificielle",
+        "variantes": [
+          "IA",
+          "IA agentique"
+        ],
+        "angle": "Exploitation par les cybercriminels pour automatiser et adapter les attaques",
+        "critere_raccord": "La cible doit développer substantiellement « Intelligence artificielle » lui-même. Si elle développe aussi le cœur de l'angle source « Exploitation par les cybercriminels pour automatiser et adapter les attaques », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Intelligence artificielle",
+          "IA",
+          "IA agentique"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB005",
+        "PUB057",
+        "PUB026",
+        "PUB033",
+        "PUB062",
+        "PUB051",
+        "PUB118",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation complétée. Deux raccords recevables : PUB057 en DIRECT (cœur exact du fil : IA exploitée pour automatiser et adapter la cybercriminalité) et PUB090 en ADJACENT (même mécanisme d'automatisation malveillante appliqué à la génération de contenu pédocriminel). Les autres candidats restent insuffisants : contexte commun, mentions isolées ou angles radicalement différents (gouvernance, désinformation, neurosciences, discrimination).",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB057",
+          "PUB033",
+          "PUB005",
+          "PUB051",
+          "PUB062",
+          "PUB090",
+          "PUB118",
+          "PUB002",
+          "PUB003",
+          "PUB015"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "PUB057 est le seul candidat qui développe explicitement et substantiellement le cœur du fil : l'IA comme facteur d'accélération du cybercrime, facilitant la préparation et l'exécution à grande échelle, et automatisant les activités cybercriminelles. PUB090 apporte une composante utile (production de contenus malveillants par IA générative) mais ne traite pas l'automatisation des cyberattaques ni les malwares adaptatifs. Les autres candidats partagent un vocabulaire ou un domaine général (IA, sécurité, criminalité) mais ne documentent pas le mécanisme spécifique du fil."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB006",
+      "fil_lecture": "Intelligence artificielle au service de la cybercriminalité",
+      "source_locator": "28;29;44;45;55;56;57",
+      "target_publication_id": "PUB057",
+      "pourquoi": "PUB057 documente explicitement et substantiellement l'IA comme facteur d'accélération de la cybercriminalité, l'automatisation des activités malveillantes et le développement possible de cybercrimes autonomes via l'IA agentique. Cela correspond exactement au cœur du fil source : IA exploitée par les cybercriminels pour automatiser et adapter les attaques.",
+      "target_locator": "14;6;8;36;37",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 45,
+    "extraits_total": 45,
+    "sections_couvertes": 6,
+    "sections_total": 6
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

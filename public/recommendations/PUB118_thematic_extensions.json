@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB118",
+  "source_publication": {
+    "publication_id": "PUB118",
+    "titre": "neurosciences et comportements militaires",
+    "année_publication": "2026",
+    "image_publication": "PUB118.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Fondation pour l’innovation politique (Fondapol)",
+    "type_document": "Actes de colloque",
+    "domaine": "Sécurité nationale",
+    "url_contenu": "https://www.fondapol.org/etude/neurosciences-et-comportements-militaires/",
+    "url_source": "https://www.fondapol.org/etude/neurosciences-et-comportements-militaires/",
+    "node_count": 43,
+    "relation_count": 60,
+    "chunk_count": 33,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques transversales identifiées, couvrant l'ensemble du document : régulation émotionnelle et du stress (Parties I, III, V), interactions corps-cerveau (Partie III), dysfonctionnements collectifs et biais cognitifs (Partie IV), neurotechnologies et enjeux éthiques (Partie VII), et cohésion collective en conditions extrêmes (Parties II-VI). Chaque thématique est substantielle, documentée par plusieurs sections et nœuds convergents, et transférable à d'autres contextes militaires ou de sécurité.",
+  "threads": [],
+  "leaves": [],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 33,
+    "extraits_total": 33,
+    "sections_couvertes": 33,
+    "sections_total": 33
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

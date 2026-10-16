@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB058",
+  "source_publication": {
+    "publication_id": "PUB058",
+    "titre": "Le masculinisme est-il un terrorisme ?",
+    "année_publication": "2026",
+    "image_publication": "PUB058.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Radio France",
+    "type_document": "Podcast",
+    "domaine": "Radicalités / Terrorisme",
+    "url_contenu": "https://www.radiofrance.fr/franceculture/podcasts/questions-du-soir-le-debat/le-masculinisme-est-il-un-terrorisme-8872630",
+    "url_source": "https://www.radiofrance.fr/franceculture/podcasts/questions-du-soir-le-debat/le-masculinisme-est-il-un-terrorisme-8872630",
+    "node_count": 18,
+    "relation_count": 14,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB058.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Podcast de débat sur la qualification du masculinisme comme terrorisme. Cinq fils structurants identifiés : (1) les dynamiques de radicalisation en ligne rapide chez les jeunes via les réseaux sociaux ; (2) la structure écosystémique du masculinisme comme continuum radicalisable au-delà des seuls incels ; (3) les enjeux de qualification juridique du terrorisme masculiniste en droit français ; (4) la tension entre sécurité et libertés publiques dans l'extension de la qualification terroriste ; (5) le risque de psychologisation qui masque la dimension idéologique des violences. Ces fils couvrent les dimensions empiriques (radicalisation, écosystème), juridiques (qualification, ordre public) et analytiques (idéologie vs psychologie) du débat.",
+  "threads": [],
+  "leaves": []
+}

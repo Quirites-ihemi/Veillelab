@@ -1,0 +1,154 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB060",
+  "source_publication": {
+    "publication_id": "PUB060",
+    "titre": "sécurité nationale : à l'épreuve du réel] - la clef de voûte des politiques publiques",
+    "année_publication": "2026",
+    "image_publication": "PUB060.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Institut Montaigne",
+    "type_document": "Articles et collections d'articles",
+    "domaine": "Sécurité nationale",
+    "url_contenu": "https://www.institutmontaigne.org/expressions/securite-nationale-lepreuve-du-reel-la-clef-de-voute-des-politiques-publiques",
+    "url_source": "https://www.institutmontaigne.org/expressions/securite-nationale-lepreuve-du-reel-la-clef-de-voute-des-politiques-publiques",
+    "node_count": 9,
+    "relation_count": 8,
+    "chunk_count": 0,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB060.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication centrée sur la redéfinition de la sécurité nationale comme fonction intégratrice de l'État. Le document structure son analyse autour de quatre dimensions (défense, diplomatie, police, économie) et propose une vision systémique où la sécurité nationale devient le principe organisateur des politiques publiques. Les trois fils identifiés couvrent : (1) l'émergence de la sécurité économique comme enjeu d'État, (2) le mécanisme d'intégration transversale des domaines d'action, (3) la reposition stratégique de la sécurité nationale comme cadre de cohérence globale. Aucun fil n'a été créé sur les dimensions sectorielles isolées (défense, diplomatie, police) car elles ne constituent que des composantes d'une logique plus large explicitement documentée.",
+  "threads": [
+    {
+      "thread_id": "FIL_003",
+      "fil_lecture": "Sécurité nationale comme cadre de cohérence",
+      "source_locator": "article web",
+      "source_anchor": "Sécurité nationale, clef de voûte des politiques publiques (N1035). Le document formule explicitement la sécurité nationale comme 'clef de voûte' : elle n'est pas une politique sectorielle parmi d'autres, mais le principe architectonique qui donne cohérence et orientation à l'ensemble des politiques publiques. Cette formulation prospective suggère un recentrage stratégique de l'action publique.",
+      "retrieval_queries": [
+        "sécurité nationale cohérence politiques publiques",
+        "architecture stratégique action étatique",
+        "réorientation priorités gouvernementales"
+      ],
+      "candidate_ids": [
+        "PUB011",
+        "PUB062"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Sécurité nationale",
+        "variantes": [],
+        "angle": "Cadre architectonique d'intégration et de cohérence des politiques publiques…",
+        "critere_raccord": "La cible doit développer substantiellement « Sécurité nationale » lui-même. Si elle développe aussi le cœur de l'angle source « Cadre architectonique d'intégration et de cohérence des politiques publiques… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Sécurité nationale"
+        ]
+      },
+      "pool_ids": [
+        "PUB011",
+        "PUB010",
+        "PUB062",
+        "PUB005",
+        "PUB101",
+        "PUB013",
+        "PUB002",
+        "PUB018",
+        "PUB090",
+        "PUB006",
+        "PUB007",
+        "PUB008",
+        "PUB012",
+        "PUB026",
+        "PUB034",
+        "PUB014",
+        "PUB016"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB008",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB012",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB034",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB011 apporte une connaissance substantielle sur la sécurité nationale comme principe intégrateur dans une doctrine stratégique (russe), montrant comment elle structure et coordonne plusieurs domaines (information, renseignement, soft power). Bien que l'angle source (cadre transversal des politiques publiques démocratiques) soit absent, le pivot lui-même est documenté de manière explicite et utile. PUB062 ne documente pas réellement la sécurité nationale : elle la mentionne seulement comme cadre administratif d'une institution spécialisée, sans développer son rôle ou sa fonction."
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB060",
+      "fil_lecture": "Sécurité nationale comme cadre de cohérence",
+      "source_locator": "article web",
+      "target_publication_id": "PUB011",
+      "pourquoi": "La cible documente substantiellement la sécurité nationale comme composante intégratrice dans la doctrine russe : elle montre comment la maîtrise de la sphère informationnelle s'est progressivement structurée comme élément central de la stratégie de sécurité nationale (2021), intégrant services de renseignement et organes de soft power. Cependant, l'angle source (cadre architectonique d'intégration des politiques publiques) n'est pas développé ; la cible traite la sécurité nationale sous l'angle d'une doctrine stratégique russe spécifique, non comme principe transversal de cohérence des politiques publiques.",
+      "target_locator": "2;3",
+      "decision": "POSSIBLE",
+      "badges": []
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB005",
+  "source_publication": {
+    "publication_id": "PUB005",
+    "titre": "actes du 5e forum de l’association des préfets et représentants de l’état de la francophonie",
+    "année_publication": "2026",
+    "image_publication": "PUB005.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "Association des préfets et représentants de l’État de la francophonie",
+    "type_document": "Actes de colloque",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
+    "url_source": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
+    "node_count": 37,
+    "relation_count": 36,
+    "chunk_count": 24,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB005.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques phares identifiées, couvrant l'ensemble du document. Elles correspondent aux trois tables rondes (gouvernance, sécurité/crise, éthique/régulation) et à deux enjeux transversaux structurants (souveraineté numérique, formation). Chaque thématique est substantielle, documentée par plusieurs nœuds et sections, et transférable à d'autres contextes administratifs ou territoriaux.",
+  "threads": [
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Souveraineté numérique et dépendance technologique",
+      "source_locator": "5;8;9;10;11;14;16;18;19;20;21;23",
+      "source_anchor": "Le document soulève la question critique de la souveraineté numérique face aux solutions technologiques étrangères. Il identifie plusieurs dimensions indissociables : puissance de calcul, capacité de recherche, infrastructures de cloud, contrôle des modèles et protection des données. Le risque d'une dépendance excessive aux solutions étrangères est mis en garde, tout en rejetant un repli technologique. La nécessité de développer des solutions numériques souveraines adaptées aux contextes nationaux est recommandée.",
+      "retrieval_queries": [
+        "souveraineté numérique dépendance technologique",
+        "solutions numériques souveraines",
+        "maîtrise infrastructures données IA"
+      ],
+      "candidate_ids": [
+        "PUB033"
+      ],
+      "candidate_count": 1,
+      "retained_count": 1,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Souveraineté numérique",
+        "variantes": [
+          "solutions numériques souveraines",
+          "maîtrise des infrastructures numériques"
+        ],
+        "angle": "Articulation entre autonomie technologique des États et risque de dépendance…",
+        "critere_raccord": "La cible doit développer substantiellement « Souveraineté numérique » lui-même. Si elle développe aussi le cœur de l'angle source « Articulation entre autonomie technologique des États et risque de dépendance… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Souveraineté numérique",
+          "solutions numériques souveraines",
+          "maîtrise des infrastructures numériques"
+        ]
+      },
+      "pool_ids": [
+        "PUB033",
+        "PUB090",
+        "PUB011",
+        "PUB006",
+        "PUB025",
+        "PUB007",
+        "PUB010",
+        "PUB026",
+        "PUB051",
+        "PUB003"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB003",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB033 est un raccord DIRECT de haute qualité. Le document traite explicitement et substantiellement l'objet pivot « Souveraineté numérique » en le structurant en dimensions opérationnelles et en l'ancrant dans la question centrale du fil : la capacité d'autonomie technologique des États face aux interdépendances. Les trois preuves fournies documentent toutes le pivot de manière substantielle, en particulier la preuve C0835 qui énumère les dimensions concrètes et relie directement la souveraineté numérique à la capacité de décision dans un contexte d'interdépendances technologiques. Cela correspond précisément au cœur du fil source.\"",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB033",
+          "PUB090",
+          "PUB006",
+          "PUB011",
+          "PUB051",
+          "PUB007",
+          "PUB010",
+          "PUB025",
+          "PUB018",
+          "PUB062"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Contrôle de 10 candidats. PUB033 seul classé DIRECT : il développe substantiellement le cœur du fil (dépendance aux infrastructures technologiques étrangères et enjeux de souveraineté). Quatre candidats classés ADJACENT (PUB090, PUB011, PUB051, PUB007) : ils documentent des composantes réelles du fil (applications souveraines, stratégies alternatives, géopolitique des infrastructures, dépendances réglementaires) mais sans traiter l'ensemble de la problématique. Cinq candidats classés INSUFFICIENT : PUB006 (cybercriminalité opérationnelle), PUB010 (résilience climatique), PUB025 (trafic de stupéfiants), PUB018 (délinquance territoriale), PUB062 (risques informationnels de l'IA) ne documentent pas explicitement la souveraineté numérique ou la dépendance technologique structurelle."
+      }
+    },
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Éthique, transparence et responsabilité de l'IA",
+      "source_locator": "18;19;20;21;23;24",
+      "source_anchor": "Le document développe un cadre éthique et juridique pour l'IA dans les administrations publiques. Il traite des biais algorithmiques, de l'opacité des modèles, des discriminations indirectes et des atteintes aux libertés. La question de la responsabilité est centrale : qui répond d'une décision injuste prise avec l'appui d'un algorithme ? Le document recommande la supervision humaine effective, la formation des agents publics, la mise en place de comités d'éthique et la possibilité pour les citoyens de contester les décisions.",
+      "retrieval_queries": [
+        "éthique régulation cadre juridique IA",
+        "biais algorithmiques discriminations transparence",
+        "responsabilité décisions algorithmes administrations"
+      ],
+      "candidate_ids": [
+        "PUB006",
+        "PUB033",
+        "PUB057",
+        "PUB026",
+        "PUB003",
+        "PUB062",
+        "PUB118",
+        "PUB090"
+      ],
+      "candidate_count": 8,
+      "retained_count": 0,
+      "possible_count": 2,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "intelligence artificielle",
+        "variantes": [
+          "IA",
+          "systèmes d'IA"
+        ],
+        "angle": "Cadre éthique, juridique et responsabilité dans les administrations publiques :…",
+        "critere_raccord": "La cible doit développer substantiellement « intelligence artificielle » lui-même. Si elle développe aussi le cœur de l'angle source « Cadre éthique, juridique et responsabilité dans les administrations publiques :… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "intelligence artificielle",
+          "IA",
+          "systèmes d'IA"
+        ]
+      },
+      "pool_ids": [
+        "PUB003",
+        "PUB006",
+        "PUB026",
+        "PUB010",
+        "PUB033",
+        "PUB062",
+        "PUB118",
+        "PUB051",
+        "PUB057",
+        "PUB090"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Analyse complétée. Trois candidats classés ADJACENT (PUB006, PUB033, PUB026) documentent substantiellement l'IA sous des angles complémentaires : cadre juridique et réglementaire (PUB006), collaboration homme-machine et responsabilité métier (PUB033), discriminations algorithmiques et droits des usagers (PUB026). Cinq candidats classés INSUFFICIENT : PUB057 traite l'IA comme outil criminel sans développement éthique ; PUB003 la mentionne comme risque sans documentation ; PUB062 la réduit à la désinformation ; PUB118 la contextualise en neurosciences militaires (terrain trop éloigné) ; PUB090 l'énumère dans la pédocriminalité sans développement pertinent. Aucun candidat ne développe directement le cœur du fil source : cadre éthique, juridique et responsabilité dans les administrations publiques.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB026",
+          "PUB006",
+          "PUB010",
+          "PUB051",
+          "PUB118",
+          "PUB033",
+          "PUB101",
+          "PUB062",
+          "PUB011"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Deux candidats seulement méritent un classement ADJACENT : PUB026 (discriminations et transparence algorithmique dans Parcoursup) et PUB033 (responsabilité, contrôle humain et garde-fous éthiques). Les autres candidats reposent sur des rapprochements contextuels, analogiques ou sectoriels sans développement substantiel du cadre éthique et de responsabilité de l'IA en administration publique."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB005",
+      "fil_lecture": "Souveraineté numérique et dépendance technologique",
+      "source_locator": "5;8;9;10;11;14;16;18;19;20;21;23",
+      "target_publication_id": "PUB033",
+      "pourquoi": "PUB033 développe substantiellement l'objet pivot « Souveraineté numérique » lui-même, en le déclinant en dimensions concrètes (matérielle, logicielle, informationnelle, algorithmique, normative, industrielle, cognitive) et en l'articulant explicitement avec la question de l'autonomie technologique des États face aux interdépendances technologiques. Le document traite directement du cœur du fil : la capacité d'un État à maîtriser et décider dans un environnement technologique complexe.",
+      "target_locator": "15;16;17",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB005",
+      "fil_lecture": "Éthique, transparence et responsabilité de l'IA",
+      "source_locator": "18;19;20;21;23;24",
+      "target_publication_id": "PUB006",
+      "pourquoi": "Le document développe substantiellement l'IA dans un cadre juridique et réglementaire (RIA, RGPD, recommandations CNIL), mais sous l'angle de la cybercriminalité et de la lutte contre les menaces cyber, non de l'éthique et la responsabilité dans les administrations publiques. Le pivot est documenté concrètement (obligations de transparence, responsabilité des fournisseurs, compétences requises), mais l'angle source (cadre éthique et responsabilité administrative) est absent.",
+      "target_locator": "42;43",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 24,
+    "extraits_total": 24,
+    "sections_couvertes": 6,
+    "sections_total": 6
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

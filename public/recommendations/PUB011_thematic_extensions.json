@@ -1,0 +1,465 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB011",
+  "source_publication": {
+    "publication_id": "PUB011",
+    "titre": "rapport à la sphère informationnelle des régimes autoritaires et des démocraties : des conceptions stratégiques distinctes",
+    "année_publication": "2025",
+    "image_publication": "PUB011.png",
+    "auteurs_MI": "Pascal Martin",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Démocraties et sujets informationnels",
+    "url_contenu": "https://www.calameo.com/read/00271929242a5433e0d29",
+    "url_source": "https://www.calameo.com/read/00271929242a5433e0d29",
+    "node_count": 25,
+    "relation_count": 20,
+    "chunk_count": 11,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB011.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Cinq thématiques phares identifiées, couvrant l'ensemble du document (sections I, II, III et introduction). Elles reflètent les problématiques transversales structurantes : (1) la doctrine de sécurité informationnelle comme cadre stratégique d'État ; (2) le contrôle de l'information comme mécanisme de stabilité politique ; (3) la désinformation et l'influence comme instruments de pouvoir ; (4) la souveraineté étatique appliquée à la gouvernance d'Internet ; (5) le contraste fondamental entre approches autoritaires et démocratiques. Ces thématiques sont documentées par des nœuds convergents et des extraits substantiels, et plusieurs expressions partagées (« influence », « doctrines », « cyberespace », « désinformation ») confirment leur pertinence transversale dans le corpus.",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Sécurité informationnelle comme doctrine stratégique d'État",
+      "source_locator": "1;2;3;4",
+      "source_anchor": "La publication analyse comment les régimes autoritaires (Russie, Chine, Syrie) ont développé des doctrines de « sécurité informationnelle » qui intègrent la maîtrise de l'information et du cyberespace comme élément central de défense stratégique. En Russie, cette doctrine a évolué en 2000, 2016 et 2021, structurant progressivement la « confrontation informationnelle » comme outil géopolitique. La Chine a adopté une cyber-diplomatie visant à contrôler les flux informationnels et à étendre son influence dans la gouvernance d'Internet. Ces approches contrastent avec celle des démocraties occidentales.",
+      "retrieval_queries": [
+        "sécurité informationnelle doctrine stratégique",
+        "maîtrise de l'information cyberespace État",
+        "confrontation informationnelle géopolitique"
+      ],
+      "candidate_ids": [
+        "PUB117"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "sécurité informationnelle",
+        "variantes": [
+          "doctrine de sécurité informationnelle",
+          "espace informationnel",
+          "confrontation informationnelle"
+        ],
+        "angle": "doctrine stratégique d'État intégrant la maîtrise de l'information et du…",
+        "critere_raccord": "La cible doit développer substantiellement « sécurité informationnelle » lui-même. Si elle développe aussi le cœur de l'angle source « doctrine stratégique d'État intégrant la maîtrise de l'information et du… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "sécurité informationnelle",
+          "doctrine de sécurité informationnelle",
+          "espace informationnel"
+        ]
+      },
+      "pool_ids": [
+        "PUB005",
+        "PUB002",
+        "PUB117",
+        "PUB006",
+        "PUB026",
+        "PUB010",
+        "PUB054",
+        "PUB113",
+        "PUB013",
+        "PUB060",
+        "PUB018",
+        "PUB062",
+        "PUB015",
+        "PUB090",
+        "PUB016",
+        "PUB115",
+        "PUB033",
+        "PUB118",
+        "PUB101",
+        "PUB004"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB060",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB018",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB062",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB016",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB101",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB004",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB117 ne développe pas la sécurité informationnelle comme objet ou doctrine. Le pivot « espace informationnel » y est nommé mais sans information propre sur son rôle, ses usages, ses capacités ou ses effets dans une stratégie d'État. La relation à la désinformation ne suffit pas à établir un raccord documentaire avec une doctrine de sécurité informationnelle intégrant la maîtrise de l'information comme élément central de défense stratégique. Classement : ECARTER.\"",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB005",
+          "PUB010",
+          "PUB002",
+          "PUB033",
+          "PUB026",
+          "PUB016",
+          "PUB118",
+          "PUB013",
+          "PUB115"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Parmi les dix candidats évalués, un seul présente un raccord DIRECT : PUB033 (« La souveraineté numérique. Gouverner l'espace symbiotique ») développe explicitement la souveraineté numérique comme doctrine d'État, incluant la dimension informationnelle et la maîtrise du cyberespace. PUB006 (rapport sur la cybercriminalité) offre un raccord ADJACENT en documentant comment les intérêts étatiques intègrent les cybermenaces dans une logique de confrontation géopolitique, mais traite principalement la cybercriminalité, non la doctrine stratégique d'État elle-même. Les huit autres candidats ne présentent que des rapprochements insuffisants fondés sur le vocabulaire générique (« sécurité », « stratégie », « information ») ou des domaines voisins, sans développement substantiel du fil de départ."
+      }
+    },
+    {
+      "thread_id": "T003",
+      "fil_lecture": "Désinformation et influence comme instruments de pouvoir",
+      "source_locator": "3;4",
+      "source_anchor": "La publication identifie la désinformation et l'influence informationnelle comme outils stratégiques des régimes autoritaires pour préserver leurs intérêts et étendre leur pouvoir. Elle décrit une « courbe d'apprentissage des dictateurs » en matière numérique, où les régimes utilisent les réseaux sociaux pour tester la température de la population et analyser les phénomènes de masse. Les démocraties occidentales, par contraste, abordent cette question sous l'angle de la « sécurité réputationnelle » et de la lutte contre les déstabilisations.",
+      "retrieval_queries": [
+        "désinformation influence pouvoir politique",
+        "propagande réseaux sociaux régimes",
+        "manipulation informationnelle stratégique"
+      ],
+      "candidate_ids": [],
+      "candidate_count": 0,
+      "retained_count": 0,
+      "possible_count": 0,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Désinformation et influence",
+        "variantes": [
+          "Influence informationnelle",
+          "Manipulation de l'information"
+        ],
+        "angle": "Instruments stratégiques de pouvoir et de contrôle utilisés par les régimes…",
+        "critere_raccord": "La cible doit développer substantiellement « Désinformation et influence » lui-même. Si elle développe aussi le cœur de l'angle source « Instruments stratégiques de pouvoir et de contrôle utilisés par les régimes… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Désinformation et influence",
+          "Influence informationnelle",
+          "Manipulation de l'information"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB015",
+        "PUB115",
+        "PUB117",
+        "PUB025",
+        "PUB118",
+        "PUB026",
+        "PUB010",
+        "PUB062",
+        "PUB054",
+        "PUB004"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB117",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB118",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB062",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB054",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB004",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Aucune publication candidate.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB015",
+          "PUB016",
+          "PUB010",
+          "PUB026",
+          "PUB062",
+          "PUB013",
+          "PUB005",
+          "PUB002",
+          "PUB113"
+        ],
+        "retained_count": 1,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats. Un seul présente un raccord DIRECT (PUB006) : le rapport sur la cybercriminalité documente explicitement les opérations d'influence coordonnées et la propagande russe comme stratégies d'ingérence informationnelle. Un candidat classé ADJACENT (PUB062) : le rapport du Sénat développe substantiellement comment les technologies numériques fragmentent la réalité et peuvent servir d'instruments autoritaires, notamment via le scénario prospectif du « Ministère de la post-vérité ». Les huit autres candidats restent insuffisants : ils traitent de domaines connexes (criminalité, formation policière, résilience climatique, discriminations, sécurité publique, gouvernance numérique, atteintes aux élus, communication de crise) mais ne documentent pas explicitement la désinformation et l'influence informationnelle comme instruments stratégiques de pouvoir."
+      }
+    },
+    {
+      "thread_id": "T005",
+      "fil_lecture": "Approches divergentes des démocraties et régimes autoritaires face au cyberespace",
+      "source_locator": "1;2;3;4",
+      "source_anchor": "La publication établit un contraste fondamental entre deux conceptions du cyberespace : les régimes autoritaires perçoivent Internet comme une menace exigeant des technologies de contrôle et des doctrines de propagande, tandis que les démocraties occidentales adoptent une approche techno-centrée et abordent la maîtrise de l'information comme « sécurité réputationnelle ». Les démocraties s'appuient sur des médias internationaux et une « diplomatie 2.0 » pour promouvoir la démocratie et l'accès libre à Internet, révélant des logiques d'influence fondamentalement différentes.",
+      "retrieval_queries": [
+        "démocraties régimes autoritaires cyberespace",
+        "approche techno-centrée sécurité réputationnelle",
+        "libertarianisme contrôle Internet"
+      ],
+      "candidate_ids": [
+        "PUB117",
+        "PUB006",
+        "PUB013",
+        "PUB112",
+        "PUB057",
+        "PUB018",
+        "PUB002",
+        "PUB005",
+        "PUB062",
+        "PUB025"
+      ],
+      "candidate_count": 10,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "cyberespace",
+        "variantes": [
+          "espace informationnel",
+          "Internet"
+        ],
+        "angle": "conceptions divergentes entre régimes autoritaires et démocraties : contrôle vs…",
+        "critere_raccord": "La cible doit développer substantiellement « cyberespace » lui-même. Si elle développe aussi le cœur de l'angle source « conceptions divergentes entre régimes autoritaires et démocraties : contrôle vs… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "cyberespace",
+          "espace informationnel",
+          "Internet"
+        ]
+      },
+      "pool_ids": [
+        "PUB002",
+        "PUB117",
+        "PUB005",
+        "PUB006",
+        "PUB062",
+        "PUB013",
+        "PUB025",
+        "PUB008",
+        "PUB010",
+        "PUB026",
+        "PUB033",
+        "PUB018",
+        "PUB021",
+        "PUB052",
+        "PUB057",
+        "PUB115",
+        "PUB090",
+        "PUB112",
+        "PUB024",
+        "PUB015"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB033",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB021",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB052",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB115",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 2,
+      "pivot_gate_rejected": [],
+      "note": "Évaluation des 10 candidats selon le fil « Approches divergentes des démocraties et régimes autoritaires face au cyberespace ». Deux publications (PUB002 et PUB062) apportent une connaissance substantielle et explicite sur le cyberespace/Internet, mais sous des angles différents du cœur du fil : l'une documente les menaces cyber envers les élus comme manifestation d'atteinte à la démocratie ; l'autre analyse la dérégulation informationnelle d'Internet comme opportunité et danger démocratique. Aucune ne développe explicitement le contraste fondamental entre conceptions autoritaires (contrôle, propagande) et démocratiques (techno-centrisme, diplomatie 2.0) énoncé dans le fil source. Les 8 autres candidats traitent le cyberespace/Internet comme contexte, terrain ou infrastructure sans développement substantiel du pivot lui-même.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB005",
+          "PUB010",
+          "PUB033",
+          "PUB007",
+          "PUB026",
+          "PUB013",
+          "PUB054",
+          "PUB062",
+          "PUB025"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Seul PUB062 présente un raccord documentaire substantiel avec le fil de départ. Il développe explicitement les variables de différenciation entre démocraties occidentales et régimes autoritaires concernant l'autorité politique et la liberté informationnelle, constituant une composante utile pour explorer les approches divergentes face au cyberespace. Les autres candidats, bien que parfois proches lexicalement ou thématiquement (cybercriminalité, IA, sécurité), ne documentent pas le cœur du fil : le contraste fondamental entre doctrines autoritaires de contrôle informatique et approches démocratiques de diplomatie 2.0 et sécurité réputationnelle."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB011",
+      "fil_lecture": "Désinformation et influence comme instruments de pouvoir",
+      "source_locator": "3;4",
+      "target_publication_id": "PUB006",
+      "pourquoi": "Le rapport documente explicitement la désinformation et l'influence informationnelle comme instruments stratégiques, en décrivant les campagnes coordonnées de propagande russe et l'évolution des tactiques d'ingérence. Cela prolonge directement le fil sur l'utilisation stratégique de ces outils par les régimes.",
+      "target_locator": "59;60",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB011",
+      "fil_lecture": "Sécurité informationnelle comme doctrine stratégique d'État",
+      "source_locator": "1;2;3;4",
+      "target_publication_id": "PUB033",
+      "pourquoi": "Ce document développe explicitement la souveraineté numérique comme doctrine d'État, incluant la dimension informationnelle et la maîtrise du cyberespace comme éléments centraux de la capacité décisionnelle stratégique. C'est une formulation directe du même objet que le fil de départ.",
+      "target_locator": "15",
+      "decision": "RETENIR",
+      "badges": [],
+      "mode_raccord": "formulation_voisine"
+    },
+    {
+      "source_publication_id": "PUB011",
+      "fil_lecture": "Approches divergentes des démocraties et régimes autoritaires face au cyberespace",
+      "source_locator": "1;2;3;4",
+      "target_publication_id": "PUB062",
+      "pourquoi": "Le rapport du Sénat analyse la dérégulation du marché cognitif et de l'information liée à l'essor d'Internet, en examinant comment cette dérégulation crée à la fois une opportunité démocratique et un danger. Bien que l'angle source sur les conceptions divergentes entre régimes autoritaires et démocraties ne soit pas explicitement développé, la publication documente substantiellement le cyberespace/Internet comme espace informationnel caractérisé par l'absence de régulation centralisée, ce qui constitue une composante pertinente du fil.",
+      "target_locator": "47;48",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 11,
+    "extraits_total": 11,
+    "sections_couvertes": 4,
+    "sections_total": 4
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}

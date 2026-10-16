@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB011",
+  "source_publication": {
+    "publication_id": "PUB011",
+    "titre": "rapport à la sphère informationnelle des régimes autoritaires et des démocraties : des conceptions stratégiques distinctes",
+    "année_publication": "2025",
+    "image_publication": "PUB011.png",
+    "auteurs_MI": "Pascal Martin",
+    "organisme_producteur": "Centre de recherche de la Gendarmerie nationale",
+    "type_document": "Note",
+    "domaine": "Démocraties et sujets informationnels",
+    "url_contenu": "https://www.calameo.com/read/00271929242a5433e0d29",
+    "url_source": "https://www.calameo.com/read/00271929242a5433e0d29",
+    "node_count": 25,
+    "relation_count": 20,
+    "chunk_count": 11,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB011.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Publication PUB011 : Note du Centre de recherche de la Gendarmerie nationale (2025) analysant les conceptions stratégiques distinctes des régimes autoritaires et des démocraties face à la sphère informationnelle. Le document structure son analyse autour de trois sections : (1) la doctrine russe de « sécurité informationnelle » fondée sur le contrôle étatique total et la souveraineté Internet ; (2) l'extension de cette approche aux régimes autoritaires (Chine, Syrie, Iran) via des architectures de contrôle et des doctrines de propagande ; (3) l'approche occidentale de « sécurité réputationnelle » et de diplomatie numérique. Cinq fils de lecture substantiels ont été identifiés, couvrant les dimensions structurantes du document : opposition conceptuelle entre deux modèles de gouvernance informationnelle, rôle de l'architecture technique comme instrument politique, stratégies géopolitiques hybrides, technologies de contrôle social, et logiques d'influence diplomatique.",
+  "threads": [],
+  "leaves": []
+}

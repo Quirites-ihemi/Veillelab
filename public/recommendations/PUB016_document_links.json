@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "engine": "document-links-v0.1-thread-first",
+  "pivot_mode": true,
+  "source_publication_id": "PUB016",
+  "source_publication": {
+    "publication_id": "PUB016",
+    "titre": "« en immersion à l'école des commissaires de police »",
+    "année_publication": "2026",
+    "image_publication": "PUB016.png",
+    "auteurs_MI": "",
+    "organisme_producteur": "École nationale supérieure de la police",
+    "type_document": "Podcast",
+    "domaine": "Travail, emploi, formation",
+    "url_contenu": "https://audio.ausha.co/QQVm5Fw02070.mp3",
+    "url_source": "https://podcast.ausha.co/les-podcasts-de-l-ensp",
+    "node_count": 23,
+    "relation_count": 10,
+    "chunk_count": 6,
+    "has_graph": true,
+    "has_image": true,
+    "image_path": "/images/publications/PUB016.png"
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Podcast de l'ENSP documentant le stage de gestion de l'ordre public pour commissaires et officiers stagiaires. Le document est structuré autour de simulations opérationnelles intensives (38 par semaine) combinant violence urbaine et maintien de l'ordre. Les fils identifiés couvrent : (1) le mécanisme pédagogique central de transfert théorie-pratique via simulation ; (2) l'articulation institutionnelle entre autorité civile et commandement opérationnel ; (3) la méthode de rotation de rôles comme vecteur de compréhension mutuelle ; (4) la gestion du stress et des biais cognitifs en urgence ; (5) la formation conjointe comme fondation de cohésion. Chaque fil est ancré dans des passages substantiels et répétés du podcast, couvrant des dimensions distinctes de la pédagogie et de l'organisation du stage.",
+  "threads": [],
+  "leaves": []
+}

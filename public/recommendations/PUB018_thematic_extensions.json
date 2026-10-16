@@ -1,0 +1,400 @@
+{
+  "ok": true,
+  "engine": "thematic-extensions-v0.4.1",
+  "pivot_mode": true,
+  "source_publication_id": "PUB018",
+  "source_publication": {
+    "publication_id": "PUB018",
+    "titre": "les disparités communales en matière de vols sans violence",
+    "année_publication": "2026",
+    "image_publication": "PUB018.png",
+    "auteurs_MI": "Claire Charavel, Kévin Milin, Aurélien Poissonnier",
+    "organisme_producteur": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+    "type_document": "Note",
+    "domaine": "Sécurité publique",
+    "url_contenu": "https://www.interieur.gouv.fr/content/download/139737/1102259/file/IA82.pdf",
+    "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Les-disparites-communales-en-matiere-de-vols-sans-violence-etat-des-lieux",
+    "node_count": 35,
+    "relation_count": 31,
+    "chunk_count": 25,
+    "has_graph": true,
+    "has_image": false,
+    "image_path": ""
+  },
+  "excluded_publication_ids": [
+    "PUB119"
+  ],
+  "thread_extraction_note": "Identification de 5 thématiques phares structurant la publication. Chacune représente une problématique transversale documentée par plusieurs sections, nœuds et extraits, susceptible d'être traitée dans d'autres contextes ou terrains du corpus. Les thématiques couvrent l'ensemble du document : diagnostic territorial (T001), facteurs d'exposition (T002), caractéristiques résidentielles (T003), méthodologie analytique (T004), et facteurs démographiques (T005).",
+  "threads": [
+    {
+      "thread_id": "T001",
+      "fil_lecture": "Disparités territoriales de la délinquance de rue",
+      "source_locator": "1;2;3;9;10",
+      "source_anchor": "La publication établit que les vols sans violence ne sont pas répartis uniformément sur le territoire français. Les taux varient fortement selon les aires d'attraction des villes (de 4,2 ‰ hors aires à 15,2 ‰ dans les grandes aires de plus de 700 000 habitants), et les 1 % des communes les plus touchées concentrent plus des deux tiers des vols. Des effets régionaux spécifiques sont identifiés : haussiers en Île-de-France et dans les Antilles-Guyane, baissiers en Normandie, Occitanie et Corse, après neutralisation des caractéristiques communales.",
+      "retrieval_queries": [
+        "disparités territoriales délinquance",
+        "concentration géographique vols",
+        "variations régionales criminalité"
+      ],
+      "candidate_ids": [
+        "PUB008",
+        "PUB111",
+        "PUB112",
+        "PUB013"
+      ],
+      "candidate_count": 4,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "délinquance de rue",
+        "variantes": [
+          "vols sans violence",
+          "délinquance enregistrée"
+        ],
+        "angle": "répartition territoriale et facteurs communaux associés",
+        "critere_raccord": "La cible doit développer substantiellement « délinquance de rue » lui-même. Si elle développe aussi le cœur de l'angle source « répartition territoriale et facteurs communaux associés », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "délinquance de rue",
+          "vols sans violence",
+          "délinquance enregistrée"
+        ]
+      },
+      "pool_ids": [
+        "PUB026",
+        "PUB008",
+        "PUB111",
+        "PUB013",
+        "PUB014",
+        "PUB112",
+        "PUB025",
+        "PUB002",
+        "PUB006",
+        "PUB090",
+        "PUB010"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB025",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB090",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "Seule PUB112 apporte une connaissance substantielle et explicite sur la répartition territoriale des vols sans violence, avec des taux départementaux précis et l'identification de disparités régionales (Île-de-France surreprésentée). Elle documente le même objet pivot sous l'angle de la victimation déclarée, complémentaire à l'angle enregistré du fil source. PUB008 et PUB013 ne traitent que des définitions ou des caractéristiques démographiques. PUB111 se limite à un sous-domaine spécifique (transports en commun) sans généraliser à la répartition territoriale globale.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB111",
+          "PUB002",
+          "PUB026",
+          "PUB013",
+          "PUB025",
+          "PUB090",
+          "PUB015",
+          "PUB010",
+          "PUB006",
+          "PUB005"
+        ],
+        "retained_count": 0,
+        "possible_count": 1,
+        "note": "Deux publications seulement méritent un classement ADJACENT : PUB111 (concentration des vols dans les transports en commun, phénomène urbain et francilien) et PUB025 (disparités territoriales des infractions aux stupéfiants avec concentration urbaine). Toutes les autres reposent sur des rapprochements insuffisants : vocabulaire commun, domaine général de la sécurité, méthodologie sans résultats empiriques, ou thématiques entièrement différentes (cybercriminalité, climat, éducation, pédocriminalité). Aucune ne documente directement le cœur du fil : la répartition inégale des vols sans violence sur le territoire français avec les taux spécifiques par aire d'attraction et les effets régionaux haussiers/baissiers."
+      }
+    },
+    {
+      "thread_id": "T002",
+      "fil_lecture": "Facteurs d'exposition aux vols : flux de population et infrastructures",
+      "source_locator": "1;3;4;5;6",
+      "source_anchor": "La publication identifie que la présence de population temporaire (touristes, voyageurs) et d'infrastructures de transport constituent des facteurs majeurs d'exposition aux vols sans violence. Une commune avec aéroport enregistre +8,5 ‰ de vols, une gare nationale +5,3 ‰, une autoroute +3,2 ‰. Le statut touristique (station de tourisme +2,8 ‰) et la localisation côtière (+1,1 ‰) amplifient ce phénomène. Ces effets sont mesurés toutes choses égales par ailleurs.",
+      "retrieval_queries": [
+        "infrastructure transport délinquance",
+        "flux touristique vols",
+        "accessibilité criminalité"
+      ],
+      "candidate_ids": [
+        "PUB010",
+        "PUB025"
+      ],
+      "candidate_count": 2,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok:repaired_centrality",
+      "pivot": {
+        "objet_pivot": "flux de population et infrastructures",
+        "variantes": [
+          "infrastructures de transport",
+          "population présente"
+        ],
+        "angle": "Facteurs d'exposition aux vols : corrélation entre présence de population…",
+        "critere_raccord": "La cible doit développer substantiellement « flux de population et infrastructures » lui-même. Si elle développe aussi le cœur de l'angle source « Facteurs d'exposition aux vols : corrélation entre présence de population… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "flux de population et infrastructures",
+          "infrastructures de transport",
+          "population présente"
+        ]
+      },
+      "pool_ids": [
+        "PUB006",
+        "PUB010",
+        "PUB001",
+        "PUB024",
+        "PUB007",
+        "PUB025",
+        "PUB004",
+        "PUB051",
+        "PUB013",
+        "PUB011",
+        "PUB112",
+        "PUB022",
+        "PUB003",
+        "PUB002",
+        "PUB113",
+        "PUB015",
+        "PUB014",
+        "PUB111",
+        "PUB026",
+        "PUB005"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB006",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB001",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB024",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB007",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB004",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB051",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB013",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB011",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB112",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB022",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB003",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB002",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB113",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB015",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB014",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB111",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB026",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB010 : Contexte administratif et vocabulaire commun (infrastructures de transport), mais aucun développement du rôle de ces infrastructures dans l'exposition à la délinquance. Le pivot n'est pas documenté sous l'angle pertinent. PUB025 : Raccord substantiel. La cible établit explicitement que les infrastructures de transport (aéroports, autoroutes, routes nationales) constituent un facteur de concentration des infractions liées aux stupéfiants, parallèlement aux zones touristiques. Bien que le type de délinquance diffère (trafic vs vols sans violence), le mécanisme d'exposition lié aux infrastructures et à la présence de population est documenté de manière concrète et mesurable. Classé ADJACENT car il développe le même objet pivot (infrastructures de transport comme facteur d'exposition) mais sous un angle de délinquance différent.",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB006",
+          "PUB015",
+          "PUB024",
+          "PUB025",
+          "PUB057",
+          "PUB090",
+          "PUB115",
+          "PUB010",
+          "PUB022",
+          "PUB051"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Aucun candidat ne documente explicitement et substantiellement les facteurs d'exposition aux vols sans violence (flux de population temporaire, infrastructures de transport) qui constituent le cœur du fil. Les publications traitent de cybercriminalité, trafic de drogue, pédocriminalité, commerce illicite, résilience climatique ou géopolitique des infrastructures — domaines distincts du phénomène analysé. Les mentions d'accessibilité, d'infrastructures ou de flux restent soit contextuelles, soit appliquées à d'autres phénomènes criminels (trafic, fraude numérique). Aucun raccord DIRECT ou ADJACENT n'est établi."
+      }
+    },
+    {
+      "thread_id": "T004",
+      "fil_lecture": "Modélisation économétrique multivariée de la délinquance",
+      "source_locator": "5",
+      "source_anchor": "La publication recourt à une modélisation économétrique multivariée sur données longitudinales (2016-2022) pour isoler l'effet propre de chaque caractéristique communale sur les vols sans violence, en neutralisant les corrélations entre variables. Des simulations permettent de quantifier l'impact structurel de chaque facteur (géographie, démographie, équipements, logements, activité économique). Cette approche « toutes choses égales par ailleurs » permet de mesurer les contributions distinctes dans un contexte complexe.",
+      "retrieval_queries": [
+        "modélisation multivariée délinquance",
+        "analyse toutes choses égales",
+        "simulation effets structurels criminalité"
+      ],
+      "candidate_ids": [
+        "PUB004"
+      ],
+      "candidate_count": 1,
+      "retained_count": 0,
+      "possible_count": 1,
+      "pivot_status": "ok",
+      "pivot": {
+        "objet_pivot": "Modélisation économétrique multivariée",
+        "variantes": [
+          "analyse multivariée",
+          "modèle à excès de zéro"
+        ],
+        "angle": "Isolation de l'effet propre de chaque caractéristique communale sur la…",
+        "critere_raccord": "La cible doit développer substantiellement « Modélisation économétrique multivariée » lui-même. Si elle développe aussi le cœur de l'angle source « Isolation de l'effet propre de chaque caractéristique communale sur la… », le raccord peut être DIRECT ; si elle développe le même objet sous un autre angle, usage ou terrain pertinent, le raccord peut être ADJACENT. Une simple mention, un contexte commun ou une analogie reste INSUFFICIENT.",
+        "queries": [
+          "Modélisation économétrique multivariée",
+          "analyse multivariée",
+          "modèle à excès de zéro"
+        ]
+      },
+      "pool_ids": [
+        "PUB010",
+        "PUB004",
+        "PUB005"
+      ],
+      "gated_out": [
+        {
+          "publication_id": "PUB010",
+          "motif": "pivot_absent"
+        },
+        {
+          "publication_id": "PUB005",
+          "motif": "pivot_absent"
+        }
+      ],
+      "cut_by_cap": 0,
+      "pivot_gate_rejected": [],
+      "note": "PUB004 applique le même mécanisme d'analyse multivariée pour isoler les effets propres de variables explicatives dans un contexte complexe, mais sur un objet différent (sentiment d'insécurité déclaré plutôt que vols sans violence) et un terrain différent (données d'enquête individuelle plutôt que données communales longitudinales). La documentation du pivot est substantielle : la cible explique concrètement comment l'analyse multivariée isole l'effet de chaque caractéristique, avec quantification (odds ratios). Le raccord est ADJACENT car il documente le même objet pivot sous un angle et un terrain différents, sans reproduire le cœur exact du fil source (modélisation sur données communales longitudinales 2016-2022).",
+      "chemin_ouvert": {
+        "pivot_status": "legacy:objet_pivot_absent_ou_generique",
+        "candidate_ids": [
+          "PUB004",
+          "PUB006",
+          "PUB010",
+          "PUB026",
+          "PUB015",
+          "PUB011",
+          "PUB002",
+          "PUB007",
+          "PUB016",
+          "PUB005"
+        ],
+        "retained_count": 0,
+        "possible_count": 0,
+        "note": "Évaluation de 10 candidats sur la modélisation économétrique multivariée de la délinquance. Seuls 2 candidats (PUB004 et PUB015) présentent un raccord ADJACENT documentant explicitement une composante méthodologique ou analytique utile du fil. PUB004 développe le mécanisme de neutralisation des corrélations (régression logistique, odds ratio) appliqué à un phénomène différent. PUB015 documente l'analyse géospatiale et comparative de la criminalité. Les 8 autres candidats ne documentent aucune modélisation économétrique, aucune donnée longitudinale, aucune simulation quantitative d'effets structurels : le rapprochement repose uniquement sur le domaine commun (sécurité, criminalité), le vocabulaire (analyse, simulation, toutes choses égales) ou une analogie de structure, sans développement substantiel du mécanisme central du fil."
+      }
+    }
+  ],
+  "leaves": [
+    {
+      "source_publication_id": "PUB018",
+      "fil_lecture": "Disparités territoriales de la délinquance de rue",
+      "source_locator": "1;2;3;9;10",
+      "target_publication_id": "PUB112",
+      "pourquoi": "La publication documente explicitement la répartition territoriale des vols sans violence (7,7 % à Paris, 4,5 % dans le Rhône, 2,1 % en moyenne nationale) et identifie des disparités départementales fortes, notamment en Île-de-France. Elle apporte une connaissance complémentaire sur le même objet pivot sous un angle de victimation déclarée plutôt qu'enregistrée.",
+      "target_locator": "5;6",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB018",
+      "fil_lecture": "Facteurs d'exposition aux vols : flux de population et infrastructures",
+      "source_locator": "1;3;4;5;6",
+      "target_publication_id": "PUB025",
+      "pourquoi": "La cible documente explicitement que les infractions liées aux stupéfiants sont plus fréquentes dans les zones pourvues d'infrastructures de transport (aéroports, autoroutes, routes nationales) et dans les zones touristiques. Elle établit une corrélation entre présence d'infrastructures de transport et concentration de délinquance, ce qui développe substantiellement le même objet pivot sous un angle complémentaire (trafic de stupéfiants plutôt que vols sans violence).",
+      "target_locator": "8",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    },
+    {
+      "source_publication_id": "PUB018",
+      "fil_lecture": "Modélisation économétrique multivariée de la délinquance",
+      "source_locator": "5",
+      "target_publication_id": "PUB004",
+      "pourquoi": "La cible documente substantiellement l'analyse multivariée appliquée au sentiment d'insécurité, en isolant l'effet propre de caractéristiques individuelles et territoriales (genre, lieu de résidence QPV/hors QPV) via des odds ratios. Elle développe le même objet pivot (analyse multivariée) et la même logique « toutes choses égales par ailleurs », mais sur un phénomène différent (sentiment d'insécurité perçu vs vols sans violence) et un terrain différent (enquête individuelle vs données communales).",
+      "target_locator": "11",
+      "decision": "POSSIBLE",
+      "badges": [],
+      "mode_raccord": "expression_commune"
+    }
+  ],
+  "chemins": {
+    "strict": true,
+    "ouvert": true
+  },
+  "base_engine": "document-links-v0.1-thread-first",
+  "volet": "prolongements_thematiques",
+  "demote_summary": false,
+  "couverture_source": {
+    "extraits_retenus": 25,
+    "extraits_total": 25,
+    "sections_couvertes": 20,
+    "sections_total": 20
+  },
+  "expressions_partagees_index": {
+    "cles": 155957,
+    "seuil_publications": 10,
+    "actif": true
+  }
+}
