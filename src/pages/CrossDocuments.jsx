@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import DocumentLinksWorkspace from './DocumentLinksWorkspace.jsx'
 import { useChronologyData } from '../hooks/useChronologyData.js'
 import './cross-documents.css'
 import '../crossdoc-espace.css'
@@ -355,7 +356,7 @@ function SourceExcerpt({ text, expression, active, transferred, onClick }) {
   </p>
 }
 
-function CrossDocumentsHome({ onOpenChronology, onOpenNotions, publicationCount }) {
+function CrossDocumentsHome({ onOpenChronology, onOpenNotions, onOpenRecommendations, publicationCount }) {
   return <main className="page crossdoc-home">
     <header className="crossdoc-heading">
       <div className="crossdoc-kicker">EXPLORATIONS TRANSPUBLICATIONS</div>
@@ -363,6 +364,16 @@ function CrossDocumentsHome({ onOpenChronology, onOpenNotions, publicationCount 
       <p>Changez de point de vue sur le corpus tout en conservant un retour direct aux documents et à leurs preuves sources.</p>
     </header>
 
+    <section style={{margin:'0 0 20px'}} aria-label="Recommandations documentaires">
+      <button className="crossdoc-feature-card" type="button" onClick={onOpenRecommendations} style={{width:'100%',textAlign:'left',padding:'22px 26px',display:'flex',alignItems:'center',gap:24}}>
+        <div className="crossdoc-feature-copy" style={{flex:1}}>
+          <div className="crossdoc-feature-topline"><span>RECOMMANDATIONS DOCUMENTAIRES</span><em className="crossdoc-beta">44 publications</em></div>
+          <h2>D’un document à l’autre — l’arbre des recommandations</h2>
+          <p>Découvrez les raccords documentaires et les prolongements thématiques proposés par les moteurs, avec leurs justifications et leurs repères sources.</p>
+          <div className="crossdoc-feature-action">Explorer l’arbre documentaire <Icon name="chevron" size={17}/></div>
+        </div>
+      </button>
+    </section>
     <section className="crossdoc-card-grid" aria-label="Fonctions disponibles">
       <button className="crossdoc-feature-card chronology-card" type="button" onClick={onOpenChronology}>
         <div className="crossdoc-feature-visual" aria-hidden="true">
@@ -1088,12 +1099,14 @@ export default function CrossDocuments({ data }) {
     ? new Set(chronology.elements.map(e => e.publication_id)).size
     : 0
 
+  if (view === 'recommendations') return <DocumentLinksWorkspace data={data} onBack={() => setView('home')} />
   if (view === 'chronology') return <ChronoFrise data={data} onBack={() => setView('home')} />
   if (view === 'notions') return <NotionSpace data={data} onBack={() => setView('home')} />
   return <CrossDocumentsHome
     publicationCount={publicationCount}
     onOpenChronology={() => setView('chronology')}
     onOpenNotions={() => setView('notions')}
+    onOpenRecommendations={() => setView('recommendations')}
   />
 }
 
