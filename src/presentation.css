@@ -1,0 +1,24 @@
+/* Texte de présentation partagé (.qvl-pres). Les couleurs viennent de
+   variables que chaque conteneur fixe (panneau clair, accueil sombre). */
+.qvl-pres{--pres-ink:#0f2440;--pres-text:#2a3d57;--pres-card:#fff;--pres-line:#dfe6ef;--pres-accent:#2e55d6;--pres-accent-bg:#e8eefc;--pres-trust-bg:#eef6f4;--pres-trust:#0b8f8a;
+  color:var(--pres-text);font-size:15.5px;line-height:1.65}
+.qvl-pres *{box-sizing:border-box}
+.qvl-pres p{margin:0 0 14px}
+.qvl-pres strong{color:var(--pres-ink)}
+.qvl-pres .qvl-pres-h3{margin:26px 0 10px;font:600 22px/1.25 'Source Serif 4',Georgia,serif;color:var(--pres-ink)}
+.qvl-pres .qvl-pres-aims{margin:0 0 6px;padding:0;list-style:none;display:grid;gap:10px}
+.qvl-pres .qvl-pres-aims li{padding:12px 14px 12px 18px;background:var(--pres-card);border:1px solid var(--pres-line);border-left:4px solid var(--pres-accent);border-radius:10px}
+.qvl-pres .qvl-pres-ways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 16px}
+.qvl-pres .qvl-pres-way{background:var(--pres-card);border:1px solid var(--pres-line);border-radius:14px;padding:16px 16px 14px}
+.qvl-pres .qvl-pres-num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--pres-accent-bg);color:var(--pres-accent);font-weight:800;font-size:13px}
+.qvl-pres .qvl-pres-way h4{margin:10px 0 8px;font-size:15.5px;line-height:1.3;color:var(--pres-ink)}
+.qvl-pres .qvl-pres-way p{margin:8px 0 0;font-size:14px;line-height:1.55}
+.qvl-pres .qvl-pres-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.qvl-pres .qvl-pres-tabname{font-style:normal;font-weight:700;font-size:13px;color:var(--pres-accent);background:var(--pres-accent-bg);border-radius:999px;padding:3px 10px;white-space:normal}
+.qvl-pres .qvl-pres-tablink{border:1px solid var(--pres-line);background:var(--pres-accent-bg);color:var(--pres-accent);border-radius:999px;padding:3px 10px;font:700 13px/1.4 inherit;cursor:pointer;text-align:left}
+.qvl-pres .qvl-pres-tablink:hover,.qvl-pres .qvl-pres-tablink:focus-visible{background:var(--pres-accent);color:#fff;border-color:var(--pres-accent);outline:none}
+.qvl-pres .qvl-pres-trust{padding:14px 16px;background:var(--pres-trust-bg);border-radius:12px;border-left:4px solid var(--pres-trust)}
+.qvl-pres .qvl-pres-motto{margin:22px 0 6px;font:500 italic 21px/1.35 'Source Serif 4',Georgia,serif;color:var(--pres-ink);text-align:center}
+/* Version sombre (page d'accueil, écran de présentation) */
+.qvl-pres.qvl-pres--dark{--pres-ink:#f2f7ff;--pres-text:#c8d6ea;--pres-card:rgba(255,255,255,.05);--pres-line:rgba(140,190,255,.2);--pres-accent:#5cd8ff;--pres-accent-bg:rgba(92,216,255,.12);--pres-trust-bg:rgba(49,206,231,.09);--pres-trust:#31cee7}
+@media (max-width:900px){.qvl-pres .qvl-pres-ways{grid-template-columns:1fr}}

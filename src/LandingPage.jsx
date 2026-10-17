@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './LandingPage.css'
+import './presentation.css'
+import { PresentationIntro, PresentationLab } from './components/PresentationText.jsx'
 import quiritesLogo from './landing-quirites-logo.png'
 import radarVisual from './landing-radar.png'
 
@@ -14,10 +16,17 @@ const cguDraft = [
 export default function LandingPage({ onEnter }) {
   const [accepted, setAccepted] = useState(false)
   const [showCgu, setShowCgu] = useState(false)
+  // Le radar s'affiche seul pendant 3 secondes, puis s'estompe pour laisser
+  // place au texte de présentation (le bouton « Revoir le radar » le rappelle).
+  const withText = true
+  const [reading, setReading] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setReading(true), 3000)
+    return () => clearTimeout(t)
+  }, [])
 
   return (
-    <div className="qlab-radar-landing">
-      <div className="qlab-radar-landing__hero">
+    <div className={`qlab-radar-landing ${withText && reading ? 'is-reading' : ''}`}>
       <div className="qlab-radar-landing__visual" aria-hidden="true">
         <div className="qlab-radar-landing__visual-frame">
           <img src={radarVisual} alt="" />
@@ -94,108 +103,26 @@ export default function LandingPage({ onEnter }) {
               Voir les conditions générales d’utilisation
             </button>
           </div>
-
-          <a className="qlab-radar-landing__read-more" href="#qlab-demarche">
-            Découvrir la démarche <span aria-hidden="true">↓</span>
-          </a>
         </section>
+
+        {withText && (
+          <section className="qlab-radar-landing__presentation" aria-label="Présentation de Quiritès Veille Lab" aria-hidden={!reading}>
+            <div className="qlab-radar-landing__presentation-inner">
+              <div className="qlab-radar-landing__presentation-top">
+                <span className="qlab-radar-landing__pres-kicker">PRÉSENTATION</span>
+                <button type="button" className="qlab-radar-landing__toggle" onClick={() => setReading(false)} tabIndex={reading ? 0 : -1}>Revoir le radar</button>
+              </div>
+              <div className="qvl-pres qvl-pres--dark">
+                <PresentationIntro/>
+                <PresentationLab motto={false}/>
+              </div>
+            </div>
+          </section>
+        )}
+        {withText && !reading && (
+          <button type="button" className="qlab-radar-landing__toggle qlab-radar-landing__toggle--read" onClick={() => setReading(true)}>Lire la présentation</button>
+        )}
       </main>
-      </div>
-
-      <section className="qlab-radar-landing__manifesto" id="qlab-demarche" aria-labelledby="qlab-demarche-title">
-        <div className="qlab-radar-landing__manifesto-inner">
-          <header className="qlab-radar-landing__manifesto-header">
-            <p className="qlab-radar-landing__manifesto-kicker">LE BULLETIN ET SON APPLICATION COMPAGNE</p>
-            <h2 id="qlab-demarche-title">De la connaissance à l’action</h2>
-            <p className="qlab-radar-landing__manifesto-intro">
-              La lutte contre la criminalité organisée, la sécurité, le maintien de l’ordre public,
-              les migrations, la gestion des crises, l’action publique territoriale ou encore les
-              transformations numériques constituent autant de champs d’action, de recherche et de
-              réflexion qui traversent les métiers du ministère de l’Intérieur et mobilisent de
-              nombreux acteurs au-delà de son périmètre institutionnel.
-            </p>
-            <p className="qlab-radar-landing__manifesto-statement">
-              C’est à la rencontre de ces univers que se situe le bulletin de veille de Quiritès.
-            </p>
-          </header>
-
-          <div className="qlab-radar-landing__manifesto-panels">
-            <article className="qlab-radar-landing__manifesto-panel">
-              <p className="qlab-radar-landing__manifesto-panel-kicker">01 / LE BULLETIN</p>
-              <h3>Valoriser les expertises, donner à voir un écosystème</h3>
-              <p>
-                En réunissant des publications issues du ministère de l’Intérieur et des travaux
-                produits à l’extérieur, le bulletin poursuit deux ambitions complémentaires :
-              </p>
-              <ul>
-                <li>
-                  <strong>Valoriser les expertises ministérielles</strong>, en mettant en lumière
-                  les savoirs, les savoir-faire et les travaux des services du ministère de l’Intérieur.
-                </li>
-                <li>
-                  <strong>Donner à voir la richesse d’un écosystème d’acteurs</strong>, en accordant
-                  également une place aux productions de ceux qui contribuent aux missions du
-                  ministère — acteurs de la sécurité privée, associations de sécurité civile,
-                  acteurs de l’intégration et de la citoyenneté — ainsi qu’aux travaux des
-                  institutions et organismes de recherche qui éclairent ces domaines.
-                </li>
-              </ul>
-            </article>
-
-            <article className="qlab-radar-landing__manifesto-panel qlab-radar-landing__manifesto-panel--lab">
-              <p className="qlab-radar-landing__manifesto-panel-kicker">02 / QUIRITÈS VEILLE LAB</p>
-              <h3>Faire de la veille un appui à la réflexion et à l’action</h3>
-              <p>
-                L’application prolonge cette démarche avec une ambition : <strong>faire des
-                connaissances réunies par la veille un véritable appui à la réflexion et à l’action.</strong>
-              </p>
-              <p>Elle propose trois manières de mobiliser ces connaissances :</p>
-              <ul>
-                <li>
-                  <strong>Explorer les expertises et les écosystèmes d’action.</strong> Les graphes
-                  de connaissances rendent visibles les savoirs et savoir-faire ministériels, les
-                  missions des acteurs internes et externes, ainsi que les relations documentées
-                  qui structurent cet écosystème.
-                </li>
-                <li>
-                  <strong>Interroger les connaissances à partir de ses propres besoins.</strong> Grâce
-                  à l’interrogation du corpus en langage naturel, chacun peut rechercher des
-                  informations, confronter des approches et rassembler des éléments utiles pour
-                  comprendre une situation, approfondir une problématique ou préparer un travail.
-                </li>
-                <li>
-                  <strong>Mettre les publications en perspective.</strong> La navigation entre
-                  documents, le suivi des notions et les rapprochements documentaires ouvrent de
-                  nouvelles pistes de lecture et permettent d’élargir la réflexion au-delà d’une
-                  publication isolée.
-                </li>
-              </ul>
-            </article>
-          </div>
-
-          <div className="qlab-radar-landing__manifesto-conclusion">
-            <p className="qlab-radar-landing__manifesto-principle">
-              L’objectif n’est pas de penser ou de décider à la place de l’utilisateur,
-              mais de lui donner les moyens de mobiliser les connaissances, de construire
-              son propre raisonnement et d’éclairer ses choix.
-            </p>
-            <p>
-              Au fil des éditions, le bulletin et son application compagne ont ainsi vocation à
-              constituer <strong>une base de connaissances ouverte, durable et évolutive</strong>,
-              accessible à tous ceux qui souhaitent mieux comprendre les enjeux des métiers du
-              ministère de l’Intérieur et s’appuyer sur les travaux qui leur sont consacrés.
-            </p>
-            <a
-              className="qlab-radar-landing__manifesto-bulletin"
-              href="https://www.quirites.fr/actualites/veille"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Découvrir le bulletin de veille <span aria-hidden="true">↗</span>
-            </a>
-          </div>
-        </div>
-      </section>
 
       {showCgu && (
         <div
