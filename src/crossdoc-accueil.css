@@ -1,0 +1,39 @@
+/* Accueil de l'onglet « D'un document à l'autre » — le triptyque.
+   Toutes les règles sont limitées à .xda-screen : aucun effet sur le reste de l'application. */
+.xda-screen{--xda-ink:#0f2440;--xda-ink2:#3c5068;--xda-mute:#66788c;--xda-line:#dde4ec;--xda-accent:#2e55d6;
+  --xda-sans:'Manrope',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-family:var(--xda-sans);color:var(--xda-ink);background:#f3f6fa;min-height:calc(100vh - 80px)}
+.xda-screen *{box-sizing:border-box}
+.xda-screen .xda-wrap{max-width:1320px;margin:0 auto;padding:30px 28px 44px}
+.xda-screen .xda-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px}
+.xda-screen .xda-kicker{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--xda-accent)}
+.xda-screen h1{margin:4px 0 0;font:800 34px/1.1 var(--xda-sans);letter-spacing:-.02em;color:var(--xda-ink)}
+.xda-screen .xda-head p{margin:8px 0 0;color:var(--xda-ink2);font-size:16px;max-width:640px}
+.xda-screen .xda-corpus{font-size:13.5px;color:var(--xda-mute);text-align:right;white-space:nowrap}
+.xda-screen .xda-corpus b{display:block;font-weight:800;font-size:22px;color:var(--xda-ink)}
+.xda-screen .xda-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.xda-screen .xda-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--xda-line);border-radius:18px;overflow:hidden;text-align:left;padding:0;cursor:pointer;font:inherit;color:inherit;transition:transform .25s,box-shadow .25s,border-color .25s}
+.xda-screen .xda-card:hover,.xda-screen .xda-card:focus-visible{transform:translateY(-4px);box-shadow:0 18px 40px rgba(15,36,64,.12);border-color:#c5d2e2}
+.xda-screen .xda-card:focus-visible{outline:3px solid var(--xda-accent);outline-offset:3px}
+.xda-screen .xda-vis{display:block;height:250px;position:relative;background:linear-gradient(180deg,#f6f9fd,#eef3f9);border-bottom:1px solid var(--xda-line)}
+.xda-screen .xda-vis svg{position:absolute;inset:0;width:100%;height:100%}
+.xda-screen .xda-body{display:flex;flex-direction:column;flex:1;padding:18px 20px 20px}
+.xda-screen .xda-tag{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--xda-accent)}
+.xda-screen .xda-tag i{width:8px;height:8px;border-radius:4px;background:var(--c)}
+.xda-screen .xda-title{display:block;margin:6px 0;font-weight:800;font-size:22px;line-height:1.2;letter-spacing:-.01em}
+.xda-screen .xda-lead{display:block;color:var(--xda-ink2);font-size:14.5px;line-height:1.5}
+.xda-screen .xda-io{display:grid;gap:6px;margin:14px 0 16px;font-size:13.5px}
+.xda-screen .xda-io>span{display:grid;grid-template-columns:122px 1fr;gap:8px}
+.xda-screen .xda-io em{font-style:normal;color:var(--xda-mute);font-weight:600}
+.xda-screen .xda-io strong{font-weight:700;color:var(--xda-ink)}
+.xda-screen .xda-meta{display:block;margin-top:auto;font-size:13px;color:var(--xda-mute)}
+.xda-screen .xda-open{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;margin-top:12px;background:var(--xda-accent);color:#fff;border-radius:10px;padding:10px 16px;font-weight:800;font-size:14.5px;box-shadow:0 8px 18px rgba(46,85,214,.25)}
+.xda-screen .xda-svg-year{font:700 12.5px var(--xda-sans);fill:var(--xda-ink)}
+.xda-screen .xda-svg-note{font:400 12px var(--xda-sans);fill:var(--xda-mute)}
+.xda-screen .xda-svg-notion{font:800 13.5px var(--xda-sans);fill:#0b8f8a;stroke:#fff;stroke-width:6px;paint-order:stroke}
+.xda-screen .xda-grow{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:xda-draw .8s ease-out forwards;animation-delay:var(--d,0s)}
+.xda-screen .xda-pop{opacity:0;transform-box:fill-box;transform-origin:center;animation:xda-pop .35s ease-out forwards;animation-delay:var(--d,0s)}
+@keyframes xda-draw{to{stroke-dashoffset:0}}
+@keyframes xda-pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.xda-screen .xda-grow{animation:none;stroke-dashoffset:0}.xda-screen .xda-pop{animation:none;opacity:1}.xda-screen .xda-card{transition:none}}
+@media (max-width:1000px){.xda-screen .xda-cols{grid-template-columns:1fr}.xda-screen .xda-head{flex-direction:column;align-items:flex-start}.xda-screen .xda-corpus{text-align:left}}
