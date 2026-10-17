@@ -513,3 +513,196 @@
   .qlab-radar-landing__companion{font-size:22px}
   .qlab-radar-landing__bulletin-link{font-size:14px}
 }
+
+
+/* =========================================================
+   Landing — présentation du projet sous le radar.
+   La carte, les animations, le CTA et les CGU restent inchangés.
+   ========================================================= */
+.qlab-radar-landing__hero{
+  position:relative;
+  min-height:100svh;
+  isolation:isolate;
+  background:#03162e;
+}
+.qlab-radar-landing__read-more{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  width:fit-content;
+  margin-top:18px;
+  color:#8eddec;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.015em;
+  border-bottom:1px solid rgba(142,221,236,.38);
+  padding-bottom:5px;
+}
+.qlab-radar-landing__read-more:hover,
+.qlab-radar-landing__read-more:focus-visible{
+  color:#fff;
+  border-color:#fff;
+}
+.qlab-radar-landing__read-more span{font-size:20px;line-height:1}
+
+.qlab-radar-landing__manifesto{
+  position:relative;
+  background:linear-gradient(155deg,#071b34 0%,#081e38 47%,#102845 100%);
+  border-top:1px solid rgba(93,183,216,.24);
+  color:#e5eef7;
+  scroll-margin-top:0;
+  padding:clamp(56px,6vw,90px) 0 clamp(58px,7vw,100px);
+}
+.qlab-radar-landing__manifesto-inner{
+  width:min(1180px,calc(100% - 80px));
+  margin:0 auto;
+}
+.qlab-radar-landing__manifesto-header{
+  max-width:1050px;
+  padding-bottom:38px;
+}
+.qlab-radar-landing__manifesto-kicker{
+  margin:0 0 16px;
+  color:#74d8ec;
+  text-transform:uppercase;
+  font-weight:750;
+  letter-spacing:.18em;
+  font-size:12px;
+}
+.qlab-radar-landing__manifesto h2{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-size:clamp(36px,3.8vw,56px);
+  letter-spacing:-.025em;
+  line-height:1.1;
+  color:#fff;
+  font-weight:550;
+  margin:0 0 24px;
+}
+.qlab-radar-landing__manifesto-intro{
+  margin:0;
+  max-width:940px;
+  font-size:clamp(17px,1.4vw,19px);
+  line-height:1.78;
+  color:#cbdceb;
+}
+.qlab-radar-landing__manifesto-statement{
+  max-width:870px;
+  margin:27px 0 0;
+  padding-left:22px;
+  border-left:3px solid #37cce6;
+  color:#f3faff;
+  font-size:clamp(19px,1.8vw,24px);
+  font-weight:650;
+  line-height:1.5;
+}
+.qlab-radar-landing__manifesto-panels{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.18fr);
+  gap:22px;
+  align-items:stretch;
+}
+.qlab-radar-landing__manifesto-panel{
+  min-width:0;
+  padding:clamp(25px,2.7vw,38px);
+  border:1px solid rgba(109,170,206,.22);
+  border-radius:20px;
+  background:rgba(255,255,255,.035);
+}
+.qlab-radar-landing__manifesto-panel--lab{
+  border-color:rgba(67,197,217,.31);
+  background:rgba(44,149,183,.085);
+}
+.qlab-radar-landing__manifesto-panel-kicker{
+  margin:0 0 13px!important;
+  color:#74d8ec!important;
+  font-size:12px!important;
+  font-weight:850;
+  letter-spacing:.15em;
+}
+.qlab-radar-landing__manifesto h3{
+  margin:0 0 21px;
+  color:#f7fbff;
+  font-size:clamp(22px,2vw,28px);
+  line-height:1.25;
+  font-weight:700;
+  letter-spacing:-.018em;
+}
+.qlab-radar-landing__manifesto-panel>p:not(.qlab-radar-landing__manifesto-panel-kicker){
+  margin:0 0 17px;
+  font-size:16px;
+  line-height:1.7;
+  color:#cadbec;
+}
+.qlab-radar-landing__manifesto strong{color:#f5fbff;font-weight:700}
+.qlab-radar-landing__manifesto ul{
+  list-style:none;
+  margin:18px 0 0;
+  padding:0;
+  display:grid;
+  gap:21px;
+}
+.qlab-radar-landing__manifesto li{
+  position:relative;
+  padding-left:23px;
+  color:#d4e2ee;
+  font-size:16px;
+  line-height:1.69;
+}
+.qlab-radar-landing__manifesto li:before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:.75em;
+  width:8px;
+  height:8px;
+  background:#4ad1e7;
+  border-radius:50%;
+  box-shadow:0 0 0 4px rgba(74,209,231,.11);
+}
+.qlab-radar-landing__manifesto-conclusion{
+  max-width:960px;
+  padding-top:40px;
+}
+.qlab-radar-landing__manifesto-conclusion p{
+  margin:0 0 20px;
+  color:#c9dceb;
+  font-size:16.5px;
+  line-height:1.76;
+}
+.qlab-radar-landing__manifesto-conclusion .qlab-radar-landing__manifesto-principle{
+  color:#e8f5fd;
+  font-size:clamp(18px,1.6vw,21px);
+  line-height:1.62;
+  font-weight:600;
+}
+.qlab-radar-landing__manifesto-bulletin{
+  display:inline-flex;
+  align-items:center;
+  gap:13px;
+  margin-top:6px;
+  color:#7cdaed;
+  text-decoration:underline;
+  text-underline-offset:5px;
+  font-size:16px;
+  font-weight:700;
+}
+.qlab-radar-landing__manifesto-bulletin:hover,
+.qlab-radar-landing__manifesto-bulletin:focus-visible{color:#fff}
+
+@media(max-width:1050px){
+  .qlab-radar-landing__manifesto-panels{grid-template-columns:1fr}
+  .qlab-radar-landing__manifesto-header{padding-bottom:30px}
+}
+@media(max-width:900px){
+  .qlab-radar-landing__hero{display:flex;flex-direction:column}
+  .qlab-radar-landing__manifesto-inner{width:min(100% - 48px,700px)}
+  .qlab-radar-landing__manifesto-panel{padding:26px}
+}
+@media(max-width:620px){
+  .qlab-radar-landing__manifesto-inner{width:calc(100% - 36px)}
+  .qlab-radar-landing__manifesto-panel{padding:23px 20px;border-radius:15px}
+  .qlab-radar-landing__manifesto li{font-size:15px}
+  .qlab-radar-landing__manifesto-panel>p:not(.qlab-radar-landing__manifesto-panel-kicker){font-size:15px}
+  .qlab-radar-landing__manifesto-statement{padding-left:15px}
+}
