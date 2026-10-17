@@ -4,6 +4,8 @@ import DocumentLinksWorkspace from './DocumentLinksWorkspace.jsx'
 import { useChronologyData } from '../hooks/useChronologyData.js'
 import './cross-documents.css'
 import '../crossdoc-espace.css'
+import '../crossdoc-accueil.css'
+import recommendationsCatalog from '../recommendationsCatalog.json'
 
 const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012', 'PUB113']
 
@@ -356,56 +358,167 @@ function SourceExcerpt({ text, expression, active, transferred, onClick }) {
   </p>
 }
 
-function CrossDocumentsHome({ onOpenChronology, onOpenNotions, onOpenRecommendations, publicationCount }) {
-  return <main className="page crossdoc-home">
-    <header className="crossdoc-heading">
-      <div className="crossdoc-kicker">EXPLORATIONS TRANSPUBLICATIONS</div>
-      <h1>D’un document à l’autre</h1>
-      <p>Changez de point de vue sur le corpus tout en conservant un retour direct aux documents et à leurs preuves sources.</p>
-    </header>
+/* ==========================================================================
+   ACCUEIL DE L'ONGLET — le triptyque
+   Trois fonctionnalités présentées à égalité, chacune avec un aperçu
+   construit sur les données réelles du corpus. Les fonctionnalités
+   elles-mêmes ne sont pas modifiées : chaque bouton ouvre l'écran existant.
+   ========================================================================== */
+const XDA_TREE_SOURCE = 'PUB008'
+const XDA_NOTION_ID = 'violences-sexuelles'
 
-    <section style={{margin:'0 0 20px'}} aria-label="Recommandations documentaires">
-      <button className="crossdoc-feature-card" type="button" onClick={onOpenRecommendations} style={{width:'100%',textAlign:'left',padding:'22px 26px',display:'flex',alignItems:'center',gap:24}}>
-        <div className="crossdoc-feature-copy" style={{flex:1}}>
-          <div className="crossdoc-feature-topline"><span>RECOMMANDATIONS DOCUMENTAIRES</span><em className="crossdoc-beta">44 publications</em></div>
-          <h2>D’un document à l’autre — l’arbre des recommandations</h2>
-          <p>Découvrez les raccords documentaires et les prolongements thématiques proposés par les moteurs, avec leurs justifications et leurs repères sources.</p>
-          <div className="crossdoc-feature-action">Explorer l’arbre documentaire <Icon name="chevron" size={17}/></div>
-        </div>
-      </button>
-    </section>
-    <section className="crossdoc-card-grid" aria-label="Fonctions disponibles">
-      <button className="crossdoc-feature-card chronology-card" type="button" onClick={onOpenChronology}>
-        <div className="crossdoc-feature-visual" aria-hidden="true">
-          <div className="mini-source-lines"><span></span><span></span><span></span><span></span></div>
-          <div className="mini-transfer"><i></i><i></i><i></i></div>
-          <div className="mini-timeline"><b></b><b></b><b></b><b></b></div>
-        </div>
-        <div className="crossdoc-feature-copy">
-          <div className="crossdoc-feature-topline">
-            <span>CHRONOLOGIE</span>
-            <em className="crossdoc-beta">BÊTA · {publicationCount || 0} publications</em>
-          </div>
-          <h2>Du texte à la frise, sans perdre la source</h2>
-          <p>Faites apparaître la trame temporelle d’une publication : événements, jalons, émergences, tendances et inflexions sont replacés dans le temps et reliés à leur preuve source.</p>
-          <div className="crossdoc-feature-action">Explorer une chronologie <Icon name="chevron" size={17}/></div>
-        </div>
-      </button>
+function XdaFrise({ chronology }) {
+  const years = useMemo(() => {
+    const els = (chronology?.elements || []).filter(e => e.decision_post_traitement === 'retenu' && temporalValue(e) !== null)
+    const byPub = {}
+    for (const e of els) (byPub[e.publication_id] ||= []).push(e)
+    const best = Object.entries(byPub).sort((a, b) => b[1].length - a[1].length)[0]
+    if (!best) return []
+    const counts = {}
+    for (const e of best[1]) { const y = Math.floor(temporalValue(e)); counts[y] = (counts[y] || 0) + 1 }
+    return Object.entries(counts).map(([y, c]) => [Number(y), c]).sort((a, b) => b[1] - a[1]).slice(0, 9).sort((a, b) => a[0] - b[0])
+  }, [chronology])
+  if (!years.length) return null
+  const H = 250, x0 = 200, step = (H - 50) / Math.max(1, years.length - 1)
+  return <>
+    <path className="xda-grow" style={{ '--len': 400 }} d={`M${x0},18 L${x0},${H - 18}`} stroke="#c8d3e0" strokeWidth="3" strokeLinecap="round" fill="none"/>
+    {years.map(([y, c], i) => {
+      const yy = 25 + i * step, left = i % 2 === 0, r = 4 + Math.sqrt(c) * 1.6
+      return <g key={y} className="xda-pop" style={{ '--d': `${0.2 + i * 0.09}s` }}>
+        <circle cx={x0} cy={yy} r={r} fill="#e3a73b" opacity=".9"/>
+        <text x={left ? x0 - 14 - r : x0 + 14 + r} y={yy + 4} className="xda-svg-year" textAnchor={left ? 'end' : 'start'}>{y}</text>
+        <text x={left ? x0 - 52 - r : x0 + 52 + r} y={yy + 4} className="xda-svg-note" textAnchor={left ? 'end' : 'start'}>{c} élément{c > 1 ? 's' : ''}</text>
+      </g>
+    })}
+  </>
+}
 
-      <button className="crossdoc-feature-card notion-feature-card" type="button" onClick={onOpenNotions}>
-        <div className="crossdoc-feature-visual notion-mini-visual" aria-hidden="true">
-          <div className="notion-mini-library"><span></span><span></span><span></span><span></span></div>
-          <div className="notion-mini-flow"><i></i><i></i><i></i></div>
-          <div className="notion-mini-center">N</div>
+function XdaNotion({ publications }) {
+  const notion = TRANSVERSAL_NOTIONS.find(n => n.id === XDA_NOTION_ID) || TRANSVERSAL_NOTIONS[0]
+  const hot = Object.keys(notion.selections)
+  const cx = 200, cy = 125, R = 95
+  const pos = {}
+  publications.forEach((p, i) => { const a = i / publications.length * Math.PI * 2 - Math.PI / 2; pos[p.publication_id] = [cx + R * Math.cos(a), cy + R * Math.sin(a)] })
+  const pts = hot.map(id => pos[id]).filter(Boolean)
+  let d = pts.length ? `M${pts[0][0]},${pts[0][1]}` : ''
+  for (let i = 1; i < pts.length; i++) { const [a, b] = pts[i - 1], [c, e] = pts[i]; d += ` Q${cx + (a + c - 2 * cx) * 0.1},${cy + (b + e - 2 * cy) * 0.1} ${c},${e}` }
+  const byId = Object.fromEntries(publications.map(p => [p.publication_id, p]))
+  return <>
+    <circle cx={cx} cy={cy} r={R} fill="none" stroke="#dbe3ec" strokeWidth="1.5"/>
+    {publications.filter(p => !hot.includes(p.publication_id)).map(p => { const [x, y] = pos[p.publication_id]; return <rect key={p.publication_id} x={x - 4} y={y - 5.5} width="8" height="11" rx="1.5" fill="#c9d4e2"/> })}
+    {d && <path className="xda-grow" style={{ '--len': 900, '--d': '.3s' }} d={d} stroke="#0b8f8a" strokeWidth="3" fill="none" strokeLinecap="round"/>}
+    {hot.filter(id => pos[id]).map((id, i) => { const [x, y] = pos[id]; const p = byId[id]; return <g key={id} className="xda-pop" style={{ '--d': `${0.2 + i * 0.35}s` }}>
+      <rect x={x - 14} y={y - 19} width="28" height="38" rx="3" fill="#fff" stroke="#0b8f8a" strokeWidth="2"/>
+      {p?.has_image !== false && <image href={publicationImageSrc(p?.image_path, id)} x={x - 12} y={y - 17} width="24" height="34" preserveAspectRatio="xMidYMid slice"/>}
+    </g> })}
+    <text x={cx} y={cy - R - 13} textAnchor="middle" className="xda-svg-notion">{notion.label}</text>
+  </>
+}
+
+function XdaTree({ publications }) {
+  const [leaves, setLeaves] = useState(null)
+  useEffect(() => {
+    let alive = true
+    const base = import.meta.env.BASE_URL || '/'
+    const read = suffix => fetch(`${base}recommendations/${XDA_TREE_SOURCE}_${suffix}.json`).then(r => r.ok ? r.json() : null).catch(() => null)
+    Promise.all([read('document_links'), read('thematic_extensions')]).then(([blue, green]) => {
+      if (!alive) return
+      const pick = (payload, kind) => (payload?.leaves || []).map(l => ({ kind, decision: l.decision, target: l.target_publication_id }))
+      setLeaves([...pick(blue, 'raccord'), ...pick(green, 'prolongement')])
+    })
+    return () => { alive = false }
+  }, [])
+  const byId = useMemo(() => Object.fromEntries(publications.map(p => [p.publication_id, p])), [publications])
+  const W = 400, H = 250, cx = W / 2, base = H - 30, fork = H * 0.6, rx = W * 0.38, ry = fork - 30, cyc = fork + 6
+  const cover = (id, x, y, w, h) => byId[id]?.has_image === false ? null : <image href={publicationImageSrc(byId[id]?.image_path, id)} x={x} y={y} width={w} height={h} preserveAspectRatio="xMidYMid slice"/>
+  const side = (arr, dir, grad, color, a0, a1) => {
+    const lx = cx + dir * W * 0.14, ly = fork - H * 0.16
+    return <g key={grad}>
+      <path className="xda-grow" style={{ '--len': 600, '--d': '.35s' }} d={`M${cx},${fork} C${cx + dir * W * 0.08},${fork - 6} ${lx},${ly + 24} ${lx},${ly}`} stroke={`url(#${grad})`} strokeWidth="7" fill="none" strokeLinecap="round"/>
+      {arr.map((l, i) => {
+        const a = (arr.length === 1 ? (a0 + a1) / 2 : a0 + (a1 - a0) * i / (arr.length - 1)) * Math.PI / 180
+        const tx = cx + rx * Math.cos(a), ty = cyc - ry * Math.sin(a), w = 26, h = 35
+        return <g key={`${l.target}-${i}`}>
+          <path className="xda-grow" style={{ '--len': 600, '--d': `${0.7 + i * 0.08}s` }} d={`M${lx},${ly} C${lx + dir * 10},${ly - 20} ${tx - dir * 24},${ty + 10} ${tx},${ty}`} stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+          <g className="xda-pop" style={{ '--d': `${1.05 + i * 0.08}s` }}>
+            <rect x={tx - w / 2 - 2} y={ty - h / 2 - 2} width={w + 4} height={h + 4} rx="3" fill="#fff" stroke={color} strokeWidth="2" strokeDasharray={l.decision === 'RETENIR' ? undefined : '3 2'}/>
+            {cover(l.target, tx - w / 2, ty - h / 2, w, h)}
+          </g>
+        </g>
+      })}
+    </g>
+  }
+  const raccords = (leaves || []).filter(l => l.kind === 'raccord'), prolongements = (leaves || []).filter(l => l.kind === 'prolongement')
+  return <>
+    <defs>
+      <linearGradient id="xda-gl" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stopColor="#7a6650"/><stop offset=".6" stopColor="#2552c4"/></linearGradient>
+      <linearGradient id="xda-gr" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#7a6650"/><stop offset=".6" stopColor="#0b8f8a"/></linearGradient>
+    </defs>
+    <path className="xda-grow" style={{ '--len': 600 }} d={`M${cx},${base - 24} L${cx},${fork}`} stroke="#7a6650" strokeWidth="14" fill="none" strokeLinecap="round"/>
+    {leaves && side(raccords, -1, 'xda-gl', '#2552c4', 172, 118)}
+    {leaves && side(prolongements, 1, 'xda-gr', '#0b8f8a', 72, 8)}
+    <g className="xda-pop">
+      <rect x={cx - 17} y={base - 24} width="34" height="46" rx="3" fill="#fff" stroke="#7a6650" strokeWidth="2"/>
+      {cover(XDA_TREE_SOURCE, cx - 15, base - 22, 30, 42)}
+    </g>
+  </>
+}
+
+function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecommendations }) {
+  const { chronology } = useChronologyData(true)
+  const [replay, setReplay] = useState({})
+  const publications = useMemo(() => (data?.publications || []).filter(p => p.has_graph).sort((a, b) => a.publication_id.localeCompare(b.publication_id)), [data])
+  const chronoStats = useMemo(() => {
+    const els = (chronology?.elements || []).filter(e => e.decision_post_traitement === 'retenu' && temporalValue(e) !== null)
+    return { publications: new Set(els.map(e => e.publication_id)).size, elements: els.length }
+  }, [chronology])
+
+  const features = [
+    { key: 'chrono', color: '#e3a73b', tag: 'Chronologie · bêta', title: 'Du texte à la frise',
+      lead: 'Faites apparaître la trame temporelle d’une publication : jalons, événements, tendances et inflexions replacés dans le temps et reliés à leur preuve.',
+      you: 'Une publication datée', get: 'Sa frise, chaque élément relié à sa preuve',
+      meta: chronology ? `${chronoStats.publications} publications · ${chronoStats.elements} éléments positionnés dans le temps` : 'Chargement de la chronologie…',
+      open: onOpenChronology, visual: <XdaFrise chronology={chronology}/> },
+    { key: 'notion', color: '#0b8f8a', tag: 'Vue transversale', title: 'Suivre une notion',
+      lead: 'Choisissez une notion et regardez-la passer d’une publication à l’autre. Aucun rapprochement nouveau : chaque élément reste relié à sa page et à sa preuve.',
+      you: 'Une notion', get: 'Son parcours à travers le corpus',
+      meta: `${TRANSVERSAL_NOTIONS.length} notions · éléments déjà validés`,
+      open: onOpenNotions, visual: <XdaNotion publications={publications}/> },
+    { key: 'reco', color: '#2552c4', tag: 'Recommandations', title: 'L’arbre des lectures',
+      lead: 'Partez d’une publication : ses fils de lecture se séparent en raccords documentaires et en prolongements thématiques, chacun justifié par les passages des deux documents.',
+      you: 'Une publication', get: 'Son arbre de recommandations, relié aux passages sources',
+      meta: `${recommendationsCatalog.length} publications · raccords et prolongements précalculés`,
+      open: onOpenRecommendations, visual: <XdaTree publications={publications}/> },
+  ]
+
+  return <main className="xda-screen">
+    <div className="xda-wrap">
+      <header className="xda-head">
+        <div>
+          <div className="xda-kicker">Explorations transpublications</div>
+          <h1>D’un document à l’autre</h1>
+          <p>Trois façons de traverser le corpus sans jamais perdre le passage source.</p>
         </div>
-        <div className="crossdoc-feature-copy">
-          <div className="crossdoc-feature-topline"><span>VUE TRANSVERSALE</span><em className="crossdoc-beta">6 notions</em></div>
-          <h2>Suivre une notion</h2>
-          <p className="notion-home-explanation">Partez des publications du corpus, choisissez une notion, puis regardez les éléments déjà validés se détacher de leurs documents d’origine et se recomposer en un parcours transversal. Aucun nouveau rapprochement n’est créé : chaque nœud reste relié à sa publication, sa page, son chunk et sa preuve.</p>
-          <div className="crossdoc-feature-action">Voir le corpus se transformer <Icon name="chevron" size={17}/></div>
-        </div>
-      </button>
-    </section>
+        <div className="xda-corpus"><b>{publications.length} publications</b>du bulletin de veille</div>
+      </header>
+      <section className="xda-cols" aria-label="Fonctionnalités">
+        {features.map(f => <button key={f.key} type="button" className="xda-card" style={{ '--c': f.color }} onClick={f.open}
+          onMouseEnter={() => setReplay(r => ({ ...r, [f.key]: (r[f.key] || 0) + 1 }))}>
+          <span className="xda-vis" aria-hidden="true"><svg key={replay[f.key] || 0} viewBox="0 0 400 250" preserveAspectRatio="xMidYMid meet">{f.visual}</svg></span>
+          <span className="xda-body">
+            <span className="xda-tag"><i/>{f.tag}</span>
+            <span className="xda-title">{f.title}</span>
+            <span className="xda-lead">{f.lead}</span>
+            <span className="xda-io">
+              <span><em>Vous choisissez</em><strong>{f.you}</strong></span>
+              <span><em>Vous obtenez</em><strong>{f.get}</strong></span>
+            </span>
+            <span className="xda-meta">{f.meta}</span>
+            <span className="xda-open">Ouvrir le dispositif <Icon name="chevron" size={16}/></span>
+          </span>
+        </button>)}
+      </section>
+    </div>
   </main>
 }
 
@@ -1094,16 +1207,12 @@ function ChronologyWorkspace({ data, onBack }) {
 
 export default function CrossDocuments({ data }) {
   const [view, setView] = useState('home')
-  const { chronology } = useChronologyData(true)
-  const publicationCount = chronology
-    ? new Set(chronology.elements.map(e => e.publication_id)).size
-    : 0
 
   if (view === 'recommendations') return <DocumentLinksWorkspace data={data} onBack={() => setView('home')} />
   if (view === 'chronology') return <ChronoFrise data={data} onBack={() => setView('home')} />
   if (view === 'notions') return <NotionSpace data={data} onBack={() => setView('home')} />
   return <CrossDocumentsHome
-    publicationCount={publicationCount}
+    data={data}
     onOpenChronology={() => setView('chronology')}
     onOpenNotions={() => setView('notions')}
     onOpenRecommendations={() => setView('recommendations')}
