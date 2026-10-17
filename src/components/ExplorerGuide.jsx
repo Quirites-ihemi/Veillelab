@@ -1,3 +1,4 @@
+import { useGuideDrag } from './useGuideDrag.js'
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Icon from './Icon.jsx'
 
@@ -67,6 +68,8 @@ export default function ExplorerGuide({
   relayoutKey,
 }) {
   const cardRef = useRef(null)
+  const drag = useGuideDrag(cardRef, screenRef)
+  useEffect(() => { if (collapsed) drag.reset() }, [collapsed]) // eslint-disable-line react-hooks/exhaustive-deps
   const [pos, setPos] = useState(null)
   const [beam, setBeam] = useState(null)
   const [maxHeight, setMaxHeight] = useState(560)
@@ -91,8 +94,8 @@ export default function ExplorerGuide({
       return core ? core.getBoundingClientRect() : null
     }
     if (step === 3) {
-      const strip = screen.querySelector('.orbit-strip')
-      return strip ? strip.getBoundingClientRect() : null
+      const side = screen.querySelector('.orbit-side')
+      return side ? side.getBoundingClientRect() : null
     }
     if (step === 4) {
       const chat = screen.querySelector('.orbit-chat-pill, .orbit-chat')
@@ -114,6 +117,9 @@ export default function ExplorerGuide({
 
     const limitH = Math.max(220, G.height - 2 * MARGIN_PX)
     if (Math.abs(limitH - maxHeight) > 1) setMaxHeight(limitH)
+
+    // Déplacé à la main : on respecte la position choisie.
+    if (drag.manualRef.current && !collapsed) { setBeam(null); return }
 
     const w = card.offsetWidth
     const h = Math.min(card.offsetHeight, limitH)
@@ -265,8 +271,9 @@ export default function ExplorerGuide({
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
-  const style = pos
-    ? { transform: `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`, opacity: 1 }
+  const at = (!collapsed && drag.manual) || pos
+  const style = at
+    ? { transform: `translate(${Math.round(at.x)}px, ${Math.round(at.y)}px)`, opacity: 1 }
     : { transform: 'translate(-9999px, 0)', opacity: 0 }
 
   // Contenu ------------------------------------------------------------------
@@ -283,12 +290,12 @@ export default function ExplorerGuide({
       ),
     },
     3: {
-      title: 'Le fil du document',
+      title: 'La preuve dans le texte',
       body: (
         <p>
-          En bas, les repères ambrés montrent les <strong>pages</strong> où le
-          sujet apparaît. La fiche, à droite, donne l’<strong>extrait</strong>{' '}
-          qui le prouve ; un clic sur un verbe ouvre la preuve de la relation.
+          La fiche, à droite, indique les <strong>pages</strong> où le sujet
+          apparaît et donne l’<strong>extrait</strong> qui le prouve ; un clic
+          sur un verbe ouvre la preuve de la relation.
         </p>
       ),
     },
@@ -306,7 +313,7 @@ export default function ExplorerGuide({
   const shortText = {
     1: 'Bonjour ! Je suis L’Éclaireur, votre guide dans ce graphe.',
     2: 'Cliquez sur une entité de l’orbite pour la placer au centre.',
-    3: 'Les repères ambrés situent le sujet dans les pages du document.',
+    3: 'La fiche, à droite, donne les pages et l’extrait qui prouvent le sujet.',
     4: 'Posez une question à la publication : les entités concernées s’allument.',
   }[step]
 
@@ -351,7 +358,7 @@ export default function ExplorerGuide({
     return (
       <>
         {beamSvg}
-        <section ref={cardRef} className="atlas-guide atlas-guide-compact" style={style} aria-label="L’Éclaireur" aria-live="polite">
+        <section ref={cardRef} onPointerDown={drag.onPointerDown} className="atlas-guide atlas-guide-compact" style={style} aria-label="L’Éclaireur" aria-live="polite">
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <div className="atlas-guide-compact-text">
             <span className="atlas-guide-kicker">L’Éclaireur{step > 1 ? ` · étape ${step} sur 4` : ''}</span>
@@ -383,7 +390,7 @@ export default function ExplorerGuide({
   return (
     <>
       {beamSvg}
-      <section ref={cardRef} className="atlas-guide" style={{ ...style, maxHeight }} aria-label="L’Éclaireur" aria-live="polite">
+      <section ref={cardRef} onPointerDown={drag.onPointerDown} className="atlas-guide" style={{ ...style, maxHeight }} aria-label="L’Éclaireur" aria-live="polite">
         <header className="atlas-guide-head">
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <span className="atlas-eclaireur-name">

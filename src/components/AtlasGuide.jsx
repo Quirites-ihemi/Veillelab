@@ -1,3 +1,4 @@
+import { useGuideDrag } from './useGuideDrag.js'
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Icon from './Icon.jsx'
 
@@ -69,6 +70,8 @@ export default function AtlasGuide({
   relayoutKey,
 }) {
   const cardRef = useRef(null)
+  const drag = useGuideDrag(cardRef, screenRef)
+  useEffect(() => { if (collapsed) drag.reset() }, [collapsed]) // eslint-disable-line react-hooks/exhaustive-deps
   const [pos, setPos] = useState(null)
   const [beam, setBeam] = useState(null)
   const [maxHeight, setMaxHeight] = useState(560)
@@ -132,6 +135,9 @@ export default function AtlasGuide({
 
     const limitH = Math.max(220, G.height - 2 * MARGIN_PX)
     if (Math.abs(limitH - maxHeight) > 1) setMaxHeight(limitH)
+
+    // Déplacé à la main : on respecte la position choisie.
+    if (drag.manualRef.current && !collapsed) { setBeam(null); return }
 
     const w = card.offsetWidth
     const h = Math.min(card.offsetHeight, limitH)
@@ -283,8 +289,9 @@ export default function AtlasGuide({
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
-  const style = pos
-    ? { transform: `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`, opacity: 1 }
+  const at = (!collapsed && drag.manual) || pos
+  const style = at
+    ? { transform: `translate(${Math.round(at.x)}px, ${Math.round(at.y)}px)`, opacity: 1 }
     : { transform: 'translate(-9999px, 0)', opacity: 0 }
 
   // Contenu ------------------------------------------------------------------
@@ -364,7 +371,7 @@ export default function AtlasGuide({
       <>
         {beamSvg}
         <section
-          ref={cardRef}
+          ref={cardRef} onPointerDown={drag.onPointerDown}
           className="atlas-guide atlas-guide-compact"
           style={style}
           aria-label="L’Éclaireur"
@@ -422,7 +429,7 @@ export default function AtlasGuide({
       {beamSvg}
 
       <section
-        ref={cardRef}
+        ref={cardRef} onPointerDown={drag.onPointerDown}
         className="atlas-guide"
         style={{ ...style, maxHeight }}
         aria-label="L’Éclaireur"

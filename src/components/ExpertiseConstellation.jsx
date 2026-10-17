@@ -16,6 +16,9 @@ const DEFAULT_CLUSTER_COLOR = '#cfd5dd'
 // Plafond de zoom. Relevé de 3 à 6 : les petites constellations butaient
 // dessus et ne remplissaient pas le cadre à l'ouverture.
 const MAX_SCALE = 6
+// Vue d'ensemble à l'entrée de l'onglet : le graphe est légèrement réduit
+// pour respirer dans le cadre (zoom avant toujours possible).
+const HOME_SCALE = 0.86
 
 // ---------------------------------------------------------------------------
 // COMPACTAGE GÉOMÉTRIQUE — calculé une seule fois, au chargement du module.
@@ -440,7 +443,7 @@ export default function ExpertiseConstellation({
   const [activeCluster, setActiveCluster] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)
   const [hoveredTitleId, setHoveredTitleId] = useState(null)
-  const [scale, setScale] = useState(1)
+  const [scale, setScale] = useState(HOME_SCALE)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [fontsReady, setFontsReady] = useState(0)
   // Cadrage calculé à l'ouverture d'une communauté : sert à maintenir les
@@ -858,13 +861,13 @@ export default function ExpertiseConstellation({
     setActiveCluster(null)
     setHoveredId(null)
     setHoveredTitleId(null)
-    setScale(1)
+    setScale(HOME_SCALE)
     setPan({ x: 0, y: 0 })
     setMode('cluster')
   }, [resetToken])
 
   useEffect(() => {
-    setScale(1)
+    setScale(HOME_SCALE)
     setPan({ x: 0, y: 0 })
   }, [fitToken])
 
@@ -873,7 +876,7 @@ export default function ExpertiseConstellation({
   }
 
   const resetView = () => {
-    setScale(1)
+    setScale(HOME_SCALE)
     setPan({ x: 0, y: 0 })
   }
 
@@ -881,7 +884,7 @@ export default function ExpertiseConstellation({
     setActiveCluster(null)
     onSelect?.(null)
     onClusterChange?.(null)
-    setScale(1)
+    setScale(HOME_SCALE)
     setPan({ x: 0, y: 0 })
   }
 
@@ -1186,7 +1189,7 @@ export default function ExpertiseConstellation({
 
   // Échelle inverse appliquée aux intitulés : au zoom avant, ils gardent leur
   // taille à l'écran (et ne peuvent donc pas se chevaucher davantage).
-  const titleScale = 1 / Math.max(1, scale)
+  const titleScale = 1 / Math.max(HOME_SCALE, scale)
 
   // Taille des cœurs : constante à l'écran en cluster ouvert.
   const radiusFor = node => {
@@ -1786,7 +1789,7 @@ export default function ExpertiseConstellation({
           )}
 
           {labelNode && !(activeCluster !== null && labelNode.clusterId === activeCluster) && (() => {
-            const u = activeCluster !== null ? unit / scale : unit / Math.max(1, scale)
+            const u = activeCluster !== null ? unit / scale : unit / Math.max(HOME_SCALE, scale)
             const r = radiusFor(labelNode)
             return (
               <g className="entry-node-label atlas-node-tip" pointerEvents="none">

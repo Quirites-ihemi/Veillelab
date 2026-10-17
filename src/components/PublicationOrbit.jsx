@@ -8,7 +8,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 // de la relation ; les liens de second rang restent en retrait sur une orbite
 // extérieure ; les autres entités forment un halo discret. Un clic sur
 // n'importe quelle entité la place au centre : on navigue de proche en proche
-// dans le texte. En bas, le « fil du document » situe le sujet dans les pages.
+// dans le texte.
 //
 // Aucune donnée n'est inventée : entités, relations, verbes, pages et
 // extraits proviennent de nodes.json, relations.json et contents.json.
@@ -93,7 +93,8 @@ const overlap = (a, b, m = 0) =>
   !(a.x1 + m <= b.x0 || b.x1 + m <= a.x0 || a.y1 + m <= b.y0 || b.y1 + m <= a.y0)
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v))
 
-const STRIP_H = 112
+// Le bandeau « Fil du document » a été retiré : plus de réserve en bas du graphe.
+const STRIP_H = 0
 const TOP_H = 54
 const TYPE_ORDER = Object.keys(ORBIT_TYPES)
 
@@ -559,105 +560,7 @@ export default function PublicationOrbit({
         <button type="button" onClick={() => { setScale(1); setPan({ x: 0, y: 0 }) }} aria-label="Recentrer" title="Recentrer">⌾</button>
       </div>
 
-      <DocumentStrip
-        width={W}
-        focus={focus}
-        ring1={ring1}
-        nodes={nodes}
-        contents={contents}
-        onOpenProof={onOpenProof}
-      />
     </div>
   )
 }
 
-// ---------------------------------------------------------------------------
-// Fil du document : les pages de la publication, ses grandes sections, et
-// les pages où apparaissent le sujet (repères ambrés) et ses voisins (points).
-// ---------------------------------------------------------------------------
-function shortSection(s = '') {
-  const t = String(s).trim()
-  let m = t.match(/^(\d+)[.)]/)
-  if (m) return `${m[1]}.`
-  m = t.match(/^annexe\s*(\d+)?/i)
-  if (m) return m[1] ? `Ann. ${m[1]}` : 'Annexe'
-  if (/^introduction/i.test(t)) return 'Intro.'
-  if (/^conclusion/i.test(t)) return 'Concl.'
-  if (/^r[ée]sum[ée]/i.test(t)) return 'Résumé'
-  if (/^synth[èe]se/i.test(t)) return 'Synthèse'
-  return null
-}
-
-function DocumentStrip({ width, focus, ring1, nodes, contents, onOpenProof }) {
-  const W = width
-  const x0 = 40
-  const x1 = W - 40
-  const num = v => { const n = parseInt(v, 10); return Number.isFinite(n) && n > 0 ? n : null }
-  const allPages = [
-    ...contents.flatMap(c => [num(c.page_debut), num(c.page_fin)].filter(Boolean)),
-    ...nodes.flatMap(pagesOf),
-  ]
-  const maxPage = Math.max(1, ...allPages)
-  const px = p => x0 + ((p - 1) / Math.max(1, maxPage - 1)) * (x1 - x0)
-  const focusPages = [...new Set(pagesOf(focus))].sort((a, b) => a - b)
-
-  const sections = []
-  ;[...contents].sort((a, b) => (num(a.page_debut) || 0) - (num(b.page_debut) || 0)).forEach(c => {
-    const page = num(c.page_debut)
-    if (!c.section || !page) return
-    if (!sections.length || sections[sections.length - 1].name !== c.section) sections.push({ name: c.section, page })
-  })
-  const sectionLabels = []
-  let lastX = x0 + 10
-  sections.forEach(s => {
-    const label = shortSection(s.name)
-    const x = px(s.page)
-    // Pas de libellé trop près d'un autre, ni des bornes « p. 1 » / « p. N ».
-    if (label && x - lastX > 46 && x < x1 - 70) { sectionLabels.push({ ...s, label, x }); lastX = x }
-  })
-
-  return (
-    <div className="orbit-strip">
-      <div className="orbit-strip-head">
-        <span>Fil du document</span>
-        <small>
-          {maxPage > 1 ? `${maxPage} pages` : 'Pages non renseignées'}
-          {focusPages.length ? ` · le sujet apparaît sur ${focusPages.length} page${focusPages.length > 1 ? 's' : ''}` : ' · pages du sujet non renseignées'}
-        </small>
-      </div>
-      <svg width={W} height="70" aria-hidden="false" role="group" aria-label="Pages de la publication où apparaît le sujet">
-        {sections.map((s, i) => (
-          <line key={`t${i}`} x1={px(s.page)} x2={px(s.page)} y1="8" y2="46" className="orbit-strip-tick">
-            <title>{`${s.name} — p. ${s.page}`}</title>
-          </line>
-        ))}
-        {sectionLabels.map((s, i) => (
-          <text key={`l${i}`} x={s.x + 4} y="58" className="orbit-strip-section">
-            <title>{`${s.name} — p. ${s.page}`}</title>
-            {s.label}
-          </text>
-        ))}
-        <line x1={x0} x2={x1} y1="27" y2="27" className="orbit-strip-axis" />
-        {ring1.flatMap(n => pagesOf(n).map(p => (
-          <circle key={`${n.node_id}-${p}`} cx={px(p)} cy="27" r="3" fill={typeColor(normalizeType(n.type_noeud))} opacity=".55" />
-        )))}
-        {focusPages.map(p => (
-          <rect
-            key={`f${p}`}
-            className="orbit-strip-mark"
-            x={px(p) - 2}
-            y="12"
-            width="4"
-            height="30"
-            rx="2"
-            onClick={() => onOpenProof?.(focus)}
-          >
-            <title>{`p. ${p} — voir la preuve`}</title>
-          </rect>
-        ))}
-        <text x={x0} y="58" className="orbit-strip-section dim">p. 1</text>
-        <text x={x1} y="58" textAnchor="end" className="orbit-strip-section dim">p. {maxPage}</text>
-      </svg>
-    </div>
-  )
-}
