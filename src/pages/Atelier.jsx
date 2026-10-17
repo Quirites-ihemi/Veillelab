@@ -57,41 +57,55 @@ export default function Atelier({data}){
   const current=six.find(x=>x.spec.key===preview)||six[0]
   const curRegime=current?(current.t.regime_IA||current.spec.fallbackRegime):''
   return <div className="atelier-screen"><main className="workshop-page qvl-v02 etb-home">
-    <section className="etb-list" aria-label="Les six outils de l’Atelier">
-      <header className="etb-list-head">
-        <h1>Atelier de veille</h1>
-        <p>Six outils pour mobiliser le corpus du bulletin dans votre propre travail.</p>
-      </header>
-      <div className="etb-rows">
-        {six.map(({spec,t})=>{const regime=t.regime_IA||spec.fallbackRegime;return <button key={spec.key} type="button" data-key={spec.key} className={`qvl-treatment-card etb-row ${preview===spec.key?'on':''}`} onMouseEnter={()=>setPreview(spec.key)} onFocus={()=>setPreview(spec.key)} onClick={()=>setSelected(t)}>
-          <span className="etb-row-icon"><Icon name={spec.icon} size={21}/></span>
-          <span className="etb-row-title">{spec.title}</span>
-          {regime&&<span className={`etb-regime ${regimeClass[regime]||'enrich'}`}>{regime}</span>}
-        </button>})}
+    <header className="etb-hero">
+      <div className="etb-hero-copy">
+        <span className="etb-kicker">Atelier de veille</span>
+        <h1>Mobiliser les connaissances du bulletin dans votre propre travail</h1>
+        <p className="etb-hero-lead">Grâce à l’interrogation du corpus en langage naturel, chacun peut rechercher des informations, confronter des approches et rassembler des éléments utiles pour comprendre une situation, approfondir une problématique ou préparer un travail.</p>
+        <ul className="etb-hero-facts">
+          <li><strong>{corpus.total} publications</strong> du bulletin, dont {corpus.segmented} avec contenu segmenté</li>
+          <li><strong>{six.length} outils</strong>, de la synthèse d’une publication à la construction d’un scénario</li>
+          <li><strong>Chaque production</strong> reste reliée aux passages sources</li>
+        </ul>
       </div>
-      <footer className="etb-legend" aria-label="Les régimes IA disponibles">
+      <aside className="etb-hero-regimes" aria-label="Les trois régimes d’IA">
+        <h2>Trois façons de travailler avec l’IA</h2>
         <Regime cls="strict" title="Synthèse stricte">Résume fidèlement les contenus sélectionnés, sans ajout.</Regime>
         <Regime cls="extract" title="Extraction stricte">Extrait uniquement les éléments présents dans les documents.</Regime>
         <Regime cls="enrich" title="Enrichissement contrôlé">Enrichit et structure, en distinguant clairement les propositions documentées.</Regime>
-      </footer>
-    </section>
-    {current&&<section className="etb-detail" data-key={current.spec.key} aria-live="polite">
-      <span className={`etb-tag ${regimeClass[curRegime]||'enrich'}`}><i/>{curRegime}{current.t.interaction_utilisateur?` · interaction ${String(current.t.interaction_utilisateur).toLowerCase()}`:''}</span>
-      <h2>{current.spec.title}</h2>
-      <p className="etb-lead">{current.spec.description}</p>
-      <div className="etb-flow">
-        <div><em>Vous apportez</em><strong>{TOOL_FLOW[current.spec.key]?.input}</strong></div>
-        <span className="etb-arrow" aria-hidden="true"><Icon name="chevron" size={24}/></span>
-        <div className="mid"><em>Le corpus</em><strong>{corpus.total} publications du bulletin, dont {corpus.segmented} avec contenu segmenté</strong></div>
-        <span className="etb-arrow" aria-hidden="true"><Icon name="chevron" size={24}/></span>
-        <div><em>Vous obtenez</em><strong>{TOOL_FLOW[current.spec.key]?.output}</strong></div>
+      </aside>
+    </header>
+
+    <section className="etb-tools" aria-labelledby="etb-tools-title">
+      <div className="etb-tools-head">
+        <h2 id="etb-tools-title">Découvrez les six outils de l’Atelier</h2>
+        <p>Survolez un outil pour voir ce qu’il vous demande et ce qu’il produit, puis ouvrez-le.</p>
       </div>
-      <button type="button" className="etb-open" onClick={()=>setSelected(current.t)}>Ouvrir le dispositif<Icon name="chevron" size={19}/></button>
-    </section>}
+      <div className="etb-tools-grid">
+        <div className="etb-list etb-rows" role="list">
+          {six.map(({spec,t})=>{const regime=t.regime_IA||spec.fallbackRegime;return <button key={spec.key} type="button" data-key={spec.key} className={`qvl-treatment-card etb-row ${preview===spec.key?'on':''}`} onMouseEnter={()=>setPreview(spec.key)} onFocus={()=>setPreview(spec.key)} onClick={()=>setSelected(t)}>
+            <span className="etb-row-icon"><Icon name={spec.icon} size={20}/></span>
+            <span className="etb-row-title">{spec.title}</span>
+            {regime&&<span className={`etb-regime ${regimeClass[regime]||'enrich'}`}>{regime}</span>}
+          </button>})}
+        </div>
+        {current&&<section className="etb-detail" data-key={current.spec.key} aria-live="polite">
+          <span className={`etb-tag ${regimeClass[curRegime]||'enrich'}`}><i/>{curRegime}{current.t.interaction_utilisateur?` · interaction ${String(current.t.interaction_utilisateur).toLowerCase()}`:''}</span>
+          <h3>{current.spec.title}</h3>
+          <p className="etb-lead">{current.spec.description}</p>
+          <div className="etb-flow">
+            <div><em>Vous apportez</em><strong>{TOOL_FLOW[current.spec.key]?.input}</strong></div>
+            <span className="etb-arrow" aria-hidden="true"><Icon name="chevron" size={22}/></span>
+            <div className="mid"><em>Vous obtenez</em><strong>{TOOL_FLOW[current.spec.key]?.output}</strong></div>
+          </div>
+          <button type="button" className="etb-open" onClick={()=>setSelected(current.t)}>Ouvrir le dispositif<Icon name="chevron" size={19}/></button>
+        </section>}
+      </div>
+    </section>
   </main></div>
 }
 
-function Regime({cls,title,children}){return <div className={`etb-legend-item ${cls}`} title={children}><i/>{title}</div>}
+function Regime({cls,title,children}){return <div className={`etb-regime-item ${cls}`}><span className="etb-regime-name"><i/>{title}</span><span className="etb-regime-desc">{children}</span></div>}
 
 function Workspace({treatment,data,onBack,initialNeed=''}){
  if(treatment.traitement_id==='T03') return <ReflectionWorkspaceV1 onBack={onBack}/>
