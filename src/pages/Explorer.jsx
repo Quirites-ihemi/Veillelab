@@ -141,7 +141,7 @@ function ExplorerHome({ onChoose, count }) {
       <section className="orbit-home-hero">
         <div className="orbit-home-copy">
           <span className="orbit-kicker">Explorer une publication</span>
-          <h1>Naviguez dans les publications et dans les univers métiers du ministère de l’Intérieur</h1>
+          <h1>Naviguez dans les univers métiers du ministère de l’Intérieur</h1>
           <p>
             <strong>À la différence d’un graphe de réseaux</strong>, qui met principalement en évidence des
             connexions entre acteurs ou objets, le graphe de connaissances organise l’information sous la forme
@@ -170,7 +170,7 @@ function ExplorerHome({ onChoose, count }) {
         {[
           ['Choisissez une publication', 'Recherchez une source dans le corpus.'],
           ['Placez un sujet au centre', 'Les entités liées gravitent autour, avec le verbe de chaque relation.'],
-          ['Suivez le fil du document', 'Les pages où le sujet apparaît, et l’extrait qui le prouve.'],
+          ['Lisez la preuve', 'La fiche indique les pages où le sujet apparaît, avec l’extrait qui le prouve.'],
           ['Interrogez la publication', 'Posez vos questions en langage naturel.'],
         ].map(([t, d], i) => (
           <div className="orbit-home-step" key={t}><b>{i + 1}</b><div><strong>{t}</strong><p>{d}</p></div></div>

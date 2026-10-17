@@ -116,7 +116,7 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
     [publications]
   )
 
-  const [publicationId, setPublicationId] = useState('PUB008')
+  const [publicationId, setPublicationId] = useState('')
   const [thematicResult, setThematicResult] = useState(null)
   const [thematicError, setThematicError] = useState('')
   const [query, setQuery] = useState('')
@@ -203,7 +203,6 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
     }
   }
 
-  useEffect(() => { loadPublication('PUB008') }, [])
 
   function exploreTarget(id) {
     loadPublication(id, { addHistory: true })
@@ -223,17 +222,18 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
       {history.length > 0 && <button className="doclinks-history-back" type="button" onClick={goBackInJourney}><Icon name="back" size={14}/> Publication précédente</button>}
     </div>
 
-    <header className="doclinks-hero">
-      <div className="crossdoc-kicker">D’UN DOCUMENT À L’AUTRE</div>
-      <h1>Poursuivre la lecture à partir d’un document</h1>
+    <header className={`doclinks-hero ${(result || thematicResult) ? '' : 'doclinks-hero-big'}`}>
+      <div className="crossdoc-kicker">L’ARBRE DES RECOMMANDATIONS</div>
+      <h1>Choisissez une publication,<span> on vous en conseille d’autres.</span></h1>
     </header>
 
     <section className="doclinks-selector-panel">
-      <div className="doclinks-selector-heading"><div><h2>Choisissez une publication</h2></div></div>
+      <div className="doclinks-selector-heading"><div><h2>Rechercher parmi les {publications.length} publications</h2></div></div>
 
       <div className="doclinks-selector-controls">
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Rechercher un titre ou un identifiant…" />
-        <select value={publicationId} onChange={e => setPublicationId(e.target.value)}>
+        <select value={publicationId} onChange={e => setPublicationId(e.target.value)} aria-label="Publication">
+          <option value="" disabled>Sélectionnez une publication…</option>
           {filteredPublications.map(p => <option key={p.publication_id} value={p.publication_id}>{p.publication_id} — {publicationTitle(p, p.publication_id)}</option>)}
         </select>
         <button type="button" onClick={() => loadPublication(publicationId)} disabled={loading || !publicationId}>

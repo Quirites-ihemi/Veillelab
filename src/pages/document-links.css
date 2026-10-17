@@ -69,3 +69,8 @@
 .doclinks-workspace .arb-why-title{font-weight:850;color:#15496f;margin:10px 0 4px;font-size:13px}
 .doclinks-workspace .arb-why-text{margin:0 0 9px;font-size:12.5px;line-height:1.55;color:#365b77}
 .doclinks-workspace .arb-proof-pair{background:#f0f6fb;border-radius:8px;padding:8px 10px;color:#3e6079;font-size:11px;line-height:1.5}
+/* Accueil de l'arbre : invitation en grand tant qu'aucune publication n'est choisie */
+.doclinks-workspace .doclinks-hero-big{margin:18px 0 22px}
+.doclinks-workspace .doclinks-hero-big h1{font-size:42px;line-height:1.12;letter-spacing:-.02em;margin:6px 0 0}
+.doclinks-workspace .doclinks-hero h1 span{display:block;color:#2e6fc4;font-weight:600}
+.doclinks-workspace .doclinks-hero:not(.doclinks-hero-big) h1 span{display:inline}

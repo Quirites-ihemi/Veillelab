@@ -484,7 +484,7 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
       you: 'Une notion', get: 'Son parcours à travers le corpus',
       meta: `${TRANSVERSAL_NOTIONS.length} notions · éléments déjà validés`,
       open: onOpenNotions, visual: <XdaNotion publications={publications}/> },
-    { key: 'reco', color: '#2552c4', tag: 'Recommandations', title: 'L’arbre des lectures',
+    { key: 'reco', color: '#2552c4', tag: 'Recommandations', title: 'L’arbre des recommandations',
       lead: 'Partez d’une publication : ses fils de lecture se séparent en raccords documentaires et en prolongements thématiques, chacun justifié par les passages des deux documents.',
       you: 'Une publication', get: 'Son arbre de recommandations, relié aux passages sources',
       meta: `${recommendationsCatalog.length} publications · raccords et prolongements précalculés`,
