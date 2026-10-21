@@ -1,16 +1,10 @@
 // QUIRITÈS VEILLE LAB — ONGLET 1
-// Layout final Gephi — septembre 2026.
-// 152 micro-expertises, coordonnées X/Y conservées depuis le graphe validé.
-// Les classes de modularité proviennent du CSV validé ; seuls les 15 clusters
-// non triviaux sont nommés. Les micro-expertises isolées restent visibles.
+// Coordonnées Gephi originales des 128 expertises documentées conservées.
+// 28 entrées sans publication retirées (audit du 21/10/2026).
+// ME161–ME165 : positions provisoires d'un nouveau groupe documenté par PUB114.
+// Ne pas confondre ce positionnement avec un recalcul de modularité Gephi.
 
 export const expertiseGephiLayout = {
-  "ME001": {
-    "x": -1363.883,
-    "y": 185.903,
-    "size": 6.0,
-    "cluster": 0
-  },
   "ME002": {
     "x": 1003.121,
     "y": 27.186,
@@ -29,29 +23,11 @@ export const expertiseGephiLayout = {
     "size": 9.429,
     "cluster": 1
   },
-  "ME005": {
-    "x": -1027.242,
-    "y": -14.241,
-    "size": 6.0,
-    "cluster": 2
-  },
   "ME006": {
     "x": -258.461,
     "y": 266.289,
     "size": 14.571,
     "cluster": 33
-  },
-  "ME007": {
-    "x": -1018.127,
-    "y": 94.785,
-    "size": 6.0,
-    "cluster": 3
-  },
-  "ME008": {
-    "x": 716.455,
-    "y": -784.429,
-    "size": 6.0,
-    "cluster": 4
   },
   "ME009": {
     "x": 506.087,
@@ -70,12 +46,6 @@ export const expertiseGephiLayout = {
     "y": -847.889,
     "size": 16.286,
     "cluster": 40
-  },
-  "ME012": {
-    "x": 127.708,
-    "y": -1467.619,
-    "size": 6.0,
-    "cluster": 7
   },
   "ME013": {
     "x": 1218.435,
@@ -125,41 +95,17 @@ export const expertiseGephiLayout = {
     "size": 14.571,
     "cluster": 33
   },
-  "ME021": {
-    "x": 1107.61,
-    "y": 868.633,
-    "size": 6.0,
-    "cluster": 9
-  },
   "ME022": {
     "x": -359.978,
     "y": -16.596,
     "size": 9.429,
     "cluster": 11
   },
-  "ME023": {
-    "x": -90.912,
-    "y": 1391.39,
-    "size": 6.0,
-    "cluster": 10
-  },
   "ME024": {
     "x": -357.11,
     "y": 12.2,
     "size": 12.857,
     "cluster": 11
-  },
-  "ME025": {
-    "x": -902.02,
-    "y": 1044.771,
-    "size": 6.0,
-    "cluster": 12
-  },
-  "ME026": {
-    "x": -554.912,
-    "y": 765.653,
-    "size": 6.0,
-    "cluster": 13
   },
   "ME027": {
     "x": 1186.053,
@@ -185,12 +131,6 @@ export const expertiseGephiLayout = {
     "size": 16.286,
     "cluster": 5
   },
-  "ME031": {
-    "x": 1232.821,
-    "y": 719.162,
-    "size": 6.0,
-    "cluster": 15
-  },
   "ME032": {
     "x": 498.854,
     "y": 341.462,
@@ -209,23 +149,11 @@ export const expertiseGephiLayout = {
     "size": 7.714,
     "cluster": 33
   },
-  "ME035": {
-    "x": 1454.261,
-    "y": 164.058,
-    "size": 6.0,
-    "cluster": 17
-  },
   "ME036": {
     "x": -488.334,
     "y": -902.383,
     "size": 11.143,
     "cluster": 40
-  },
-  "ME037": {
-    "x": -1231.088,
-    "y": 95.935,
-    "size": 6.0,
-    "cluster": 18
   },
   "ME038": {
     "x": 75.147,
@@ -245,12 +173,6 @@ export const expertiseGephiLayout = {
     "size": 11.143,
     "cluster": 33
   },
-  "ME041": {
-    "x": -13.627,
-    "y": 1241.989,
-    "size": 6.0,
-    "cluster": 20
-  },
   "ME042": {
     "x": 544.772,
     "y": 341.257,
@@ -262,12 +184,6 @@ export const expertiseGephiLayout = {
     "y": 27.026,
     "size": 11.143,
     "cluster": 16
-  },
-  "ME044": {
-    "x": -1339.507,
-    "y": 23.769,
-    "size": 6.0,
-    "cluster": 21
   },
   "ME045": {
     "x": -112.236,
@@ -316,12 +232,6 @@ export const expertiseGephiLayout = {
     "y": 353.632,
     "size": 11.143,
     "cluster": 5
-  },
-  "ME053": {
-    "x": 312.822,
-    "y": -1340.448,
-    "size": 6.0,
-    "cluster": 22
   },
   "ME054": {
     "x": 241.86,
@@ -413,12 +323,6 @@ export const expertiseGephiLayout = {
     "size": 9.429,
     "cluster": 8
   },
-  "ME069": {
-    "x": 563.355,
-    "y": -1352.975,
-    "size": 6.0,
-    "cluster": 23
-  },
   "ME070": {
     "x": -148.239,
     "y": 254.902,
@@ -430,12 +334,6 @@ export const expertiseGephiLayout = {
     "y": 267.91,
     "size": 9.429,
     "cluster": 33
-  },
-  "ME072": {
-    "x": -194.933,
-    "y": -1529.823,
-    "size": 6.0,
-    "cluster": 24
   },
   "ME073": {
     "x": -456.388,
@@ -472,12 +370,6 @@ export const expertiseGephiLayout = {
     "y": -970.867,
     "size": 7.714,
     "cluster": 40
-  },
-  "ME079": {
-    "x": 753.233,
-    "y": -1207.489,
-    "size": 6.0,
-    "cluster": 25
   },
   "ME080": {
     "x": -261.535,
@@ -533,12 +425,6 @@ export const expertiseGephiLayout = {
     "size": 9.429,
     "cluster": 8
   },
-  "ME089": {
-    "x": 846.341,
-    "y": -754.453,
-    "size": 6.0,
-    "cluster": 26
-  },
   "ME090": {
     "x": -314.845,
     "y": -7.512,
@@ -569,23 +455,11 @@ export const expertiseGephiLayout = {
     "size": 7.714,
     "cluster": 27
   },
-  "ME095": {
-    "x": 31.551,
-    "y": 1064.889,
-    "size": 6.0,
-    "cluster": 28
-  },
   "ME096": {
     "x": 692.745,
     "y": 497.059,
     "size": 9.429,
     "cluster": 5
-  },
-  "ME097": {
-    "x": 1328.722,
-    "y": 537.574,
-    "size": 6.0,
-    "cluster": 29
   },
   "ME098": {
     "x": 467.939,
@@ -616,12 +490,6 @@ export const expertiseGephiLayout = {
     "y": -883.385,
     "size": 11.143,
     "cluster": 40
-  },
-  "ME103": {
-    "x": 605.033,
-    "y": -878.026,
-    "size": 6.0,
-    "cluster": 30
   },
   "ME104": {
     "x": -187.417,
@@ -659,23 +527,11 @@ export const expertiseGephiLayout = {
     "size": 9.429,
     "cluster": 5
   },
-  "ME110": {
-    "x": -23.05,
-    "y": 916.776,
-    "size": 6.0,
-    "cluster": 31
-  },
   "ME111": {
     "x": 292.113,
     "y": 398.55,
     "size": 11.143,
     "cluster": 5
-  },
-  "ME112": {
-    "x": -153.073,
-    "y": 900.062,
-    "size": 6.0,
-    "cluster": 32
   },
   "ME114": {
     "x": 130.694,
@@ -707,35 +563,11 @@ export const expertiseGephiLayout = {
     "size": 11.143,
     "cluster": 19
   },
-  "ME119": {
-    "x": -1140.174,
-    "y": -918.036,
-    "size": 6.0,
-    "cluster": 34
-  },
-  "ME120": {
-    "x": -153.575,
-    "y": 1242.928,
-    "size": 6.0,
-    "cluster": 35
-  },
-  "ME121": {
-    "x": 642.849,
-    "y": -1014.079,
-    "size": 6.0,
-    "cluster": 36
-  },
   "ME122": {
     "x": -365.201,
     "y": -451.883,
     "size": 7.714,
     "cluster": 43
-  },
-  "ME123": {
-    "x": -93.931,
-    "y": 1064.222,
-    "size": 6.0,
-    "cluster": 37
   },
   "ME124": {
     "x": 68.993,
@@ -940,6 +772,36 @@ export const expertiseGephiLayout = {
     "y": -500.0,
     "size": 9.429,
     "cluster": 43
+  },
+  "ME161": {
+    "x": 600.0,
+    "y": -500.0,
+    "size": 12.857,
+    "cluster": 44
+  },
+  "ME162": {
+    "x": 546.0,
+    "y": -540.0,
+    "size": 9.429,
+    "cluster": 44
+  },
+  "ME163": {
+    "x": 540.0,
+    "y": -456.0,
+    "size": 7.714,
+    "cluster": 44
+  },
+  "ME164": {
+    "x": 654.0,
+    "y": -540.0,
+    "size": 9.429,
+    "cluster": 44
+  },
+  "ME165": {
+    "x": 661.0,
+    "y": -457.0,
+    "size": 7.714,
+    "cluster": 44
   }
 }
 
@@ -1076,6 +938,15 @@ export const expertiseClusters = [
     "color": "#97C53D",
     "labelX": -265,
     "labelY": -625,
+    "labelWidth": 330,
+    "transdirectional": false
+  },
+  {
+    "id": 44,
+    "label": "Intégration précoce des demandeurs de protection internationale",
+    "color": "#78B7EF",
+    "labelX": 600,
+    "labelY": -620,
     "labelWidth": 330,
     "transdirectional": false
   }
