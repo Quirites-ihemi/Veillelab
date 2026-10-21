@@ -1,17 +1,5 @@
 [
   {
-    "id": "ME001",
-    "label": "Adaptation des capacités cynophiles aux mutations de sécurité publique",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME002",
     "label": "Adaptation technologique des forces de sécurité aux menaces émergentes",
     "family": "Problème public",
@@ -154,18 +142,6 @@
     "degree": 2
   },
   {
-    "id": "ME005",
-    "label": "Analyse comparée des politiques publiques numériques",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME006",
     "label": "Analyse comparée des profils victimes / mis en cause",
     "family": "Méthode / savoir-faire",
@@ -232,30 +208,6 @@
     ],
     "publication_count": 3,
     "degree": 5
-  },
-  {
-    "id": "ME007",
-    "label": "Analyse comparée des régimes politiques face au cyberespace",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
-    "id": "ME008",
-    "label": "Analyse de la gouvernance des données publiques",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME009",
@@ -406,18 +358,6 @@
     ],
     "publication_count": 2,
     "degree": 6
-  },
-  {
-    "id": "ME012",
-    "label": "Analyse des articulations entre protection de l’enfance, justice et séjour",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME013",
@@ -856,18 +796,6 @@
     "degree": 5
   },
   {
-    "id": "ME021",
-    "label": "Analyse multivariée des facteurs de délinquance enregistrée",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME022",
     "label": "Analyse multivariée des facteurs d’insécurité",
     "family": "Méthode / savoir-faire",
@@ -902,18 +830,6 @@
     ],
     "publication_count": 1,
     "degree": 2
-  },
-  {
-    "id": "ME023",
-    "label": "Analyse quantitative des phénomènes criminels",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME024",
@@ -969,30 +885,6 @@
     ],
     "publication_count": 2,
     "degree": 4
-  },
-  {
-    "id": "ME025",
-    "label": "Analyse statistique de la délinquance routière enregistrée",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
-    "id": "ME026",
-    "label": "Analyse systémique du parcours administratif et judiciaire des publics vulnérables",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME027",
@@ -1254,18 +1146,6 @@
     "degree": 6
   },
   {
-    "id": "ME031",
-    "label": "Collecte et restitution de témoignages professionnels",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME032",
     "label": "Conduite du changement numérique dans l’administration",
     "family": "Méthode / savoir-faire",
@@ -1385,18 +1265,6 @@
     "degree": 1
   },
   {
-    "id": "ME035",
-    "label": "Diagnostic systémique des vulnérabilités territoriales",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME036",
     "label": "Documentation des situations professionnelles de terrain",
     "family": "Méthode / savoir-faire",
@@ -1447,18 +1315,6 @@
     ],
     "publication_count": 2,
     "degree": 3
-  },
-  {
-    "id": "ME037",
-    "label": "Délinquance des jeunes étrangers se déclarant mineurs",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME038",
@@ -1581,18 +1437,6 @@
     "degree": 3
   },
   {
-    "id": "ME041",
-    "label": "Dépendance technologique dans les projets d’IA publique",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME042",
     "label": "Encadrement éthique et juridique de l’IA publique",
     "family": "Problème public",
@@ -1690,18 +1534,6 @@
     ],
     "publication_count": 1,
     "degree": 3
-  },
-  {
-    "id": "ME044",
-    "label": "Exploitation de la base communale de la délinquance enregistrée",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME045",
@@ -2136,18 +1968,6 @@
     ],
     "publication_count": 2,
     "degree": 3
-  },
-  {
-    "id": "ME053",
-    "label": "Formulation de scénarios institutionnels alternatifs",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME054",
@@ -2793,18 +2613,6 @@
     "degree": 2
   },
   {
-    "id": "ME069",
-    "label": "Mise en cohérence des instruments d’action publique",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME070",
     "label": "Mise en contexte législative des séries statistiques",
     "family": "Méthode / savoir-faire",
@@ -2887,18 +2695,6 @@
     ],
     "publication_count": 2,
     "degree": 2
-  },
-  {
-    "id": "ME072",
-    "label": "Mise en récit de l’action de l’État dans les territoires",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME073",
@@ -3151,18 +2947,6 @@
     ],
     "publication_count": 1,
     "degree": 1
-  },
-  {
-    "id": "ME079",
-    "label": "Prise en charge des mineurs non accompagnés",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME080",
@@ -3517,18 +3301,6 @@
     "degree": 2
   },
   {
-    "id": "ME089",
-    "label": "Résilience des territoires alpins face au changement climatique",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME090",
     "label": "Sentiment d’insécurité dans les quartiers prioritaires",
     "family": "Problème public",
@@ -3741,18 +3513,6 @@
     "degree": 1
   },
   {
-    "id": "ME095",
-    "label": "Sécurisation du statut juridique des jeunes se déclarant MNA",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME096",
     "label": "Sécurité publique et gestion de crise à l’ère de l’IA",
     "family": "Problème public",
@@ -3787,18 +3547,6 @@
     ],
     "publication_count": 1,
     "degree": 2
-  },
-  {
-    "id": "ME097",
-    "label": "Série audio immersive sur les métiers publics",
-    "family": "Instrument / dispositif",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME098",
@@ -4021,18 +3769,6 @@
     "degree": 3
   },
   {
-    "id": "ME103",
-    "label": "Valorisation éditoriale des parcours professionnels",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME104",
     "label": "Valorisation éditoriale d’un savoir-faire opérationnel",
     "family": "Méthode / savoir-faire",
@@ -4249,18 +3985,6 @@
     "degree": 2
   },
   {
-    "id": "ME110",
-    "label": "Évaluation de la minorité et de l’isolement",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME111",
     "label": "Évaluation des doctrines de prévention des risques naturels",
     "family": "Méthode / savoir-faire",
@@ -4299,18 +4023,6 @@
     ],
     "publication_count": 1,
     "degree": 3
-  },
-  {
-    "id": "ME112",
-    "label": "Évaluation des gains et coûts complets des solutions d’IA",
-    "family": "Méthode / savoir-faire",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME114",
@@ -4625,42 +4337,6 @@
     "degree": 3
   },
   {
-    "id": "ME119",
-    "label": "Criminalités internationales",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
-    "id": "ME120",
-    "label": "Typologies et usages de stupéfiants",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
-    "id": "ME121",
-    "label": "Migrations et intégration des immigrés et de leurs descendants",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME122",
     "label": "Obligations et déontologie des métiers de la sécurité publique",
     "family": "Problème public",
@@ -4691,18 +4367,6 @@
     ],
     "publication_count": 1,
     "degree": 1
-  },
-  {
-    "id": "ME123",
-    "label": "Sécurité des biens et des établissements culturels",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [],
-    "domains": [],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME124",
@@ -6017,5 +5681,185 @@
     ],
     "publication_count": 1,
     "degree": 2
+  },
+  {
+    "id": "ME161",
+    "label": "Intégration précoce des demandeurs de protection internationale",
+    "family": "Problème public",
+    "definition": "Enjeu d’accompagnement vers l’autonomie et l’intégration des demandeurs de protection internationale pendant la procédure d’asile et la phase d’accueil.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Direction générale des étrangers en France"
+    ],
+    "domains": [
+      "Migrations/intégration"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB114",
+        "titre": "l'intégration précoce des demandeurs de protection internationale",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+        "image_path": "/images/publications/PUB114.png",
+        "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
+        "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME162",
+        "count": 1
+      },
+      {
+        "id": "ME163",
+        "count": 1
+      },
+      {
+        "id": "ME164",
+        "count": 1
+      },
+      {
+        "id": "ME165",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 4
+  },
+  {
+    "id": "ME162",
+    "label": "Analyse comparée des politiques d’intégration des demandeurs de protection internationale",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à comparer les mesures, conditions d’accès, modalités de mise en œuvre, acteurs, financements et difficultés des politiques d’intégration des demandeurs de protection internationale.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Direction générale des étrangers en France"
+    ],
+    "domains": [
+      "Migrations/intégration"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB114",
+        "titre": "l'intégration précoce des demandeurs de protection internationale",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+        "image_path": "/images/publications/PUB114.png",
+        "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
+        "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME161",
+        "count": 1
+      },
+      {
+        "id": "ME164",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME163",
+    "label": "Analyse de l’adaptation des mesures d’intégration aux profils et vulnérabilités",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à analyser l’adaptation des mesures d’intégration selon l’âge, le genre, la vulnérabilité, les qualifications ou le niveau d’éducation des publics concernés.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Direction générale des étrangers en France"
+    ],
+    "domains": [
+      "Migrations/intégration"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB114",
+        "titre": "l'intégration précoce des demandeurs de protection internationale",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+        "image_path": "/images/publications/PUB114.png",
+        "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
+        "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME161",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 1
+  },
+  {
+    "id": "ME164",
+    "label": "Analyse de la gouvernance multi-acteurs des dispositifs d’intégration",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à analyser la répartition des responsabilités et la coopération entre autorités nationales, collectivités territoriales, organismes publics, ONG et autres partenaires dans la mise en œuvre des dispositifs d’intégration.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Direction générale des étrangers en France"
+    ],
+    "domains": [
+      "Migrations/intégration"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB114",
+        "titre": "l'intégration précoce des demandeurs de protection internationale",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+        "image_path": "/images/publications/PUB114.png",
+        "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
+        "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME161",
+        "count": 1
+      },
+      {
+        "id": "ME162",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME165",
+    "label": "Évaluation des mesures d’intégration précoce",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à analyser les dispositifs de suivi et d’évaluation des effets individuels et systémiques des mesures d’intégration précoce.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Direction générale des étrangers en France"
+    ],
+    "domains": [
+      "Migrations/intégration"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB114",
+        "titre": "l'intégration précoce des demandeurs de protection internationale",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+        "image_path": "/images/publications/PUB114.png",
+        "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
+        "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME161",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 1
   }
 ]

@@ -6,8 +6,8 @@
     "relations": 1174,
     "treatments": 10,
     "contents": 996,
-    "expertise_nodes": 156,
-    "expertise_edges": 187
+    "expertise_nodes": 133,
+    "expertise_edges": 192
   },
   "graph_publications": [
     "PUB001",
@@ -157,5 +157,7 @@
     "PUB117.png",
     "PUB118.png",
     "PUB119.png"
-  ]
+  ],
+  "expertise_source_workbook": "Quirites_BDD_PUB114_CORRIGEE_COMPATIBLE_2026-10-21.xlsx",
+  "expertise_update": "PUB114 : 5 noeuds, 5 associations ; exclusion de 28 micro-expertises sans publication (21/10/2026)"
 }
