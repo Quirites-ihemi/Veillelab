@@ -26,13 +26,6 @@ function imageSrc(p) {
   return `${base}${raw.replace(/^\.?\/+/, '')}`
 }
 
-// Images intégrées au bundle (dist/assets) : elles ne dépendent pas du dossier public.
-import imgAtlas from '../assets/accueil/atlas.jpg'
-import imgExplorer from '../assets/accueil/explorer.jpg'
-import imgAtelier from '../assets/accueil/atelier.jpg'
-import imgFrise from '../assets/accueil/frise.jpg'
-const IMAGES = { 'atlas.jpg': imgAtlas, 'explorer.jpg': imgExplorer, 'atelier.jpg': imgAtelier, 'frise.jpg': imgFrise }
-const asset = name => IMAGES[name]
 
 function Arrow() { return <span aria-hidden="true"> →</span> }
 
@@ -68,7 +61,7 @@ export default function Home({ data }) {
     <main className="home">
       <section className="home-hero" aria-labelledby="home-title">
         <p className="home-kicker">L’application compagne du bulletin de veille de l’IHEMI</p>
-        <h1 id="home-title">Des publications sur la sécurité, analysées pour que vous puissiez les explorer, les relier et en tirer un travail.</h1>
+        <h1 id="home-title">Des publications analysées pour que vous puissiez les explorer, les relier et enrichir vos travaux.</h1>
         <p className="home-count">
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z" /></svg>
           {pubs.length} publications à ce jour · une dizaine ajoutée chaque mois
@@ -78,7 +71,6 @@ export default function Home({ data }) {
 
       <section className="home-services" aria-label="Les services de l’application">
         <article className="home-service s-atlas">
-          <img src={asset('atlas.jpg')} alt="Capture de l’Atlas : constellations d’expertises regroupées en familles" loading="lazy" />
           <p className="home-service-tab">Atlas des expertises ministérielles</p>
           <h2>Repérer les expertises du ministère que révèlent les publications.</h2>
           <ul>
@@ -90,7 +82,6 @@ export default function Home({ data }) {
         </article>
 
         <article className="home-service s-explorer">
-          <img src={asset('explorer.jpg')} alt="Capture de l’explorateur : les idées clés d’une publication reliées entre elles, avec le passage source" loading="lazy" />
           <p className="home-service-tab">Explorer une publication</p>
           <h2>Lire une publication autrement : voir d’un coup d’œil qui agit, face à quel problème, avec quelles réponses.</h2>
           <p className="home-service-lead">Chaque publication est mise à plat en idées clés reliées entre elles. Ce que la lecture page après page disperse devient visible.</p>
@@ -104,7 +95,6 @@ export default function Home({ data }) {
         </article>
 
         <article className="home-service s-atelier">
-          <img className="contain" src={asset('atelier.jpg')} alt="Capture de l’Atelier : la liste des six outils et la présentation de l’un d’eux" loading="lazy" />
           <p className="home-service-tab">Atelier de veille</p>
           <h2>Produire un travail de veille à partir des publications, avec l’aide de l’IA.</h2>
           <p className="home-service-lead">Six outils, de la synthèse d’une publication à la construction d’un scénario :</p>
@@ -116,7 +106,6 @@ export default function Home({ data }) {
         </article>
 
         <article className="home-service s-documents">
-          <img src={asset('frise.jpg')} alt="Capture de la frise : les repères datés d’une publication, chacun relié à sa page" loading="lazy" />
           <p className="home-service-tab">D’un document à l’autre</p>
           <h2>Voir les textes se recomposer sous vos yeux : en frise, en parcours, en arbre de lecture.</h2>
           <p className="home-service-lead">Une approche expérimentale : l’interface fait émerger ce que contiennent les publications, sans jamais perdre le passage source.</p>
