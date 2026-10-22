@@ -1,0 +1,9 @@
+/* Éléments communs ajoutés : menu replié, pied de page. Aucune règle ne
+   modifie l'affichage sur ordinateur en dehors de ces éléments nouveaux. */
+.menu-toggle{display:none}
+.site-footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 22px;margin-bottom:6px}
+.site-footer nav a{color:#3a4c72;font-size:13px;text-decoration:none}
+.site-footer nav a:hover{text-decoration:underline}
+.site-footer p{margin:0}
+.orbit-drawer-theme{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 18px 8px;padding:8px 12px;border-radius:10px;background:rgba(127,214,255,.14);color:#dbe9ff;font-size:14px}
+.orbit-drawer-theme button{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer;min-height:32px}
