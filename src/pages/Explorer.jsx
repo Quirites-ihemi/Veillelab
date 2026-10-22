@@ -8,6 +8,8 @@ import PublicationOrbit, {
   typeColor,
   verbLabel,
   pagesOf,
+  isTimecode,
+  locatorLabel,
 } from '../components/PublicationOrbit.jsx'
 import ExplorerGuide from '../components/ExplorerGuide.jsx'
 import { askGraph } from '../services/chatApi.js'
@@ -336,7 +338,8 @@ export default function Explorer({ data, onOpenAtlas }) {
   const chunk = focus
     ? String(focus.chunk_id_source || '').split(';').map(s => s.trim()).map(id => contents.find(c => c.chunk_id === id)).find(Boolean)
     : null
-  const focusPages = focus ? [...new Set(pagesOf(focus))].sort((a, b) => a - b) : []
+  const focusPages = focus ? pagesOf(focus) : []
+  const focusTimecodes = focusPages.length > 0 && focusPages.every(p => isTimecode(String(p).split('-')[0]))
 
   return (
     <div className="atlas-screen orbit-screen" ref={screenRef}>
@@ -511,12 +514,16 @@ export default function Explorer({ data, onOpenAtlas }) {
 
               <p className="orbit-card-meta">
                 {focusPages.length
-                  ? `Apparaît sur ${focusPages.length} page${focusPages.length > 1 ? 's' : ''} de la publication`
+                  ? (focusTimecodes
+                    ? `Apparaît à ${focusPages.length} moment${focusPages.length > 1 ? 's' : ''} de l’enregistrement`
+                    : focusPages.every(p => /^\d+$/.test(String(p)))
+                      ? `Apparaît sur ${focusPages.length} page${focusPages.length > 1 ? 's' : ''} de la publication`
+                      : `Apparaît dans ${focusPages.length} passage${focusPages.length > 1 ? 's' : ''} de la publication`)
                   : 'Pages non renseignées pour cette entité'}
               </p>
               {focusPages.length > 0 && (
                 <div className="orbit-pages">
-                  {focusPages.slice(0, 10).map(p => <span key={p}>p. {p}</span>)}
+                  {focusPages.slice(0, 10).map(p => <span key={p}>{isTimecode(String(p).split('-')[0]) ? p : `p. ${p}`}</span>)}
                   {focusPages.length > 10 && <span>+{focusPages.length - 10}</span>}
                 </div>
               )}
@@ -524,7 +531,7 @@ export default function Explorer({ data, onOpenAtlas }) {
               <div className="orbit-proof">
                 {chunk ? (
                   <>
-                    <b>Preuve · p. {chunk.page_debut}{chunk.page_fin && chunk.page_fin !== chunk.page_debut ? `–${chunk.page_fin}` : ''}{chunk.section ? ` · ${chunk.section}` : ''}</b>
+                    <b>{['Preuve', locatorLabel(chunk.page_debut, chunk.page_fin), chunk.section].filter(Boolean).join(' · ')}</b>
                     <p>{chunk.texte.replace(/\s+/g, ' ').slice(0, 320)}{chunk.texte.length > 320 ? '…' : ''}</p>
                   </>
                 ) : (
