@@ -63,11 +63,30 @@ export function verbLabel(v = '') {
   return out.join(' ')
 }
 
+// Repères d'une entité : pages (« 12 »), plages (« 16-32 ») ou timecodes
+// (« 08:25 », « 02:34-04:06 »). Les intitulés non localisables sont ignorés.
+const TIMECODE_RE = /^\d{1,2}:\d{2}(?::\d{2})?$/
+const LOCATOR_RE = /^(\d{1,2}:\d{2}(?::\d{2})?|\d+)(?:\s*[-–]\s*(\d{1,2}:\d{2}(?::\d{2})?|\d+))?$/
+const locatorKey = v => {
+  const first = String(v).split(/[-–]/)[0].trim()
+  if (TIMECODE_RE.test(first)) return first.split(':').reduce((acc, x) => acc * 60 + Number(x), 0)
+  return Number(first)
+}
+export const isTimecode = v => TIMECODE_RE.test(String(v ?? '').trim())
 export const pagesOf = n =>
-  String(n?.page_source || '')
+  [...new Set(String(n?.page_source || '')
     .split(/[;,]/)
-    .map(x => parseInt(x, 10))
-    .filter(x => Number.isFinite(x) && x > 0)
+    .map(x => x.trim().replace(/\s*[-–]\s*/, '-'))
+    .filter(x => LOCATOR_RE.test(x) && !/^0+$/.test(x)))]
+    .sort((a, b) => locatorKey(a) - locatorKey(b))
+// Libellé d'un repère de chunk : « p. 12–13 », « timecode 02:32–05:01 », ou rien.
+export const locatorLabel = (start, end) => {
+  const a = String(start ?? '').trim()
+  const b = String(end ?? '').trim()
+  if (!a && !b) return ''
+  const span = a && b && b !== a ? `${a}–${b}` : (a || b)
+  return `${isTimecode(a || b) ? 'timecode' : 'p.'} ${span}`
+}
 
 const FONT = 'Manrope, "Segoe UI", Roboto, system-ui, sans-serif'
 const SERIF = '"Source Serif 4", Georgia, "Times New Roman", serif'
