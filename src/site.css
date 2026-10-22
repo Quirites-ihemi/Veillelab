@@ -7,3 +7,5 @@
 .site-footer p{margin:0}
 .orbit-drawer-theme{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 18px 8px;padding:8px 12px;border-radius:10px;background:rgba(127,214,255,.14);color:#dbe9ff;font-size:14px}
 .orbit-drawer-theme button{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer;min-height:32px}
+/* Onglet Accueil (6 entrées sur ordinateur) */
+@media(min-width:981px){.topnav{grid-template-columns:minmax(0,.6fr) repeat(5,minmax(0,1fr))!important}}
