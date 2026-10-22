@@ -12,6 +12,7 @@ export default function Icon({ name, size = 20 }) {
     book: <><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16ZM20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5A2.5 2.5 0 0 1 20 21.5v-16Z" {...common}/></>,
     info: <><circle cx="12" cy="12" r="9" {...common}/><path d="M12 10v6M12 7h.01" {...common}/></>,
     external: <><path d="M14 4h6v6M20 4l-9 9" {...common}/><path d="M18 13v6H5V6h6" {...common}/></>,
+    home: <><path d="M3 11.5 12 4l9 7.5" {...common}/><path d="M5.5 10v10h13V10" {...common}/><path d="M10 20v-5h4v5" {...common}/></>,
     back: <><path d="m15 18-6-6 6-6" {...common}/></>,
     plus: <><path d="M12 5v14M5 12h14" {...common}/></>,
     minus: <><path d="M5 12h14" {...common}/></>,

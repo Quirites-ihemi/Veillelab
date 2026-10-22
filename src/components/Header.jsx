@@ -3,6 +3,7 @@ import Icon from './Icon.jsx'
 import quiritesVeilleLabLogo from '../quirites-veille-lab-logo.png'
 
 const tabs=[
+  {id:'home',label:'Accueil',icon:'home'},
   {id:'expertises',label:'Atlas des expertises ministérielles',icon:'graph'},
   {id:'explorer',label:'Explorer une publication',icon:'compass'},
   {id:'atelier',label:'Atelier de veille',icon:'spark'},
