@@ -282,7 +282,7 @@ function titleBoxPx(cluster, m, maxWidth = m.maxWidth) {
   const lines = wrapByWidth(cluster.label, maxWidth, titleFont(m))
   const width = Math.max(
     ...lines.map(line => measureText(line, titleFont(m))),
-    cluster.transdirectional ? measureText('Cluster transdirectionnel', transFont(m)) : 0
+    cluster.transdirectional ? measureText('Partagée entre plusieurs directions', transFont(m)) : 0
   )
   const height =
     lines.length * m.line +
@@ -1247,7 +1247,7 @@ export default function ExpertiseConstellation({
         tabIndex="0"
         aria-label={
           cluster.transdirectional
-            ? `${cluster.label}, Cluster transdirectionnel`
+            ? `${cluster.label}, partagée entre plusieurs directions`
             : cluster.label
         }
         onPointerDown={event => event.stopPropagation()}
@@ -1305,7 +1305,7 @@ export default function ExpertiseConstellation({
             }`}
             style={{ fontSize: `${m.trans * u}px` }}
           >
-            Cluster transdirectionnel
+            Partagée entre plusieurs directions
           </text>
         )}
       </g>
@@ -1335,8 +1335,8 @@ export default function ExpertiseConstellation({
           <i style={{ background: infoCluster.color, boxShadow: `0 0 10px ${infoCluster.color}` }} />
           <div>
             <strong>{infoCluster.label}</strong>
-            {infoCluster.transdirectional && <em>Cluster transdirectionnel</em>}
-            <small>{infoCluster.nodeCount} micro-expertise{infoCluster.nodeCount > 1 ? 's' : ''} · cliquer pour explorer</small>
+            {infoCluster.transdirectional && <em>Partagée entre plusieurs directions</em>}
+            <small>{infoCluster.nodeCount} expertise{infoCluster.nodeCount > 1 ? 's' : ''} · cliquer pour explorer</small>
           </div>
         </div>
       )}

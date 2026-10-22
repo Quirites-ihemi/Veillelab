@@ -18,10 +18,10 @@ export default function ExplorerEclaireur({ step, paused, onTogglePause, onColla
         className="explorer-eclaireur-recall"
         onClick={onReplay}
         type="button"
-        aria-label="Rouvrir L’Éclaireur"
+        aria-label="Rouvrir le guide"
       >
         <span className="explorer-eclaireur-mini-compass" aria-hidden="true">✦</span>
-        <span>L’Éclaireur</span>
+        <span>Guide</span>
       </button>
     )
   }
@@ -31,13 +31,13 @@ export default function ExplorerEclaireur({ step, paused, onTogglePause, onColla
       className={`explorer-eclaireur explorer-eclaireur-${content.mode}`}
       data-guide-step={step}
       aria-live="polite"
-      aria-label={`L’Éclaireur, étape ${step} sur 7`}
+      aria-label={`Guide, étape ${step} sur 7`}
     >
       <header className="explorer-eclaireur-head">
         <div className="explorer-eclaireur-brand">
           <span className="explorer-eclaireur-compass" aria-hidden="true">✦</span>
           <div>
-            <strong>L’Éclaireur</strong>
+            <strong>Guide</strong>
             <small>VOTRE GUIDE DANS CET ESPACE</small>
           </div>
         </div>
@@ -48,7 +48,7 @@ export default function ExplorerEclaireur({ step, paused, onTogglePause, onColla
             type="button"
             className="explorer-eclaireur-close"
             onClick={onCollapse}
-            aria-label="Fermer L’Éclaireur"
+            aria-label="Fermer le guide"
           >
             ×
           </button>

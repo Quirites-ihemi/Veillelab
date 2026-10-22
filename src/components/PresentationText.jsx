@@ -12,7 +12,7 @@ export const PRESENTATION_WAYS = [
   {
     title: 'Mobiliser et actionner les connaissances',
     tabs: [['atelier', 'Atelier de veille']],
-    text: 'Grâce à l’interrogation du corpus en langage naturel, chacun peut rechercher des informations, confronter des approches et rassembler des éléments utiles pour comprendre une situation, approfondir une problématique ou préparer un travail.',
+    text: 'Grâce à l’interrogation des publications du bulletin en langage naturel, chacun peut rechercher des informations, confronter des approches et rassembler des éléments utiles pour comprendre une situation, approfondir une problématique ou préparer un travail.',
   },
   {
     title: 'Mettre les publications en perspective',

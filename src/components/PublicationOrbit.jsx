@@ -31,6 +31,23 @@ export const ORBIT_TYPES = {
 }
 
 export const normalizeType = t => (t === 'Problème' ? 'probleme' : t)
+
+// Définition courte de chaque type, affichée en infobulle dans la liste des types.
+export const TYPE_HINTS = {
+  acteur: 'Organisation, institution ou personne qui intervient dans la publication.',
+  expert_public: 'Agent public, auteur ou intervenant, dont l’expertise est mobilisée dans la publication.',
+  action: 'Ce qui est fait ou engagé : mesure, opération, programme.',
+  notion_idee: 'Concept ou idée structurante du texte.',
+  probleme: 'Difficulté, risque ou enjeu identifié par la publication.',
+  localisation: 'Lieu, territoire ou zone géographique cité.',
+  signal_faible: 'Indice discret d’une évolution possible, encore peu visible.',
+  recommandation: 'Proposition formulée par les auteurs.',
+  tendance: 'Évolution observée dans la durée.',
+  tendance_forte: 'Évolution de fond, durable et bien établie.',
+  instrument_dispositif: 'Outil juridique, technique ou organisationnel existant.',
+  methode: 'Manière de faire, démarche ou approche décrite.',
+}
+export const typeHint = t => TYPE_HINTS[normalizeType(t)] || ''
 export const typeLabel = t => (ORBIT_TYPES[t] || [t || 'Élément'])[0]
 export const typeColor = t => (ORBIT_TYPES[t] || [null, '#B79CFF'])[1]
 

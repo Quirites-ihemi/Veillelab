@@ -282,9 +282,9 @@ export default function ExplorerGuide({
       title: 'Le sujet au centre',
       body: (
         <p>
-          L’entité au centre est le sujet que vous explorez. Les entités qui lui
-          sont <strong>directement liées</strong> gravitent autour, avec le
-          <strong> verbe</strong> de la relation. Cliquez sur l’une d’elles :
+          L’élément au centre est le sujet que vous explorez. Les éléments qui lui
+          sont <strong>directement liés</strong> gravitent autour, avec le
+          <strong> verbe</strong> du lien. Cliquez sur l’un d’eux :
           elle passe au centre, et vous suivez le fil du texte.
         </p>
       ),
@@ -295,26 +295,26 @@ export default function ExplorerGuide({
         <p>
           La fiche, à droite, indique les <strong>pages</strong> où le sujet
           apparaît et donne l’<strong>extrait</strong> qui le prouve ; un clic
-          sur un verbe ouvre la preuve de la relation.
+          sur un verbe ouvre la preuve du lien.
         </p>
       ),
     },
     4: {
-      title: 'Interrogez la publication',
+      title: 'Posez une question (IA)',
       body: (
         <p>
-          Posez une question en langage naturel : les entités concernées
-          s’allument dans le graphe.
+          Posez une question en langage naturel : les éléments concernés
+          s’allument dans le graphe. La réponse est générée par IA : vérifiez-la dans les passages cités.
         </p>
       ),
     },
   }[step]
 
   const shortText = {
-    1: 'Bonjour ! Je suis L’Éclaireur, votre guide dans ce graphe.',
-    2: 'Cliquez sur une entité de l’orbite pour la placer au centre.',
+    1: 'Bonjour ! Je suis votre guide dans ce graphe.',
+    2: 'Cliquez sur un élément de l’orbite pour le placer au centre.',
     3: 'La fiche, à droite, donne les pages et l’extrait qui prouvent le sujet.',
-    4: 'Posez une question à la publication : les entités concernées s’allument.',
+    4: 'Posez une question (IA) à la publication : les éléments concernés s’allument.',
   }[step]
 
   const beamSvg = beam && (
@@ -349,7 +349,7 @@ export default function ExplorerGuide({
         {step === 1 ? 'Commencer' : step < 4 ? 'Suivant' : 'Compris'}
       </button>
       {compactMode && (
-        <button type="button" className="atlas-guide-reduce" onClick={onCollapse} aria-label="Réduire L’Éclaireur" title="Réduire L’Éclaireur">−</button>
+        <button type="button" className="atlas-guide-reduce" onClick={onCollapse} aria-label="Réduire le guide" title="Réduire le guide">−</button>
       )}
     </div>
   )
@@ -358,10 +358,10 @@ export default function ExplorerGuide({
     return (
       <>
         {beamSvg}
-        <section ref={cardRef} onPointerDown={drag.onPointerDown} className="atlas-guide atlas-guide-compact" style={style} aria-label="L’Éclaireur" aria-live="polite">
+        <section ref={cardRef} onPointerDown={drag.onPointerDown} className="atlas-guide atlas-guide-compact" style={style} aria-label="Guide" aria-live="polite">
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <div className="atlas-guide-compact-text">
-            <span className="atlas-guide-kicker">L’Éclaireur{step > 1 ? ` · étape ${step} sur 4` : ''}</span>
+            <span className="atlas-guide-kicker">Guide{step > 1 ? ` · étape ${step} sur 4` : ''}</span>
             <p>{shortText}</p>
           </div>
           {actions(true)}
@@ -378,11 +378,11 @@ export default function ExplorerGuide({
         className="atlas-guide-pill"
         style={style}
         onClick={() => { userOpenedRef.current = true; onExpand?.() }}
-        aria-label="Ouvrir L’Éclaireur"
-        title="Ouvrir L’Éclaireur"
+        aria-label="Ouvrir le guide"
+        title="Ouvrir le guide"
       >
         <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
-        <span>L’Éclaireur</span>
+        <span>Guide</span>
       </button>
     )
   }
@@ -390,15 +390,15 @@ export default function ExplorerGuide({
   return (
     <>
       {beamSvg}
-      <section ref={cardRef} onPointerDown={drag.onPointerDown} className="atlas-guide" style={{ ...style, maxHeight }} aria-label="L’Éclaireur" aria-live="polite">
+      <section ref={cardRef} onPointerDown={drag.onPointerDown} className="atlas-guide" style={{ ...style, maxHeight }} aria-label="Guide" aria-live="polite">
         <header className="atlas-guide-head">
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <span className="atlas-eclaireur-name">
-            <strong>L’Éclaireur</strong>
+            <strong>Guide</strong>
             <small>Votre guide dans la publication</small>
           </span>
           <span className="atlas-eclaireur-step">{step}/4</span>
-          <button type="button" className="atlas-guide-reduce" onClick={onCollapse} aria-label="Réduire L’Éclaireur" title="Réduire L’Éclaireur">−</button>
+          <button type="button" className="atlas-guide-reduce" onClick={onCollapse} aria-label="Réduire le guide" title="Réduire le guide">−</button>
         </header>
 
         <div className="atlas-guide-body">
@@ -406,10 +406,10 @@ export default function ExplorerGuide({
             <>
               <h3 className="atlas-guide-hello">Bonjour !</h3>
               <p className="atlas-eclaireur-intro">
-                Je suis L’Éclaireur. Ce graphe représente les <strong>connaissances
-                extraites de la publication</strong> : des entités (acteurs,
-                notions, problèmes, lieux, recommandations…) reliées par des
-                relations formulées avec des verbes.
+                Je suis votre guide. Ce graphe représente les <strong>connaissances
+                extraites de la publication</strong> : des éléments (acteurs,
+                notions, problèmes, lieux, recommandations…) reliés par des
+                liens formulés avec des verbes.
               </p>
               <div className={`atlas-accordion atlas-understand ${understandOpen ? 'open' : ''}`}>
                 <button type="button" onClick={() => setUnderstandOpen(v => !v)} aria-expanded={understandOpen}>
@@ -423,14 +423,14 @@ export default function ExplorerGuide({
                       <strong>À la différence d’un graphe de réseaux</strong>, qui met
                       principalement en évidence des connexions entre acteurs ou objets,
                       le graphe de connaissances organise l’information sous la forme
-                      d’entités — idées, personnes, lieux, événements, dispositifs, etc. —
-                      reliées entre elles par des relations sémantiques explicites,
+                      d’éléments — idées, personnes, lieux, événements, dispositifs, etc. —
+                      reliés entre eux par des relations sémantiques explicites,
                       souvent formulées à l’aide de verbes d’action.
                     </p>
                     <p>
                       Il permet ainsi de <strong>naviguer à l’intérieur d’un texte et des
-                      connaissances qu’il mobilise</strong>, en passant d’une entité à une
-                      autre et en suivant les relations qui les relient.
+                      connaissances qu’il mobilise</strong>, en passant d’un élément à un
+                      autre et en suivant les liens qui les relient.
                     </p>
                     <p>
                       Le <strong>GraphRAG</strong> prolonge cette logique en permettant

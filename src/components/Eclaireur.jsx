@@ -28,7 +28,7 @@ export default function Eclaireur({
         type="button"
         className="eclaireur-help-button"
         onClick={onHelp}
-        aria-label="Ouvrir l’Éclaireur"
+        aria-label="Ouvrir le guide"
       >
         <span aria-hidden="true">✦</span>
         Besoin d’aide ?
@@ -61,7 +61,7 @@ export default function Eclaireur({
           <span className="eclaireur-radar-dot" />
         </span>
         <span className="eclaireur-heading-copy">
-          <strong>L’Éclaireur</strong>
+          <strong>Guide</strong>
           <small>Je vous guide dans la carte</small>
         </span>
       </div>
@@ -70,7 +70,7 @@ export default function Eclaireur({
         type="button"
         className="eclaireur-close"
         onClick={onDismiss}
-        aria-label="Masquer l’Éclaireur"
+        aria-label="Masquer le guide"
       >
         ×
       </button>

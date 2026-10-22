@@ -302,17 +302,17 @@ export default function AtlasGuide({
         <p>
           Ici, vous pouvez <strong>rechercher</strong> une expertise et filtrer
           par <strong>entité</strong> ou par <strong>type d’expertise</strong>.
-          À gauche, le panneau <strong>« Communautés d’expertise »</strong> liste
-          toutes les communautés du graphe.
+          À gauche, le panneau <strong>« Familles d’expertises »</strong> liste
+          toutes les familles du graphe.
         </p>
       ),
     },
     3: {
-      title: 'Explorez une communauté',
+      title: 'Explorez une famille',
       body: (
         <>
           <p>
-            Survolez une communauté pour la faire ressortir, puis cliquez sur son
+            Survolez une famille pour la faire ressortir, puis cliquez sur son
             nom, sur le graphe ou dans le panneau de gauche, pour l’ouvrir.
           </p>
           <p className="atlas-guide-example">
@@ -328,12 +328,12 @@ export default function AtlasGuide({
       body: selected ? (
         <p>
           La fiche est ouverte à droite : définition et publications associées,
-          puis, dans les volets, la communauté, les entités, les expertises
+          puis, dans les volets, la famille, les entités, les expertises
           liées et les domaines mobilisés.
         </p>
       ) : (
         <p>
-          Cliquez sur un point lumineux de la communauté ouverte : sa fiche
+          Cliquez sur un point lumineux de la famille ouverte : sa fiche
           s’affichera à droite.
         </p>
       ),
@@ -341,9 +341,9 @@ export default function AtlasGuide({
   }[step]
 
   const shortText = {
-    1: 'Bonjour ! Je suis L’Éclaireur, votre guide dans ce graphe.',
+    1: 'Bonjour ! Je suis votre guide dans ce graphe.',
     2: 'Recherchez une expertise ou filtrez par entité et par type.',
-    3: 'Cliquez sur une communauté pour l’ouvrir, par exemple celle-ci.',
+    3: 'Cliquez sur une famille pour l’ouvrir, par exemple celle-ci.',
     4: selected
       ? 'La fiche est ouverte à droite ; ses volets se déplient.'
       : 'Cliquez sur un point lumineux pour ouvrir sa fiche.',
@@ -374,12 +374,12 @@ export default function AtlasGuide({
           ref={cardRef} onPointerDown={drag.onPointerDown}
           className="atlas-guide atlas-guide-compact"
           style={style}
-          aria-label="L’Éclaireur"
+          aria-label="Guide"
           aria-live="polite"
         >
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <div className="atlas-guide-compact-text">
-            <span className="atlas-guide-kicker">L’Éclaireur{step > 1 ? ` · étape ${step} sur 4` : ''}</span>
+            <span className="atlas-guide-kicker">Guide{step > 1 ? ` · étape ${step} sur 4` : ''}</span>
             <p>{shortText}</p>
           </div>
           <div className="atlas-guide-actions">
@@ -398,7 +398,7 @@ export default function AtlasGuide({
                 {step === 1 ? 'Commencer' : step < 4 ? 'Suivant' : 'Compris'}
               </button>
             )}
-            <button type="button" className="atlas-guide-reduce" onClick={onCollapse} aria-label="Réduire L’Éclaireur" title="Réduire L’Éclaireur">−</button>
+            <button type="button" className="atlas-guide-reduce" onClick={onCollapse} aria-label="Réduire le guide" title="Réduire le guide">−</button>
           </div>
         </section>
       </>
@@ -414,11 +414,11 @@ export default function AtlasGuide({
           className="atlas-guide-pill"
           style={style}
           onClick={() => { userOpenedRef.current = true; onExpand?.() }}
-          aria-label="Ouvrir L’Éclaireur"
-          title="Ouvrir L’Éclaireur"
+          aria-label="Ouvrir le guide"
+          title="Ouvrir le guide"
         >
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
-          <span>L’Éclaireur</span>
+          <span>Guide</span>
         </button>
       </>
     )
@@ -432,13 +432,13 @@ export default function AtlasGuide({
         ref={cardRef} onPointerDown={drag.onPointerDown}
         className="atlas-guide"
         style={{ ...style, maxHeight }}
-        aria-label="L’Éclaireur"
+        aria-label="Guide"
         aria-live="polite"
       >
         <header className="atlas-guide-head">
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <span className="atlas-eclaireur-name">
-            <strong>L’Éclaireur</strong>
+            <strong>Guide</strong>
             <small>Votre guide dans l’Atlas</small>
           </span>
           <span className="atlas-eclaireur-step">{step}/4</span>
@@ -446,8 +446,8 @@ export default function AtlasGuide({
             type="button"
             className="atlas-guide-reduce"
             onClick={onCollapse}
-            aria-label="Réduire L’Éclaireur"
-            title="Réduire L’Éclaireur"
+            aria-label="Réduire le guide"
+            title="Réduire le guide"
           >
             −
           </button>
@@ -458,10 +458,10 @@ export default function AtlasGuide({
             <>
               <h3 className="atlas-guide-hello">Bonjour !</h3>
               <p className="atlas-eclaireur-intro">
-                Je suis L’Éclaireur. Ce graphe montre les <strong>savoir-faire
-                révélés par les publications</strong> du ministère de l’Intérieur
-                présentes dans le corpus : chaque point lumineux est une
-                micro-expertise, chaque constellation une communauté d’expertise.
+                Je suis votre guide. Ce graphe montre les <strong>expertises
+                révélées par les publications</strong> du ministère de l’Intérieur
+                présentes dans le bulletin : chaque point lumineux est une
+                expertise, chaque constellation une famille d’expertises.
               </p>
 
               <div className={`atlas-accordion atlas-understand ${understandOpen ? 'open' : ''}`}>
@@ -476,7 +476,7 @@ export default function AtlasGuide({
 
                 {understandOpen && (
                   <div className="atlas-accordion-body atlas-understand-body">
-                    <h4>Des publications aux savoir-faire du ministère</h4>
+                    <h4>Des publications aux expertises du ministère</h4>
                     <p>
                       Le ministère de l’Intérieur produit chaque année une grande
                       variété de travaux sur les sujets relevant de ses domaines
@@ -502,7 +502,7 @@ export default function AtlasGuide({
                       <Icon name="info" size={16} />
                       <span>
                         Résultats fondés sur les publications du bulletin présentes
-                        dans le corpus actif, qui ne donnent qu’une vision partielle.
+                        dans les publications analysées à ce jour, qui ne donnent qu’une vision partielle.
                       </span>
                     </p>
                   </div>

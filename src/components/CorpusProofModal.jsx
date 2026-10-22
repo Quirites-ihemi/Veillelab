@@ -72,7 +72,7 @@ export default function CorpusProofModal({source,onClose,contextLabel='',context
             <strong>{title}</strong>
             <span>{[organisation,year,publicationId,locator?`repère ${locator.replace(/^p\.\s*/,'')}`:''].filter(Boolean).join(' · ')}</span>
           </div>
-          <p>Texte restitué à partir de la source du corpus, sans ajout de connaissance extérieure.</p>
+          <p>Texte restitué à partir de la publication source, sans ajout de connaissance extérieure.</p>
         </section>
       </div>
 
