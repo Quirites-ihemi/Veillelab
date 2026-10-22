@@ -26,7 +26,13 @@ function imageSrc(p) {
   return `${base}${raw.replace(/^\.?\/+/, '')}`
 }
 
-const asset = name => `${import.meta.env.BASE_URL || '/'}images/accueil/${name}`
+// Images intégrées au bundle (dist/assets) : elles ne dépendent pas du dossier public.
+import imgAtlas from '../assets/accueil/atlas.jpg'
+import imgExplorer from '../assets/accueil/explorer.jpg'
+import imgAtelier from '../assets/accueil/atelier.jpg'
+import imgFrise from '../assets/accueil/frise.jpg'
+const IMAGES = { 'atlas.jpg': imgAtlas, 'explorer.jpg': imgExplorer, 'atelier.jpg': imgAtelier, 'frise.jpg': imgFrise }
+const asset = name => IMAGES[name]
 
 function Arrow() { return <span aria-hidden="true"> →</span> }
 
@@ -68,36 +74,6 @@ export default function Home({ data }) {
           {pubs.length} publications à ce jour · une dizaine ajoutée chaque mois
         </p>
         <p className="home-lead">Chaque information affichée renvoie à sa publication, à sa page et au passage source. Voici ce que vous pouvez faire, onglet par onglet.</p>
-      </section>
-
-      <section className="home-corpus" aria-labelledby="home-corpus-title">
-        <div className="home-section-head">
-          <h2 id="home-corpus-title">Les publications en un coup d’œil</h2>
-          <a href="#/explorer/publications" onClick={go(['explorer', 'publications'])}>Toutes les publications<Arrow /></a>
-        </div>
-        <div className="home-themes">
-          {tiles.map((t, i) => (
-            <a key={t.domain} className="home-theme" href={`#/explorer/theme/${encodeURIComponent(t.domain)}`} onClick={go(['explorer', 'theme', t.domain])}>
-              <span className="home-theme-covers" style={{ background: TINTS[i % TINTS.length] }} aria-hidden="true">
-                {t.covers.map(p => <img key={p.publication_id} src={imageSrc(p)} alt="" loading="lazy" />)}
-              </span>
-              <span className="home-theme-text">
-                <strong>{t.label}</strong>
-                <span>{t.count} publication{t.count > 1 ? 's' : ''}</span>
-              </span>
-            </a>
-          ))}
-        </div>
-        {others.length > 0 && (
-          <p className="home-others">Aussi :{' '}
-            {others.map((t, i) => (
-              <React.Fragment key={t.domain}>
-                {i > 0 && ' · '}
-                <a href={`#/explorer/theme/${encodeURIComponent(t.domain)}`} onClick={go(['explorer', 'theme', t.domain])}>{t.label}</a> ({t.count})
-              </React.Fragment>
-            ))}
-          </p>
-        )}
       </section>
 
       <section className="home-services" aria-label="Les services de l’application">
@@ -151,6 +127,36 @@ export default function Home({ data }) {
           </ul>
           <a className="home-cta" href="#/documents" onClick={go(['documents'])}>Ouvrir D’un document à l’autre<Arrow /></a>
         </article>
+      </section>
+
+      <section className="home-corpus" aria-labelledby="home-corpus-title">
+        <div className="home-section-head">
+          <h2 id="home-corpus-title">Les publications en un coup d’œil</h2>
+          <a href="#/explorer/publications" onClick={go(['explorer', 'publications'])}>Toutes les publications<Arrow /></a>
+        </div>
+        <div className="home-themes">
+          {tiles.map((t, i) => (
+            <a key={t.domain} className="home-theme" href={`#/explorer/theme/${encodeURIComponent(t.domain)}`} onClick={go(['explorer', 'theme', t.domain])}>
+              <span className="home-theme-covers" style={{ background: TINTS[i % TINTS.length] }} aria-hidden="true">
+                {t.covers.map(p => <img key={p.publication_id} src={imageSrc(p)} alt="" loading="lazy" />)}
+              </span>
+              <span className="home-theme-text">
+                <strong>{t.label}</strong>
+                <span>{t.count} publication{t.count > 1 ? 's' : ''}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+        {others.length > 0 && (
+          <p className="home-others">Aussi :{' '}
+            {others.map((t, i) => (
+              <React.Fragment key={t.domain}>
+                {i > 0 && ' · '}
+                <a href={`#/explorer/theme/${encodeURIComponent(t.domain)}`} onClick={go(['explorer', 'theme', t.domain])}>{t.label}</a> ({t.count})
+              </React.Fragment>
+            ))}
+          </p>
+        )}
       </section>
 
       <section className="home-about" aria-label="La démarche">
