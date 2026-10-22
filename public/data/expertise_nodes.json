@@ -5,13 +5,11 @@
     "family": "Problème public",
     "definition": "Enjeu d’adaptation des capacités techniques des forces de sécurité face à des formes de criminalité ou de menace en mutation.",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale",
-      "Inspection générale de l’administration"
+      "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
       "Démocraties et sujets informationnels",
       "Sécurité publique",
-      "Travail, emploi, formation",
       "Sécurité civile"
     ],
     "publications": [
@@ -997,8 +995,7 @@
     ],
     "domains": [
       "Administration territoriale de l'Etat",
-      "Sécurité nationale",
-      "Travail, emploi, formation"
+      "Sécurité nationale"
     ],
     "publications": [
       {
@@ -1049,8 +1046,7 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à accompagner l’appropriation d’outils numériques ou d’IA dans les administrations territoriales.",
     "entities": [
-      "Association des préfets et représentants de l’État de la francophonie",
-      "Inspection générale de l’administration"
+      "Association des préfets et représentants de l’État de la francophonie"
     ],
     "domains": [
       "Travail, emploi, formation"
@@ -1113,33 +1109,15 @@
     "degree": 1
   },
   {
-    "id": "ME034",
-    "label": "Croisement des données de sécurité et des caractéristiques socio-territoriales",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à croiser les données de sécurité avec des caractéristiques sociodémographiques et territoriales afin d’analyser les disparités observées.",
-    "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME036",
     "label": "Documentation des situations professionnelles de terrain",
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale",
       "Préfecture de la région Auvergne-Rhône-Alpes"
     ],
     "domains": [
-      "Administration territoriale de l'Etat",
-      "Sécurité publique"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -1292,8 +1270,7 @@
     "family": "Problème public",
     "definition": "Enjeu de régulation des usages publics de l’IA afin de garantir transparence, responsabilité, droits fondamentaux et recours.",
     "entities": [
-      "Association des préfets et représentants de l’État de la francophonie",
-      "Inspection générale de l’administration"
+      "Association des préfets et représentants de l’État de la francophonie"
     ],
     "domains": [
       "Travail, emploi, formation"
@@ -3300,11 +3277,9 @@
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale",
       "École nationale supérieure de la police"
     ],
     "domains": [
-      "Sécurité publique",
       "Travail, emploi, formation"
     ],
     "publications": [
@@ -3410,11 +3385,9 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale",
       "École nationale supérieure de la police"
     ],
     "domains": [
-      "Sécurité publique",
       "Travail, emploi, formation"
     ],
     "publications": [
@@ -4565,38 +4538,6 @@
     "degree": 3
   },
   {
-    "id": "ME141",
-    "label": "Organisation du soutien technique, administratif et logistique des forces",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à organiser et assurer les fonctions administratives, logistiques et techniques nécessaires à la continuité et à l’efficacité de l’action opérationnelle.",
-    "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
-    "id": "ME142",
-    "label": "Vols dans les exploitations agricoles",
-    "family": "Problème public",
-    "definition": "Analyse des vols enregistrés au préjudice des exploitations agricoles, de leur évolution et des biens principalement ciblés.",
-    "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
     "id": "ME143",
     "label": "Fragilités économiques du secteur de la sécurité privée",
     "family": "Problème public",
@@ -4645,7 +4586,6 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Sécurité publique",
       "Travail, emploi, formation"
     ],
     "publications": [
@@ -4678,8 +4618,7 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Criminalités",
-      "Sécurité publique"
+      "Criminalités"
     ],
     "publications": [
       {
@@ -4711,7 +4650,6 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Sécurité publique",
       "Sécurité civile"
     ],
     "publications": [
@@ -4738,38 +4676,6 @@
     ],
     "publication_count": 1,
     "degree": 2
-  },
-  {
-    "id": "ME152",
-    "label": "Prévention des ingérences économiques et protection des savoir-faire stratégiques",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à identifier les risques d’ingérence économique et à protéger les savoirs, savoir-faire et actifs stratégiques des entreprises.",
-    "entities": [
-      "Direction générale de la sécurité intérieure"
-    ],
-    "domains": [
-      "Sécurité nationale"
-    ],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
-  },
-  {
-    "id": "ME153",
-    "label": "Intelligence économique",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à collecter, analyser et protéger l’information stratégique afin d’anticiper les risques et de soutenir la décision.",
-    "entities": [
-      "Direction générale de la sécurité intérieure"
-    ],
-    "domains": [
-      "Sécurité nationale"
-    ],
-    "publications": [],
-    "associated": [],
-    "publication_count": 0,
-    "degree": 0
   },
   {
     "id": "ME154",

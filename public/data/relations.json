@@ -8402,7 +8402,7 @@
     "source_id": "N1267",
     "type_relation": "CARACTERISE",
     "cible_id": "N1266",
-    "page_source": "",
+    "page_source": "1;4",
     "chunk_id_source": "C0944;C0957"
   },
   {
@@ -8411,7 +8411,7 @@
     "source_id": "N1268",
     "type_relation": "ILLUSTRE",
     "cible_id": "N1267",
-    "page_source": "",
+    "page_source": "1",
     "chunk_id_source": "C0945"
   },
   {
@@ -8420,7 +8420,7 @@
     "source_id": "N1269",
     "type_relation": "ILLUSTRE",
     "cible_id": "N1267",
-    "page_source": "",
+    "page_source": "2",
     "chunk_id_source": "C0947"
   },
   {
@@ -8429,7 +8429,7 @@
     "source_id": "N1270",
     "type_relation": "CARACTERISE",
     "cible_id": "N1269",
-    "page_source": "",
+    "page_source": "2",
     "chunk_id_source": "C0947"
   },
   {
@@ -8438,7 +8438,7 @@
     "source_id": "N1271",
     "type_relation": "ILLUSTRE",
     "cible_id": "N1267",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0949"
   },
   {
@@ -8447,7 +8447,7 @@
     "source_id": "N1271",
     "type_relation": "ASSOCIE_A",
     "cible_id": "N1272",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0949"
   },
   {
@@ -8456,7 +8456,7 @@
     "source_id": "N1273",
     "type_relation": "ILLUSTRE",
     "cible_id": "N1267",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0950"
   },
   {
@@ -8465,7 +8465,7 @@
     "source_id": "N1274",
     "type_relation": "CARACTERISE",
     "cible_id": "N1273",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0950"
   },
   {
@@ -8474,7 +8474,7 @@
     "source_id": "N1275",
     "type_relation": "CARACTERISE",
     "cible_id": "N1273",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0951"
   },
   {
@@ -8483,7 +8483,7 @@
     "source_id": "N1276",
     "type_relation": "CARACTERISE",
     "cible_id": "N1266",
-    "page_source": "",
+    "page_source": "3;4",
     "chunk_id_source": "C0952"
   },
   {
@@ -8492,7 +8492,7 @@
     "source_id": "N1277",
     "type_relation": "ASSOCIE_A",
     "cible_id": "N1278",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0953"
   },
   {
@@ -8501,7 +8501,7 @@
     "source_id": "N1278",
     "type_relation": "CARACTERISE",
     "cible_id": "N1266",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0953"
   },
   {
@@ -8510,7 +8510,7 @@
     "source_id": "N1281",
     "type_relation": "ILLUSTRE",
     "cible_id": "N1276",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0955"
   },
   {
@@ -8519,7 +8519,7 @@
     "source_id": "N1282",
     "type_relation": "ILLUSTRE",
     "cible_id": "N1276",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0956"
   },
   {
@@ -8528,7 +8528,7 @@
     "source_id": "N1283",
     "type_relation": "EXPERTISE_SUR",
     "cible_id": "N1266",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0957"
   },
   {
@@ -10212,7 +10212,7 @@
     "type_relation": "CARACTERISE",
     "cible_id": "N1443",
     "page_source": "Synthèse Quiritès",
-    "chunk_id_source": "C1007;C1020;C1023"
+    "chunk_id_source": "C1007;C1017;C1020;C1023"
   },
   {
     "relation_id": "R118_53",
@@ -10220,7 +10220,7 @@
     "source_id": "N1446",
     "type_relation": "CARACTERISE",
     "cible_id": "N1443",
-    "page_source": "14;15",
+    "page_source": "117-120;272-276",
     "chunk_id_source": "C1008;C1023;C1024"
   },
   {
@@ -10229,7 +10229,7 @@
     "source_id": "N1447",
     "type_relation": "CARACTERISE",
     "cible_id": "N1443",
-    "page_source": "15",
+    "page_source": "231-236",
     "chunk_id_source": "C1019;C1020"
   },
   {

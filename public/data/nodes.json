@@ -9599,7 +9599,7 @@
     "type_noeud": "probleme",
     "libelle": "Disparités territoriales des victimations déclarées et des craintes d’être victime",
     "libelle_normalise": "disparites territoriales des victimations declarees et des craintes d etre victime",
-    "page_source": "1;2;3;4;5;6;7;8;9;10;11;12;13",
+    "page_source": "1",
     "chunk_id_source": "C0926;C0927;C0928"
   },
   {
@@ -9699,7 +9699,7 @@
     "libelle": "Corse",
     "libelle_normalise": "corse",
     "page_source": "1;3;4;6;10",
-    "chunk_id_source": "C0933"
+    "chunk_id_source": "C0928;C0934;C0936"
   },
   {
     "node_id": "N1248",
@@ -9717,7 +9717,7 @@
     "libelle": "Vols sans violence concentrés dans les territoires urbains alors que la peur du vol ou du racket est beaucoup plus diffuse",
     "libelle_normalise": "vols sans violence concentres dans les territoires urbains alors que la peur du vol ou du racket est beaucoup plus diffuse",
     "page_source": "5;6;7",
-    "chunk_id_source": "C0934"
+    "chunk_id_source": "C0935;C0936"
   },
   {
     "node_id": "N1250",
@@ -9789,7 +9789,7 @@
     "libelle": "Faibles différences territoriales pour les débits frauduleux, escroqueries, arnaques et destructions par virus",
     "libelle_normalise": "faibles differences territoriales pour les debits frauduleux escroqueries arnaques et destructions par virus",
     "page_source": "6;7",
-    "chunk_id_source": "C0935"
+    "chunk_id_source": "C0937"
   },
   {
     "node_id": "N1258",
@@ -9852,7 +9852,7 @@
     "libelle": "Service statistique ministériel de la sécurité intérieure",
     "libelle_normalise": "service statistique ministeriel de la securite interieure",
     "page_source": "1;2;3;4;5;6;7;8;9;10;11;12;13",
-    "chunk_id_source": "C0932"
+    "chunk_id_source": "C0943"
   },
   {
     "node_id": "N1265",
@@ -9869,7 +9869,7 @@
     "type_noeud": "probleme",
     "libelle": "Feux de forêt et missions de la gendarmerie",
     "libelle_normalise": "feux de foret et missions de la gendarmerie",
-    "page_source": "",
+    "page_source": "1;2;3;4",
     "chunk_id_source": "C0944;C0947;C0949;C0952;C0957"
   },
   {
@@ -9878,7 +9878,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Évolution de la gendarmerie d’un rôle de maintien de l’ordre vers un rôle de partenaire de la gestion de crise",
     "libelle_normalise": "evolution de la gendarmerie d un role de maintien de l ordre vers un role de partenaire de la gestion de crise",
-    "page_source": "",
+    "page_source": "1;4",
     "chunk_id_source": "C0944;C0957"
   },
   {
@@ -9887,7 +9887,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Participation ancienne de la maréchaussée à la lutte contre les incendies dès le XVIe siècle",
     "libelle_normalise": "participation ancienne de la marechaussee a la lutte contre les incendies des le xvie siecle",
-    "page_source": "",
+    "page_source": "1",
     "chunk_id_source": "C0945"
   },
   {
@@ -9896,7 +9896,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Le grand feu des Landes de 1949 comme moment de formalisation des missions de la gendarmerie face aux incendies",
     "libelle_normalise": "le grand feu des landes de 1949 comme moment de formalisation des missions de la gendarmerie face aux incendies",
-    "page_source": "",
+    "page_source": "2",
     "chunk_id_source": "C0947"
   },
   {
@@ -9905,7 +9905,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Formalisation de trois missions : prévenir les incendies, lutter contre les feux et conduire l’enquête judiciaire",
     "libelle_normalise": "formalisation de trois missions prevenir les incendies lutter contre les feux et conduire l enquete judiciaire",
-    "page_source": "",
+    "page_source": "2",
     "chunk_id_source": "C0947"
   },
   {
@@ -9914,7 +9914,7 @@
     "type_noeud": "notion_idee",
     "libelle": "À partir de 1973, alimentation de la base Prométhée par les groupements méditerranéens de gendarmerie",
     "libelle_normalise": "a partir de 1973 alimentation de la base promethee par les groupements mediterraneens de gendarmerie",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0949"
   },
   {
@@ -9923,7 +9923,7 @@
     "type_noeud": "acteur",
     "libelle": "Base de données Prométhée",
     "libelle_normalise": "base de donnees promethee",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0949"
   },
   {
@@ -9932,7 +9932,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Développement de l’investigation sur les causes des incendies dans les années 1990",
     "libelle_normalise": "developpement de l investigation sur les causes des incendies dans les annees 1990",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0950"
   },
   {
@@ -9941,7 +9941,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Mobilisation d’équipes pluridisciplinaires associant pompiers, policiers et forestiers pour rechercher les causes des incendies",
     "libelle_normalise": "mobilisation d equipes pluridisciplinaires associant pompiers policiers et forestiers pour rechercher les causes des incendies",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0950"
   },
   {
@@ -9950,7 +9950,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Mobilisation des compétences cynophiles de la gendarmerie dans la recherche des causes d’incendie",
     "libelle_normalise": "mobilisation des competences cynophiles de la gendarmerie dans la recherche des causes d incendie",
-    "page_source": "",
+    "page_source": "3",
     "chunk_id_source": "C0951"
   },
   {
@@ -9959,7 +9959,7 @@
     "type_noeud": "tendance",
     "libelle": "Forte mobilisation opérationnelle de la gendarmerie lors des feux de l’été 2026",
     "libelle_normalise": "forte mobilisation operationnelle de la gendarmerie lors des feux de l ete 2026",
-    "page_source": "",
+    "page_source": "3;4",
     "chunk_id_source": "C0952"
   },
   {
@@ -9968,7 +9968,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Environ 90 % des feux de végétation sont d’origine humaine",
     "libelle_normalise": "environ 90 des feux de vegetation sont d origine humaine",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0953"
   },
   {
@@ -9977,7 +9977,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Renforcement de la surveillance des massifs et des contrôles aux accès forestiers pour prévenir les comportements dangereux",
     "libelle_normalise": "renforcement de la surveillance des massifs et des controles aux acces forestiers pour prevenir les comportements dangereux",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0953"
   },
   {
@@ -9986,7 +9986,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Usage des véhicules blindés polyvalents de la gendarmerie dans les zones enfumées",
     "libelle_normalise": "usage des vehicules blindes polyvalents de la gendarmerie dans les zones enfumees",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0955"
   },
   {
@@ -9995,7 +9995,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Usage des drones pour détecter les départs de feu et conduire des reconnaissances",
     "libelle_normalise": "usage des drones pour detecter les departs de feu et conduire des reconnaissances",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0956"
   },
   {
@@ -10004,7 +10004,7 @@
     "type_noeud": "expert_public",
     "libelle": "Benoît Haberbusch",
     "libelle_normalise": "benoit haberbusch",
-    "page_source": "",
+    "page_source": "4",
     "chunk_id_source": "C0957"
   },
   {
@@ -11444,7 +11444,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Gestion de crise",
     "libelle_normalise": "gestion crise",
-    "page_source": "14;15",
+    "page_source": "242;270;285",
     "chunk_id_source": "C1020;C1023;C1024"
   },
   {
@@ -11453,7 +11453,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Prise de décision en situation de crise",
     "libelle_normalise": "prise decision situation crise",
-    "page_source": "14;15",
+    "page_source": "242;285",
     "chunk_id_source": "C1003;C1020;C1024"
   },
   {
@@ -11462,8 +11462,8 @@
     "type_noeud": "notion_idee",
     "libelle": "Coordination collective en situation de crise",
     "libelle_normalise": "coordination collective situation crise",
-    "page_source": "14;15",
-    "chunk_id_source": "C1007;C1020;C1023"
+    "page_source": "205;214;270",
+    "chunk_id_source": "C1007;C1017;C1020;C1023"
   },
   {
     "node_id": "N1446",
@@ -11471,7 +11471,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Gestion du stress en situation de crise",
     "libelle_normalise": "gestion stress situation crise",
-    "page_source": "14;15",
+    "page_source": "117-120;270-276;285",
     "chunk_id_source": "C1008;C1023;C1024"
   },
   {
@@ -11480,7 +11480,7 @@
     "type_noeud": "notion_idee",
     "libelle": "Anticipation des comportements collectifs en situation de crise",
     "libelle_normalise": "anticipation comportements collectifs situation crise",
-    "page_source": "15",
+    "page_source": "231-236;242",
     "chunk_id_source": "C1019;C1020"
   },
   {
