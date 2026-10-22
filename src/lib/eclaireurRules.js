@@ -29,15 +29,15 @@ function getOverviewContent(step = 0) {
   switch (step) {
     case 0:
       return {
-        lead: 'Chaque point représente une micro-expertise repérée dans les publications produites par le ministère.',
+        lead: 'Chaque point représente une expertise repérée dans les publications produites par le ministère.',
         body:
-          'Les micro-expertises peuvent relever de trois types : problème public, méthode / savoir-faire ou instrument / dispositif. La couleur des points indique le grand ensemble auquel ils appartiennent, pas leur catégorie.',
+          'Les expertises peuvent relever de trois types : problème public, méthode / savoir-faire ou instrument / dispositif. La couleur des points indique le grand ensemble auquel ils appartiennent, pas leur catégorie.',
         placement: 'overview',
       }
 
     case 1:
       return {
-        lead: 'Les liens montrent les micro-expertises associées dans une même publication.',
+        lead: 'Les liens montrent les expertises associées dans une même publication.',
         body:
           'Ils permettent de voir comment différents problèmes, méthodes et dispositifs se combinent dans les travaux du ministère.',
         placement: 'overview',
@@ -45,7 +45,7 @@ function getOverviewContent(step = 0) {
 
     case 2:
       return {
-        lead: 'Certaines micro-expertises sont plus fortement reliées entre elles qu’au reste du réseau : on parle alors de **clusters**.',
+        lead: 'Certaines expertises sont plus fortement reliées entre elles qu’au reste du réseau : elles forment des **familles**.',
         body:
           'La clusterisation est la méthode qui permet de repérer automatiquement ces ensembles à partir des relations présentes dans le graphe.',
         placement: 'overview-low',
@@ -61,7 +61,7 @@ function getOverviewContent(step = 0) {
 
     case 4:
       return {
-        lead: 'Certains ensembles sont transdirectionnels.',
+        lead: 'Certaines familles sont partagées entre plusieurs directions.',
         body:
           'Ils réunissent des compétences mobilisées par plusieurs directions du ministère et font apparaître des croisements de savoirs et de savoir-faire au-delà des frontières organisationnelles.',
         placement: 'overview-low',

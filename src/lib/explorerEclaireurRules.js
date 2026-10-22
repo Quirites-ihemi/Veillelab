@@ -30,7 +30,7 @@ export const EXPLORER_GUIDE_STEPS={
     title:'Explorer autrement',
     body:[
       [{strong:'Lire la publication permet d’en suivre le raisonnement. Le graphe permet de l’explorer autrement.'}],
-      ['Vous pouvez partir d’un problème, d’un acteur ou d’une recommandation et suivre les relations qui vous intéressent.']
+      ['Vous pouvez partir d’un problème, d’un acteur ou d’une recommandation et suivre les liens qui vous intéressent.']
     ],
     mode:'path'
   },
@@ -55,7 +55,7 @@ export const EXPLORER_GUIDE_STEPS={
     body:[
       [{strong:'Vous savez maintenant comment utiliser ce graphe.'}],
       ['Sélectionnez un élément, suivez ses relations et revenez à la preuve documentaire lorsque vous souhaitez vérifier ce que vous voyez.'],
-      ['L’Éclaireur reste disponible si vous avez besoin de vous repérer.']
+      ['Le guide reste disponible si vous avez besoin de vous repérer.']
     ],
     mode:'free'
   }
