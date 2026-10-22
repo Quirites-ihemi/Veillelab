@@ -8,6 +8,14 @@
     ]
   },
   {
+    "source": "ME002",
+    "target": "ME159",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
+    ]
+  },
+  {
     "source": "ME003",
     "target": "ME057",
     "count": 1,
@@ -57,18 +65,18 @@
   },
   {
     "source": "ME006",
-    "target": "ME045",
-    "count": 1,
-    "publication_ids": [
-      "PUB080"
-    ]
-  },
-  {
-    "source": "ME006",
     "target": "ME107",
     "count": 1,
     "publication_ids": [
       "PUB008"
+    ]
+  },
+  {
+    "source": "ME006",
+    "target": "ME157",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
     ]
   },
   {
@@ -129,34 +137,10 @@
   },
   {
     "source": "ME011",
-    "target": "ME099",
-    "count": 1,
-    "publication_ids": [
-      "PUB064"
-    ]
-  },
-  {
-    "source": "ME011",
-    "target": "ME102",
-    "count": 1,
-    "publication_ids": [
-      "PUB064"
-    ]
-  },
-  {
-    "source": "ME011",
     "target": "ME129",
     "count": 1,
     "publication_ids": [
       "PUB012"
-    ]
-  },
-  {
-    "source": "ME011",
-    "target": "ME141",
-    "count": 1,
-    "publication_ids": [
-      "PUB064"
     ]
   },
   {
@@ -323,6 +307,14 @@
   },
   {
     "source": "ME019",
+    "target": "ME116",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME019",
     "target": "ME118",
     "count": 1,
     "publication_ids": [
@@ -335,6 +327,22 @@
     "count": 1,
     "publication_ids": [
       "PUB022"
+    ]
+  },
+  {
+    "source": "ME019",
+    "target": "ME157",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
+    ]
+  },
+  {
+    "source": "ME019",
+    "target": "ME158",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
     ]
   },
   {
@@ -394,6 +402,22 @@
     ]
   },
   {
+    "source": "ME024",
+    "target": "ME116",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
+    "source": "ME024",
+    "target": "ME158",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
+    ]
+  },
+  {
     "source": "ME027",
     "target": "ME100",
     "count": 1,
@@ -423,62 +447,6 @@
     "count": 1,
     "publication_ids": [
       "PUB012"
-    ]
-  },
-  {
-    "source": "ME028",
-    "target": "ME141",
-    "count": 1,
-    "publication_ids": [
-      "PUB050"
-    ]
-  },
-  {
-    "source": "ME028",
-    "target": "ME144",
-    "count": 1,
-    "publication_ids": [
-      "PUB050"
-    ]
-  },
-  {
-    "source": "ME028",
-    "target": "ME146",
-    "count": 1,
-    "publication_ids": [
-      "PUB050"
-    ]
-  },
-  {
-    "source": "ME028",
-    "target": "ME148",
-    "count": 1,
-    "publication_ids": [
-      "PUB050"
-    ]
-  },
-  {
-    "source": "ME028",
-    "target": "ME149",
-    "count": 1,
-    "publication_ids": [
-      "PUB050"
-    ]
-  },
-  {
-    "source": "ME028",
-    "target": "ME150",
-    "count": 1,
-    "publication_ids": [
-      "PUB050"
-    ]
-  },
-  {
-    "source": "ME028",
-    "target": "ME151",
-    "count": 1,
-    "publication_ids": [
-      "PUB050"
     ]
   },
   {
@@ -515,14 +483,6 @@
   },
   {
     "source": "ME030",
-    "target": "ME032",
-    "count": 1,
-    "publication_ids": [
-      "PUB073"
-    ]
-  },
-  {
-    "source": "ME030",
     "target": "ME052",
     "count": 1,
     "publication_ids": [
@@ -535,14 +495,6 @@
     "count": 1,
     "publication_ids": [
       "PUB010"
-    ]
-  },
-  {
-    "source": "ME030",
-    "target": "ME098",
-    "count": 1,
-    "publication_ids": [
-      "PUB073"
     ]
   },
   {
@@ -564,10 +516,9 @@
   {
     "source": "ME032",
     "target": "ME042",
-    "count": 2,
+    "count": 1,
     "publication_ids": [
-      "PUB005",
-      "PUB073"
+      "PUB005"
     ]
   },
   {
@@ -579,27 +530,11 @@
     ]
   },
   {
-    "source": "ME032",
-    "target": "ME098",
-    "count": 1,
-    "publication_ids": [
-      "PUB073"
-    ]
-  },
-  {
     "source": "ME033",
     "target": "ME092",
     "count": 1,
     "publication_ids": [
       "PUB007"
-    ]
-  },
-  {
-    "source": "ME034",
-    "target": "ME045",
-    "count": 1,
-    "publication_ids": [
-      "PUB080"
     ]
   },
   {
@@ -616,14 +551,6 @@
     "count": 1,
     "publication_ids": [
       "PUB021"
-    ]
-  },
-  {
-    "source": "ME036",
-    "target": "ME141",
-    "count": 1,
-    "publication_ids": [
-      "PUB064"
     ]
   },
   {
@@ -699,14 +626,6 @@
     ]
   },
   {
-    "source": "ME042",
-    "target": "ME098",
-    "count": 1,
-    "publication_ids": [
-      "PUB073"
-    ]
-  },
-  {
     "source": "ME043",
     "target": "ME077",
     "count": 1,
@@ -732,30 +651,6 @@
   },
   {
     "source": "ME045",
-    "target": "ME047",
-    "count": 1,
-    "publication_ids": [
-      "PUB080"
-    ]
-  },
-  {
-    "source": "ME045",
-    "target": "ME048",
-    "count": 1,
-    "publication_ids": [
-      "PUB080"
-    ]
-  },
-  {
-    "source": "ME045",
-    "target": "ME049",
-    "count": 1,
-    "publication_ids": [
-      "PUB080"
-    ]
-  },
-  {
-    "source": "ME045",
     "target": "ME074",
     "count": 1,
     "publication_ids": [
@@ -768,6 +663,14 @@
     "count": 1,
     "publication_ids": [
       "PUB018"
+    ]
+  },
+  {
+    "source": "ME045",
+    "target": "ME157",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
     ]
   },
   {
@@ -808,6 +711,14 @@
     "count": 1,
     "publication_ids": [
       "PUB013"
+    ]
+  },
+  {
+    "source": "ME047",
+    "target": "ME158",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
     ]
   },
   {
@@ -1019,22 +930,6 @@
     ]
   },
   {
-    "source": "ME066",
-    "target": "ME117",
-    "count": 1,
-    "publication_ids": [
-      "PUB091"
-    ]
-  },
-  {
-    "source": "ME066",
-    "target": "ME142",
-    "count": 1,
-    "publication_ids": [
-      "PUB091"
-    ]
-  },
-  {
     "source": "ME067",
     "target": "ME101",
     "count": 1,
@@ -1064,6 +959,14 @@
     "count": 1,
     "publication_ids": [
       "PUB006"
+    ]
+  },
+  {
+    "source": "ME071",
+    "target": "ME159",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
     ]
   },
   {
@@ -1196,27 +1099,11 @@
     ]
   },
   {
-    "source": "ME099",
-    "target": "ME141",
-    "count": 1,
-    "publication_ids": [
-      "PUB064"
-    ]
-  },
-  {
     "source": "ME100",
     "target": "ME105",
     "count": 1,
     "publication_ids": [
       "PUB006"
-    ]
-  },
-  {
-    "source": "ME102",
-    "target": "ME141",
-    "count": 1,
-    "publication_ids": [
-      "PUB064"
     ]
   },
   {
@@ -1233,6 +1120,14 @@
     "count": 1,
     "publication_ids": [
       "PUB031"
+    ]
+  },
+  {
+    "source": "ME116",
+    "target": "ME158",
+    "count": 1,
+    "publication_ids": [
+      "PUB112"
     ]
   },
   {
@@ -1257,14 +1152,6 @@
     "count": 1,
     "publication_ids": [
       "PUB031"
-    ]
-  },
-  {
-    "source": "ME117",
-    "target": "ME142",
-    "count": 1,
-    "publication_ids": [
-      "PUB091"
     ]
   },
   {
@@ -1316,6 +1203,14 @@
     ]
   },
   {
+    "source": "ME130",
+    "target": "ME157",
+    "count": 1,
+    "publication_ids": [
+      "PUB111"
+    ]
+  },
+  {
     "source": "ME134",
     "target": "ME135",
     "count": 1,
@@ -1356,11 +1251,19 @@
     ]
   },
   {
-    "source": "ME152",
-    "target": "ME153",
+    "source": "ME148",
+    "target": "ME159",
     "count": 1,
     "publication_ids": [
-      "PUB084"
+      "PUB113"
+    ]
+  },
+  {
+    "source": "ME148",
+    "target": "ME160",
+    "count": 1,
+    "publication_ids": [
+      "PUB113"
     ]
   },
   {
@@ -1380,119 +1283,7 @@
     ]
   },
   {
-    "source": "ME157",
-    "target": "ME045",
-    "count": 1,
-    "publication_ids": [
-      "PUB111"
-    ]
-  },
-  {
-    "source": "ME157",
-    "target": "ME130",
-    "count": 1,
-    "publication_ids": [
-      "PUB111"
-    ]
-  },
-  {
-    "source": "ME157",
-    "target": "ME006",
-    "count": 1,
-    "publication_ids": [
-      "PUB111"
-    ]
-  },
-  {
-    "source": "ME157",
-    "target": "ME019",
-    "count": 1,
-    "publication_ids": [
-      "PUB111"
-    ]
-  },
-  {
-    "source": "ME158",
-    "target": "ME047",
-    "count": 1,
-    "publication_ids": [
-      "PUB112"
-    ]
-  },
-  {
-    "source": "ME158",
-    "target": "ME116",
-    "count": 1,
-    "publication_ids": [
-      "PUB112"
-    ]
-  },
-  {
-    "source": "ME158",
-    "target": "ME024",
-    "count": 1,
-    "publication_ids": [
-      "PUB112"
-    ]
-  },
-  {
-    "source": "ME116",
-    "target": "ME024",
-    "count": 1,
-    "publication_ids": [
-      "PUB112"
-    ]
-  },
-  {
-    "source": "ME158",
-    "target": "ME019",
-    "count": 1,
-    "publication_ids": [
-      "PUB112"
-    ]
-  },
-  {
-    "source": "ME116",
-    "target": "ME019",
-    "count": 1,
-    "publication_ids": [
-      "PUB112"
-    ]
-  },
-  {
     "source": "ME159",
-    "target": "ME071",
-    "count": 1,
-    "publication_ids": [
-      "PUB113"
-    ]
-  },
-  {
-    "source": "ME159",
-    "target": "ME148",
-    "count": 1,
-    "publication_ids": [
-      "PUB113"
-    ]
-  },
-  {
-    "source": "ME159",
-    "target": "ME160",
-    "count": 1,
-    "publication_ids": [
-      "PUB113"
-    ]
-  },
-  {
-    "source": "ME159",
-    "target": "ME002",
-    "count": 1,
-    "publication_ids": [
-      "PUB113"
-    ]
-  },
-  {
-    "source": "ME148",
     "target": "ME160",
     "count": 1,
     "publication_ids": [

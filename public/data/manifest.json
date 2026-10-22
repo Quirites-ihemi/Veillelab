@@ -1,13 +1,13 @@
 {
-  "source_workbook": "Modele_BDD_application_veille_CHRONO_310_PUB012_TRANSVERSAUX_V1(3).xlsx",
+  "source_workbook": "Quirites_BDD_CONSOLIDEE_44_PUBLICATIONS_2026-10-22.xlsx",
   "counts": {
-    "publications": 50,
+    "publications": 44,
     "nodes": 1305,
     "relations": 1174,
     "treatments": 10,
     "contents": 996,
-    "expertise_nodes": 133,
-    "expertise_edges": 192
+    "expertise_nodes": 127,
+    "expertise_edges": 166
   },
   "graph_publications": [
     "PUB001",
@@ -158,6 +158,6 @@
     "PUB118.png",
     "PUB119.png"
   ],
-  "expertise_source_workbook": "Quirites_BDD_PUB114_CORRIGEE_COMPATIBLE_2026-10-21.xlsx",
-  "expertise_update": "PUB114 : 5 noeuds, 5 associations ; exclusion de 28 micro-expertises sans publication (21/10/2026)"
+  "expertise_source_workbook": "Quirites_BDD_CONSOLIDEE_44_PUBLICATIONS_2026-10-22.xlsx",
+  "expertise_update": "Synchronisation avec la base de 44 publications du 22/10/2026 : retrait de PUB064, PUB080, PUB084, PUB091 et de leurs rattachements d’expertises. Code, moteur et chronologie inchangés."
 }

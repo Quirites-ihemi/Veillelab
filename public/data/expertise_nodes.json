@@ -36,16 +36,6 @@
         "has_graph": true
       },
       {
-        "publication_id": "PUB073",
-        "titre": "le déploiement de l'intelligence artificielle dans les administrations publiques : analyse comparée, enjeux et conditions de réussite",
-        "annee": "2026",
-        "organisme": "Inspection générale de l’administration",
-        "image_path": "/images/publications/PUB073.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/26008R%20-%20D%C3%A9ploiement%20IA%20dans%20AP.pdf",
-        "url_source": "https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports,https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB113",
         "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
         "annee": "2026",
@@ -66,7 +56,7 @@
         "count": 1
       }
     ],
-    "publication_count": 4,
+    "publication_count": 3,
     "degree": 2
   },
   {
@@ -164,16 +154,6 @@
         "has_graph": true
       },
       {
-        "publication_id": "PUB080",
-        "titre": "insécurité et délinquance en 2025 : bilan statistique et atlas départemental",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB080.png",
-        "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB111",
         "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
         "annee": "2026",
@@ -194,10 +174,6 @@
         "count": 1
       },
       {
-        "id": "ME045",
-        "count": 1
-      },
-      {
         "id": "ME107",
         "count": 1
       },
@@ -206,8 +182,8 @@
         "count": 1
       }
     ],
-    "publication_count": 3,
-    "degree": 5
+    "publication_count": 2,
+    "degree": 4
   },
   {
     "id": "ME009",
@@ -318,16 +294,6 @@
         "url_contenu": "https://www.calameo.com/read/002719292fed72e70a1fa",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/note-du-crgn-121-80-ans-de-formation-cynophile-a-gramat",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB064",
-        "titre": "25e anniversaire du cstagn, le soutien au cœur de l’action de la gendarmerie",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB064.png",
-        "url_contenu": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "url_source": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "has_graph": false
       }
     ],
     "associated": [
@@ -340,24 +306,12 @@
         "count": 1
       },
       {
-        "id": "ME099",
-        "count": 1
-      },
-      {
-        "id": "ME102",
-        "count": 1
-      },
-      {
         "id": "ME129",
-        "count": 1
-      },
-      {
-        "id": "ME141",
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 6
+    "publication_count": 1,
+    "degree": 3
   },
   {
     "id": "ME013",
@@ -652,6 +606,16 @@
         "has_graph": true
       },
       {
+        "publication_id": "PUB015",
+        "titre": "la recherche criminologique intégrée à la pratique policière",
+        "annee": "2026",
+        "organisme": "Revue du Grasco",
+        "image_path": "/images/publications/PUB015.png",
+        "url_contenu": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
+        "url_source": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
+        "has_graph": true
+      },
+      {
         "publication_id": "PUB018",
         "titre": "les disparités communales en matière de vols sans violence",
         "annee": "2026",
@@ -669,16 +633,6 @@
         "image_path": "/images/publications/PUB022.png",
         "url_contenu": "https://droit.cairn.info/revue-administration-2026-1-page-30?lang=fr",
         "url_source": "https://www.acphfmi.fr/la-revue-administration-2/",
-        "has_graph": true
-      },
-      {
-        "publication_id": "PUB015",
-        "titre": "la recherche criminologique intégrée à la pratique policière",
-        "annee": "2026",
-        "organisme": "Revue du Grasco",
-        "image_path": "/images/publications/PUB015.png",
-        "url_contenu": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
-        "url_source": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
         "has_graph": true
       },
       {
@@ -958,16 +912,6 @@
         "has_graph": true
       },
       {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB090",
         "titre": "lutte contre la pédocriminalité",
         "annee": "2026",
@@ -992,40 +936,12 @@
         "count": 1
       },
       {
-        "id": "ME141",
-        "count": 1
-      },
-      {
-        "id": "ME144",
-        "count": 1
-      },
-      {
-        "id": "ME146",
-        "count": 1
-      },
-      {
-        "id": "ME148",
-        "count": 1
-      },
-      {
-        "id": "ME149",
-        "count": 1
-      },
-      {
-        "id": "ME150",
-        "count": 1
-      },
-      {
-        "id": "ME151",
-        "count": 1
-      },
-      {
         "id": "ME154",
         "count": 1
       }
     ],
-    "publication_count": 4,
-    "degree": 11
+    "publication_count": 3,
+    "degree": 4
   },
   {
     "id": "ME029",
@@ -1096,16 +1012,6 @@
         "has_graph": true
       },
       {
-        "publication_id": "PUB073",
-        "titre": "le déploiement de l'intelligence artificielle dans les administrations publiques : analyse comparée, enjeux et conditions de réussite",
-        "annee": "2026",
-        "organisme": "Inspection générale de l’administration",
-        "image_path": "/images/publications/PUB073.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/26008R%20-%20D%C3%A9ploiement%20IA%20dans%20AP.pdf",
-        "url_source": "https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports,https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB101",
         "titre": "le modèle économique de la sécurité privée",
         "annee": "2026",
@@ -1118,19 +1024,11 @@
     ],
     "associated": [
       {
-        "id": "ME032",
-        "count": 1
-      },
-      {
         "id": "ME052",
         "count": 1
       },
       {
         "id": "ME059",
-        "count": 1
-      },
-      {
-        "id": "ME098",
         "count": 1
       },
       {
@@ -1142,8 +1040,8 @@
         "count": 1
       }
     ],
-    "publication_count": 3,
-    "degree": 6
+    "publication_count": 2,
+    "degree": 4
   },
   {
     "id": "ME032",
@@ -1167,38 +1065,20 @@
         "url_contenu": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
         "url_source": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB073",
-        "titre": "le déploiement de l'intelligence artificielle dans les administrations publiques : analyse comparée, enjeux et conditions de réussite",
-        "annee": "2026",
-        "organisme": "Inspection générale de l’administration",
-        "image_path": "/images/publications/PUB073.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/26008R%20-%20D%C3%A9ploiement%20IA%20dans%20AP.pdf",
-        "url_source": "https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports,https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports",
-        "has_graph": false
       }
     ],
     "associated": [
       {
-        "id": "ME030",
-        "count": 1
-      },
-      {
         "id": "ME042",
-        "count": 2
+        "count": 1
       },
       {
         "id": "ME091",
         "count": 1
-      },
-      {
-        "id": "ME098",
-        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 4
+    "publication_count": 1,
+    "degree": 2
   },
   {
     "id": "ME033",
@@ -1243,26 +1123,10 @@
     "domains": [
       "Sécurité publique"
     ],
-    "publications": [
-      {
-        "publication_id": "PUB080",
-        "titre": "insécurité et délinquance en 2025 : bilan statistique et atlas départemental",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB080.png",
-        "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME045",
-        "count": 1
-      }
-    ],
-    "publication_count": 1,
-    "degree": 1
+    "publications": [],
+    "associated": [],
+    "publication_count": 0,
+    "degree": 0
   },
   {
     "id": "ME036",
@@ -1287,16 +1151,6 @@
         "url_contenu": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
         "url_source": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB064",
-        "titre": "25e anniversaire du cstagn, le soutien au cœur de l’action de la gendarmerie",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB064.png",
-        "url_contenu": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "url_source": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "has_graph": false
       }
     ],
     "associated": [
@@ -1307,14 +1161,10 @@
       {
         "id": "ME075",
         "count": 1
-      },
-      {
-        "id": "ME141",
-        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 3
+    "publication_count": 1,
+    "degree": 2
   },
   {
     "id": "ME038",
@@ -1458,22 +1308,12 @@
         "url_contenu": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
         "url_source": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB073",
-        "titre": "le déploiement de l'intelligence artificielle dans les administrations publiques : analyse comparée, enjeux et conditions de réussite",
-        "annee": "2026",
-        "organisme": "Inspection générale de l’administration",
-        "image_path": "/images/publications/PUB073.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/26008R%20-%20D%C3%A9ploiement%20IA%20dans%20AP.pdf",
-        "url_source": "https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports,https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports",
-        "has_graph": false
       }
     ],
     "associated": [
       {
         "id": "ME032",
-        "count": 2
+        "count": 1
       },
       {
         "id": "ME055",
@@ -1486,14 +1326,10 @@
       {
         "id": "ME091",
         "count": 1
-      },
-      {
-        "id": "ME098",
-        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 5
+    "publication_count": 1,
+    "degree": 4
   },
   {
     "id": "ME043",
@@ -1558,16 +1394,6 @@
         "has_graph": true
       },
       {
-        "publication_id": "PUB080",
-        "titre": "insécurité et délinquance en 2025 : bilan statistique et atlas départemental",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB080.png",
-        "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB111",
         "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
         "annee": "2026",
@@ -1580,27 +1406,7 @@
     ],
     "associated": [
       {
-        "id": "ME006",
-        "count": 1
-      },
-      {
-        "id": "ME034",
-        "count": 1
-      },
-      {
         "id": "ME038",
-        "count": 1
-      },
-      {
-        "id": "ME047",
-        "count": 1
-      },
-      {
-        "id": "ME048",
-        "count": 1
-      },
-      {
-        "id": "ME049",
         "count": 1
       },
       {
@@ -1616,8 +1422,8 @@
         "count": 1
       }
     ],
-    "publication_count": 3,
-    "degree": 9
+    "publication_count": 2,
+    "degree": 4
   },
   {
     "id": "ME046",
@@ -1689,16 +1495,6 @@
         "has_graph": true
       },
       {
-        "publication_id": "PUB080",
-        "titre": "insécurité et délinquance en 2025 : bilan statistique et atlas départemental",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB080.png",
-        "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB112",
         "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
         "annee": "2026",
@@ -1713,10 +1509,6 @@
       {
         "id": "ME016",
         "count": 2
-      },
-      {
-        "id": "ME045",
-        "count": 1
       },
       {
         "id": "ME090",
@@ -1735,8 +1527,8 @@
         "count": 1
       }
     ],
-    "publication_count": 4,
-    "degree": 6
+    "publication_count": 3,
+    "degree": 5
   },
   {
     "id": "ME048",
@@ -1759,25 +1551,11 @@
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB080",
-        "titre": "insécurité et délinquance en 2025 : bilan statistique et atlas départemental",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB080.png",
-        "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
-        "has_graph": false
       }
     ],
     "associated": [
       {
         "id": "ME020",
-        "count": 1
-      },
-      {
-        "id": "ME045",
         "count": 1
       },
       {
@@ -1789,8 +1567,8 @@
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 4
+    "publication_count": 1,
+    "degree": 3
   },
   {
     "id": "ME049",
@@ -1813,23 +1591,9 @@
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB080",
-        "titre": "insécurité et délinquance en 2025 : bilan statistique et atlas départemental",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB080.png",
-        "url_contenu": "https://www.interieur.gouv.fr/content/download/139779/1102543/file/Ins%C3%A9curit%C3%A9%20et%20d%C3%A9linquance%20en%202025%20-%20Bilan%20statistique%20-%20%C3%A9dition%202026.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Insecurite-et-delinquance-en-2025-bilan-statistique-et-atlas-departemental",
-        "has_graph": false
       }
     ],
     "associated": [
-      {
-        "id": "ME045",
-        "count": 1
-      },
       {
         "id": "ME048",
         "count": 1
@@ -1839,8 +1603,8 @@
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 3
+    "publication_count": 1,
+    "degree": 2
   },
   {
     "id": "ME050",
@@ -2471,16 +2235,6 @@
         "url_contenu": "",
         "url_source": "https://www.lgdj.fr/cahiers-francais-mai-juin-2026-n451-9782111743533.html",
         "has_graph": false
-      },
-      {
-        "publication_id": "PUB091",
-        "titre": "entre 2016 et 2025, les vols dans les exploitations agricoles",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB091.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/IA83%20les%20vols%20dans%20les%20exploitations%20agricoles.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Entre-2016-et-2025-les-vols-dans-les-exploitations-agricoles-diminuent-et-visent-en-premier-lieu-le-materiel-electrique",
-        "has_graph": false
       }
     ],
     "associated": [
@@ -2507,18 +2261,10 @@
       {
         "id": "ME070",
         "count": 1
-      },
-      {
-        "id": "ME117",
-        "count": 1
-      },
-      {
-        "id": "ME142",
-        "count": 1
       }
     ],
-    "publication_count": 4,
-    "degree": 8
+    "publication_count": 3,
+    "degree": 6
   },
   {
     "id": "ME067",
@@ -3549,46 +3295,6 @@
     "degree": 2
   },
   {
-    "id": "ME098",
-    "label": "Transformation de l’action publique par l’intelligence artificielle",
-    "family": "Problème public",
-    "definition": "",
-    "entities": [
-      "Inspection générale de l’administration"
-    ],
-    "domains": [
-      "Travail, emploi, formation"
-    ],
-    "publications": [
-      {
-        "publication_id": "PUB073",
-        "titre": "le déploiement de l'intelligence artificielle dans les administrations publiques : analyse comparée, enjeux et conditions de réussite",
-        "annee": "2026",
-        "organisme": "Inspection générale de l’administration",
-        "image_path": "/images/publications/PUB073.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/26008R%20-%20D%C3%A9ploiement%20IA%20dans%20AP.pdf",
-        "url_source": "https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports,https://www.vie-publique.fr/rapport/303927-le-deploiement-de-lintelligence-artificielle-dans-les-administrations?egn-publisher=dila_vp&egn-name=informer_rss_rapports",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME030",
-        "count": 1
-      },
-      {
-        "id": "ME032",
-        "count": 1
-      },
-      {
-        "id": "ME042",
-        "count": 1
-      }
-    ],
-    "publication_count": 1,
-    "degree": 3
-  },
-  {
     "id": "ME099",
     "label": "Transmission de la culture professionnelle institutionnelle",
     "family": "Méthode / savoir-faire",
@@ -3611,34 +3317,16 @@
         "url_contenu": "https://audio.ausha.co/QQVm5Fw02070.mp3",
         "url_source": "https://podcast.ausha.co/les-podcasts-de-l-ensp",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB064",
-        "titre": "25e anniversaire du cstagn, le soutien au cœur de l’action de la gendarmerie",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB064.png",
-        "url_contenu": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "url_source": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "has_graph": false
       }
     ],
     "associated": [
       {
-        "id": "ME011",
-        "count": 1
-      },
-      {
         "id": "ME073",
-        "count": 1
-      },
-      {
-        "id": "ME141",
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 3
+    "publication_count": 1,
+    "degree": 1
   },
   {
     "id": "ME100",
@@ -3739,34 +3427,16 @@
         "url_contenu": "https://audio.ausha.co/QQVm5Fw02070.mp3",
         "url_source": "https://podcast.ausha.co/les-podcasts-de-l-ensp",
         "has_graph": true
-      },
-      {
-        "publication_id": "PUB064",
-        "titre": "25e anniversaire du cstagn, le soutien au cœur de l’action de la gendarmerie",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB064.png",
-        "url_contenu": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "url_source": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "has_graph": false
       }
     ],
     "associated": [
       {
-        "id": "ME011",
-        "count": 1
-      },
-      {
         "id": "ME073",
-        "count": 1
-      },
-      {
-        "id": "ME141",
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 3
+    "publication_count": 1,
+    "degree": 1
   },
   {
     "id": "ME104",
@@ -4215,16 +3885,6 @@
         "has_graph": false
       },
       {
-        "publication_id": "PUB091",
-        "titre": "entre 2016 et 2025, les vols dans les exploitations agricoles",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB091.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/IA83%20les%20vols%20dans%20les%20exploitations%20agricoles.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Entre-2016-et-2025-les-vols-dans-les-exploitations-agricoles-diminuent-et-visent-en-premier-lieu-le-materiel-electrique",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB101",
         "titre": "le modèle économique de la sécurité privée",
         "annee": "2026",
@@ -4261,10 +3921,6 @@
         "count": 1
       },
       {
-        "id": "ME066",
-        "count": 1
-      },
-      {
         "id": "ME074",
         "count": 1
       },
@@ -4285,16 +3941,12 @@
         "count": 1
       },
       {
-        "id": "ME142",
-        "count": 1
-      },
-      {
         "id": "ME143",
         "count": 1
       }
     ],
-    "publication_count": 7,
-    "degree": 14
+    "publication_count": 6,
+    "degree": 12
   },
   {
     "id": "ME118",
@@ -4923,52 +4575,10 @@
     "domains": [
       "Sécurité publique"
     ],
-    "publications": [
-      {
-        "publication_id": "PUB064",
-        "titre": "25e anniversaire du cstagn, le soutien au cœur de l’action de la gendarmerie",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB064.png",
-        "url_contenu": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "url_source": "https://www.calameo.com/read/002719292eb4c1ed9d634",
-        "has_graph": false
-      },
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME011",
-        "count": 1
-      },
-      {
-        "id": "ME028",
-        "count": 1
-      },
-      {
-        "id": "ME036",
-        "count": 1
-      },
-      {
-        "id": "ME099",
-        "count": 1
-      },
-      {
-        "id": "ME102",
-        "count": 1
-      }
-    ],
-    "publication_count": 2,
-    "degree": 5
+    "publications": [],
+    "associated": [],
+    "publication_count": 0,
+    "degree": 0
   },
   {
     "id": "ME142",
@@ -4981,30 +4591,10 @@
     "domains": [
       "Sécurité publique"
     ],
-    "publications": [
-      {
-        "publication_id": "PUB091",
-        "titre": "entre 2016 et 2025, les vols dans les exploitations agricoles",
-        "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "/images/publications/PUB091.png",
-        "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/IA83%20les%20vols%20dans%20les%20exploitations%20agricoles.pdf",
-        "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Entre-2016-et-2025-les-vols-dans-les-exploitations-agricoles-diminuent-et-visent-en-premier-lieu-le-materiel-electrique",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME066",
-        "count": 1
-      },
-      {
-        "id": "ME117",
-        "count": 1
-      }
-    ],
-    "publication_count": 1,
-    "degree": 2
+    "publications": [],
+    "associated": [],
+    "publication_count": 0,
+    "degree": 0
   },
   {
     "id": "ME143",
@@ -5068,30 +4658,16 @@
         "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "has_graph": false
-      },
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
       }
     ],
     "associated": [
-      {
-        "id": "ME028",
-        "count": 1
-      },
       {
         "id": "ME122",
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 2
+    "publication_count": 1,
+    "degree": 1
   },
   {
     "id": "ME145",
@@ -5106,16 +4682,6 @@
       "Sécurité publique"
     ],
     "publications": [
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      },
       {
         "publication_id": "PUB090",
         "titre": "lutte contre la pédocriminalité",
@@ -5133,67 +4699,8 @@
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 1
-  },
-  {
-    "id": "ME146",
-    "label": "Tueries de masse",
-    "family": "Problème public",
-    "definition": "Phénomène de violence de masse caractérisé par des modes d’action et des configurations nécessitant une adaptation de la réponse opérationnelle des forces de l’ordre.",
-    "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME028",
-        "count": 1
-      }
-    ],
     "publication_count": 1,
     "degree": 1
-  },
-  {
-    "id": "ME147",
-    "label": "Analyse historique des groupes politiques violents et des mémoires gendarmiques",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à analyser historiquement les groupes politiques violents et les dynamiques de construction et de transmission des mémoires gendarmiques.",
-    "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      }
-    ],
-    "associated": [],
-    "publication_count": 1,
-    "degree": 0
   },
   {
     "id": "ME148",
@@ -5209,16 +4716,6 @@
     ],
     "publications": [
       {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      },
-      {
         "publication_id": "PUB113",
         "titre": "forêts aux abois, l'histoire des gendarmes à l'épreuve du feu",
         "annee": "2026",
@@ -5231,10 +4728,6 @@
     ],
     "associated": [
       {
-        "id": "ME028",
-        "count": 1
-      },
-      {
         "id": "ME159",
         "count": 1
       },
@@ -5243,104 +4736,8 @@
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 3
-  },
-  {
-    "id": "ME149",
-    "label": "Analyse sociologique des pratiques professionnelles des forces de l’ordre",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à analyser les effets des dispositifs institutionnels, des cultures professionnelles et des mécanismes sociaux sur les pratiques des forces de l’ordre.",
-    "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME028",
-        "count": 1
-      }
-    ],
     "publication_count": 1,
-    "degree": 1
-  },
-  {
-    "id": "ME150",
-    "label": "Analyse comportementale à des fins de renseignement et d’évaluation de la dangerosité",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à analyser des indices comportementaux et des facteurs de dangerosité afin de produire du renseignement et d’appuyer la décision policière.",
-    "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME028",
-        "count": 1
-      }
-    ],
-    "publication_count": 1,
-    "degree": 1
-  },
-  {
-    "id": "ME151",
-    "label": "Analyse des déterminants de l’innovation au travail dans la Gendarmerie nationale",
-    "family": "Méthode / savoir-faire",
-    "definition": "Capacité à étudier les facteurs individuels et organisationnels influençant le comportement innovant et la performance au travail dans la Gendarmerie nationale.",
-    "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
-    ],
-    "domains": [
-      "Sécurité publique"
-    ],
-    "publications": [
-      {
-        "publication_id": "PUB050",
-        "titre": "parution du livret des communications - 6ème édition de la journée des chercheurs",
-        "annee": "2026",
-        "organisme": "Centre de recherche de la Gendarmerie nationale",
-        "image_path": "/images/publications/PUB050.png",
-        "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/58564/file/Livret%20des%20communications%20-%20Journ%C3%A9e%20des%20chercheurs.pdf",
-        "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/parution-du-livret-des-communications-6eme-edition-de-la-journee-des-chercheurs",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME028",
-        "count": 1
-      }
-    ],
-    "publication_count": 1,
-    "degree": 1
+    "degree": 2
   },
   {
     "id": "ME152",
@@ -5353,26 +4750,10 @@
     "domains": [
       "Sécurité nationale"
     ],
-    "publications": [
-      {
-        "publication_id": "PUB084",
-        "titre": "conseils aux entreprises : flash ingérence",
-        "annee": "2026",
-        "organisme": "Direction générale de la sécurité intérieure",
-        "image_path": "/images/publications/PUB084.png",
-        "url_contenu": "https://www.dgsi.interieur.gouv.fr/sites/dgsi/files/medias/documents/2026-08/Flash_Ing%C3%A9rence_122.pdf",
-        "url_source": "https://www.dgsi.interieur.gouv.fr/dgsi-a-vos-cotes/contre-espionnage/conseils-aux-entreprises-flash-ingerence",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME153",
-        "count": 1
-      }
-    ],
-    "publication_count": 1,
-    "degree": 1
+    "publications": [],
+    "associated": [],
+    "publication_count": 0,
+    "degree": 0
   },
   {
     "id": "ME153",
@@ -5385,26 +4766,10 @@
     "domains": [
       "Sécurité nationale"
     ],
-    "publications": [
-      {
-        "publication_id": "PUB084",
-        "titre": "conseils aux entreprises : flash ingérence",
-        "annee": "2026",
-        "organisme": "Direction générale de la sécurité intérieure",
-        "image_path": "/images/publications/PUB084.png",
-        "url_contenu": "https://www.dgsi.interieur.gouv.fr/sites/dgsi/files/medias/documents/2026-08/Flash_Ing%C3%A9rence_122.pdf",
-        "url_source": "https://www.dgsi.interieur.gouv.fr/dgsi-a-vos-cotes/contre-espionnage/conseils-aux-entreprises-flash-ingerence",
-        "has_graph": false
-      }
-    ],
-    "associated": [
-      {
-        "id": "ME152",
-        "count": 1
-      }
-    ],
-    "publication_count": 1,
-    "degree": 1
+    "publications": [],
+    "associated": [],
+    "publication_count": 0,
+    "degree": 0
   },
   {
     "id": "ME154",
