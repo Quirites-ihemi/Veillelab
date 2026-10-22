@@ -101,7 +101,7 @@ export default function ExpertsWorkspace({data,onBack}){
   }
   const reset=()=>{setQuery('');setOrganisation('');setDomain('');setResults(null);setSelected(null);setSearchMeta(null);setError('')}
   const activeExpert=selected&&filtered.some(e=>e.name===selected.name)?filtered.find(e=>e.name===selected.name):filtered[0]||null
-  const exportPayload={query:query.trim(),experts:filtered,generated_at:new Date().toISOString(),method_note:'La recherche thématique est effectuée par le moteur dédié Experts ministériels à partir du référentiel fermé de micro-expertises validées. Une signature ou une simple proximité lexicale ne suffit pas à qualifier un expert sur le sujet.'}
+  const exportPayload={query:query.trim(),experts:filtered,generated_at:new Date().toISOString(),method_note:'La recherche thématique est effectuée par le moteur dédié Experts ministériels à partir du référentiel fermé d’expertises validées. Une signature ou une simple proximité lexicale ne suffit pas à qualifier un expert sur le sujet.'}
 
   return <main className="page qvl-experts-v01">
     <button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button>
@@ -116,7 +116,7 @@ export default function ExpertsWorkspace({data,onBack}){
         <div className="qvl-experts-field"><label>Organisme</label><select value={organisation} onChange={e=>setOrganisation(e.target.value)}><option value="">Tous les organismes</option>{organisations.map(o=><option key={o}>{o}</option>)}</select></div>
         <div className="qvl-experts-field"><label>Domaine</label><select value={domain} onChange={e=>setDomain(e.target.value)}><option value="">Tous les domaines</option>{domains.map(d=><option key={d}>{d}</option>)}</select></div>
       </div>
-      <div className="qvl-experts-actions"><button className="qvl-experts-primary" onClick={runSearch} disabled={loading}>{loading?'Recherche…':'Rechercher dans le corpus'}</button><button className="qvl-experts-secondary" onClick={reset}>Réinitialiser</button><div className="qvl-experts-method"><Icon name="info" size={16}/><span>La recherche thématique s’appuie sur le référentiel validé des micro-expertises. Une signature, un domaine général ou une simple proximité de vocabulaire ne suffisent pas à qualifier un expert sur le sujet demandé.</span></div></div>
+      <div className="qvl-experts-actions"><button className="qvl-experts-primary" onClick={runSearch} disabled={loading}>{loading?'Recherche…':'Rechercher dans le corpus'}</button><button className="qvl-experts-secondary" onClick={reset}>Réinitialiser</button><div className="qvl-experts-method"><Icon name="info" size={16}/><span>La recherche thématique s’appuie sur le référentiel validé des expertises. Une signature, un domaine général ou une simple proximité de vocabulaire ne suffisent pas à qualifier un expert sur le sujet demandé.</span></div></div>
     </section>
 
     {error&&<div className="qvl-experts-error">{error}</div>}
@@ -135,7 +135,7 @@ export default function ExpertsWorkspace({data,onBack}){
         <section><h3>Domaines documentés par ses publications</h3><div className="qvl-expert-domain-list">{activeExpert.domains.map(d=><span key={d}>{d}</span>)}</div></section>
         {results!==null&&activeExpert.matches.length>0&&<section><h3>Pourquoi cet expert ressort sur ce sujet</h3><div className="qvl-expert-evidence-list">{activeExpert.matches.slice(0,4).map((r,i)=>{const pub=activeExpert.publications.find(p=>p.publication_id===r.publication_id)||{};return <article key={`${r.result_id}-${i}`}><div className="qvl-expert-evidence-top"><strong>{r.publication_id} · {r.publication_title}</strong><span>{r.locator?`repère ${r.locator}`:'source'}</span></div><p>{resultExcerpt(r).slice(0,420)}{resultExcerpt(r).length>420?'…':''}</p><a href={sourceUrl(pub,r.locator)} target="_blank" rel="noreferrer"><Icon name="external" size={14}/>Ouvrir la source</a></article>})}</div></section>}
         <section><h3>Publications associées</h3><div className="qvl-expert-publications">{activeExpert.publications.map(pub=><article key={pub.publication_id}><div><b>{pub.publication_id}</b><strong>{pub.titre}</strong><span>{pub.organisme_producteur}{pub.année_publication?` · ${pub.année_publication}`:''}</span></div><a href={sourceUrl(pub)} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Source</a></article>)}</div></section>
-        <div className="qvl-expert-note"><Icon name="info" size={16}/><span>Le résultat repose sur une micro-expertise validée et documentée par une publication associée à cette personne dans le corpus. Une signature seule n’est pas utilisée comme preuve de pertinence thématique.</span></div>
+        <div className="qvl-expert-note"><Icon name="info" size={16}/><span>Le résultat repose sur une expertise validée et documentée par une publication associée à cette personne dans le corpus. Une signature seule n’est pas utilisée comme preuve de pertinence thématique.</span></div>
       </div></> }</aside>
     </div>}
   </main>

@@ -7,10 +7,10 @@ import '../crossdoc-espace.css'
 import '../crossdoc-accueil.css'
 import recommendationsCatalog from '../recommendationsCatalog.json'
 
-const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012', 'PUB113']
+export const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012', 'PUB113']
 
 
-const TRANSVERSAL_NOTIONS = [
+export const TRANSVERSAL_NOTIONS = [
   {
     id: 'criminalites',
     label: 'Criminalités',
@@ -481,13 +481,13 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
       open: onOpenChronology, visual: <XdaFrise chronology={chronology}/> },
     { key: 'notion', color: '#0b8f8a', tag: 'Vue transversale', title: 'Suivre une notion',
       lead: 'Choisissez une notion et regardez-la passer d’une publication à l’autre. Aucun rapprochement nouveau : chaque élément reste relié à sa page et à sa preuve.',
-      you: 'Une notion', get: 'Son parcours à travers le corpus',
+      you: 'Une notion', get: 'Son parcours à travers les publications',
       meta: `${TRANSVERSAL_NOTIONS.length} notions · éléments déjà validés`,
       open: onOpenNotions, visual: <XdaNotion publications={publications}/> },
     { key: 'reco', color: '#2552c4', tag: 'Recommandations', title: 'L’arbre des recommandations',
-      lead: 'Partez d’une publication : ses fils de lecture se séparent en raccords documentaires et en prolongements thématiques, chacun justifié par les passages des deux documents.',
+      lead: 'Partez d’une publication : ses fils de lecture se séparent en publications liées et en pistes pour aller plus loin, chacun justifié par les passages des deux documents.',
       you: 'Une publication', get: 'Son arbre de recommandations, relié aux passages sources',
-      meta: `${recommendationsCatalog.length} publications · raccords et prolongements précalculés`,
+      meta: `${recommendationsCatalog.length} publications · publications liées et pistes précalculées`,
       open: onOpenRecommendations, visual: <XdaTree publications={publications}/> },
   ]
 
@@ -497,7 +497,7 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
         <div>
           <div className="xda-kicker">Explorations transpublications</div>
           <h1>D’un document à l’autre</h1>
-          <p>Trois façons de traverser le corpus sans jamais perdre le passage source.</p>
+          <p>Trois façons de traverser les publications du bulletin sans jamais perdre le passage source.</p>
         </div>
         <div className="xda-corpus"><b>{publications.length} publications</b>du bulletin de veille</div>
       </header>
@@ -772,7 +772,7 @@ function NotionWorkspace({ data, onBack }) {
             </div>
 
             <div className={`ribbon-eclaireur ${selectedNode ? 'active' : ''}`}>
-              <div className="ribbon-eclaireur-title">L’Éclaireur</div>
+              <div className="ribbon-eclaireur-title">Guide</div>
               <p>{selectedNode ? 'Source retrouvée dans le document actif.' : 'Cliquez sur un terme pour accéder à la source.'}</p>
             </div>
           </div>
@@ -1057,7 +1057,7 @@ function ChronologyWorkspace({ data, onBack }) {
             <div>
               <b>{choice.publication_id}</b>
               <strong>{choice.titre}</strong>
-              <span>{choice.organisme_producteur || 'Publication du corpus'}</span>
+              <span>{choice.organisme_producteur || 'Publication du bulletin'}</span>
               <small>{choice['année_publication'] || ''}{choice.type_document ? ` · ${choice.type_document}` : ''} · {elementCount} repères validés</small>
             </div>
           </button>
@@ -1205,8 +1205,14 @@ function ChronologyWorkspace({ data, onBack }) {
   </main>
 }
 
-export default function CrossDocuments({ data }) {
-  const [view, setView] = useState('home')
+// Sous-vues adressables : #/documents/frise, /notions, /recommandations.
+const SUB_TO_VIEW = { frise: 'chronology', notions: 'notions', recommandations: 'recommendations' }
+const VIEW_TO_SUB = { chronology: 'frise', notions: 'notions', recommendations: 'recommandations', home: '' }
+
+export default function CrossDocuments({ data, sub = '', onSub }) {
+  const [localView, setLocalView] = useState('home')
+  const view = onSub ? (SUB_TO_VIEW[sub] || 'home') : localView
+  const setView = v => (onSub ? onSub(VIEW_TO_SUB[v] || '') : setLocalView(v))
 
   if (view === 'recommendations') return <DocumentLinksWorkspace data={data} onBack={() => setView('home')} />
   if (view === 'chronology') return <ChronoFrise data={data} onBack={() => setView('home')} />
@@ -1429,7 +1435,7 @@ function NotionSpace({ data, onBack }) {
           <strong>{notion.label} : {stops.length} escales, {types.length} dimensions</strong>
           <span>Cliquez sur une publication éclairée, un point ou une escale pour revoir ses éléments.</span>
         </div>}
-        {!notion && <div className="xd-caption"><small>Espace documentaire</small><strong>Les {publications.length} publications du corpus forment le cercle.</strong><span>Choisissez une notion : elle voyagera d’une publication à l’autre et fera apparaître ses dimensions.</span></div>}
+        {!notion && <div className="xd-caption"><small>Espace documentaire</small><strong>Les {publications.length} publications du bulletin forment le cercle.</strong><span>Choisissez une notion : elle voyagera d’une publication à l’autre et fera apparaître ses dimensions.</span></div>}
       </section>
       <aside className="xd-side">
         {!notion ? <><h2>Suivre une notion</h2><p className="xd-hint">La notion se déplace d’une publication à l’autre. À chaque escale, ses éléments déjà validés apparaissent. Aucun nouveau rapprochement n’est créé : chaque élément reste relié à sa publication, sa page, son extrait et sa preuve.</p></> : <>

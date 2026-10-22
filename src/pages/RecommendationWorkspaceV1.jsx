@@ -114,7 +114,7 @@ export default function RecommendationWorkspaceV1({treatment,data,onBack}){
       </div>
 
       <div className="qvl-rec-runbox">
-        <div className="qvl-rec-section-title"><div><strong>2. Extraire les recommandations</strong><span>Le corpus seul est utilisé</span></div></div>
+        <div className="qvl-rec-section-title"><div><strong>2. Extraire les recommandations</strong><span>Seules les publications du bulletin sont utilisées</span></div></div>
         <label className="qvl-rec-angle">Angle facultatif
           <input value={angle} onChange={e=>{setAngle(e.target.value);setError('')}} placeholder="Ex. recommandations relatives aux ports, à la prévention, à la coordination…"/>
         </label>

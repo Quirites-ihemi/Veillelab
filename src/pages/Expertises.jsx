@@ -90,16 +90,16 @@ function CommunitiesPanel({
 
   if (!open) {
     return (
-      <aside className="atlas-communities is-collapsed" aria-label="Communautés d’expertise (panneau replié)">
+      <aside className="atlas-communities is-collapsed" aria-label="Familles d’expertises (panneau replié)">
         <button
           type="button"
           className="atlas-communities-expand"
           onClick={onToggle}
-          aria-label="Déplier le panneau Communautés d’expertise"
-          title="Déplier le panneau Communautés d’expertise"
+          aria-label="Déplier le panneau Familles d’expertises"
+          title="Déplier le panneau Familles d’expertises"
         >
           <span aria-hidden="true">»</span>
-          <span className="atlas-communities-vertical">Communautés d’expertise</span>
+          <span className="atlas-communities-vertical">Familles d’expertises</span>
         </button>
         <div className="atlas-communities-dots" aria-hidden="true">
           {communities.map(c => (
@@ -111,14 +111,14 @@ function CommunitiesPanel({
   }
 
   return (
-    <aside className={`atlas-communities ${guideTarget ? 'atlas-guide-target' : ''}`} aria-label="Communautés d’expertise">
+    <aside className={`atlas-communities ${guideTarget ? 'atlas-guide-target' : ''}`} aria-label="Familles d’expertises">
       <header className="atlas-panel-head">
-        <h2><i aria-hidden="true" />Communautés d’expertise</h2>
+        <h2><i aria-hidden="true" />Familles d’expertises</h2>
         <button
           type="button"
           className="atlas-icon-button"
           onClick={onToggle}
-          aria-label="Replier le panneau Communautés d’expertise"
+          aria-label="Replier le panneau Familles d’expertises"
           title="Replier le panneau"
         >
           «
@@ -129,8 +129,8 @@ function CommunitiesPanel({
         <input
           value={query}
           onChange={e => setQuery(e.target.value)}
-          placeholder="Trouver une communauté"
-          aria-label="Rechercher une communauté"
+          placeholder="Trouver une famille"
+          aria-label="Rechercher une famille"
         />
         <Icon name="search" size={17} />
       </div>
@@ -144,7 +144,7 @@ function CommunitiesPanel({
               onClick={onOverview}
             >
               <i className="atlas-community-dot all" aria-hidden="true" />
-              <span className="atlas-community-name">Toutes les communautés</span>
+              <span className="atlas-community-name">Toutes les familles</span>
               <b>{totalInCommunities}</b>
             </button>
           </li>
@@ -170,7 +170,7 @@ function CommunitiesPanel({
               />
               <span className="atlas-community-name">
                 {c.label}
-                {c.transdirectional && <em>Cluster transdirectionnel</em>}
+                {c.transdirectional && <em>Partagée entre plusieurs directions</em>}
               </span>
               <b>{c.count}</b>
             </button>
@@ -178,14 +178,14 @@ function CommunitiesPanel({
         ))}
 
         {visible.length === 0 && (
-          <li className="atlas-community-empty">Aucune communauté ne correspond à « {query} ».</li>
+          <li className="atlas-community-empty">Aucune famille ne correspond à « {query} ».</li>
         )}
       </ul>
 
       {isolatedCount > 0 && (
         <p className="atlas-isolated-note">
           <i aria-hidden="true" />
-          {isolatedCount} micro-expertise{isolatedCount > 1 ? 's' : ''} isolée{isolatedCount > 1 ? 's' : ''}, rattachée{isolatedCount > 1 ? 's' : ''} à aucune communauté, figure{isolatedCount > 1 ? 'nt' : ''} aussi sur le graphe.
+          {isolatedCount} expertise{isolatedCount > 1 ? 's' : ''} isolée{isolatedCount > 1 ? 's' : ''}, rattachée{isolatedCount > 1 ? 's' : ''} à aucune famille, figure{isolatedCount > 1 ? 'nt' : ''} aussi sur le graphe.
         </p>
       )}
     </aside>
@@ -231,7 +231,7 @@ function ExpertiseCard({ selected, data, onClose, onOpen, guideTarget }) {
             <i style={{ background: atlasClusterColor(cluster.id), boxShadow: `0 0 8px ${atlasClusterColor(cluster.id)}` }} />
             <span>
               {cluster.label}
-              {cluster.transdirectional && <em>Cluster transdirectionnel</em>}
+              {cluster.transdirectional && <em>Partagée entre plusieurs directions</em>}
             </span>
           </p>
         </Accordion>
@@ -338,7 +338,7 @@ function ExpertiseCard({ selected, data, onClose, onOpen, guideTarget }) {
   )
 }
 
-export default function Expertises({ data, focusExpertiseId = null, focusToken = 0 }) {
+export default function Expertises({ data, focusExpertiseId = null, focusToken = 0, onSelectExpertise }) {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
@@ -361,10 +361,20 @@ export default function Expertises({ data, focusExpertiseId = null, focusToken =
 
   // Arrivée depuis l’onglet 2 (« Voir dans l’Atlas ») : on ouvre la fiche.
   useEffect(() => {
-    if (!focusExpertiseId) return
+    if (!focusExpertiseId) { if (onSelectExpertise) setSelected(null); return }
     const node = data.expertise_nodes.find(n => n.id === focusExpertiseId)
     if (node) setSelected(node)
   }, [focusExpertiseId, focusToken]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // L'expertise ouverte est reportée dans l'adresse (#/atlas/ME…), pour la partager.
+  const lastSelectedId = useRef(undefined)
+  useEffect(() => {
+    const id = selected?.id || ''
+    const previous = lastSelectedId.current
+    lastSelectedId.current = id
+    if (!onSelectExpertise || previous === undefined || previous === id) return
+    if (id !== (focusExpertiseId || '')) onSelectExpertise(id)
+  }, [selected]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const entities = useMemo(
     () => [
@@ -587,9 +597,9 @@ export default function Expertises({ data, focusExpertiseId = null, focusToken =
         </label>
 
         <div className="atlas-counters" aria-label="Statistiques du graphe">
-          <span><strong>{filtered.length}</strong> nœuds</span>
+          <span><strong>{filtered.length}</strong> expertise{filtered.length > 1 ? 's' : ''}</span>
           <span aria-hidden="true">·</span>
-          <span><strong>{visibleEdges.length}</strong> relations</span>
+          <span><strong>{visibleEdges.length}</strong> lien{visibleEdges.length > 1 ? 's' : ''}</span>
         </div>
 
         <div className="atlas-toolbar-actions">

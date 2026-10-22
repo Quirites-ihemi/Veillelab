@@ -7,7 +7,7 @@ import './scenario-workspace.css'
 
 const STEPS=[
   {id:1,label:'Formuler le besoin'},
-  {id:2,label:'Axes issus du corpus'},
+  {id:2,label:'Axes issus des publications'},
   {id:3,label:'Objets de la veille'},
   {id:4,label:'Finaliser'},
 ]
@@ -38,7 +38,7 @@ function isTableMaterial(s={}){
 }
 function SourceProof({source,compact=false,onProof}){
   const href=sourceUrl(source), rep=formatRepere(source.repere), table=isTableMaterial(source)
-  const ref=[source.publication_id,rep].filter(Boolean).join(' · ')||'Source du corpus'
+  const ref=[source.publication_id,rep].filter(Boolean).join(' · ')||'Source du bulletin'
   return <div className={`qvl-t06-source ${compact?'compact':''}`}>
     <div className="qvl-t06-source-main">
       <strong>{ref}</strong>
@@ -84,16 +84,16 @@ export default function ScenarioWorkspace({initialNeed='',onBack}){
 
   return <main className="page qvl-t06-page">
     <div className="qvl-t06-topline"><button className="qvl-t06-back" onClick={onBack}>← Atelier de veille</button><span>Scénario de veille</span></div>
-    <section className="qvl-t06-hero"><div><span className="qvl-t06-kicker">ATELIER DE VEILLE</span><h1>Construire un scénario de veille avec le corpus</h1><p>Le corpus est filtré avant la proposition des axes. Chaque résultat conserve une provenance vérifiable.</p></div><div className="qvl-t06-hero-mark">Corpus → axes → objets sourcés</div></section>
+    <section className="qvl-t06-hero"><div><span className="qvl-t06-kicker">ATELIER DE VEILLE</span><h1>Construire un scénario de veille à partir des publications du bulletin</h1><p>Les publications sont filtrées avant la proposition des axes. Chaque résultat conserve une provenance vérifiable.</p></div><div className="qvl-t06-hero-mark">Corpus → axes → objets sourcés</div></section>
 
     <nav className="qvl-t06-steps">{STEPS.map(s=><button key={s.id} className={`${step===s.id?'active':''} ${step>s.id?'done':''}`} onClick={()=>s.id<step&&setStep(s.id)}><b>{s.id}</b><span>{s.label}</span></button>)}</nav>
     {error&&<div className="qvl-t06-alert">{error}</div>}
-    {loading&&<div className="qvl-t06-loading"><span/><div><b>Traitement en cours…</b><small>Le corpus est interrogé et filtré. Une absence de résultat reste une réponse possible.</small></div></div>}
+    {loading&&<div className="qvl-t06-loading"><span/><div><b>Traitement en cours…</b><small>Les publications sont interrogées et filtrées. Une absence de résultat reste une réponse possible.</small></div></div>}
 
     {step===1&&<section className="qvl-t06-panel">
       <div className="qvl-t06-section-head"><div><h2>1. Formuler le besoin</h2><p>Une phrase suffit. Les axes seront proposés uniquement à partir des matériaux validés du corpus.</p></div><span className="qvl-t06-pill">Votre besoin</span></div>
       <label>Votre besoin de veille</label><textarea value={need} onChange={e=>setNeed(e.target.value)} maxLength={1800} placeholder="Ex. Je veux faire une veille sur l’évolution des menaces en matière de cybercriminalité"/>
-      <div className="qvl-t06-actions"><button className="primary" onClick={buildAxes} disabled={loading}>Chercher dans le corpus et faire émerger les axes →</button></div>
+      <div className="qvl-t06-actions"><button className="primary" onClick={buildAxes} disabled={loading}>Chercher dans les publications et faire émerger les axes →</button></div>
       <p className="qvl-t06-principle"><Icon name="info" size={15}/> Aucun axe n’est affiché sans appui documentaire. Une case vide n’est jamais remplie artificiellement.</p>
     </section>}
 
@@ -101,7 +101,7 @@ export default function ScenarioWorkspace({initialNeed='',onBack}){
       <div className="qvl-t06-section-head"><div><h2>2. Choisir des axes de veille</h2><p>Les axes ci-dessous émergent des seuls matériaux jugés pertinents pour votre besoin.</p></div><span className="qvl-t06-pill corpus">Corpus d’abord</span></div>
       <div className="qvl-t06-need"><b>Besoin</b><span>{need}</span></div>
       <div className="qvl-t06-metrics"><div><strong>{anchor?.diagnostic?.candidats_evalues??0}</strong><small>matériaux évalués</small></div><div><strong>{anchor?.diagnostic?.materiaux_valides??0}</strong><small>matériaux pertinents</small></div><div><strong>{anchor?.diagnostic?.publications_validees??0}</strong><small>publications pertinentes</small></div></div>
-      {!axes.length&&<div className="qvl-t06-empty-wide"><b>Aucun axe suffisamment fondé n’a été produit.</b><p>{anchor?.message||'Le corpus a retrouvé des matériaux pertinents, mais ils ne suffisent pas encore à fonder un axe de veille conforme aux règles du prototype.'}</p></div>}
+      {!axes.length&&<div className="qvl-t06-empty-wide"><b>Aucun axe suffisamment fondé n’a été produit.</b><p>{anchor?.message||'La recherche a retrouvé des matériaux pertinents, mais ils ne suffisent pas encore à fonder un axe de veille conforme aux règles du prototype.'}</p></div>}
       {/* CARTES D’ABORD : les matériaux détaillés viennent ensuite. */}
       <div className="qvl-t06-axis-grid">{axes.map((a,i)=><article key={a.axis_id||i} className={`qvl-t06-axis ${a.selected?'selected':''}`}>
         <div className="qvl-t06-axis-head"><button className="qvl-t06-check" onClick={()=>setAxes(v=>v.map((x,j)=>j===i?{...x,selected:!x.selected}:x))}>{a.selected?'✓':'○'}</button><h3>{a.titre}</h3><span>{a.publication_count||0} publication{a.publication_count>1?'s':''}</span></div>
@@ -120,7 +120,7 @@ export default function ScenarioWorkspace({initialNeed='',onBack}){
         {o.statut!=='ok'?<div className="qvl-t06-empty-wide">{o.message||'Aucun objet suffisamment sourcé.'}</div>:<div className="qvl-t06-object-grid">
           <div className="qvl-t06-object-col trend"><h4>▤ Tendances documentées</h4>{o.tendances?.length?o.tendances.map((x,k)=><ObjectCard key={k} item={x} type="trend" onProof={setProofModal}/>):<div className="qvl-t06-empty"><b>Aucune tendance</b><p>Une tendance exige au moins deux publications convergentes.</p></div>}</div>
           <div className="qvl-t06-object-col watch"><h4>◎ Éléments à surveiller</h4>{o.signes_a_guetter?.length?o.signes_a_guetter.map((x,k)=><ObjectCard key={k} item={x} type="watch" onProof={setProofModal}/>):<div className="qvl-t06-empty"><b>Aucun élément suffisamment sourcé</b></div>}</div>
-          <div className="qvl-t06-object-col source"><h4>↗ Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><ObjectCard key={k} item={x} type="source" onProof={setProofModal}/>):<div className="qvl-t06-empty"><b>Aucune source récurrente identifiée</b><p>Le corpus ne permet pas d’établir une source suivable dans le temps.</p></div>}</div>
+          <div className="qvl-t06-object-col source"><h4>↗ Sources à surveiller</h4>{o.sources_a_surveiller?.length?o.sources_a_surveiller.map((x,k)=><ObjectCard key={k} item={x} type="source" onProof={setProofModal}/>):<div className="qvl-t06-empty"><b>Aucune source récurrente identifiée</b><p>Les publications ne permettent pas d’établir une source suivable dans le temps.</p></div>}</div>
         </div>}
         {!!o.angles_morts?.length&&<div className="qvl-t06-points"><b>Points à documenter</b><ul>{o.angles_morts.map((x,k)=><li key={k}>{cleanVisibleText(x)}</li>)}</ul></div>}
       </section>)}

@@ -90,7 +90,7 @@ function TreeCrown({ payload, byId, onExplore, type, error }) {
     else groups.push({thread:{fil_lecture:leaf.fil_lecture,source_locator:leaf.source_locator},leaves:[leaf]})
   }
   const thematic = type === 'thematic'
-  return <section className={`arb-side ${thematic ? 'arb-green' : 'arb-blue'}`} aria-label={thematic ? 'Prolongements thématiques' : 'Raccords documentaires'}>
+  return <section className={`arb-side ${thematic ? 'arb-green' : 'arb-blue'}`} aria-label={thematic ? 'Pour aller plus loin' : 'Publications liées'}>
     <div className="arb-foliage">
       {groups.map(({thread,leaves},i) => <div className="arb-twig" key={`${thread.fil_lecture}-${i}`}>
         <div className="arb-twig-node"><h4>{thread.fil_lecture}</h4><span>{leaves.length} {leaves.length === 1 ? 'publication' : 'publications'} · Source : {thread.source_locator || 'repère non renseigné'}</span></div>
@@ -101,7 +101,7 @@ function TreeCrown({ payload, byId, onExplore, type, error }) {
       </div>)}
       {groups.length === 0 && <div className="arb-no-data">{error || (payload ? 'Aucune proposition affichable pour cette branche. D’autres rapprochements peuvent ne pas avoir été retrouvés.' : 'En attente de résultats.')}</div>}
     </div>
-    <div className="arb-main-limb"><h3>{thematic ? 'Prolongements thématiques' : 'Raccords documentaires'}</h3><span>{groups.length} {thematic ? 'thématiques' : 'fils'} utiles · {groups.reduce((a,g)=>a+g.leaves.length,0)} propositions</span></div>
+    <div className="arb-main-limb"><h3>{thematic ? 'Pour aller plus loin' : 'Publications liées'}</h3><span>{groups.length} {thematic ? 'thématiques' : 'fils'} utiles · {groups.reduce((a,g)=>a+g.leaves.length,0)} propositions</span></div>
   </section>
 }
 
@@ -259,7 +259,7 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
     </section>}
 
     {!result && !thematicResult && !loading && !error && !thematicError && <section className="arb-tree arb-preview" aria-label="Aperçu de l’arbre">
-      <div className="arb-canopy"><div className="arb-side arb-blue"><div className="arb-main-limb"><h3>Raccords documentaires</h3><span>Fils utiles uniquement</span></div></div><div className="arb-side arb-green"><div className="arb-main-limb"><h3>Prolongements thématiques</h3><span>Lectures transversales</span></div></div></div>
+      <div className="arb-canopy"><div className="arb-side arb-blue"><div className="arb-main-limb"><h3>Publications liées</h3><span>Fils utiles uniquement</span></div></div><div className="arb-side arb-green"><div className="arb-main-limb"><h3>Pour aller plus loin</h3><span>Lectures transversales</span></div></div></div>
       <div className="arb-trunk" aria-hidden="true"><span className="arb-trunk-left"/><span className="arb-trunk-right"/></div>
       <div className="arb-base arb-base-placeholder">Choisissez une publication puis explorez l’arbre</div>
     </section>}

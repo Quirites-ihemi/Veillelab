@@ -20,7 +20,7 @@ function sourceHref(source){
 
 function statusLabel(status){
   if(status==='definition_source')return 'Défini dans la source'
-  if(status==='insuffisamment_defini')return 'Définition insuffisante dans le corpus'
+  if(status==='insuffisamment_defini')return 'Définition insuffisante dans les publications'
   return 'Sens précisé à partir du contexte'
 }
 
@@ -104,7 +104,7 @@ export default function GlossaryWorkspace({treatment,data,onBack}){
       </div>
 
       <div className="qvl-glossary-runbox">
-        <div className="qvl-section-title"><div><strong>2. Générer le glossaire</strong><span>Le corpus seul est utilisé</span></div></div>
+        <div className="qvl-section-title"><div><strong>2. Générer le glossaire</strong><span>Seules les publications du bulletin sont utilisées</span></div></div>
         <label className="qvl-glossary-angle">Angle facultatif
           <input value={angle} onChange={e=>{setAngle(e.target.value);setError('')}} placeholder="Ex. cybercriminalité, sécurité civile, politique de la ville…"/>
         </label>

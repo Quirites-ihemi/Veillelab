@@ -6,20 +6,20 @@ import './reflection-workspace.css'
 const NEEDS = [
   {
     id: 'overview',
-    label: 'Comprendre rapidement ce que le corpus contient sur un thème',
+    label: 'Comprendre rapidement ce que les publications contiennent sur un thème',
     description: 'Obtenir une vue d’ensemble des angles abordés, publications, acteurs, territoires et principaux éléments présents dans le corpus.',
     placeholder: 'Sur quel thème souhaitez-vous faire le point ?',
     submitLabel: 'Explorer le thème',
     icon: 'book',
     tone: 'blue',
-    advice: 'Une faible présence dans les résultats peut traduire une faible couverture du corpus, pas une faible importance du phénomène.',
+    advice: 'Une faible présence dans les résultats peut traduire une faible couverture dans les publications, pas une faible importance du phénomène.',
   },
   {
     id: 'precise',
-    label: 'Trouver une information précise dans le corpus',
+    label: 'Trouver une information précise dans les publications',
     description: 'Chercher un fait, un chiffre, un concept, un dispositif, un acteur ou une information ciblée.',
     placeholder: 'Quelle information recherchez-vous précisément ?',
-    submitLabel: 'Chercher dans le corpus',
+    submitLabel: 'Chercher dans les publications',
     icon: 'search',
     tone: 'yellow',
     advice: 'L’absence de résultat ne signifie pas nécessairement que l’information n’existe pas : elle peut être formulée autrement ou ne pas être couverte par le corpus.',
@@ -32,7 +32,7 @@ const NEEDS = [
     submitLabel: 'Repérer les évolutions',
     icon: 'graph',
     tone: 'green',
-    advice: 'Une évolution dans le corpus n’est pas automatiquement une évolution du phénomène lui-même. Vérifiez notamment les périodes et la composition des sources mobilisées.',
+    advice: 'Une évolution dans les publications n’est pas automatiquement une évolution du phénomène lui-même. Vérifiez notamment les périodes et la composition des sources mobilisées.',
   },
   {
     id: 'actors',
@@ -42,7 +42,7 @@ const NEEDS = [
     submitLabel: 'Identifier les acteurs',
     icon: 'target',
     tone: 'coral',
-    advice: 'Le rôle affiché correspond à la manière dont l’acteur est décrit dans les publications du corpus ; il ne résume pas nécessairement l’ensemble de ses compétences.',
+    advice: 'Le rôle affiché correspond à la manière dont l’acteur est décrit dans les publications du bulletin ; il ne résume pas nécessairement l’ensemble de ses compétences.',
   },
   {
     id: 'public-action',
@@ -52,7 +52,7 @@ const NEEDS = [
     submitLabel: 'Explorer l’action publique',
     icon: 'building',
     tone: 'lilac',
-    advice: 'Le corpus montre uniquement les réponses d’action publique documentées par les publications présentes ; il ne constitue pas un inventaire exhaustif des dispositifs existants.',
+    advice: 'Les publications montrent uniquement les réponses d’action publique documentées par les publications présentes ; il ne constitue pas un inventaire exhaustif des dispositifs existants.',
   },
 ]
 
@@ -148,7 +148,7 @@ function materialKind(material) {
     if (type === 'instrument_dispositif') return 'Instrument / dispositif'
     return type ? type.replaceAll('_', ' ') : 'Élément du graphe'
   }
-  return 'Élément du corpus'
+  return 'Élément d’une publication'
 }
 
 function shortText(text, max = 290) {
@@ -636,7 +636,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     if (!text) return
     const index = cards.length
     const card = makeCanvasCard({
-      kind: 'Élément du corpus',
+      kind: 'Élément d’une publication',
       text,
       tone: 'sand',
       material,
@@ -819,7 +819,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         {leftCollapsed ? <div className="qvl-collapsed-label">Besoins informationnels</div> : <>
           <header className="qvl-side-heading">
             <span className="qvl-side-icon"><Icon name="book" size={19}/></span>
-            <div><h2>Besoins informationnels</h2><p>Choisissez ce que vous cherchez à faire avec le corpus.</p></div>
+            <div><h2>Besoins informationnels</h2><p>Choisissez ce que vous cherchez à faire avec les publications.</p></div>
           </header>
           <div className="qvl-need-list">
             {NEEDS.map(need => {
@@ -881,7 +881,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             {!cards.length && <div className="qvl-empty-canvas">
               <div className="qvl-empty-postits" aria-hidden="true"><i className="blue"/><i className="yellow"/><i className="lilac"/></div>
               <h3>Installez votre réflexion ici</h3>
-              <p>Commencez par une question, une idée ou une note. Cherchez ensuite dans le corpus et ajoutez les éléments utiles à côté de votre propre raisonnement.</p>
+              <p>Commencez par une question, une idée ou une note. Cherchez ensuite dans les publications et ajoutez les éléments utiles à côté de votre propre raisonnement.</p>
               <span>Une bibliothèque à portée de main, un espace de travail qui reste le vôtre.</span>
             </div>}
 
@@ -921,19 +921,19 @@ export default function ReflectionWorkspaceV1({ onBack }) {
         </div>
         <div className={`qvl-canvas-toolbar etb-dock ${eclaireur.mode === 'open' && eclaireur.step === 'axis' ? 'qvl-eclaireur-target' : ''}`}>
             {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
-            <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément du corpus</button>
+            <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément d’une publication</button>
           </div>
         <div className={`qvl-canvas-help ${linkMode ? 'link-mode' : ''}`}><span>{linkMode ? `Mode liaison : sélectionnez deux cartes (${selectedCards.length}/2).` : selectedCards.length ? `${selectedCards.length} carte${selectedCards.length > 1 ? 's' : ''} sélectionnée${selectedCards.length > 1 ? 's' : ''}` : 'Cliquez sur une carte pour la sélectionner.'}</span><span>{linkMode ? 'Cliquez simplement sur deux post-it, puis qualifiez le lien.' : 'Les volets peuvent être repliés pour agrandir le canevas · Chaque post-it peut être réduit.'}</span></div>
       </section>
 
       <aside className={`qvl-reflection-right ${eclaireur.mode === 'open' && eclaireur.step === 'results' ? 'qvl-eclaireur-target' : ''}`}>
-        <button className="qvl-panel-toggle right" type="button" onClick={() => setRightCollapsed(value => !value)} aria-label={rightCollapsed ? 'Déployer le corpus' : 'Replier le corpus'}>
+        <button className="qvl-panel-toggle right" type="button" onClick={() => setRightCollapsed(value => !value)} aria-label={rightCollapsed ? 'Déployer les publications' : 'Replier les publications'}>
           {rightCollapsed ? '‹' : '›'}
         </button>
         {rightCollapsed ? <div className="qvl-collapsed-label">Résultats</div> : <>
           <header className="qvl-side-heading corpus qvl-results-heading">
             <span className="qvl-side-icon"><Icon name="file" size={19}/></span>
-            <div><h2>Résultats du corpus</h2><p>Éléments sourcés issus des publications présentes dans le corpus actif.</p></div>
+            <div><h2>Résultats dans les publications</h2><p>Éléments sourcés issus des publications présentes dans le corpus actif.</p></div>
           </header>
 
           <div className="qvl-results-tabs" role="tablist" aria-label="Vues des résultats">
@@ -945,7 +945,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
           <div className="qvl-results-tabpanel" role="tabpanel">
             {resultTab === 'answer' && <>
               {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
-              {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans le corpus actif…</strong></div>}
+              {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans les publications…</strong></div>}
               {!searchLoading && searchResult && <NeedResults need={resultNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
               {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>{searchContext?.source === 'awaiting-card' ? 'Choisissez le point de départ.' : 'Votre bibliothèque est prête.'}</strong><p>{searchContext?.source === 'awaiting-card' ? 'Sélectionnez un post-it dans le canevas, puis cliquez sur l’un des besoins informationnels à gauche.' : 'Sélectionnez un post-it puis un besoin informationnel. Les résultats apparaîtront ici avec leur provenance.'}</p></div>}
             </>}
@@ -964,12 +964,12 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
           <div className={`qvl-free-search ${freeSearchOpen ? 'open' : ''}`}>
             <button type="button" className="qvl-free-search-toggle" onClick={() => { setFreeSearchOpen(value => !value); window.setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0) }}>
-              <Icon name="search" size={16}/><span><strong>Question libre au corpus du bulletin</strong><small>Le bot n’utilise que les publications intégrées au corpus actif.</small></span><span aria-hidden="true">{freeSearchOpen ? '−' : '+'}</span>
+              <Icon name="search" size={16}/><span><strong>Question libre aux publications du bulletin</strong><small>Le bot n’utilise que les publications du bulletin.</small></span><span aria-hidden="true">{freeSearchOpen ? '−' : '+'}</span>
             </button>
             {freeSearchOpen && <form onSubmit={runManualSearch}>
-              <textarea ref={searchInputRef} maxLength={500} value={manualQuery} onChange={event => setManualQuery(event.target.value)} placeholder="Posez directement une question au corpus…"/>
+              <textarea ref={searchInputRef} maxLength={500} value={manualQuery} onChange={event => setManualQuery(event.target.value)} placeholder="Posez directement une question aux publications…"/>
               <span className="qvl-char-count">{manualQuery.length}/500</span>
-              <button type="submit" disabled={!manualQuery.trim() || searchLoading}><Icon name="search" size={18}/>{searchLoading ? 'Recherche…' : 'Chercher dans le corpus'}</button>
+              <button type="submit" disabled={!manualQuery.trim() || searchLoading}><Icon name="search" size={18}/>{searchLoading ? 'Recherche…' : 'Chercher dans les publications'}</button>
             </form>}
           </div>
         </>}
@@ -1063,13 +1063,13 @@ function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, aw
   const movedClass = movable.moved ? ' qvl-eclaireur-moved' : ''
 
   if (mode === 'closed') {
-    return <button type="button" {...moveProps} onPointerDown={movable.onPointerDown} title="Rouvrir L’Éclaireur · glisser pour le déplacer" className={`qvl-eclaireur-help qvl-eclaireur-side-${side}${movedClass}`} onClick={onRestore} aria-label="Rouvrir L’Éclaireur"><span aria-hidden="true">✦</span>L’Éclaireur</button>
+    return <button type="button" {...moveProps} onPointerDown={movable.onPointerDown} title="Rouvrir le guide · glisser pour le déplacer" className={`qvl-eclaireur-help qvl-eclaireur-side-${side}${movedClass}`} onClick={onRestore} aria-label="Rouvrir le guide"><span aria-hidden="true">✦</span>Guide</button>
   }
 
   if (mode === 'minimized') {
-    return <div {...moveProps} onPointerDown={movable.onPointerDown} title="Glisser pour déplacer L’Éclaireur" className={`qvl-eclaireur-minimized qvl-eclaireur-side-${side}${movedClass}`} aria-label={`L’Éclaireur, étape ${number} sur 3, réduit`}>
-      <button type="button" className="qvl-eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer L’Éclaireur"><span aria-hidden="true">✦</span><strong>L’Éclaireur</strong><small>{number}/3</small></button>
-      <button type="button" className="qvl-eclaireur-minimized-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button>
+    return <div {...moveProps} onPointerDown={movable.onPointerDown} title="Glisser pour déplacer le guide" className={`qvl-eclaireur-minimized qvl-eclaireur-side-${side}${movedClass}`} aria-label={`Guide, étape ${number} sur 3, réduit`}>
+      <button type="button" className="qvl-eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer le guide"><span aria-hidden="true">✦</span><strong>Guide</strong><small>{number}/3</small></button>
+      <button type="button" className="qvl-eclaireur-minimized-close" onClick={onClose} aria-label="Fermer le guide">×</button>
     </div>
   }
 
@@ -1080,17 +1080,17 @@ function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, aw
     title = '2 · Sélectionnez un besoin'
     body = <p>Cliquez sur <strong>un besoin informationnel</strong> dans le volet de gauche. La recherche part de l’axe de réflexion que vous avez sélectionné.</p>
   } else if (step === 'results') {
-    title = '3 · Accéder au corpus'
+    title = '3 · Accéder aux publications'
     body = <>
-      {awaitingCard ? <p>Choisissez d’abord une carte <strong>Question</strong> ou <strong>Idée / hypothèse</strong> dans le canevas.</p> : loading ? <p>La recherche est en cours. Les résultats vont s’afficher dans le volet de droite.</p> : resultCount === 0 ? <p>Le corpus n’a pas fourni de résultat suffisant pour ce besoin. Vous pouvez revenir à votre axe ou choisir un autre besoin.</p> : <p>Les résultats sont disponibles dans le volet de droite. Pour chaque élément, utilisez <strong>Voir la preuve complète</strong> pour accéder à la preuve documentaire.</p>}
+      {awaitingCard ? <p>Choisissez d’abord une carte <strong>Question</strong> ou <strong>Idée / hypothèse</strong> dans le canevas.</p> : loading ? <p>La recherche est en cours. Les résultats vont s’afficher dans le volet de droite.</p> : resultCount === 0 ? <p>Les publications n’ont pas fourni de résultat suffisant pour ce besoin. Vous pouvez revenir à votre axe ou choisir un autre besoin.</p> : <p>Les résultats sont disponibles dans le volet de droite. Pour chaque élément, utilisez <strong>Voir la preuve complète</strong> pour accéder à la preuve documentaire.</p>}
       {multiple && !loading && <p className="qvl-eclaireur-tip">Plusieurs résultats sont disponibles : faites défiler la colonne pour tous les consulter.</p>}
     </>
   }
 
-  return <aside {...moveProps} className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}${movedClass}`} aria-live="polite" aria-label={`L’Éclaireur, étape ${number} sur 3`}>
-    <header className="qvl-eclaireur-visual-header" onPointerDown={movable.onPointerDown} title="Glisser pour déplacer L’Éclaireur">
-      <div className="qvl-eclaireur-brand"><span className="qvl-eclaireur-compass" aria-hidden="true">✦</span><div><strong>L’Éclaireur</strong><small>VOTRE GUIDE DANS CET ESPACE</small></div></div>
-      <div className="qvl-eclaireur-header-actions"><span>{number}/3</span><button type="button" className="qvl-eclaireur-minimize" onClick={onMinimize} aria-label="Réduire L’Éclaireur">−</button><button type="button" className="qvl-eclaireur-close" onClick={onClose} aria-label="Fermer L’Éclaireur">×</button></div>
+  return <aside {...moveProps} className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}${movedClass}`} aria-live="polite" aria-label={`Guide, étape ${number} sur 3`}>
+    <header className="qvl-eclaireur-visual-header" onPointerDown={movable.onPointerDown} title="Glisser pour déplacer le guide">
+      <div className="qvl-eclaireur-brand"><span className="qvl-eclaireur-compass" aria-hidden="true">✦</span><div><strong>Guide</strong><small>VOTRE GUIDE DANS CET ESPACE</small></div></div>
+      <div className="qvl-eclaireur-header-actions"><span>{number}/3</span><button type="button" className="qvl-eclaireur-minimize" onClick={onMinimize} aria-label="Réduire le guide">−</button><button type="button" className="qvl-eclaireur-close" onClick={onClose} aria-label="Fermer le guide">×</button></div>
       <div className="qvl-eclaireur-lighthouse" aria-hidden="true"><span className="qvl-eclaireur-lighthouse-light"/><span className="qvl-eclaireur-lighthouse-top"/><span className="qvl-eclaireur-lighthouse-body"/><span className="qvl-eclaireur-lighthouse-base"/></div>
     </header>
     <div className="qvl-eclaireur-body">
@@ -1119,7 +1119,7 @@ function NeedResults({ need, result, materials, onAdd, onProof }) {
       <div><strong>{domains.length}</strong><span>domaine{domains.length > 1 ? 's' : ''}</span></div>
     </div>}
     <div className="qvl-result-heading"><div><strong>{materials.length} résultat{materials.length > 1 ? 's' : ''}</strong><span>{need.id === 'overview' ? 'pour construire une première vue du thème' : 'correspondant à ce besoin informationnel'}</span></div>{all.length !== materials.length && <small>{all.length - materials.length} autre{all.length - materials.length > 1 ? 's' : ''} résultat{all.length - materials.length > 1 ? 's' : ''} écarté{all.length - materials.length > 1 ? 's' : ''} car hors de cette catégorie</small>}</div>
-    {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Le corpus actif ne permet pas de répondre suffisamment à ce besoin.</strong><p>Aucun élément suffisamment ciblé n’a été repéré dans les publications du bulletin présentes dans le corpus. Cela ne signifie pas que le sujet est peu documenté en dehors du bulletin. Vous pouvez préciser la formulation ou revenir à « Comprendre rapidement ce que le corpus contient sur un thème ».</p></div>}
+    {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Les publications ne permettent pas de répondre suffisamment à ce besoin.</strong><p>Aucun élément suffisamment ciblé n’a été repéré dans les publications du bulletin présentes dans le corpus. Cela ne signifie pas que le sujet est peu documenté en dehors du bulletin. Vous pouvez préciser la formulation ou revenir à « Comprendre rapidement ce que le corpus contient sur un thème ».</p></div>}
   </section>
 }
 
@@ -1135,7 +1135,7 @@ function SourceResults({ materials, onProof }) {
   const sources = [...grouped.values()]
 
   if (!sources.length) {
-    return <div className="qvl-right-empty compact"><span className="qvl-round-book"><Icon name="file" size={25}/></span><strong>Aucune source à afficher.</strong><p>Lancez une recherche dans le corpus pour voir ici les publications mobilisées.</p></div>
+    return <div className="qvl-right-empty compact"><span className="qvl-round-book"><Icon name="file" size={25}/></span><strong>Aucune source à afficher.</strong><p>Lancez une recherche dans les publications pour voir ici les publications mobilisées.</p></div>
   }
 
   return <section className="qvl-source-results">

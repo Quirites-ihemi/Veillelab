@@ -18,11 +18,11 @@ import '../atelier-etabli.css'
 
 const regimeClass={'Synthèse stricte':'strict','Extraction stricte':'extract','Enrichissement contrôlé':'enrich'}
 const ALLOWED_TREATMENTS=[
-  {key:'carte',title:'Avancer avec le corpus',ids:['T03'],icon:'graph',fallbackRegime:'Enrichissement contrôlé',description:'Explorez le corpus, gardez les éléments utiles à portée de main et construisez votre réflexion dans un espace de travail visuel.'},
+  {key:'carte',title:'Avancer avec le corpus',ids:['T03'],icon:'graph',fallbackRegime:'Enrichissement contrôlé',description:'Explorez les publications du bulletin, gardez les éléments utiles à portée de main et construisez votre réflexion dans un espace de travail visuel.'},
   {key:'resume',title:'Résumé analytique',ids:['T01'],icon:'spark',fallbackRegime:'Synthèse stricte',description:'Obtenez une synthèse structurée et neutre d’une publication sélectionnée.'},
   {key:'glossaire',title:'Glossaire',ids:['T02'],icon:'book',fallbackRegime:'Enrichissement contrôlé',description:'Générez un glossaire des termes clés et notions importantes du sujet.'},
   {key:'recommandations',title:'Extraction de recommandations',ids:['T04'],icon:'spark',fallbackRegime:'Extraction stricte',description:'Identifiez et extrayez les recommandations clés des rapports et documents.'},
-  {key:'experts',title:'Experts ministériels',ids:['T08'],icon:'graph',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels du corpus et les sujets documentés dans leurs publications.'},
+  {key:'experts',title:'Experts ministériels',ids:['T08'],icon:'graph',fallbackRegime:'Enrichissement contrôlé',description:'Repérez les auteurs ministériels des publications du bulletin et les sujets documentés dans leurs publications.'},
   {key:'scenario',title:'Scénario de veille',ids:['T06'],icon:'pin',fallbackRegime:'Enrichissement contrôlé',description:'Construisez un scénario de veille à partir de votre besoin, des apports du corpus et de vos choix.'}
 ]
 
@@ -44,7 +44,7 @@ const TOOL_FLOW={
   resume:{input:'Une publication et votre besoin',output:'Un texte structuré court : sujet, problématique, résultats, enseignements'},
   glossaire:{input:'Une à quatre publications, un angle facultatif',output:'Des termes expliqués dans le contexte de leur source, avec provenance'},
   recommandations:{input:'Un ou plusieurs domaines, un sujet facultatif',output:'Les recommandations formulées dans les publications, avec provenance'},
-  experts:{input:'Un sujet ou un nom',output:'Les auteurs et entités du corpus, avec les sujets documentés'},
+  experts:{input:'Un sujet ou un nom',output:'Les auteurs et entités des publications du bulletin, avec les sujets documentés'},
   scenario:{input:'Votre besoin et vos choix successifs',output:'Une fiche de scénario : périmètre, axes, questions, experts et sources à suivre'}
 }
 
@@ -61,18 +61,18 @@ export default function Atelier({data}){
       <div className="etb-hero-copy">
         <span className="etb-kicker">Atelier de veille</span>
         <h1>Mobiliser les connaissances du bulletin dans votre propre travail</h1>
-        <p className="etb-hero-lead">Grâce à l’interrogation du corpus en langage naturel, chacun peut rechercher des informations, confronter des approches et rassembler des éléments utiles pour comprendre une situation, approfondir une problématique ou préparer un travail.</p>
+        <p className="etb-hero-lead">Grâce à l’interrogation des publications du bulletin en langage naturel, chacun peut rechercher des informations, confronter des approches et rassembler des éléments utiles pour comprendre une situation, approfondir une problématique ou préparer un travail.</p>
         <ul className="etb-hero-facts">
-          <li><strong>{corpus.total} publications</strong> du bulletin, dont {corpus.segmented} avec contenu segmenté</li>
+          <li><strong>{corpus.total} publications</strong> du bulletin, dont {corpus.segmented} avec texte consultable</li>
           <li><strong>{six.length} outils</strong>, de la synthèse d’une publication à la construction d’un scénario</li>
           <li><strong>Chaque production</strong> reste reliée aux passages sources</li>
         </ul>
       </div>
       <aside className="etb-hero-regimes" aria-label="Les trois régimes d’IA">
         <h2>Trois façons de travailler avec l’IA</h2>
-        <Regime cls="strict" title="Synthèse stricte">Résume fidèlement les contenus sélectionnés, sans ajout.</Regime>
-        <Regime cls="extract" title="Extraction stricte">Extrait uniquement les éléments présents dans les documents.</Regime>
-        <Regime cls="enrich" title="Enrichissement contrôlé">Enrichit et structure, en distinguant clairement les propositions documentées.</Regime>
+        <Regime cls="strict" title="Synthèse stricte">Résume sans rien ajouter.</Regime>
+        <Regime cls="extract" title="Extraction stricte">Relève uniquement ce qui est écrit.</Regime>
+        <Regime cls="enrich" title="Enrichissement contrôlé">Propose des pistes, signalées comme telles.</Regime>
       </aside>
     </header>
 
@@ -324,7 +324,7 @@ function ReflectionWorkspace({treatment,data,onBack,initialNeed=''}){
   return <main className="page reflection-page qvl-reflection-v02">
     <style>{REFLECTION_SCREEN_STYLES}</style>
     <button className="back-link" onClick={onBack}><Icon name="back"/>Retour à l’atelier</button>
-    <header className="qvl-reflection-head"><div className="qvl-reflection-title-row"><h1>Avancer avec le corpus</h1><span className="regime enrich">Enrichissement contrôlé</span></div><p>Explorez le corpus, gardez les éléments utiles à portée de main et construisez votre réflexion dans un espace de travail visuel.</p></header>
+    <header className="qvl-reflection-head"><div className="qvl-reflection-title-row"><h1>Avancer avec le corpus</h1><span className="regime enrich">Enrichissement contrôlé</span></div><p>Explorez les publications du bulletin, gardez les éléments utiles à portée de main et construisez votre réflexion dans un espace de travail visuel.</p></header>
 
     <div className="qvl-question-bar">
       <div className="qvl-question-label">Question centrale</div>
@@ -337,7 +337,7 @@ function ReflectionWorkspace({treatment,data,onBack,initialNeed=''}){
         <div className="qvl-corpus-rail-head">Corpus actif <button type="button" onClick={()=>setCorpusOpen(v=>!v)} style={{border:0,background:'transparent',cursor:'pointer',fontSize:18,color:'#1c4c9b'}}>»</button></div>
         <div className="qvl-corpus-stat"><b>{pubs.length}</b><span>publications</span></div>
         <div className="qvl-corpus-stat"><b>{generation?usedCount:(selected.length||'RAG')}</b><span>{generation?'mobilisées':selected.length?'sélectionnées':'recherche globale'}</span></div>
-        <div className="qvl-corpus-mode">{ragMode?`Le prompt suffit : le moteur cherche ses appuis dans le RAG (${chunkReadyCount} publications avec contenu segmenté).`:'Jusqu’à 4 publications peuvent être imposées.'}</div>
+        <div className="qvl-corpus-mode">{ragMode?`Le prompt suffit : le moteur cherche ses appuis dans le RAG (${chunkReadyCount} publications avec texte consultable).`:'Jusqu’à 4 publications peuvent être imposées.'}</div>
         <button className="qvl-corpus-open" type="button" onClick={()=>setCorpusOpen(v=>!v)}>{corpusOpen?'Réduire':'Ouvrir'}</button>
         {corpusOpen&&<div className="qvl-corpus-expanded"><div className="reflection-side-head"><div><strong>Publications</strong><span>{selected.length?`${selected.length} sélectionnée${selected.length>1?'s':''}`:'Aucune imposée'}</span></div><small>0 à 4 sources</small></div><div className="reflection-corpus-list">{pubs.map(p=>{const unavailable=!(p.chunk_count>0);return <label key={p.publication_id} className={`reflection-corpus-item ${selected.includes(p.publication_id)?'selected':''}`} style={unavailable?{opacity:.58}:undefined}><input type="checkbox" checked={selected.includes(p.publication_id)} disabled={unavailable} onChange={()=>toggle(p.publication_id)}/>{p.has_image?<img src={`.${p.image_path}`} alt=""/>:<div className="mini-placeholder">{p.publication_id}</div>}<div><b>{p.publication_id}</b><strong>{p.titre}</strong><span>{p.organisme_producteur} · {p.année_publication}</span>{unavailable&&<small style={{display:'block',marginTop:3,color:'#8a5a16'}}>Contenu segmenté indisponible pour ce traitement</small>}</div></label>})}</div></div>}
       </aside>

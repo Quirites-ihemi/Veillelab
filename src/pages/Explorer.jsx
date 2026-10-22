@@ -6,6 +6,7 @@ import PublicationOrbit, {
   normalizeType,
   typeLabel,
   typeColor,
+  typeHint,
   verbLabel,
   pagesOf,
   isTimecode,
@@ -14,6 +15,7 @@ import PublicationOrbit, {
 import ExplorerGuide from '../components/ExplorerGuide.jsx'
 import { askGraph } from '../services/chatApi.js'
 import { normalize, sentenceCase } from '../lib/text.js'
+import { domainLabel } from './Home.jsx'
 // Feuilles historiques conservées (règles éventuellement partagées).
 import '../explorer-eclaireur.css'
 import '../explorer-publication-controls.css'
@@ -34,7 +36,7 @@ const CHAT_SUGGESTIONS = [
   'Quels sont les principaux problèmes identifiés ?',
   'Quelles recommandations sont formulées ?',
   'Quels acteurs sont mentionnés ?',
-  'Quelles relations relient les éléments importants ?',
+  'Quels liens relient les éléments importants ?',
 ]
 
 function cleanChatText(value = '') {
@@ -80,12 +82,13 @@ function ChatAnswer({ chat }) {
   )
 }
 
-function PublicationDrawer({ open, onClose, publications, search, setSearch, onSelect, selectedId }) {
+function PublicationDrawer({ open, onClose, publications, search, setSearch, onSelect, selectedId, theme = null, themeLabel = null, onClearTheme }) {
   const matches = useMemo(() => {
     const q = normalize(search)
-    if (!q) return publications
-    return publications.filter(p => normalize(`${p.publication_id} ${p.titre} ${p.organisme_producteur} ${p.domaine || ''} ${p.année_publication || ''}`).includes(q))
-  }, [search, publications])
+    const base = theme ? publications.filter(p => String(p.domaine || '').trim() === theme) : publications
+    if (!q) return base
+    return base.filter(p => normalize(`${p.publication_id} ${p.titre} ${p.organisme_producteur} ${p.domaine || ''} ${p.année_publication || ''}`).includes(q))
+  }, [search, publications, theme])
   return (
     <>
       <button className={`orbit-drawer-scrim ${open ? 'open' : ''}`} aria-label="Fermer le volet publications" onClick={onClose} tabIndex={open ? 0 : -1} />
@@ -102,6 +105,12 @@ function PublicationDrawer({ open, onClose, publications, search, setSearch, onS
           <Icon name="search" size={17} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Titre, organisme, domaine, identifiant…" aria-label="Rechercher une publication" />
         </div>
+        {theme && (
+          <div className="orbit-drawer-theme">
+            <span>Thème : <strong>{themeLabel || theme}</strong></span>
+            <button type="button" onClick={onClearTheme} aria-label="Retirer le filtre de thème">Retirer <span aria-hidden="true">✕</span></button>
+          </div>
+        )}
         <div className="orbit-drawer-count">{matches.length} résultat{matches.length > 1 ? 's' : ''}</div>
         <div className="orbit-drawer-list">
           {matches.map(p => (
@@ -147,12 +156,12 @@ function ExplorerHome({ onChoose, count }) {
           <p>
             <strong>À la différence d’un graphe de réseaux</strong>, qui met principalement en évidence des
             connexions entre acteurs ou objets, le graphe de connaissances organise l’information sous la forme
-            d’entités — idées, personnes, lieux, événements, dispositifs, etc. — reliées entre elles par des
+            d’éléments — idées, personnes, lieux, événements, dispositifs, etc. — reliés entre eux par des
             relations sémantiques explicites, souvent formulées à l’aide de verbes d’action.
           </p>
           <p>
             Il permet ainsi de <strong>naviguer à l’intérieur d’un texte et des connaissances qu’il mobilise</strong>,
-            en passant d’une entité à une autre et en suivant les relations qui les relient.
+            en passant d’un élément à un autre et en suivant les liens qui les relient.
           </p>
           <p>
             Le <strong>GraphRAG</strong> prolonge cette logique en permettant d’interroger les contenus documentaires
@@ -170,10 +179,10 @@ function ExplorerHome({ onChoose, count }) {
       <aside className="orbit-home-howto">
         <h3>Comment fonctionne cet espace ?</h3>
         {[
-          ['Choisissez une publication', 'Recherchez une source dans le corpus.'],
-          ['Placez un sujet au centre', 'Les entités liées gravitent autour, avec le verbe de chaque relation.'],
+          ['Choisissez une publication', 'Recherchez une source parmi les publications du bulletin.'],
+          ['Placez un sujet au centre', 'Les éléments liés gravitent autour, avec le verbe de chaque lien.'],
           ['Lisez la preuve', 'La fiche indique les pages où le sujet apparaît, avec l’extrait qui le prouve.'],
-          ['Interrogez la publication', 'Posez vos questions en langage naturel.'],
+          ['Posez une question (IA)', 'Posez vos questions en langage naturel.'],
         ].map(([t, d], i) => (
           <div className="orbit-home-step" key={t}><b>{i + 1}</b><div><strong>{t}</strong><p>{d}</p></div></div>
         ))}
@@ -195,8 +204,14 @@ function Accordion({ title, count, children, defaultOpen = false }) {
   )
 }
 
-export default function Explorer({ data, onOpenAtlas }) {
+export default function Explorer({ data, onOpenAtlas, route = null, onRoute = null }) {
   const graphPubs = useMemo(() => data.publications.filter(p => p.has_graph), [data])
+  // Adresse : #/explorer, /publications, /theme/<domaine>, /<PUB>, /<PUB>/<N…>
+  const routed = Array.isArray(route) && typeof onRoute === 'function'
+  const routePub = routed && /^PUB\d+/.test(route[0] || '') ? route[0] : null
+  const routeNode = routePub ? (route[1] || null) : null
+  const routeTheme = routed && route[0] === 'theme' ? (route[1] || null) : null
+  const routeDrawer = routed && !routePub && (route[0] === 'publications' || route[0] === 'theme')
   const [selectedPub, setSelectedPub] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -261,6 +276,11 @@ export default function Explorer({ data, onOpenAtlas }) {
   )
 
   const choosePublication = p => {
+    if (routed && p?.publication_id !== routePub) { onRoute([p.publication_id]); return }
+    applyPublication(p)
+  }
+
+  const applyPublication = p => {
     setSelectedPub(p)
     setFocusId(null)
     setTrail([])
@@ -287,6 +307,37 @@ export default function Explorer({ data, onOpenAtlas }) {
     })
     if (!guideCollapsed && guideStep === 2) setGuideStep(3)
   }
+
+  // Synchronisation avec l'adresse (liens partageables, bouton Retour).
+  useEffect(() => {
+    if (!routed) return
+    if (routePub) {
+      if (selectedPub?.publication_id !== routePub) {
+        const p = graphPubs.find(x => x.publication_id === routePub)
+        if (p) applyPublication(p)
+      }
+    } else if (selectedPub) {
+      setSelectedPub(null)
+    }
+  }, [routePub]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!routed || !routePub || selectedPub?.publication_id !== routePub) return
+    if ((routeNode || null) !== (focusId || null)) setFocusId(routeNode || null)
+  }, [routeNode, selectedPub]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!routed || !selectedPub || selectedPub.publication_id !== routePub) return
+    if ((focusId || null) !== (routeNode || null)) onRoute(focusId ? [routePub, focusId] : [routePub], { replace: true })
+  }, [focusId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (routed && !routePub) setDrawerOpen(routeDrawer)
+  }, [routeDrawer, routeTheme]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const openHomeDrawer = () => (routed ? onRoute(['publications']) : setDrawerOpen(true))
+  const closeHomeDrawer = () => (routed ? onRoute([], { replace: true }) : setDrawerOpen(false))
+  const clearTheme = () => (routed ? onRoute(['publications'], { replace: true }) : null)
 
   const resetView = () => {
     setFocusId(null)
@@ -320,8 +371,8 @@ export default function Explorer({ data, onOpenAtlas }) {
   if (!selectedPub) {
     return (
       <div className="atlas-screen orbit-screen orbit-screen-home">
-        <ExplorerHome onChoose={() => setDrawerOpen(true)} count={graphPubs.length} />
-        <PublicationDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} />
+        <ExplorerHome onChoose={openHomeDrawer} count={graphPubs.length} />
+        <PublicationDrawer open={drawerOpen} onClose={closeHomeDrawer} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} theme={routeTheme} themeLabel={routeTheme ? domainLabel(routeTheme) : null} onClearTheme={clearTheme} />
       </div>
     )
   }
@@ -361,12 +412,12 @@ export default function Explorer({ data, onOpenAtlas }) {
               if (e.key === 'Enter' && nodeMatches[0]) { goTo(nodeMatches[0]); setNodeSearch('') }
               if (e.key === 'Escape') setNodeSearch('')
             }}
-            placeholder="Rechercher une entité dans la publication…"
-            aria-label="Rechercher une entité dans la publication"
+            placeholder="Rechercher un élément dans la publication…"
+            aria-label="Rechercher un élément dans la publication"
           />
           {searchFocused && nodeSearch && (
             <div className="atlas-search-results" role="listbox">
-              {nodeMatches.length === 0 && <p className="atlas-muted">Aucune entité ne correspond.</p>}
+              {nodeMatches.length === 0 && <p className="atlas-muted">Aucun élément ne correspond.</p>}
               {nodeMatches.map(n => (
                 <button type="button" key={n.node_id} onMouseDown={e => e.preventDefault()} onClick={() => { goTo(n); setNodeSearch('') }}>
                   <i style={{ background: typeColor(normalizeType(n.type_noeud)) }} aria-hidden="true" />
@@ -378,13 +429,13 @@ export default function Explorer({ data, onOpenAtlas }) {
         </div>
 
         <div className="atlas-counters" aria-label="Statistiques du graphe">
-          <span><strong>{nodes.length}</strong> entités</span>
+          <span><strong>{nodes.length}</strong> éléments clés</span>
           <span aria-hidden="true">·</span>
-          <span><strong>{relations.length}</strong> relations</span>
+          <span><strong>{relations.length}</strong> liens</span>
         </div>
 
         <button type="button" className={`orbit-chat-pill ${chatOpen ? 'is-open' : ''}`} onClick={() => setChatOpen(v => !v)} aria-expanded={chatOpen}>
-          <span className="orbit-chat-orb" aria-hidden="true" />Interroger la publication
+          <span className="orbit-chat-orb" aria-hidden="true" />Poser une question (IA)
         </button>
 
         <button type="button" className="atlas-btn outline" onClick={resetView}>
@@ -393,7 +444,7 @@ export default function Explorer({ data, onOpenAtlas }) {
       </div>
 
       <div className="orbit-body">
-        <aside className="orbit-left" aria-label="Publication et types d’entités">
+        <aside className="orbit-left" aria-label="Publication et types d’éléments">
           <h2 className="orbit-panel-title"><i aria-hidden="true" />Publication</h2>
           <article className="orbit-pubcard">
             {selectedPub.has_image ? <img src={`.${selectedPub.image_path}`} alt="" /> : <div className="orbit-mini-placeholder">{selectedPub.publication_id}</div>}
@@ -404,7 +455,7 @@ export default function Explorer({ data, onOpenAtlas }) {
           </article>
 
           <div className="orbit-types-head">
-            <h2 className="orbit-panel-title small">Types d’entités</h2>
+            <h2 className="orbit-panel-title small">Types d’éléments</h2>
             {disabledTypes.size > 0 && <button type="button" className="orbit-link" onClick={() => setDisabledTypes(new Set())}>Tout afficher</button>}
           </div>
           <div className="orbit-types">
@@ -415,7 +466,7 @@ export default function Explorer({ data, onOpenAtlas }) {
                 className={`orbit-type ${disabledTypes.has(t) ? 'off' : ''}`}
                 onClick={() => toggleType(t)}
                 aria-pressed={!disabledTypes.has(t)}
-                title={disabledTypes.has(t) ? 'Afficher ce type' : 'Masquer ce type'}
+                title={`${typeHint(t) ? typeHint(t) + ' ' : ''}${disabledTypes.has(t) ? '(Cliquer pour afficher ce type.)' : '(Cliquer pour masquer ce type.)'}`}
               >
                 <i style={{ background: typeColor(t), boxShadow: disabledTypes.has(t) ? 'none' : `0 0 8px ${typeColor(t)}` }} />
                 <span>{typeLabel(t)}</span>
@@ -459,14 +510,14 @@ export default function Explorer({ data, onOpenAtlas }) {
               resetToken={resetToken}
             />
           ) : (
-            <p className="orbit-empty">Aucune entité à afficher avec les filtres actuels.</p>
+            <p className="orbit-empty">Aucun élément à afficher avec les filtres actuels.</p>
           )}
 
           {chatOpen && (
-            <div className="orbit-chat" role="dialog" aria-label="Interroger la publication">
+            <div className="orbit-chat" role="dialog" aria-label="Poser une question (IA)">
               <header>
                 <span className="orbit-chat-orb" aria-hidden="true" />
-                <strong>Interroger la publication</strong>
+                <strong>Poser une question (IA)</strong>
                 <button type="button" className="orbit-icon-btn" onClick={() => setChatOpen(false)} aria-label="Réduire">−</button>
               </header>
               <div className="orbit-chat-scroll">
@@ -503,7 +554,7 @@ export default function Explorer({ data, onOpenAtlas }) {
           )}
         </section>
 
-        <aside className="orbit-side" aria-label="Fiche de l’entité">
+        <aside className="orbit-side" aria-label="Fiche de l’élément">
           {focus && (
             <article className="atlas-card orbit-card">
               <div className="atlas-card-type">
@@ -519,7 +570,7 @@ export default function Explorer({ data, onOpenAtlas }) {
                     : focusPages.every(p => /^\d+$/.test(String(p)))
                       ? `Apparaît sur ${focusPages.length} page${focusPages.length > 1 ? 's' : ''} de la publication`
                       : `Apparaît dans ${focusPages.length} passage${focusPages.length > 1 ? 's' : ''} de la publication`)
-                  : 'Pages non renseignées pour cette entité'}
+                  : 'Pages non renseignées pour cet élément'}
               </p>
               {focusPages.length > 0 && (
                 <div className="orbit-pages">
@@ -535,14 +586,14 @@ export default function Explorer({ data, onOpenAtlas }) {
                     <p>{chunk.texte.replace(/\s+/g, ' ').slice(0, 320)}{chunk.texte.length > 320 ? '…' : ''}</p>
                   </>
                 ) : (
-                  <p>Aucun extrait associé n’est disponible pour cette entité.</p>
+                  <p>Aucun extrait associé n’est disponible pour cet élément.</p>
                 )}
                 <button type="button" className="orbit-link" onClick={() => setProof(focus)}>
                   <Icon name="eye" size={15} /> Voir la preuve complète
                 </button>
               </div>
 
-              <Accordion title="Entités liées" count={linked.length}>
+              <Accordion title="Éléments liés" count={linked.length}>
                 <div className="orbit-linked">
                   {linked.length === 0 && <span className="atlas-muted">Aucune</span>}
                   {linked.map(n => (
@@ -554,11 +605,11 @@ export default function Explorer({ data, onOpenAtlas }) {
                 </div>
               </Accordion>
 
-              <Accordion title="Relations" count={focusRelations.length}>
+              <Accordion title="Liens" count={focusRelations.length}>
                 <div className="orbit-relations">
                   {focusRelations.length === 0 && <span className="atlas-muted">Aucune</span>}
                   {focusRelations.map((r, i) => (
-                    <button type="button" key={r.relation_id || i} onClick={() => setProof(r)} title="Voir la preuve de cette relation">
+                    <button type="button" key={r.relation_id || i} onClick={() => setProof(r)} title="Voir la preuve de ce lien">
                       <span className={r.source_id === focus.node_id ? 'is-focus' : ''}>{nodeMap[r.source_id]?.libelle}</span>
                       <em>{verbLabel(r.type_relation)}</em>
                       <span className={r.cible_id === focus.node_id ? 'is-focus' : ''}>{nodeMap[r.cible_id]?.libelle}</span>
