@@ -48,7 +48,7 @@
 .home-services{order:0}
 @media(min-width:1200px){
   .home{padding-top:32px;gap:32px}
-  .home-hero{gap:10px}
+  .home-hero{gap:10px;max-width:none}
   .home-hero h1{font-size:36px!important;line-height:1.15}
   .home-lead{font-size:17px!important}
   .home-services{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
