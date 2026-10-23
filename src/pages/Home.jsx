@@ -61,7 +61,7 @@ export default function Home({ data }) {
     <main className="home">
       <section className="home-hero" aria-labelledby="home-title">
         <p className="home-kicker">L’application compagne du bulletin de veille de l’IHEMI</p>
-        <h1 id="home-title">Des publications analysées pour que vous puissiez les explorer, les relier et enrichir vos travaux.</h1>
+        <h1 id="home-title">Repérer l’essentiel des publications et le réutiliser dans vos travaux.</h1>
         <p className="home-count">
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z" /></svg>
           {pubs.length} publications à ce jour · une dizaine ajoutée chaque mois
@@ -96,7 +96,7 @@ export default function Home({ data }) {
 
         <article className="home-service s-atelier">
           <p className="home-service-tab">Atelier de veille</p>
-          <h2>Produire un travail de veille à partir des publications, avec l’aide de l’IA.</h2>
+          <h2>Construire vos propres travaux avec une IA qui s’appuie uniquement sur les publications.</h2>
           <p className="home-service-lead">Six outils, de la synthèse d’une publication à la construction d’un scénario :</p>
           <div className="home-chips">
             <span>Résumé analytique</span><span>Glossaire</span><span>Extraction de recommandations</span><span>Experts ministériels</span><span>Scénario de veille</span><span>Avancer avec le corpus</span>
