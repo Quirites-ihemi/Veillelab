@@ -175,3 +175,11 @@
 @media(prefers-reduced-motion:reduce){
   .xd-screen *{transition:none!important;animation:none!important}
 }
+
+/* Ajustements ciblés — Suivre une notion */
+.xd-notion .xd-notion-intro{flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 14px;padding:12px 20px;background:#eaf0ff;border-bottom:1px solid #cbd8fc;color:#263b72;font-size:14px;line-height:1.45}
+.xd-notion .xd-notion-intro strong{font-size:15px;font-weight:850;white-space:nowrap}
+.xd-notion .xd-notion-intro span{font-weight:550}
+.xd-notion .xd-notion-controls{position:absolute;z-index:12;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px;background:rgba(255,255,255,.95);border:1px solid #d8dde5;border-radius:13px;box-shadow:0 5px 20px rgba(20,33,58,.12)}
+.xd-notion .xd-chip-label b{font-weight:800;color:#203d77}
+@media(max-width:760px){.xd-notion .xd-notion-intro{padding:10px 12px;font-size:12px}.xd-notion .xd-notion-controls{bottom:10px}.xd-notion .xd-notion-controls .xd-btn{font-size:12px;padding:0 9px}}
