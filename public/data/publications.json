@@ -806,8 +806,8 @@
     "relation_count": 8,
     "chunk_count": 15,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB120.png"
   },
   {
     "publication_id": "PUB121",
@@ -824,8 +824,8 @@
     "relation_count": 9,
     "chunk_count": 15,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB121.png"
   },
   {
     "publication_id": "PUB122",
@@ -842,8 +842,8 @@
     "relation_count": 9,
     "chunk_count": 14,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB122.png"
   },
   {
     "publication_id": "PUB123",
@@ -860,8 +860,8 @@
     "relation_count": 5,
     "chunk_count": 10,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB123.png"
   },
   {
     "publication_id": "PUB124",
@@ -878,8 +878,8 @@
     "relation_count": 2,
     "chunk_count": 8,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB124.png"
   },
   {
     "publication_id": "PUB125",
@@ -896,8 +896,8 @@
     "relation_count": 3,
     "chunk_count": 6,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB125.png"
   },
   {
     "publication_id": "PUB126",
@@ -914,8 +914,8 @@
     "relation_count": 9,
     "chunk_count": 14,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB126.png"
   },
   {
     "publication_id": "PUB127",
@@ -932,7 +932,7 @@
     "relation_count": 3,
     "chunk_count": 4,
     "has_graph": true,
-    "has_image": false,
-    "image_path": null
+    "has_image": true,
+    "image_path": "/images/publications/PUB127.png"
   }
 ]
