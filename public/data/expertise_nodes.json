@@ -63,10 +63,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à mobiliser données, outils, modèles ou scénarios pour éclairer la décision publique en contexte de crise.",
     "entities": [
-      "Association des préfets et représentants de l’État de la francophonie"
+      "Association des préfets et représentants de l’État de la francophonie",
+      "Université de Corse Pascal Paoli"
     ],
     "domains": [
-      "Travail, emploi, formation"
+      "Travail, emploi, formation",
+      "Sécurité civile / Prise de décision"
     ],
     "publications": [
       {
@@ -78,6 +80,16 @@
         "url_contenu": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
         "url_source": "https://www.linkedin.com/posts/apref-actes-du-forum-de-dakar-ugcPost-7448026029199282176-uVD-/",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB123",
+        "titre": "Les émotions dans la prise de décision en contexte opérationnel chez les sapeurs-pompiers : éclairages théoriques et méthodologiques à visée applicative",
+        "annee": "2026",
+        "organisme": "Université de Corse Pascal Paoli",
+        "image_path": null,
+        "url_contenu": "https://theses.hal.science/tel-05769148v1",
+        "url_source": "https://theses.hal.science/tel-05769148v1",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -88,10 +100,14 @@
       {
         "id": "ME096",
         "count": 1
+      },
+      {
+        "id": "ME170",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 2
+    "publication_count": 2,
+    "degree": 3
   },
   {
     "id": "ME004",
@@ -135,17 +151,20 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à comparer les caractéristiques des victimes et des mis en cause selon l’âge, le sexe ou le type d’atteinte.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+      "Délégation aux victimes (DAV) — Police nationale"
     ],
     "domains": [
-      "Sécurité publique"
+      "Sécurité publique",
+      "Violences conjugales / Homicides"
     ],
     "publications": [
       {
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
@@ -155,10 +174,20 @@
         "publication_id": "PUB111",
         "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB111.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB124",
+        "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
+        "annee": "2026",
+        "organisme": "Délégation aux victimes (DAV) — Police nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "",
         "has_graph": true
       }
     ],
@@ -172,16 +201,24 @@
         "count": 1
       },
       {
+        "id": "ME048",
+        "count": 1
+      },
+      {
         "id": "ME107",
         "count": 1
       },
       {
         "id": "ME157",
         "count": 1
+      },
+      {
+        "id": "ME171",
+        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 4
+    "publication_count": 3,
+    "degree": 6
   },
   {
     "id": "ME009",
@@ -215,7 +252,7 @@
         "image_path": "/images/publications/PUB033.png",
         "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -430,7 +467,8 @@
     "definition": "Capacité à objectiver statistiquement des perceptions subjectives relatives à la sécurité ou à l’insécurité.",
     "entities": [
       "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -450,7 +488,7 @@
         "publication_id": "PUB013",
         "titre": "rapport d'enquête thématique 2022 vécu et ressenti en matière de sécurité",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB013.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139696/1101982/file/Rapport%20d%E2%80%99enque%CC%82te%20the%CC%81matique%202022%20V%C3%A9cu%20et%20ressenti%20en%20mati%C3%A8re%20de%20s%C3%A9curit%C3%A9.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Rapport-d-enquete-thematique-2022-Vecu-et-ressenti-en-matiere-de-securite-les-interactions-entre-les-forces-de-securite-interieure-et-la-population",
@@ -460,7 +498,7 @@
         "publication_id": "PUB112",
         "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB112.png",
         "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
@@ -574,7 +612,8 @@
       "Centre d’analyse et de lutte contre les atteintes aux élus",
       "Direction générale des étrangers en France",
       "Revue du Grasco",
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Administration territoriale de l'Etat",
@@ -604,21 +643,11 @@
         "has_graph": true
       },
       {
-        "publication_id": "PUB015",
-        "titre": "la recherche criminologique intégrée à la pratique policière",
-        "annee": "2026",
-        "organisme": "Revue du Grasco",
-        "image_path": "/images/publications/PUB015.png",
-        "url_contenu": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
-        "url_source": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
-        "has_graph": true
-      },
-      {
         "publication_id": "PUB018",
         "titre": "les disparités communales en matière de vols sans violence",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "/images/publications/PUB018.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139737/1102259/file/IA82.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Les-disparites-communales-en-matiere-de-vols-sans-violence-etat-des-lieux",
         "has_graph": true
@@ -634,10 +663,20 @@
         "has_graph": true
       },
       {
+        "publication_id": "PUB015",
+        "titre": "la recherche criminologique intégrée à la pratique policière",
+        "annee": "2026",
+        "organisme": "Revue du Grasco",
+        "image_path": "/images/publications/PUB015.png",
+        "url_contenu": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
+        "url_source": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
+        "has_graph": true
+      },
+      {
         "publication_id": "PUB111",
         "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB111.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
@@ -647,7 +686,7 @@
         "publication_id": "PUB112",
         "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB112.png",
         "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
@@ -705,7 +744,8 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à suivre sur plusieurs années l’évolution statistique des mineurs victimes et des mineurs mis en cause.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -715,7 +755,7 @@
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
@@ -790,10 +830,13 @@
     "definition": "Capacité à croiser des variables sociales et territoriales pour analyser un phénomène public.",
     "entities": [
       "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+      "Gendarmerie nationale"
     ],
     "domains": [
-      "Sécurité publique"
+      "Sécurité publique",
+      "Criminalité organisée"
     ],
     "publications": [
       {
@@ -810,10 +853,20 @@
         "publication_id": "PUB112",
         "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB112.png",
         "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB121",
+        "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
+        "annee": "2026",
+        "organisme": "Gendarmerie nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
         "has_graph": true
       }
     ],
@@ -833,10 +886,14 @@
       {
         "id": "ME158",
         "count": 1
+      },
+      {
+        "id": "ME168",
+        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 4
+    "publication_count": 3,
+    "degree": 5
   },
   {
     "id": "ME027",
@@ -917,7 +974,7 @@
         "image_path": "/images/publications/PUB090.png",
         "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -1003,7 +1060,7 @@
         "titre": "identification de lignes directrices pour des plans de résilience des alpes françaises en réponse aux conséquences des effets du changement climatique",
         "annee": "2025",
         "organisme": "Inspection générale de l’administration",
-        "image_path": "",
+        "image_path": "/images/publications/PUB010.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/24121R%20-%20R%C3%A9silience%20Alpes%20Fran%C3%A7aises.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/rapports/identification-de-lignes-directrices-pour-des-plans-de-resilience-a-proposer-aux-autorites-et.html",
         "has_graph": true
@@ -1016,7 +1073,7 @@
         "image_path": "/images/publications/PUB101.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/25079R%20-%20S%C3%A9curit%C3%A9%20priv%C3%A9e-web.pdf",
         "url_source": "https://www.calameo.com/read/008180918d625c3e224b0",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -1114,10 +1171,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Préfecture de la région Auvergne-Rhône-Alpes"
+      "Préfecture de la région Auvergne-Rhône-Alpes",
+      "IHEMI / ENSOSP"
     ],
     "domains": [
-      "Administration territoriale de l'Etat"
+      "Administration territoriale de l'Etat",
+      "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
       {
@@ -1129,9 +1188,23 @@
         "url_contenu": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
         "url_source": "https://audioblog.arteradio.com/blog/252815/podcast/276221/echange-avec-benoit-romain-et-adrien-agents-de-l-ofb",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB122",
+        "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
+        "annee": "2026",
+        "organisme": "IHEMI / ENSOSP",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
+        "has_graph": true
       }
     ],
     "associated": [
+      {
+        "id": "ME052",
+        "count": 1
+      },
       {
         "id": "ME073",
         "count": 1
@@ -1141,8 +1214,8 @@
         "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 2
+    "publication_count": 2,
+    "degree": 3
   },
   {
     "id": "ME038",
@@ -1150,7 +1223,8 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -1160,8 +1234,8 @@
         "publication_id": "PUB018",
         "titre": "les disparités communales en matière de vols sans violence",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "/images/publications/PUB018.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139737/1102259/file/IA82.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Les-disparites-communales-en-matiere-de-vols-sans-violence-etat-des-lieux",
         "has_graph": true
@@ -1190,7 +1264,8 @@
     "family": "Problème public",
     "definition": "Faits enregistrés par les services de sécurité intérieure dans lesquels des mineurs sont mis en cause.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -1200,7 +1275,7 @@
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
@@ -1230,7 +1305,8 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité routière"
@@ -1240,7 +1316,7 @@
         "publication_id": "PUB014",
         "titre": "en 2025, une hausse marquée des refus de contrôle routier - ministère de l'intérieur, service statistique ministériel",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB014.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139720/1102152/file/IR66%20refus%20contro%CC%82le%20routier.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/En-2025-une-hausse-marquee-des-refus-de-controle-routier",
@@ -1354,7 +1430,8 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à interroger, structurer et analyser les bases d’infractions enregistrées par les forces de sécurité intérieure.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -1364,8 +1441,8 @@
         "publication_id": "PUB018",
         "titre": "les disparités communales en matière de vols sans violence",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "/images/publications/PUB018.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139737/1102259/file/IA82.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Les-disparites-communales-en-matiere-de-vols-sans-violence-etat-des-lieux",
         "has_graph": true
@@ -1374,7 +1451,7 @@
         "publication_id": "PUB111",
         "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB111.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
@@ -1422,7 +1499,7 @@
         "image_path": "/images/publications/PUB052.png",
         "url_contenu": "",
         "url_source": "https://www.lgdj.fr/cahiers-francais-mai-juin-2026-n451-9782111743533.html",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -1445,7 +1522,8 @@
     "definition": "Capacité à exploiter des enquêtes déclaratives portant sur les victimations, les expériences de sécurité ou les ressentis.",
     "entities": [
       "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -1465,7 +1543,7 @@
         "publication_id": "PUB013",
         "titre": "rapport d'enquête thématique 2022 vécu et ressenti en matière de sécurité",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB013.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139696/1101982/file/Rapport%20d%E2%80%99enque%CC%82te%20the%CC%81matique%202022%20V%C3%A9cu%20et%20ressenti%20en%20mati%C3%A8re%20de%20s%C3%A9curit%C3%A9.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Rapport-d-enquete-thematique-2022-Vecu-et-ressenti-en-matiere-de-securite-les-interactions-entre-les-forces-de-securite-interieure-et-la-population",
@@ -1475,7 +1553,7 @@
         "publication_id": "PUB112",
         "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB112.png",
         "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
@@ -1513,24 +1591,41 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à exploiter statistiquement les procédures enregistrées par les services de police et de gendarmerie.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+      "Délégation aux victimes (DAV) — Police nationale"
     ],
     "domains": [
-      "Sécurité publique"
+      "Sécurité publique",
+      "Violences conjugales / Homicides"
     ],
     "publications": [
       {
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB124",
+        "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
+        "annee": "2026",
+        "organisme": "Délégation aux victimes (DAV) — Police nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
       }
     ],
     "associated": [
+      {
+        "id": "ME006",
+        "count": 1
+      },
       {
         "id": "ME020",
         "count": 1
@@ -1544,8 +1639,8 @@
         "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 3
+    "publication_count": 2,
+    "degree": 4
   },
   {
     "id": "ME049",
@@ -1553,7 +1648,8 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à consolider, contrôler et améliorer la qualité des indicateurs issus de la délinquance enregistrée.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -1563,7 +1659,7 @@
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
@@ -1665,11 +1761,13 @@
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Inspection générale de l’administration"
+      "Inspection générale de l’administration",
+      "IHEMI / ENSOSP"
     ],
     "domains": [
       "Administration territoriale de l'Etat",
-      "Sécurité nationale"
+      "Sécurité nationale",
+      "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
       {
@@ -1677,7 +1775,7 @@
         "titre": "identification de lignes directrices pour des plans de résilience des alpes françaises en réponse aux conséquences des effets du changement climatique",
         "annee": "2025",
         "organisme": "Inspection générale de l’administration",
-        "image_path": "",
+        "image_path": "/images/publications/PUB010.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/24121R%20-%20R%C3%A9silience%20Alpes%20Fran%C3%A7aises.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/rapports/identification-de-lignes-directrices-pour-des-plans-de-resilience-a-proposer-aux-autorites-et.html",
         "has_graph": true
@@ -1690,7 +1788,17 @@
         "image_path": "/images/publications/PUB101.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/25079R%20-%20S%C3%A9curit%C3%A9%20priv%C3%A9e-web.pdf",
         "url_source": "https://www.calameo.com/read/008180918d625c3e224b0",
-        "has_graph": false
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB122",
+        "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
+        "annee": "2026",
+        "organisme": "IHEMI / ENSOSP",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -1699,16 +1807,20 @@
         "count": 1
       },
       {
-        "id": "ME111",
+        "id": "ME036",
         "count": 1
+      },
+      {
+        "id": "ME111",
+        "count": 2
       },
       {
         "id": "ME143",
         "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 3
+    "publication_count": 3,
+    "degree": 4
   },
   {
     "id": "ME054",
@@ -1907,7 +2019,7 @@
         "titre": "identification de lignes directrices pour des plans de résilience des alpes françaises en réponse aux conséquences des effets du changement climatique",
         "annee": "2025",
         "organisme": "Inspection générale de l’administration",
-        "image_path": "",
+        "image_path": "/images/publications/PUB010.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/24121R%20-%20R%C3%A9silience%20Alpes%20Fran%C3%A7aises.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/rapports/identification-de-lignes-directrices-pour-des-plans-de-resilience-a-proposer-aux-autorites-et.html",
         "has_graph": true
@@ -1976,7 +2088,8 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité routière"
@@ -1986,7 +2099,7 @@
         "publication_id": "PUB014",
         "titre": "en 2025, une hausse marquée des refus de contrôle routier - ministère de l'intérieur, service statistique ministériel",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB014.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139720/1102152/file/IR66%20refus%20contro%CC%82le%20routier.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/En-2025-une-hausse-marquee-des-refus-de-controle-routier",
@@ -2149,7 +2262,7 @@
         "image_path": "/images/publications/PUB033.png",
         "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -2176,7 +2289,8 @@
     "definition": "Capacité à mobiliser les catégories d’infractions pour produire des indicateurs statistiques fiables et comparables.",
     "entities": [
       "Les cahiers français",
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique",
@@ -2187,7 +2301,7 @@
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
@@ -2197,7 +2311,7 @@
         "publication_id": "PUB014",
         "titre": "en 2025, une hausse marquée des refus de contrôle routier - ministère de l'intérieur, service statistique ministériel",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB014.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139720/1102152/file/IR66%20refus%20contro%CC%82le%20routier.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/En-2025-une-hausse-marquee-des-refus-de-controle-routier",
@@ -2211,7 +2325,7 @@
         "image_path": "/images/publications/PUB052.png",
         "url_contenu": "",
         "url_source": "https://www.lgdj.fr/cahiers-francais-mai-juin-2026-n451-9782111743533.html",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -2319,7 +2433,7 @@
         "image_path": "/images/publications/PUB033.png",
         "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -2341,7 +2455,8 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à interpréter des évolutions statistiques à la lumière de changements législatifs, réglementaires ou méthodologiques.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -2351,7 +2466,7 @@
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
@@ -2378,11 +2493,13 @@
     "definition": "Capacité à retracer l’évolution historique de missions, doctrines et capacités opérationnelles afin d’éclairer les pratiques contemporaines.",
     "entities": [
       "Les cahiers français",
-      "Centre de recherche de la Gendarmerie nationale"
+      "Centre de recherche de la Gendarmerie nationale",
+      "Le Collimateur"
     ],
     "domains": [
       "Sécurité publique",
-      "Sécurité civile"
+      "Sécurité civile",
+      "Maintien de l'ordre / Sécurité intérieure"
     ],
     "publications": [
       {
@@ -2393,7 +2510,7 @@
         "image_path": "/images/publications/PUB052.png",
         "url_contenu": "",
         "url_source": "https://www.lgdj.fr/cahiers-francais-mai-juin-2026-n451-9782111743533.html",
-        "has_graph": false
+        "has_graph": true
       },
       {
         "publication_id": "PUB113",
@@ -2403,6 +2520,16 @@
         "image_path": "/images/publications/PUB113.png",
         "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB120",
+        "titre": "Penser le maintien de l'ordre en France aujourd'hui",
+        "annee": "2026",
+        "organisme": "Le Collimateur",
+        "image_path": null,
+        "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
         "has_graph": true
       }
     ],
@@ -2414,10 +2541,14 @@
       {
         "id": "ME159",
         "count": 1
+      },
+      {
+        "id": "ME166",
+        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 2
+    "publication_count": 3,
+    "degree": 3
   },
   {
     "id": "ME073",
@@ -2481,7 +2612,8 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à mobiliser des modèles économétriques pour isoler l’association propre de caractéristiques territoriales avec la fréquence d’un phénomène de délinquance, toutes choses égales par ailleurs.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -2491,8 +2623,8 @@
         "publication_id": "PUB018",
         "titre": "les disparités communales en matière de vols sans violence",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "/images/publications/PUB018.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139737/1102259/file/IA82.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Les-disparites-communales-en-matiere-de-vols-sans-violence-etat-des-lieux",
         "has_graph": true
@@ -3099,7 +3231,7 @@
         "image_path": "/images/publications/PUB033.png",
         "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -3521,7 +3653,8 @@
     "family": "Problème public",
     "definition": "Faits enregistrés par les services de sécurité intérieure dont les mineurs sont victimes.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -3531,7 +3664,7 @@
         "publication_id": "PUB008",
         "titre": "victimes et mis en cause mineurs enregistrés par les services de sécurité intérieure : état des lieux sur dix ans",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB008.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139681/1101889/file/IA81%20Panorama%2010%20ans.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Victimes-et-mis-en-cause-mineurs-enregistres-par-les-services-de-securite-interieure-etat-des-lieux-sur-dix-ans",
@@ -3608,7 +3741,7 @@
         "titre": "identification de lignes directrices pour des plans de résilience des alpes françaises en réponse aux conséquences des effets du changement climatique",
         "annee": "2025",
         "organisme": "Inspection générale de l’administration",
-        "image_path": "",
+        "image_path": "/images/publications/PUB010.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/24121R%20-%20R%C3%A9silience%20Alpes%20Fran%C3%A7aises.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/rapports/identification-de-lignes-directrices-pour-des-plans-de-resilience-a-proposer-aux-autorites-et.html",
         "has_graph": true
@@ -3633,10 +3766,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Inspection générale de l’administration"
+      "Inspection générale de l’administration",
+      "IHEMI / ENSOSP"
     ],
     "domains": [
-      "Administration territoriale de l'Etat"
+      "Administration territoriale de l'Etat",
+      "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
       {
@@ -3644,9 +3779,19 @@
         "titre": "identification de lignes directrices pour des plans de résilience des alpes françaises en réponse aux conséquences des effets du changement climatique",
         "annee": "2025",
         "organisme": "Inspection générale de l’administration",
-        "image_path": "",
+        "image_path": "/images/publications/PUB010.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-04/24121R%20-%20R%C3%A9silience%20Alpes%20Fran%C3%A7aises.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/rapports/identification-de-lignes-directrices-pour-des-plans-de-resilience-a-proposer-aux-autorites-et.html",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB122",
+        "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
+        "annee": "2026",
+        "organisme": "IHEMI / ENSOSP",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
       }
     ],
@@ -3657,14 +3802,14 @@
       },
       {
         "id": "ME052",
-        "count": 1
+        "count": 2
       },
       {
         "id": "ME059",
         "count": 1
       }
     ],
-    "publication_count": 1,
+    "publication_count": 2,
     "degree": 3
   },
   {
@@ -3673,7 +3818,8 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Criminalités"
@@ -3683,11 +3829,11 @@
         "publication_id": "PUB031",
         "titre": "les violences intrafamiliales non conjugales en 2024",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB031.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139224/1098858/file/IR59%20Les%20violences%20intrafamiliales%20non%20conjugales%20en%202024.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/etudes-et-statistiques/interstats-info-rapide-ndeg-59-violences-intrafamiliales-non-conjugales-enregistrees-par-services-de.html",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -3737,7 +3883,8 @@
     "family": "Problème public",
     "definition": "Perception subjective de l’insécurité et craintes exprimées par les individus face au risque d’être victime.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -3747,7 +3894,7 @@
         "publication_id": "PUB013",
         "titre": "rapport d'enquête thématique 2022 vécu et ressenti en matière de sécurité",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB013.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139696/1101982/file/Rapport%20d%E2%80%99enque%CC%82te%20the%CC%81matique%202022%20V%C3%A9cu%20et%20ressenti%20en%20mati%C3%A8re%20de%20s%C3%A9curit%C3%A9.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Rapport-d-enquete-thematique-2022-Vecu-et-ressenti-en-matiere-de-securite-les-interactions-entre-les-forces-de-securite-interieure-et-la-population",
@@ -3757,7 +3904,7 @@
         "publication_id": "PUB112",
         "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB112.png",
         "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
@@ -3797,7 +3944,8 @@
     "entities": [
       "Inspection générale de l’administration",
       "Revue du Grasco",
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Criminalités",
@@ -3811,7 +3959,7 @@
         "publication_id": "PUB013",
         "titre": "rapport d'enquête thématique 2022 vécu et ressenti en matière de sécurité",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB013.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139696/1101982/file/Rapport%20d%E2%80%99enque%CC%82te%20the%CC%81matique%202022%20V%C3%A9cu%20et%20ressenti%20en%20mati%C3%A8re%20de%20s%C3%A9curit%C3%A9.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Rapport-d-enquete-thematique-2022-Vecu-et-ressenti-en-matiere-de-securite-les-interactions-entre-les-forces-de-securite-interieure-et-la-population",
@@ -3821,7 +3969,7 @@
         "publication_id": "PUB014",
         "titre": "en 2025, une hausse marquée des refus de contrôle routier - ministère de l'intérieur, service statistique ministériel",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB014.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139720/1102152/file/IR66%20refus%20contro%CC%82le%20routier.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/En-2025-une-hausse-marquee-des-refus-de-controle-routier",
@@ -3841,8 +3989,8 @@
         "publication_id": "PUB018",
         "titre": "les disparités communales en matière de vols sans violence",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
-        "image_path": "",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "/images/publications/PUB018.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139737/1102259/file/IA82.pdf",
         "url_source": "https://www.interieur.gouv.fr/Interstats/Actualites/Les-disparites-communales-en-matiere-de-vols-sans-violence-etat-des-lieux",
         "has_graph": true
@@ -3851,11 +3999,11 @@
         "publication_id": "PUB031",
         "titre": "les violences intrafamiliales non conjugales en 2024",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB031.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139224/1098858/file/IR59%20Les%20violences%20intrafamiliales%20non%20conjugales%20en%202024.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/etudes-et-statistiques/interstats-info-rapide-ndeg-59-violences-intrafamiliales-non-conjugales-enregistrees-par-services-de.html",
-        "has_graph": false
+        "has_graph": true
       },
       {
         "publication_id": "PUB101",
@@ -3865,7 +4013,7 @@
         "image_path": "/images/publications/PUB101.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/25079R%20-%20S%C3%A9curit%C3%A9%20priv%C3%A9e-web.pdf",
         "url_source": "https://www.calameo.com/read/008180918d625c3e224b0",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -3981,7 +4129,7 @@
         "image_path": "/images/publications/PUB034.png",
         "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -3999,7 +4147,8 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Criminalités"
@@ -4009,11 +4158,11 @@
         "publication_id": "PUB031",
         "titre": "les violences intrafamiliales non conjugales en 2024",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB031.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139224/1098858/file/IR59%20Les%20violences%20intrafamiliales%20non%20conjugales%20en%202024.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/etudes-et-statistiques/interstats-info-rapide-ndeg-59-violences-intrafamiliales-non-conjugales-enregistrees-par-services-de.html",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4049,7 +4198,7 @@
         "image_path": "/images/publications/PUB101.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/25079R%20-%20S%C3%A9curit%C3%A9%20priv%C3%A9e-web.pdf",
         "url_source": "https://www.calameo.com/read/008180918d625c3e224b0",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4188,7 +4337,8 @@
     "definition": "Capacité à décrire les caractéristiques, fréquences et configurations d’un phénomène criminel à partir des données disponibles.",
     "entities": [
       "Revue du Grasco",
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Criminologie",
@@ -4209,7 +4359,7 @@
         "publication_id": "PUB111",
         "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB111.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
@@ -4267,10 +4417,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à construire et analyser des catégories ou profils permettant de différencier des configurations criminologiques.",
     "entities": [
-      "Revue du Grasco"
+      "Revue du Grasco",
+      "Délégation aux victimes (DAV) — Police nationale"
     ],
     "domains": [
-      "Criminologie"
+      "Criminologie",
+      "Violences conjugales / Homicides"
     ],
     "publications": [
       {
@@ -4282,16 +4434,30 @@
         "url_contenu": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
         "url_source": "https://larevuedugrasco.eu/2026/06/05/n46-juin-2026/",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB124",
+        "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
+        "annee": "2026",
+        "organisme": "Délégation aux victimes (DAV) — Police nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME087",
         "count": 1
+      },
+      {
+        "id": "ME171",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 1
+    "publication_count": 2,
+    "degree": 2
   },
   {
     "id": "ME134",
@@ -4339,10 +4505,14 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à articuler les responsabilités de l’autorité civile et du commandant de la force publique et à coordonner leur action dans un dispositif d’ordre public.",
     "entities": [
-      "École nationale supérieure de la police"
+      "École nationale supérieure de la police",
+      "Le Collimateur",
+      "Gendarmerie nationale"
     ],
     "domains": [
-      "Travail, emploi, formation"
+      "Travail, emploi, formation",
+      "Maintien de l'ordre / Sécurité intérieure",
+      "Criminalité organisée"
     ],
     "publications": [
       {
@@ -4353,6 +4523,26 @@
         "image_path": "/images/publications/PUB016.png",
         "url_contenu": "https://audio.ausha.co/QQVm5Fw02070.mp3",
         "url_source": "https://podcast.ausha.co/les-podcasts-de-l-ensp",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB120",
+        "titre": "Penser le maintien de l'ordre en France aujourd'hui",
+        "annee": "2026",
+        "organisme": "Le Collimateur",
+        "image_path": null,
+        "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB121",
+        "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
+        "annee": "2026",
+        "organisme": "Gendarmerie nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
         "has_graph": true
       }
     ],
@@ -4368,10 +4558,14 @@
       {
         "id": "ME136",
         "count": 1
+      },
+      {
+        "id": "ME167",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 3
+    "publication_count": 3,
+    "degree": 4
   },
   {
     "id": "ME136",
@@ -4379,10 +4573,16 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à décider, coordonner et exercer le commandement sous contrainte de temps, d’intensité et de multiplicité des événements.",
     "entities": [
-      "École nationale supérieure de la police"
+      "École nationale supérieure de la police",
+      "Gendarmerie nationale",
+      "IHEMI / ENSOSP",
+      "Université de Corse Pascal Paoli"
     ],
     "domains": [
-      "Travail, emploi, formation"
+      "Travail, emploi, formation",
+      "Criminalité organisée",
+      "Sécurité civile / Résilience des primo-intervenants",
+      "Sécurité civile / Prise de décision"
     ],
     "publications": [
       {
@@ -4393,6 +4593,36 @@
         "image_path": "/images/publications/PUB016.png",
         "url_contenu": "https://audio.ausha.co/QQVm5Fw02070.mp3",
         "url_source": "https://podcast.ausha.co/les-podcasts-de-l-ensp",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB121",
+        "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
+        "annee": "2026",
+        "organisme": "Gendarmerie nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB122",
+        "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
+        "annee": "2026",
+        "organisme": "IHEMI / ENSOSP",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB123",
+        "titre": "Les émotions dans la prise de décision en contexte opérationnel chez les sapeurs-pompiers : éclairages théoriques et méthodologiques à visée applicative",
+        "annee": "2026",
+        "organisme": "Université de Corse Pascal Paoli",
+        "image_path": null,
+        "url_contenu": "https://theses.hal.science/tel-05769148v1",
+        "url_source": "https://theses.hal.science/tel-05769148v1",
         "has_graph": true
       }
     ],
@@ -4408,10 +4638,22 @@
       {
         "id": "ME135",
         "count": 1
+      },
+      {
+        "id": "ME168",
+        "count": 1
+      },
+      {
+        "id": "ME169",
+        "count": 1
+      },
+      {
+        "id": "ME170",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 3
+    "publication_count": 4,
+    "degree": 6
   },
   {
     "id": "ME138",
@@ -4503,7 +4745,8 @@
     "family": "Problème public",
     "definition": "Analyse des violences commises au sein de la famille en dehors des relations conjugales, notamment selon les liens entre victimes et auteurs et les catégories d’infractions.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Criminalités"
@@ -4513,11 +4756,11 @@
         "publication_id": "PUB031",
         "titre": "les violences intrafamiliales non conjugales en 2024",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB031.png",
         "url_contenu": "https://www.interieur.gouv.fr/content/download/139224/1098858/file/IR59%20Les%20violences%20intrafamiliales%20non%20conjugales%20en%202024.pdf",
         "url_source": "https://www.interieur.gouv.fr/documentation/etudes-et-statistiques/interstats-info-rapide-ndeg-59-violences-intrafamiliales-non-conjugales-enregistrees-par-services-de.html",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4557,7 +4800,7 @@
         "image_path": "/images/publications/PUB101.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-07/25079R%20-%20S%C3%A9curit%C3%A9%20priv%C3%A9e-web.pdf",
         "url_source": "https://www.calameo.com/read/008180918d625c3e224b0",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4597,7 +4840,7 @@
         "image_path": "/images/publications/PUB034.png",
         "url_contenu": "https://www.calameo.com/read/002719292c360a12ddcfc",
         "url_source": "https://www.calameo.com/read/002719292c360a12ddcfc",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4629,7 +4872,7 @@
         "image_path": "/images/publications/PUB090.png",
         "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4645,7 +4888,7 @@
     "id": "ME148",
     "label": "Analyse criminalistique des traces et indices",
     "family": "Méthode / savoir-faire",
-    "definition": "Capacité à analyser, comparer et exploiter des traces biologiques, chimiques, pédologiques ou documentaires à des fins criminalistiques.",
+    "definition": "Capacité à rechercher et analyser des traces et indices afin d’établir les causes et circonstances d’un fait.",
     "entities": [
       "Centre de recherche de la Gendarmerie nationale"
     ],
@@ -4697,7 +4940,7 @@
         "image_path": "/images/publications/PUB090.png",
         "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4737,7 +4980,7 @@
         "image_path": "/images/publications/PUB090.png",
         "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4773,7 +5016,7 @@
         "image_path": "/images/publications/PUB090.png",
         "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
-        "has_graph": false
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4791,7 +5034,8 @@
     "family": "Problème public",
     "definition": "Faits de délinquance enregistrés par les services de police et de gendarmerie dans les réseaux de transports en commun, analysés selon la nature des atteintes, les profils et les territoires.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -4801,7 +5045,7 @@
         "publication_id": "PUB111",
         "titre": "la délinquance enregistrée dans les réseaux de transports en commun en 2025",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB111.png",
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
@@ -4835,7 +5079,8 @@
     "family": "Problème public",
     "definition": "Faits d’atteintes aux biens ou aux personnes déclarés par les individus dans le cadre d’enquêtes de victimation.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure"
+      "Service statistique ministériel de la sécurité intérieure",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
       "Sécurité publique"
@@ -4845,7 +5090,7 @@
         "publication_id": "PUB112",
         "titre": "panorama départemental des victimations déclarées et des craintes exprimées dans l’enquête vécu et ressenti en matière de sécurité (2022-2024)",
         "annee": "2026",
-        "organisme": "Service statistique ministériel de la sécurité intérieure",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
         "image_path": "/images/publications/PUB112.png",
         "url_contenu": "https://statistiques.interieur.gouv.fr/ssmsi/files/ssmsi/2026-09/IA84.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/panorama-departemental-des-victimations-declarees-et-des-craintes-exprimees-dans",
@@ -4879,10 +5124,12 @@
     "family": "Problème public",
     "definition": "Incendies affectant les espaces forestiers et nécessitant des actions de prévention, de lutte, d’investigation et de gestion de crise.",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
+      "Centre de recherche de la Gendarmerie nationale",
+      "IHEMI / ENSOSP"
     ],
     "domains": [
-      "Sécurité civile"
+      "Sécurité civile",
+      "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
       {
@@ -4893,6 +5140,16 @@
         "image_path": "/images/publications/PUB113.png",
         "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB122",
+        "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
+        "annee": "2026",
+        "organisme": "IHEMI / ENSOSP",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
       }
     ],
@@ -4911,10 +5168,10 @@
       },
       {
         "id": "ME160",
-        "count": 1
+        "count": 2
       }
     ],
-    "publication_count": 1,
+    "publication_count": 2,
     "degree": 4
   },
   {
@@ -4923,10 +5180,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à coordonner plusieurs services et métiers dans la prévention, l’intervention, l’investigation et la gestion des feux de forêt.",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
+      "Centre de recherche de la Gendarmerie nationale",
+      "IHEMI / ENSOSP"
     ],
     "domains": [
-      "Sécurité civile"
+      "Sécurité civile",
+      "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
       {
@@ -4938,6 +5197,16 @@
         "url_contenu": "https://www.calameo.com/books/002719292fc53b4994d26",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/publications/les-notes-du-crgn/note-n-132-forets-aux-abois-l-histoire-des-gendarmes-a-l-epreuve-du-feu",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB122",
+        "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
+        "annee": "2026",
+        "organisme": "IHEMI / ENSOSP",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -4947,11 +5216,15 @@
       },
       {
         "id": "ME159",
+        "count": 2
+      },
+      {
+        "id": "ME169",
         "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 2
+    "publication_count": 2,
+    "degree": 3
   },
   {
     "id": "ME161",
@@ -5127,6 +5400,322 @@
     "associated": [
       {
         "id": "ME161",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 1
+  },
+  {
+    "id": "ME166",
+    "label": "Adaptation des doctrines de maintien de l'ordre",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à faire évoluer les principes et doctrines de maintien de l'ordre en fonction des transformations des manifestations, des contextes opérationnels et des enseignements de l'expérience.",
+    "entities": [
+      "Le Collimateur"
+    ],
+    "domains": [
+      "Maintien de l'ordre / Sécurité intérieure"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB120",
+        "titre": "Penser le maintien de l'ordre en France aujourd'hui",
+        "annee": "2026",
+        "organisme": "Le Collimateur",
+        "image_path": null,
+        "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME071",
+        "count": 1
+      },
+      {
+        "id": "ME167",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME167",
+    "label": "Conduite tactique des opérations de maintien de l'ordre",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à organiser et conduire les manœuvres de maintien de l'ordre, en maîtrisant les distances, le rythme des interventions et l'emploi gradué des moyens.",
+    "entities": [
+      "Le Collimateur"
+    ],
+    "domains": [
+      "Maintien de l'ordre / Sécurité intérieure"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB120",
+        "titre": "Penser le maintien de l'ordre en France aujourd'hui",
+        "annee": "2026",
+        "organisme": "Le Collimateur",
+        "image_path": null,
+        "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME135",
+        "count": 1
+      },
+      {
+        "id": "ME166",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME168",
+    "label": "Anticipation des mutations de la criminalité",
+    "family": "Méthode / savoir-faire",
+    "definition": "Identification des transformations criminelles et anticipation de leurs conséquences pour adapter les stratégies de sécurité.",
+    "entities": [
+      "Gendarmerie nationale"
+    ],
+    "domains": [
+      "Criminalité organisée"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB121",
+        "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
+        "annee": "2026",
+        "organisme": "Gendarmerie nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME024",
+        "count": 1
+      },
+      {
+        "id": "ME136",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME169",
+    "label": "Analyse des facteurs psychosociaux de résilience des primo-intervenants",
+    "family": "Méthode / savoir-faire",
+    "definition": "Identification et analyse des facteurs psychologiques, humains et organisationnels qui influencent la vulnérabilité et la résilience des personnels de secours confrontés à des événements extrêmes.",
+    "entities": [
+      "IHEMI / ENSOSP"
+    ],
+    "domains": [
+      "Sécurité civile / Résilience des primo-intervenants"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB122",
+        "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
+        "annee": "2026",
+        "organisme": "IHEMI / ENSOSP",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME136",
+        "count": 1
+      },
+      {
+        "id": "ME160",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME170",
+    "label": "Étude du rôle des émotions dans la prise de décision",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à étudier comment les émotions influencent l'attention, l'évaluation d'une situation et les décisions prises en urgence.",
+    "entities": [
+      "Université de Corse Pascal Paoli"
+    ],
+    "domains": [
+      "Sécurité civile / Prise de décision"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB123",
+        "titre": "Les émotions dans la prise de décision en contexte opérationnel chez les sapeurs-pompiers : éclairages théoriques et méthodologiques à visée applicative",
+        "annee": "2026",
+        "organisme": "Université de Corse Pascal Paoli",
+        "image_path": null,
+        "url_contenu": "https://theses.hal.science/tel-05769148v1",
+        "url_source": "https://theses.hal.science/tel-05769148v1",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME003",
+        "count": 1
+      },
+      {
+        "id": "ME136",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME171",
+    "label": "Analyse des violences conjugales sous l’angle du genre",
+    "family": "Méthode / savoir-faire",
+    "definition": "Étudier les différences entre les femmes et les hommes parmi les victimes et les auteurs de violences conjugales.",
+    "entities": [
+      "Délégation aux victimes (DAV) — Police nationale"
+    ],
+    "domains": [
+      "Violences conjugales / Homicides"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB124",
+        "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
+        "annee": "2026",
+        "organisme": "Délégation aux victimes (DAV) — Police nationale",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME006",
+        "count": 1
+      },
+      {
+        "id": "ME133",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME172",
+    "label": "Contre-espionnage et lutte contre les ingérences étrangères",
+    "family": "Méthode / savoir-faire",
+    "definition": "Détecter et neutraliser les activités clandestines et les ingérences étrangères sur le territoire national.",
+    "entities": [
+      "IHEMI — Département de l'analyse / Centre de réflexion"
+    ],
+    "domains": [
+      "Renseignement / Contre-espionnage"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB125",
+        "titre": "Espion, es-tu là ? Comment la DGSI lutte contre les espions infiltrés sur notre territoire ?",
+        "annee": "2026",
+        "organisme": "IHEMI — Département de l'analyse / Centre de réflexion",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME173",
+        "count": 1
+      },
+      {
+        "id": "ME174",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME173",
+    "label": "Judiciarisation du renseignement",
+    "family": "Méthode / savoir-faire",
+    "definition": "Permettre l'utilisation d'informations issues du renseignement dans les procédures judiciaires, dans le respect des règles de preuve.",
+    "entities": [
+      "IHEMI — Département de l'analyse / Centre de réflexion"
+    ],
+    "domains": [
+      "Renseignement / Contre-espionnage"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB125",
+        "titre": "Espion, es-tu là ? Comment la DGSI lutte contre les espions infiltrés sur notre territoire ?",
+        "annee": "2026",
+        "organisme": "IHEMI — Département de l'analyse / Centre de réflexion",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME172",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 1
+  },
+  {
+    "id": "ME174",
+    "label": "Transformation des pratiques de renseignement par l'intelligence artificielle",
+    "family": "Méthode / savoir-faire",
+    "definition": "Articuler les capacités d'analyse et de détection de l'IA avec l'interprétation et la décision humaines.",
+    "entities": [
+      "IHEMI — Département de l'analyse / Centre de réflexion"
+    ],
+    "domains": [
+      "Renseignement / Contre-espionnage"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB125",
+        "titre": "Espion, es-tu là ? Comment la DGSI lutte contre les espions infiltrés sur notre territoire ?",
+        "annee": "2026",
+        "organisme": "IHEMI — Département de l'analyse / Centre de réflexion",
+        "image_path": null,
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME172",
         "count": 1
       }
     ],

@@ -32,6 +32,14 @@
     ]
   },
   {
+    "source": "ME003",
+    "target": "ME170",
+    "count": 1,
+    "publication_ids": [
+      "PUB123"
+    ]
+  },
+  {
     "source": "ME004",
     "target": "ME067",
     "count": 1,
@@ -65,6 +73,14 @@
   },
   {
     "source": "ME006",
+    "target": "ME048",
+    "count": 1,
+    "publication_ids": [
+      "PUB124"
+    ]
+  },
+  {
+    "source": "ME006",
     "target": "ME107",
     "count": 1,
     "publication_ids": [
@@ -77,6 +93,14 @@
     "count": 1,
     "publication_ids": [
       "PUB111"
+    ]
+  },
+  {
+    "source": "ME006",
+    "target": "ME171",
+    "count": 1,
+    "publication_ids": [
+      "PUB124"
     ]
   },
   {
@@ -418,6 +442,14 @@
     ]
   },
   {
+    "source": "ME024",
+    "target": "ME168",
+    "count": 1,
+    "publication_ids": [
+      "PUB121"
+    ]
+  },
+  {
     "source": "ME027",
     "target": "ME100",
     "count": 1,
@@ -535,6 +567,14 @@
     "count": 1,
     "publication_ids": [
       "PUB007"
+    ]
+  },
+  {
+    "source": "ME036",
+    "target": "ME052",
+    "count": 1,
+    "publication_ids": [
+      "PUB122"
     ]
   },
   {
@@ -772,9 +812,10 @@
   {
     "source": "ME052",
     "target": "ME111",
-    "count": 1,
+    "count": 2,
     "publication_ids": [
-      "PUB010"
+      "PUB010",
+      "PUB122"
     ]
   },
   {
@@ -967,6 +1008,14 @@
     "count": 1,
     "publication_ids": [
       "PUB113"
+    ]
+  },
+  {
+    "source": "ME071",
+    "target": "ME166",
+    "count": 1,
+    "publication_ids": [
+      "PUB120"
     ]
   },
   {
@@ -1211,6 +1260,14 @@
     ]
   },
   {
+    "source": "ME133",
+    "target": "ME171",
+    "count": 1,
+    "publication_ids": [
+      "PUB124"
+    ]
+  },
+  {
     "source": "ME134",
     "target": "ME135",
     "count": 1,
@@ -1232,6 +1289,38 @@
     "count": 1,
     "publication_ids": [
       "PUB016"
+    ]
+  },
+  {
+    "source": "ME135",
+    "target": "ME167",
+    "count": 1,
+    "publication_ids": [
+      "PUB120"
+    ]
+  },
+  {
+    "source": "ME136",
+    "target": "ME168",
+    "count": 1,
+    "publication_ids": [
+      "PUB121"
+    ]
+  },
+  {
+    "source": "ME136",
+    "target": "ME169",
+    "count": 1,
+    "publication_ids": [
+      "PUB122"
+    ]
+  },
+  {
+    "source": "ME136",
+    "target": "ME170",
+    "count": 1,
+    "publication_ids": [
+      "PUB123"
     ]
   },
   {
@@ -1285,9 +1374,18 @@
   {
     "source": "ME159",
     "target": "ME160",
+    "count": 2,
+    "publication_ids": [
+      "PUB113",
+      "PUB122"
+    ]
+  },
+  {
+    "source": "ME160",
+    "target": "ME169",
     "count": 1,
     "publication_ids": [
-      "PUB113"
+      "PUB122"
     ]
   },
   {
@@ -1328,6 +1426,30 @@
     "count": 1,
     "publication_ids": [
       "PUB114"
+    ]
+  },
+  {
+    "source": "ME166",
+    "target": "ME167",
+    "count": 1,
+    "publication_ids": [
+      "PUB120"
+    ]
+  },
+  {
+    "source": "ME172",
+    "target": "ME173",
+    "count": 1,
+    "publication_ids": [
+      "PUB125"
+    ]
+  },
+  {
+    "source": "ME172",
+    "target": "ME174",
+    "count": 1,
+    "publication_ids": [
+      "PUB125"
     ]
   }
 ]

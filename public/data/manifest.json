@@ -1,13 +1,13 @@
 {
-  "source_workbook": "Quirites_BDD_CONSOLIDEE_44_PUBLICATIONS_2026-10-22_corrige.xlsx",
+  "source_workbook": "Quirites_BDD_auditee_sans_doublons_SN003.xlsx + correctifs validés de novembre 2026",
   "counts": {
-    "publications": 44,
-    "nodes": 1305,
-    "relations": 1174,
+    "publications": 52,
+    "nodes": 1380,
+    "relations": 1222,
     "treatments": 10,
-    "contents": 996,
-    "expertise_nodes": 122,
-    "expertise_edges": 166
+    "contents": 1082,
+    "expertise_nodes": 131,
+    "expertise_edges": 181
   },
   "graph_publications": [
     "PUB001",
@@ -53,7 +53,15 @@
     "PUB116",
     "PUB117",
     "PUB118",
-    "PUB119"
+    "PUB119",
+    "PUB120",
+    "PUB121",
+    "PUB122",
+    "PUB123",
+    "PUB124",
+    "PUB125",
+    "PUB126",
+    "PUB127"
   ],
   "chunk_publications": [
     "PUB001",
@@ -93,7 +101,15 @@
     "PUB114",
     "PUB115",
     "PUB118",
-    "PUB119"
+    "PUB119",
+    "PUB120",
+    "PUB121",
+    "PUB122",
+    "PUB123",
+    "PUB124",
+    "PUB125",
+    "PUB126",
+    "PUB127"
   ],
   "graph_publications_without_chunks": [
     "PUB052",
@@ -112,6 +128,7 @@
     "PUB006.png",
     "PUB007.png",
     "PUB008.png",
+    "PUB009.png",
     "PUB010.png",
     "PUB011.png",
     "PUB012.png",
@@ -119,6 +136,7 @@
     "PUB014.png",
     "PUB015.png",
     "PUB016.png",
+    "PUB017.png",
     "PUB018.png",
     "PUB021.png",
     "PUB022.png",
@@ -129,6 +147,7 @@
     "PUB031.png",
     "PUB033.png",
     "PUB034.png",
+    "PUB050.png",
     "PUB051.png",
     "PUB052.png",
     "PUB053.png",
@@ -137,8 +156,13 @@
     "PUB058.png",
     "PUB060.png",
     "PUB062.png",
+    "PUB064.png",
     "PUB068.png",
+    "PUB073.png",
+    "PUB080.png",
+    "PUB084.png",
     "PUB090.png",
+    "PUB091.png",
     "PUB101.png",
     "PUB111.png",
     "PUB112.png",
@@ -148,8 +172,13 @@
     "PUB116.png",
     "PUB117.png",
     "PUB118.png",
-    "PUB119.png"
+    "PUB119.png",
+    "atelier.jpg",
+    "atlas.jpg",
+    "expertises-intro-sobre.png",
+    "explorer.jpg",
+    "frise.jpg"
   ],
-  "expertise_source_workbook": "Quirites_BDD_CONSOLIDEE_44_PUBLICATIONS_2026-10-22_corrige.xlsx",
-  "expertise_update": "Synchronisation avec la base de 44 publications du 22/10/2026 : retrait de PUB064, PUB080, PUB084, PUB091 et de leurs rattachements d’expertises. Code, moteur et chronologie inchangés."
+  "expertise_source_workbook": "Quirites_BDD_auditee_sans_doublons_SN003.xlsx",
+  "expertise_update": "Actualisation PUB120–PUB127 et reconstruction contrôlée des associations, 10 novembre 2026."
 }
