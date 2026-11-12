@@ -108,7 +108,7 @@ export default function Atelier({data}){
 function Regime({cls,title,children}){return <div className={`etb-regime-item ${cls}`}><span className="etb-regime-name"><i/>{title}</span><span className="etb-regime-desc">{children}</span></div>}
 
 function Workspace({treatment,data,onBack,initialNeed=''}){
- if(treatment.traitement_id==='T03') return <ReflectionWorkspaceV1 onBack={onBack}/>
+ if(treatment.traitement_id==='T03') return <ReflectionWorkspaceV1 onBack={onBack} data={data}/>
  if(treatment.traitement_id==='T02') return <GlossaryWorkspace treatment={treatment} data={data} onBack={onBack}/>
  if(treatment.traitement_id==='T04') return <RecommendationWorkspaceV1 treatment={treatment} data={data} onBack={onBack}/>
  if(treatment.traitement_id==='T08') return <ExpertsWorkspace treatment={treatment} data={data} onBack={onBack}/>

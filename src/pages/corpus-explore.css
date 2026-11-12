@@ -1,0 +1,142 @@
+/* « Avancer avec le corpus » — volets « Chercher / notre fonds » et « Résultats ».
+   Le canevas central garde ses styles d'origine (reflection-workspace.css). */
+
+.qvl-reflection-page .qvl-reflection-shell{--left:330px;--right:400px}
+.qvl-reflection-page .qvl-reflection-shell.left-collapsed{--left:44px}
+.qvl-reflection-page .qvl-reflection-shell.right-collapsed{--right:44px}
+@media(max-width:1450px){.qvl-reflection-page .qvl-reflection-shell{--left:300px;--right:360px}}
+@media(max-width:1230px){.qvl-reflection-page .qvl-reflection-shell{--left:270px;--right:320px}}
+
+.qce-left,.qce-right{display:flex;flex-direction:column;padding:16px 14px 14px!important;color:#0b1e47}
+.qce-start,.qce-results{display:flex;flex-direction:column;min-height:0;flex:1;overflow-y:auto;padding-right:4px;max-height:calc(100vh - 210px)}
+
+/* Recherche */
+.qce-search label{display:block;font-family:Georgia,"Times New Roman",serif;font-size:19px;color:#1e456e;margin:0 30px 10px 2px}
+.qce-search-row{display:flex;gap:6px;border:2px solid #3f5f84;border-radius:12px;padding:5px;background:#fff}
+.qce-search-row:focus-within{box-shadow:0 0 0 3px rgba(63,95,132,.15)}
+.qce-search input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:14px;padding:6px 8px;color:#0b1e47;background:transparent}
+.qce-search button{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:8px;background:#3f5f84;color:#fff;font:inherit;font-size:13px;font-weight:700;padding:0 12px;min-height:36px;cursor:pointer}
+.qce-search button:disabled{opacity:.5;cursor:default}
+
+.qce-label{margin:18px 2px 8px;font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#5d7088}
+
+/* Thèmes et publications */
+.qce-themes{display:flex;flex-direction:column;gap:5px}
+.qce-theme-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:1px solid #dbe3ee;background:#fff;border-radius:10px;padding:7px 11px;font:inherit;font-size:13px;font-weight:650;color:#0b1e47;cursor:pointer}
+.qce-theme-btn:hover{border-color:#9db1cf}
+.qce-theme-btn em{font-style:normal;font-weight:600;color:#5d7088;font-size:13px}
+.qce-theme-btn.active,.qce-theme.open .qce-theme-btn{background:#e8f0fb;border-color:#a9bfdd}
+.qce-pubs{list-style:none;margin:4px 0 6px 10px;padding:0 0 0 10px;border-left:2px solid #c6d6ea}
+.qce-pubs button{display:block;width:100%;text-align:left;border:0;background:transparent;font:inherit;font-size:12.5px;line-height:1.35;color:#2f4066;padding:4px 6px;border-radius:6px;cursor:pointer}
+.qce-pubs button:hover{background:#eef3fa}
+.qce-pubs button.active{background:#3f5f84;color:#fff}
+
+/* Types */
+.qce-types{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.qce-type{text-align:left;border:1px solid #dbe3ee;background:#fff;border-radius:10px;padding:8px 10px;font:inherit;cursor:pointer;color:#0b1e47}
+.qce-type:hover{border-color:#9db1cf}
+.qce-type.active{background:#e8f0fb;border-color:#a9bfdd}
+.qce-type strong{display:block;font-size:17px;line-height:1.1}
+.qce-type span{display:block;font-size:13px;font-weight:600;margin-top:2px}
+.qce-type small{display:block;font-size:11.5px;color:#5d7088;margin-top:1px}
+
+/* Résultats */
+.qce-overview h2{padding-left:34px}
+.qce-results h2{font-family:Georgia,"Times New Roman",serif;font-size:19px;color:#1e456e;margin:0 0 4px;line-height:1.2}
+.qce-muted{margin:0;color:#5d7088;font-size:13px;line-height:1.45}
+.qce-results-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:0 2px 8px 34px;border-bottom:1px solid #e7edf3;position:sticky;top:0;background:#f9fbfd;z-index:2}
+.qce-kicker{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#5d7088;margin-bottom:2px}
+.qce-count{flex:none;font-size:12.5px;color:#5d7088;margin-top:18px}
+.qce-totals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 12px}
+.qce-totals div{background:#fff;border:1px solid #e1e8f1;border-radius:10px;padding:10px 12px}
+.qce-totals strong{display:block;font-size:22px;color:#0b1e47}
+.qce-totals span{font-size:12.5px;color:#5d7088}
+.qce-warning{margin:0;background:#fbf3d9;color:#5b4507;border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.45}
+
+.qce-publist{display:flex;flex-direction:column;gap:4px;margin:10px 0 4px}
+.qce-publist button{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:0;background:#f0f4f9;border-radius:8px;padding:7px 10px;font:inherit;font-size:12.5px;color:#1e3555;cursor:pointer}
+.qce-publist button:hover{background:#e3ebf5}
+.qce-publist button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qce-publist .qce-publist-more{background:transparent;color:#3f5f84;font-weight:600;padding:4px 10px}
+.qce-publinks{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 10px;align-items:center;margin:8px 0 2px;font-size:12.5px;color:#5d7088}
+.qce-publinks a{display:inline-flex;align-items:center;gap:5px;color:#3f5f84;font-weight:650;text-decoration:none}
+.qce-publinks a:hover{text-decoration:underline}
+
+.qce-tabs{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0 6px}
+.qce-tabs button{border:1px solid #dbe3ee;background:#fff;border-radius:999px;padding:5px 10px;font:inherit;font-size:12.5px;color:#2f4066;cursor:pointer}
+.qce-tabs button em{font-style:normal;margin-left:5px;color:#5d7088;font-size:12px}
+.qce-tabs button.active{background:#0b6b51;border-color:#0b6b51;color:#fff}
+.qce-tabs button.active em{color:#d3f1e7}
+.qce-single-tab{margin:12px 0 4px;font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#5d7088}
+
+.qce-items{display:flex;flex-direction:column}
+.qce-item{display:flex;gap:10px;justify-content:space-between;align-items:flex-start;padding:9px 2px;border-bottom:1px solid #edf1f6}
+.qce-item-text{min-width:0}
+.qce-item p{margin:0;font-size:13.5px;line-height:1.4;color:#0b1e47}
+.qce-item.passage p{font-size:12.8px;color:#2f4066}
+.qce-item small{display:block;margin-top:3px;font-size:11.5px;color:#5d7088}
+.qce-item-actions{flex:none;display:flex;flex-direction:column;gap:4px;align-items:stretch}
+.qce-keep,.qce-proof{border-radius:7px;font:inherit;font-size:11.5px;padding:4px 8px;cursor:pointer;white-space:nowrap}
+.qce-keep{border:1px solid #9fb7d6;background:#fff;color:#2c5a93;font-weight:700}
+.qce-keep:hover{background:#eef3fa}
+.qce-keep.kept{border-color:#bfe3d4;background:#e9f7f1;color:#0b6b51;cursor:default}
+.qce-proof{border:0;background:transparent;color:#5d7088;text-decoration:underline}
+.qce-group{margin-top:10px}
+.qce-group-title{display:block;width:100%;text-align:left;border:0;background:#f0f4f9;border-radius:8px;padding:6px 9px;font:inherit;font-size:12.5px;font-weight:700;color:#1e3555;cursor:pointer}
+.qce-group-title:hover{background:#e3ebf5}
+.qce-more{margin:10px 0 4px;border:1px solid #dbe3ee;background:#fff;border-radius:9px;padding:8px;font:inherit;font-size:12.5px;color:#3f5f84;font-weight:650;cursor:pointer}
+.qce-empty{margin-top:14px;border:1px dashed #cfd9e6;border-radius:12px;padding:14px;background:#fff}
+.qce-empty strong{display:block;font-size:14px;color:#1e456e}
+.qce-empty p{margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#5d7088}
+
+/* Tablette et téléphone : les volets ne flottent plus sur le canevas, ils
+   s'empilent (recherche, résultats, puis canevas). */
+@media(max-width:1040px){
+  .atelier-screen .qvl-reflection-page .qvl-reflection-shell{display:flex!important;flex-direction:column!important;gap:12px!important;height:auto!important;padding:12px!important}
+  .atelier-screen .qvl-reflection-page .qce-left,.atelier-screen .qvl-reflection-page .qce-right,.atelier-screen .qvl-reflection-page .qvl-reflection-center{position:relative!important;inset:auto!important;width:auto!important;max-height:none!important;height:auto!important;transform:none!important;flex:0 0 auto!important;overflow:visible!important}
+  .atelier-screen .qvl-reflection-page .qvl-reflection-shell,.atelier-screen .qvl-reflection-page .qvl-reflection-shell.left-collapsed,.atelier-screen .qvl-reflection-page .qvl-reflection-shell.right-collapsed{--pad-l:0px!important;--pad-r:0px!important}
+  .atelier-screen .qvl-reflection-page .etb-dock{flex-wrap:wrap!important;justify-content:center!important;width:calc(100% - 16px)!important;max-width:calc(100% - 16px)!important;left:50%!important}
+  .atelier-screen .qvl-reflection-page .etb-dock .qvl-postit-add{min-width:0!important}
+  .atelier-screen .qvl-reflection-page .qce-left{order:0}
+  .atelier-screen .qvl-reflection-page .qce-right{order:1}
+  .atelier-screen .qvl-reflection-page .qvl-reflection-center{order:2;min-height:620px!important;min-width:0!important}
+  .atelier-screen .qvl-reflection-page .qce-left>*,.atelier-screen .qvl-reflection-page .qce-right>*{display:flex!important}
+  .atelier-screen .qvl-reflection-page .qce-left .qvl-collapsed-label,.atelier-screen .qvl-reflection-page .qce-right .qvl-collapsed-label,.atelier-screen .qvl-reflection-page .qce-left .qvl-panel-toggle,.atelier-screen .qvl-reflection-page .qce-right .qvl-panel-toggle{display:none!important}
+  .qce-start,.qce-results{max-height:none;overflow:visible}
+  .qce-results-head{padding-left:2px}
+  .qce-overview h2{padding-left:0}
+}
+@media(max-width:760px){
+  .atelier-screen .qvl-reflection-page .etb-bar{flex-wrap:wrap;height:auto!important;row-gap:8px;padding-top:10px!important;padding-bottom:10px!important}
+  .atelier-screen .qvl-reflection-page .etb-bar h1{font-size:19px!important}
+  .atelier-screen .qvl-reflection-page .qvl-link-tools{width:100%;flex-wrap:wrap}
+  .atelier-screen .qvl-reflection-page .etb-bar-spacer{display:none}
+}
+.qce-results-head>div{min-width:0;flex:1}
+
+/* Création de post-it : toujours en haut, dans la barre de l'outil. */
+.atelier-screen .qvl-reflection-page .etb-bar{height:auto!important;min-height:62px;flex-wrap:wrap;row-gap:8px;padding-top:8px;padding-bottom:8px}
+.qce-postit-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.qce-postit-bar-label{font-size:12.5px;font-weight:700;color:#5d7088;margin-right:2px}
+.qce-postit-btn{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 11px;border-radius:10px;border:1px solid rgba(20,33,58,.14);font:inherit;font-size:13px;font-weight:650;color:#1d2a40;cursor:pointer}
+.qce-postit-btn span{font-size:13px;opacity:.8}
+.qce-postit-btn.blue{background:#e7f0fd}.qce-postit-btn.yellow{background:#fdf3cf}.qce-postit-btn.lilac{background:#efe8fa}.qce-postit-btn.green{background:#e4f4e3}
+.qce-postit-btn:hover{filter:brightness(.97)}
+.qce-postit-btn.active{outline:2px solid #3f5f84;outline-offset:1px}
+/* Sans la barre du bas, le formulaire de post-it s'ouvre en haut du canevas. */
+.atelier-screen .qvl-reflection-page .qvl-canvas-composer{top:16px!important;bottom:auto!important}
+@media(max-width:760px){
+  .qce-postit-bar{width:100%}
+  .qce-postit-bar-label{width:100%}
+  .qce-postit-btn{flex:1 1 calc(50% - 6px);justify-content:center}
+}
+@media(max-width:1040px){
+  .atelier-screen .qvl-reflection-page :is(.qvl-eclaireur-help,.qvl-eclaireur-minimized),
+  .atelier-screen .qvl-reflection-page :is(.qvl-eclaireur-help,.qvl-eclaireur-minimized):is(.qvl-eclaireur-side-right,.qvl-eclaireur-side-left){position:fixed!important;top:auto!important;bottom:16px!important;right:16px!important;left:auto!important;z-index:60}
+}
+@media(max-width:1400px) and (min-width:761px){
+  .qce-postit-bar-label{display:none}
+  .qce-postit-btn{padding:0 8px;font-size:12.5px;min-height:36px}
+  .atelier-screen .qvl-reflection-page .etb-bar{gap:10px!important}
+  .atelier-screen .qvl-reflection-page .qvl-link-button{padding:0 9px!important}
+}

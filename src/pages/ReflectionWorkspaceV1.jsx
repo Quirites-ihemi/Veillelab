@@ -1,60 +1,9 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
-import { runReflectionAction, searchReflectionCorpus } from '../services/reflectionApi.js'
+import { runReflectionAction } from '../services/reflectionApi.js'
+import { buildCorpusIndex, searchIndex, selectTheme, selectPublication, selectType, typeGroup, FEATURED_TYPES, ELEMENT_TYPES } from '../lib/corpusIndex.js'
 import './reflection-workspace.css'
-
-const NEEDS = [
-  {
-    id: 'overview',
-    label: 'Comprendre rapidement ce que les publications contiennent sur un thème',
-    description: 'Obtenir une vue d’ensemble des angles abordés, publications, acteurs, territoires et principaux éléments présents dans le corpus.',
-    placeholder: 'Sur quel thème souhaitez-vous faire le point ?',
-    submitLabel: 'Explorer le thème',
-    icon: 'book',
-    tone: 'blue',
-    advice: 'Une faible présence dans les résultats peut traduire une faible couverture dans les publications, pas une faible importance du phénomène.',
-  },
-  {
-    id: 'precise',
-    label: 'Trouver une information précise dans les publications',
-    description: 'Chercher un fait, un chiffre, un concept, un dispositif, un acteur ou une information ciblée.',
-    placeholder: 'Quelle information recherchez-vous précisément ?',
-    submitLabel: 'Chercher dans les publications',
-    icon: 'search',
-    tone: 'yellow',
-    advice: 'L’absence de résultat ne signifie pas nécessairement que l’information n’existe pas : elle peut être formulée autrement ou ne pas être couverte par le corpus.',
-  },
-  {
-    id: 'trends',
-    label: 'Voir ce qui évolue ou émerge',
-    description: 'Repérer les évolutions, récurrences et signaux présents dans les sujets couverts par le corpus.',
-    placeholder: 'Sur quel sujet souhaitez-vous repérer des évolutions ou des signaux ?',
-    submitLabel: 'Repérer les évolutions',
-    icon: 'graph',
-    tone: 'green',
-    advice: 'Une évolution dans les publications n’est pas automatiquement une évolution du phénomène lui-même. Vérifiez notamment les périodes et la composition des sources mobilisées.',
-  },
-  {
-    id: 'actors',
-    label: 'Identifier les acteurs concernés et leur rôle',
-    description: 'Repérer les acteurs mentionnés dans les publications et la manière dont leur rôle y est décrit.',
-    placeholder: 'Sur quel sujet souhaitez-vous identifier les acteurs ?',
-    submitLabel: 'Identifier les acteurs',
-    icon: 'target',
-    tone: 'coral',
-    advice: 'Le rôle affiché correspond à la manière dont l’acteur est décrit dans les publications du bulletin ; il ne résume pas nécessairement l’ensemble de ses compétences.',
-  },
-  {
-    id: 'public-action',
-    label: 'Voir comment l’action publique répond au problème',
-    description: 'Identifier, dans les sujets couverts, les dispositifs, instruments, acteurs de mise en œuvre et modalités d’action déjà documentés.',
-    placeholder: 'Quel problème ou sujet d’action publique souhaitez-vous explorer ?',
-    submitLabel: 'Explorer l’action publique',
-    icon: 'building',
-    tone: 'lilac',
-    advice: 'Les publications montrent uniquement les réponses d’action publique documentées par les publications présentes ; il ne constitue pas un inventaire exhaustif des dispositifs existants.',
-  },
-]
+import './corpus-explore.css'
 
 const CARD_TYPES = [
   { id: 'question', label: 'Question', tone: 'blue', icon: '?', placeholder: 'Quelle question souhaitez-vous poser ?' },
@@ -137,6 +86,7 @@ function locatorOf(material) {
 
 function materialKind(material) {
   const id = materialIdOf(material)
+  if (material?.group && typeGroup(material.group)) return typeGroup(material.group).one
   if (id?.startsWith('chunk:')) return 'Extrait'
   if (id?.startsWith('relation:')) return 'Relation'
   if (id?.startsWith('node:')) {
@@ -324,151 +274,48 @@ function buildCanvasContext(cards, selectedIds = []) {
     .map(({ createdAt, ...card }) => card)
 }
 
-function needSearchConfig(needId, query) {
-  const clean = query.trim()
-  // La requête de l’utilisateur reste intacte : on ne lui ajoute plus des mots
-  // génériques ("acteur", "tendance", "dispositif") qui dégradaient fortement
-  // le rappel sur le moteur lexical. La spécialisation se fait ensuite par
-  // classement des matériaux effectivement trouvés dans le corpus.
-  if (needId === 'precise') return { query: clean, options: { limit: 24, maxPerPublication: 6, diversifyByPublication: false } }
-  if (needId === 'overview') return { query: clean, options: { limit: 30, maxPerPublication: 3, diversifyByPublication: true } }
-  return { query: clean, options: { limit: 30, maxPerPublication: 8, diversifyByPublication: false } }
-}
-
-function nodeTypeOf(material) {
-  return String(material?.node_type || material?.content?.node_type || '').trim().toLowerCase()
-}
-
-function relationTypeOf(material) {
-  return String(material?.relation_type || material?.content?.relation_type || '').trim().toUpperCase()
-}
-
-const ACTOR_RELATIONS = new Set([
-  'S_APPUIE_SUR','MOBILISE','MET_EN_OEUVRE','PILOTE','ENCADRE','MENE',
-  'INTERVIENT_SUR','INTERVIENT_DANS_LA_PRISE_EN_CHARGE_DE','EXPERTISE_SUR',
-  'SE_POSITIONNE_SUR','EST_DESTINATAIRE_DE','CONCERNES_PAR','PARTICIPE_A',
-  'ACCOMPAGNE','SOUTIENT','FINANCE','CODEVELOPPE'
-])
-
-const PUBLIC_ACTION_RELATIONS = new Set([
-  'REPOND_A','MET_EN_OEUVRE','S_APPUIE_SUR','MOBILISE','PERMET_DE','INSTITUE',
-  'DEVELOPPE','RENFORCE','ENCADRE','PILOTE','PRECONISE','CONTRIBUE_A',
-  'CONDITION_DE_REUSSITE_DE'
-])
-
-const TREND_RELATIONS = new Set([
-  'FAIT_SUITE_A','ILLUSTRE','OBSERVEE_DANS','CARACTERISE','SE_MANIFESTE_PAR',
-  'TAUX_ELEVE_DE','TAUX_FAIBLE_DE','RENFORCE','INFLUENCE'
-])
-
-function needPriority(needId, material) {
-  const nodeType = nodeTypeOf(material)
-  const relationType = relationTypeOf(material)
-  const kind = String(material?.kind || '').toLowerCase()
-  const text = `${materialText(material)} ${material?.section || ''}`
-
-  if (needId === 'actors') {
-    if (['acteur', 'expert_public'].includes(nodeType)) return 100
-    if (kind === 'relation' && ACTOR_RELATIONS.has(relationType)) return 80
-    if (/(minist[eè]re|office|agence|direction|service|police|gendarmerie|collectivit[a-zàâäéèêëîïôöùûüç-]*|association|observatoire|pr[eé]fet|op[eé]rateur)/i.test(text)) return 55
-    return 10
-  }
-
-  if (needId === 'public-action') {
-    if (['action', 'instrument_dispositif'].includes(nodeType)) return 100
-    if (kind === 'relation' && PUBLIC_ACTION_RELATIONS.has(relationType)) return 80
-    if (nodeType === 'recommandation') return 45
-    if (/(dispositif|programme|plan|mesure|mise en œuvre|mise en oeuvre|exp[eé]riment[a-zàâäéèêëîïôöùûüç-]*|politique publique|strat[eé]gie|contr[oô]le|accompagnement)/i.test(text)) return 55
-    return 10
-  }
-
-  if (needId === 'trends') {
-    if (['tendance', 'signal_faible'].includes(nodeType)) return 100
-    if (kind === 'relation' && TREND_RELATIONS.has(relationType)) return 75
-    if (/(tendance|signal faible|[eé]volu[a-zàâäéèêëîïôöùûüç-]*|[eé]merg[a-zàâäéèêëîïôöùûüç-]*|hausse|baisse|augment[a-zàâäéèêëîïôöùûüç-]*|diminu[a-zàâäéèêëîïôöùûüç-]*|progress[a-zàâäéèêëîïôöùûüç-]*|recul|nouveau|nouvelle|r[eé]cent[a-zàâäéèêëîïôöùûüç-]*|depuis|entre 20)/i.test(text)) return 60
-    return 10
-  }
-
-  return 50
-}
-
-function visibleResultsForNeed(needId, result) {
-  const all = Array.isArray(result?.results) ? result.results : (Array.isArray(result?.materials) ? result.materials : [])
-  if (needId === 'overview' || needId === 'precise') return all
-
-  // Les besoins spécialisés ne doivent pas afficher exactement la même liste
-  // que la recherche générique. On conserve uniquement les matériaux dont
-  // la structure ou le texte apporte réellement quelque chose au besoin choisi.
-  const threshold = needId === 'public-action' ? 55 : 55
-  return all
-    .map((item, index) => ({ item, index, priority: needPriority(needId, item) }))
-    .filter(entry => entry.priority >= threshold)
-    .sort((a, b) => b.priority - a.priority || Number(b.item?.score || 0) - Number(a.item?.score || 0) || a.index - b.index)
-    .map(entry => entry.item)
-}
-
 function cardCenter(card) {
   const width = 260
   const height = card.collapsed ? 68 : (card.title ? 198 : 176)
   return { x: Number(card.x || 0) + width / 2, y: Number(card.y || 0) + height / 2 }
 }
 
-export default function ReflectionWorkspaceV1({ onBack }) {
-  const initial = useMemo(restoreWorkspace, [])
+export default function ReflectionWorkspaceV1({ onBack, data }) {
+  const initial = useMemo(() => restoreWorkspace(), [])
   const [cards, setCards] = useState(initial.cards)
   const [links, setLinks] = useState(initial.links)
   const [activeSubject, setActiveSubject] = useState(initial.activeSubject || '')
   const [selectedIds, setSelectedIds] = useState([])
-  const [activeNeedId, setActiveNeedId] = useState('overview')
-  const [resultNeedId, setResultNeedId] = useState('overview')
-  const [manualQuery, setManualQuery] = useState('')
-  const [freeSearchOpen, setFreeSearchOpen] = useState(false)
-  const [searchContext, setSearchContext] = useState(null)
-  const [searchResult, setSearchResult] = useState(null)
-  const [searchLoading, setSearchLoading] = useState(false)
-  const [searchError, setSearchError] = useState('')
+  const [query, setQuery] = useState('')
+  const [selection, setSelection] = useState(null)
+  const [openTheme, setOpenTheme] = useState('')
   const [composer, setComposer] = useState(null)
   const [draft, setDraft] = useState('')
   const [draftTitle, setDraftTitle] = useState('')
   const [leftCollapsed, setLeftCollapsed] = useState(false)
   const [rightCollapsed, setRightCollapsed] = useState(false)
-  const [resultTab, setResultTab] = useState('answer')
   const [linkMode, setLinkMode] = useState(false)
   const [linkLabel, setLinkLabel] = useState('est lié à')
   const [showLinks, setShowLinks] = useState(false)
   const [proofState, setProofState] = useState({ open: false, loading: false, error: '', material: null, result: null })
   const [editingCardId, setEditingCardId] = useState(null)
   const [editDraft, setEditDraft] = useState({ title: '', text: '' })
-  const [eclaireur, setEclaireur] = useState({ mode: 'open', step: 'axis' })
+  // Sur téléphone, le guide démarre réduit pour ne pas masquer les boutons.
+  const [eclaireur, setEclaireur] = useState(() => ({ mode: typeof window !== 'undefined' && window.innerWidth <= 760 ? 'minimized' : 'open', step: 'start' }))
   const canvasRef = useRef(null)
   const cardEditRef = useRef(null)
   const dragRef = useRef(null)
   const searchInputRef = useRef(null)
-  const searchRequestRef = useRef(0)
 
-  const activeNeed = NEEDS.find(item => item.id === activeNeedId) || NEEDS[0]
-  const resultNeed = NEEDS.find(item => item.id === resultNeedId) || NEEDS[0]
+  // Index local de la base : thèmes, types et nombres sont recalculés à chaque
+  // chargement des données, donc suivent l'enrichissement de la base.
+  const index = useMemo(() => buildCorpusIndex(data), [data])
   const selectedCards = useMemo(() => cards.filter(card => selectedIds.includes(card.id)), [cards, selectedIds])
-  const reflectionAxisCards = useMemo(() => cards.filter(card => card.kind === 'Question' || card.kind === 'Idée / hypothèse'), [cards])
-  const selectedAxisCards = useMemo(() => selectedCards.filter(card => card.kind === 'Question' || card.kind === 'Idée / hypothèse'), [selectedCards])
-  const visibleResults = useMemo(() => visibleResultsForNeed(resultNeedId, searchResult), [resultNeedId, searchResult])
+  const keptIds = useMemo(() => new Set(cards.map(card => card.materialId).filter(Boolean)), [cards])
 
   useEffect(() => {
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
   }, [cards, links, activeSubject])
-
-  useEffect(() => {
-    if (searchContext?.source !== 'canvas') return
-    const expected = [...(searchContext.cardIds || [])].sort().join('|')
-    const current = [...selectedIds].sort().join('|')
-    if (expected && expected !== current) {
-      searchRequestRef.current += 1
-      setSearchLoading(false)
-      setSearchResult(null)
-      setSearchError('')
-      setSearchContext(null)
-    }
-  }, [selectedIds, searchContext])
 
   useEffect(() => {
     const onMove = event => {
@@ -493,123 +340,44 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     }
   }, [])
 
-  const guideTo = step => {
-    if (step === 'needs') setLeftCollapsed(false)
-    if (step === 'results') setRightCollapsed(false)
-    setEclaireur({ mode: 'open', step })
-  }
   const closeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'closed' }))
   const minimizeEclaireur = () => setEclaireur(state => ({ ...state, mode: 'minimized' }))
-  const restoreEclaireur = () => setEclaireur(state => ({ ...state, mode: 'open', step: state.step || 'axis' }))
+  const restoreEclaireur = () => setEclaireur(state => ({ ...state, mode: 'open', step: state.step || 'start' }))
+  const guideStep = step => setEclaireur(state => state.mode === 'closed' ? { ...state, step } : { ...state, step })
 
-  // L'Éclaireur suit désormais trois actions réelles : axe → besoin → corpus.
-  // Dès qu'une Question ou une Idée / hypothèse est sélectionnée, il ouvre
-  // directement l'étape des besoins informationnels.
-  useEffect(() => {
-    if (eclaireur.mode !== 'open' || eclaireur.step !== 'axis' || !selectedAxisCards.length) return
-    setLeftCollapsed(false)
-    setEclaireur({ mode: 'open', step: 'needs' })
-  }, [eclaireur.mode, eclaireur.step, selectedAxisCards.length])
-
-  const executeNeedSearch = async (needId, rawQuery, context = {}) => {
-    const clean = String(rawQuery || '').trim()
-    if (!clean) return
-
-    const requestId = ++searchRequestRef.current
-    setResultTab('answer')
-    setResultNeedId(needId)
-    setSearchContext({
-      source: context.source || 'guided',
-      cardIds: Array.isArray(context.cardIds) ? context.cardIds : [],
-      query: clean,
-    })
-    setSearchLoading(true)
-    setSearchError('')
-    setSearchResult(null)
+  // Une seule entrée : on montre ce que la base contient pour un mot, un thème,
+  // une publication ou un type d'élément.
+  const showSelection = result => {
+    setSelection(result)
     setRightCollapsed(false)
-    setEclaireur({ mode: 'open', step: 'results' })
-    try {
-      const config = needSearchConfig(needId, clean)
-      const result = await searchReflectionCorpus(config.query, {
-        ...config.options,
-        needId,
-        contextSubject: activeSubject,
-        canvasContext: buildCanvasContext(cards, context.cardIds || selectedIds),
-      })
-      if (requestId === searchRequestRef.current) {
-        setSearchResult(result)
-        setRightCollapsed(false)
-        setEclaireur({ mode: 'open', step: 'results' })
-        const resolvedSubject = String(result?.interpretation?.subject_query || '').trim()
-        if (resolvedSubject) setActiveSubject(resolvedSubject)
-      }
-    } catch (error) {
-      if (requestId === searchRequestRef.current) setSearchError(error?.message || String(error))
-    } finally {
-      if (requestId === searchRequestRef.current) setSearchLoading(false)
-    }
+    if (result?.subject) setActiveSubject(result.subject)
+    guideStep('results')
   }
-
-  const chooseNeed = id => {
-    setActiveNeedId(id)
-    setSearchError('')
-    setRightCollapsed(false)
-    setFreeSearchOpen(false)
-    setManualQuery('')
-
-    // Le besoin informationnel travaille d'abord à partir du canevas courant.
-    // Une ancienne question libre ne doit jamais prendre le pas sur le post-it sélectionné.
-    const cardsToUse = selectedAxisCards.length
-      ? selectedAxisCards.slice(0, 1)
-      : (reflectionAxisCards.length === 1 ? reflectionAxisCards : [])
-
-    if (!selectedAxisCards.length && reflectionAxisCards.length === 1) setSelectedIds([reflectionAxisCards[0].id])
-
-    const canvasQuery = cardsToUse
-      .map(card => {
-        const title = String(card?.title || '').trim()
-        const text = String(card?.text || '').trim()
-        return [title, text].filter(Boolean).join(' — ')
-      })
-      .filter(Boolean)
-      .slice(0, 2)
-      .join(' ; ')
-      .trim()
-
-    if (canvasQuery) {
-      executeNeedSearch(id, canvasQuery, { source: 'canvas', cardIds: cardsToUse.map(card => card.id) })
-      return
-    }
-
-    // Aucun post-it exploitable : on annule toute ancienne réponse pour éviter
-    // qu'elle soit confondue avec le nouveau besoin sélectionné.
-    searchRequestRef.current += 1
-    setSearchLoading(false)
-    setSearchResult(null)
-    setSearchContext({ source: 'awaiting-card', cardIds: [], query: '' })
-  }
-
-  const runManualSearch = event => {
+  const runSearch = event => {
     event?.preventDefault()
-    const clean = manualQuery.trim()
-    if (!clean || searchLoading) return
-    executeNeedSearch('precise', clean, { source: 'manual', cardIds: [] })
+    const clean = query.trim()
+    if (!clean) return
+    showSelection({ ...searchIndex(index, clean), subject: clean })
   }
+  const chooseTheme = label => {
+    setOpenTheme(current => current === label ? '' : label)
+    showSelection({ ...selectTheme(index, label), subject: label })
+  }
+  const choosePublication = id => showSelection(selectPublication(index, id))
+  const chooseType = groupId => showSelection(selectType(index, groupId))
 
   const beginComposer = type => {
     closeEclaireur()
-    if (type === 'corpus') {
-      setRightCollapsed(false)
-      setFreeSearchOpen(true)
-      setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0)
-      return
-    }
     const cardType = CARD_TYPES.find(item => item.id === type)
     if (!cardType) return
     setComposer(cardType)
     setDraft('')
     setDraftTitle('')
-    setTimeout(() => document.querySelector('.qvl-canvas-composer textarea')?.focus(), 0)
+    setTimeout(() => {
+      const box = document.querySelector('.qvl-canvas-composer')
+      box?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' })
+      box?.querySelector('textarea')?.focus({ preventScroll: true })
+    }, 0)
   }
 
   const addDraft = () => {
@@ -628,7 +396,6 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setComposer(null)
     setDraft('')
     setDraftTitle('')
-    window.setTimeout(() => guideTo('needs'), 80)
   }
 
   const addMaterialToCanvas = material => {
@@ -636,7 +403,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     if (!text) return
     const index = cards.length
     const card = makeCanvasCard({
-      kind: 'Élément d’une publication',
+      kind: materialKind(material),
       text,
       tone: 'sand',
       material,
@@ -692,20 +459,14 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
   const resetCanvas = () => {
     if (!window.confirm('Réinitialiser ce canevas ? Les post-it, les liens et le contexte actif seront supprimés.')) return
-    searchRequestRef.current += 1
     dragRef.current = null
     setCards([])
     setLinks([])
     setSelectedIds([])
     setActiveSubject('')
-    setActiveNeedId('overview')
-    setResultNeedId('overview')
-    setSearchContext(null)
-    setSearchResult(null)
-    setSearchLoading(false)
-    setSearchError('')
-    setManualQuery('')
-    setFreeSearchOpen(false)
+    setSelection(null)
+    setQuery('')
+    setOpenTheme('')
     setComposer(null)
     setDraft('')
     setDraftTitle('')
@@ -714,7 +475,7 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     setLinkMode(false)
     setLinkLabel('est lié à')
     setShowLinks(false)
-    setEclaireur({ mode: 'closed', step: 'axis' })
+    setEclaireur({ mode: 'closed', step: 'start' })
     try {
       sessionStorage.removeItem(STORAGE_KEY)
       sessionStorage.removeItem(LEGACY_STORAGE_KEY)
@@ -796,6 +557,10 @@ export default function ReflectionWorkspaceV1({ onBack }) {
       <h1>Avancer avec le corpus</h1>
       <span className="etb-bar-regime">Enrichissement contrôlé</span>
       <span className="etb-bar-spacer"/>
+      <div className={`qce-postit-bar ${eclaireur.mode === 'open' && eclaireur.step === 'canvas' ? 'qvl-eclaireur-target' : ''}`} role="group" aria-label="Créer un post-it">
+        <span className="qce-postit-bar-label">Créer un post-it</span>
+        {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qce-postit-btn ${type.tone} ${composer?.id === type.id ? 'active' : ''}`} onClick={() => beginComposer(type.id)}><span aria-hidden="true">{type.icon}</span>{type.label}</button>)}
+      </div>
       <div className="qvl-link-tools">
               <button type="button" className={`qvl-link-button ${linkMode ? 'active' : ''}`} onClick={toggleLinkMode}><Icon name="link" size={16}/>{linkMode ? 'Annuler la liaison' : 'Relier des cartes'}</button>
               {links.length > 0 && <button type="button" className="qvl-link-count" onClick={() => setShowLinks(value => !value)}>Liens ({links.length})</button>}
@@ -812,29 +577,23 @@ export default function ReflectionWorkspaceV1({ onBack }) {
     </header>
 
     <div className={shellClass}>
-      <aside className={`qvl-reflection-left ${eclaireur.mode === 'open' && eclaireur.step === 'needs' ? 'qvl-eclaireur-target' : ''}`}>
-        <button className="qvl-panel-toggle left" type="button" onClick={() => setLeftCollapsed(value => !value)} aria-label={leftCollapsed ? 'Déployer les besoins informationnels' : 'Replier les besoins informationnels'}>
+      <aside className={`qvl-reflection-left qce-left ${eclaireur.mode === 'open' && eclaireur.step === 'start' ? 'qvl-eclaireur-target' : ''}`}>
+        <button className="qvl-panel-toggle left" type="button" onClick={() => setLeftCollapsed(value => !value)} aria-label={leftCollapsed ? 'Déployer la recherche' : 'Replier la recherche'}>
           {leftCollapsed ? '›' : '‹'}
         </button>
-        {leftCollapsed ? <div className="qvl-collapsed-label">Besoins informationnels</div> : <>
-          <header className="qvl-side-heading">
-            <span className="qvl-side-icon"><Icon name="book" size={19}/></span>
-            <div><h2>Besoins informationnels</h2><p>Choisissez ce que vous cherchez à faire avec les publications.</p></div>
-          </header>
-          <div className="qvl-need-list">
-            {NEEDS.map(need => {
-              const active = activeNeedId === need.id
-              return <button key={need.id} type="button" aria-pressed={active} className={`qvl-need-card ${need.tone} ${active ? 'active' : ''}`} onClick={() => chooseNeed(need.id)}>
-                <span className="qvl-need-icon"><Icon name={need.icon} size={21}/></span>
-                <span className="qvl-need-copy"><strong>{need.label}</strong><small>{need.description}</small></span>
-                {active ? <span className="qvl-need-selected" aria-hidden="true">✓</span> : <Icon name="chevron" size={15}/>}
-              </button>
-            })}
-          </div>
-          <div className="qvl-scope-note"><Icon name="info" size={15}/><span><strong>Corpus du bulletin uniquement.</strong> Ces fonctions portent sur les publications Quiritès présentes dans le corpus actif, pas sur l’ensemble des connaissances disponibles sur un sujet.</span></div>
-        </>}
+        {leftCollapsed ? <div className="qvl-collapsed-label">Chercher</div> : <CorpusStart
+          index={index}
+          query={query}
+          setQuery={setQuery}
+          onSearch={runSearch}
+          inputRef={searchInputRef}
+          openTheme={openTheme}
+          selection={selection}
+          onTheme={chooseTheme}
+          onPublication={choosePublication}
+          onType={chooseType}
+        />}
       </aside>
-
       <section className="qvl-reflection-center">
         <header className="qvl-canvas-intro">
           {linkMode && <div className="qvl-link-builder">
@@ -880,8 +639,8 @@ export default function ReflectionWorkspaceV1({ onBack }) {
 
             {!cards.length && <div className="qvl-empty-canvas">
               <div className="qvl-empty-postits" aria-hidden="true"><i className="blue"/><i className="yellow"/><i className="lilac"/></div>
-              <h3>Installez votre réflexion ici</h3>
-              <p>Commencez par une question, une idée ou une note. Cherchez ensuite dans les publications et ajoutez les éléments utiles à côté de votre propre raisonnement.</p>
+              <h3>Votre espace de travail</h3>
+              <p>Cherchez un mot ou choisissez un thème à gauche. Gardez ici les éléments utiles avec « + Garder », puis ajoutez vos propres notes et reliez-les.</p>
               <span>Une bibliothèque à portée de main, un espace de travail qui reste le vôtre.</span>
             </div>}
 
@@ -919,69 +678,26 @@ export default function ReflectionWorkspaceV1({ onBack }) {
             })}
           </div>
         </div>
-        <div className={`qvl-canvas-toolbar etb-dock ${eclaireur.mode === 'open' && eclaireur.step === 'axis' ? 'qvl-eclaireur-target' : ''}`}>
-            {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qvl-postit-add ${type.tone}`} onClick={() => beginComposer(type.id)}><span>{type.icon}</span>{type.label}</button>)}
-            <button type="button" className="qvl-postit-add sand" onClick={() => beginComposer('corpus')}><span>▤</span>Élément d’une publication</button>
-          </div>
         <div className={`qvl-canvas-help ${linkMode ? 'link-mode' : ''}`}><span>{linkMode ? `Mode liaison : sélectionnez deux cartes (${selectedCards.length}/2).` : selectedCards.length ? `${selectedCards.length} carte${selectedCards.length > 1 ? 's' : ''} sélectionnée${selectedCards.length > 1 ? 's' : ''}` : 'Cliquez sur une carte pour la sélectionner.'}</span><span>{linkMode ? 'Cliquez simplement sur deux post-it, puis qualifiez le lien.' : 'Les volets peuvent être repliés pour agrandir le canevas · Chaque post-it peut être réduit.'}</span></div>
       </section>
 
-      <aside className={`qvl-reflection-right ${eclaireur.mode === 'open' && eclaireur.step === 'results' ? 'qvl-eclaireur-target' : ''}`}>
-        <button className="qvl-panel-toggle right" type="button" onClick={() => setRightCollapsed(value => !value)} aria-label={rightCollapsed ? 'Déployer les publications' : 'Replier les publications'}>
+      <aside className={`qvl-reflection-right qce-right ${eclaireur.mode === 'open' && eclaireur.step === 'results' ? 'qvl-eclaireur-target' : ''}`}>
+        <button className="qvl-panel-toggle right" type="button" onClick={() => setRightCollapsed(value => !value)} aria-label={rightCollapsed ? 'Déployer les résultats' : 'Replier les résultats'}>
           {rightCollapsed ? '‹' : '›'}
         </button>
-        {rightCollapsed ? <div className="qvl-collapsed-label">Résultats</div> : <>
-          <header className="qvl-side-heading corpus qvl-results-heading">
-            <span className="qvl-side-icon"><Icon name="file" size={19}/></span>
-            <div><h2>Résultats dans les publications</h2><p>Éléments sourcés issus des publications présentes dans le corpus actif.</p></div>
-          </header>
-
-          <div className="qvl-results-tabs" role="tablist" aria-label="Vues des résultats">
-            <button type="button" role="tab" aria-selected={resultTab === 'answer'} className={resultTab === 'answer' ? 'active' : ''} onClick={() => setResultTab('answer')}>Réponse</button>
-            <button type="button" role="tab" aria-selected={resultTab === 'sources'} className={resultTab === 'sources' ? 'active' : ''} onClick={() => setResultTab('sources')}>Sources{visibleResults.length ? <span>{new Set(visibleResults.map(item => publicationMeta(item).id).filter(Boolean)).size}</span> : null}</button>
-            <button type="button" role="tab" aria-selected={resultTab === 'explore'} className={resultTab === 'explore' ? 'active' : ''} onClick={() => setResultTab('explore')}>À explorer</button>
-          </div>
-
-          <div className="qvl-results-tabpanel" role="tabpanel">
-            {resultTab === 'answer' && <>
-              {searchError && <div className="qvl-search-error"><strong>La recherche n’a pas abouti.</strong><span>{searchError}</span></div>}
-              {searchLoading && <div className="qvl-search-loading"><span>✦</span><strong>Recherche dans les publications…</strong></div>}
-              {!searchLoading && searchResult && <NeedResults need={resultNeed} result={searchResult} materials={visibleResults} onAdd={addMaterialToCanvas} onProof={showProof}/>} 
-              {!searchLoading && !searchResult && !searchError && <div className="qvl-right-empty"><span className="qvl-round-book"><Icon name="book" size={28}/></span><strong>{searchContext?.source === 'awaiting-card' ? 'Choisissez le point de départ.' : 'Votre bibliothèque est prête.'}</strong><p>{searchContext?.source === 'awaiting-card' ? 'Sélectionnez un post-it dans le canevas, puis cliquez sur l’un des besoins informationnels à gauche.' : 'Sélectionnez un post-it puis un besoin informationnel. Les résultats apparaîtront ici avec leur provenance.'}</p></div>}
-            </>}
-
-            {resultTab === 'sources' && <SourceResults materials={visibleResults} onProof={showProof}/>} 
-
-            {resultTab === 'explore' && <ExploreResults
-              need={resultNeed}
-              result={searchResult}
-              materials={visibleResults}
-              searchContext={searchContext}
-              onAdd={addMaterialToCanvas}
-              onProof={showProof}
-            />}
-          </div>
-
-          <div className={`qvl-free-search ${freeSearchOpen ? 'open' : ''}`}>
-            <button type="button" className="qvl-free-search-toggle" onClick={() => { setFreeSearchOpen(value => !value); window.setTimeout(() => document.querySelector('.qvl-free-search textarea')?.focus(), 0) }}>
-              <Icon name="search" size={16}/><span><strong>Question libre aux publications du bulletin</strong><small>Le bot n’utilise que les publications du bulletin.</small></span><span aria-hidden="true">{freeSearchOpen ? '−' : '+'}</span>
-            </button>
-            {freeSearchOpen && <form onSubmit={runManualSearch}>
-              <textarea ref={searchInputRef} maxLength={500} value={manualQuery} onChange={event => setManualQuery(event.target.value)} placeholder="Posez directement une question aux publications…"/>
-              <span className="qvl-char-count">{manualQuery.length}/500</span>
-              <button type="submit" disabled={!manualQuery.trim() || searchLoading}><Icon name="search" size={18}/>{searchLoading ? 'Recherche…' : 'Chercher dans les publications'}</button>
-            </form>}
-          </div>
-        </>}
+        {rightCollapsed ? <div className="qvl-collapsed-label">Résultats</div> : <CorpusResults
+          index={index}
+          selection={selection}
+          keptIds={keptIds}
+          onKeep={material => { addMaterialToCanvas(material); guideStep('canvas') }}
+          onProof={showProof}
+          onPublication={choosePublication}
+        />}
       </aside>
     </div>
-
     <EclaireurGuide
       step={eclaireur.step}
       mode={eclaireur.mode}
-      resultCount={visibleResults.length}
-      loading={searchLoading}
-      awaitingCard={searchContext?.source === 'awaiting-card'}
       onClose={closeEclaireur}
       onMinimize={minimizeEclaireur}
       onRestore={restoreEclaireur}
@@ -1052,12 +768,11 @@ function useMovable(deps) {
   return { ref, style, onPointerDown, onClickCapture, moved: offset.x !== 0 || offset.y !== 0 }
 }
 
-function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, awaitingCard, onClose, onMinimize, onRestore }) {
-  const steps = ['axis', 'needs', 'results']
+function EclaireurGuide({ step = 'start', mode = 'open', onClose, onMinimize, onRestore }) {
+  const steps = ['start', 'results', 'canvas']
   const index = Math.max(0, steps.indexOf(step))
   const number = index + 1
   const side = step === 'results' ? 'left' : 'right'
-  const multiple = resultCount > 1
   const movable = useMovable([mode, step])
   const moveProps = { ref: movable.ref, style: movable.style, onClickCapture: movable.onClickCapture }
   const movedClass = movable.moved ? ' qvl-eclaireur-moved' : ''
@@ -1073,18 +788,14 @@ function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, aw
     </div>
   }
 
-  let title = '1 · Choisir un axe de réflexion'
-  let body = <p>Dans le canevas, sélectionnez une carte <strong>Question</strong> ou <strong>Idée / hypothèse</strong>. Elle devient le point de départ de votre recherche dans le corpus.</p>
-
-  if (step === 'needs') {
-    title = '2 · Sélectionnez un besoin'
-    body = <p>Cliquez sur <strong>un besoin informationnel</strong> dans le volet de gauche. La recherche part de l’axe de réflexion que vous avez sélectionné.</p>
-  } else if (step === 'results') {
-    title = '3 · Accéder aux publications'
-    body = <>
-      {awaitingCard ? <p>Choisissez d’abord une carte <strong>Question</strong> ou <strong>Idée / hypothèse</strong> dans le canevas.</p> : loading ? <p>La recherche est en cours. Les résultats vont s’afficher dans le volet de droite.</p> : resultCount === 0 ? <p>Les publications n’ont pas fourni de résultat suffisant pour ce besoin. Vous pouvez revenir à votre axe ou choisir un autre besoin.</p> : <p>Les résultats sont disponibles dans le volet de droite. Pour chaque élément, utilisez <strong>Voir la preuve complète</strong> pour accéder à la preuve documentaire.</p>}
-      {multiple && !loading && <p className="qvl-eclaireur-tip">Plusieurs résultats sont disponibles : faites défiler la colonne pour tous les consulter.</p>}
-    </>
+  let title = '1 · Choisir un point de départ'
+  let body = <p>À gauche, <strong>cherchez un mot</strong> ou partez de notre fonds : un <strong>thème</strong>, une publication ou un <strong>type d’élément</strong> (tendances, recommandations…).</p>
+  if (step === 'results') {
+    title = '2 · Garder ce qui sert'
+    body = <p>À droite, la base montre ce qu’elle contient, avec la publication et la page. Cliquez sur <strong>+ Garder</strong> pour placer un élément sur le canevas.</p>
+  } else if (step === 'canvas') {
+    title = '3 · Construire votre réflexion'
+    body = <p>Ajoutez vos questions, idées et notes avec les boutons <strong>Créer un post-it</strong> en haut, puis <strong>reliez les cartes</strong> pour faire apparaître votre raisonnement.</p>
   }
 
   return <aside {...moveProps} className={`qvl-eclaireur-guide qvl-eclaireur-step-${step} qvl-eclaireur-side-${side}${movedClass}`} aria-live="polite" aria-label={`Guide, étape ${number} sur 3`}>
@@ -1101,114 +812,6 @@ function EclaireurGuide({ step = 'axis', mode = 'open', resultCount, loading, aw
       </div>
     </div>
   </aside>
-}
-
-function NeedResults({ need, result, materials, onAdd, onProof }) {
-  const all = result?.results || result?.materials || []
-  const pubs = new Map()
-  materials.forEach(item => {
-    const meta = publicationMeta(item)
-    if (meta.id) pubs.set(meta.id, meta)
-  })
-  const domains = [...new Set(materials.map(item => item.domaine).filter(Boolean))]
-
-  return <section className="qvl-need-results">
-    {need.id === 'overview' && <div className="qvl-overview-strip">
-      <div><strong>{pubs.size}</strong><span>publication{pubs.size > 1 ? 's' : ''}</span></div>
-      <div><strong>{materials.length}</strong><span>élément{materials.length > 1 ? 's' : ''}</span></div>
-      <div><strong>{domains.length}</strong><span>domaine{domains.length > 1 ? 's' : ''}</span></div>
-    </div>}
-    <div className="qvl-result-heading"><div><strong>{materials.length} résultat{materials.length > 1 ? 's' : ''}</strong><span>{need.id === 'overview' ? 'pour construire une première vue du thème' : 'correspondant à ce besoin informationnel'}</span></div>{all.length !== materials.length && <small>{all.length - materials.length} autre{all.length - materials.length > 1 ? 's' : ''} résultat{all.length - materials.length > 1 ? 's' : ''} écarté{all.length - materials.length > 1 ? 's' : ''} car hors de cette catégorie</small>}</div>
-    {materials.length ? <div className="qvl-result-list">{materials.slice(0, 14).map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div> : <div className="qvl-no-result"><strong>Les publications ne permettent pas de répondre suffisamment à ce besoin.</strong><p>Aucun élément suffisamment ciblé n’a été repéré dans les publications du bulletin présentes dans le corpus. Cela ne signifie pas que le sujet est peu documenté en dehors du bulletin. Vous pouvez préciser la formulation ou revenir à « Comprendre rapidement ce que le corpus contient sur un thème ».</p></div>}
-  </section>
-}
-
-function SourceResults({ materials, onProof }) {
-  const grouped = new Map()
-  ;(materials || []).forEach(material => {
-    const meta = publicationMeta(material)
-    const key = meta.id || meta.title || materialIdOf(material) || `source-${grouped.size}`
-    if (!grouped.has(key)) grouped.set(key, { meta, materials: [] })
-    grouped.get(key).materials.push(material)
-  })
-
-  const sources = [...grouped.values()]
-
-  if (!sources.length) {
-    return <div className="qvl-right-empty compact"><span className="qvl-round-book"><Icon name="file" size={25}/></span><strong>Aucune source à afficher.</strong><p>Lancez une recherche dans les publications pour voir ici les publications mobilisées.</p></div>
-  }
-
-  return <section className="qvl-source-results">
-    <div className="qvl-source-summary"><strong>{sources.length} source{sources.length > 1 ? 's' : ''}</strong><span>mobilisée{sources.length > 1 ? 's' : ''} dans cette réponse</span></div>
-    <div className="qvl-source-list">
-      {sources.map((entry, index) => {
-        const { meta } = entry
-        const locators = [...new Set(entry.materials.map(item => locatorOf(item)?.label).filter(Boolean))]
-        const representative = entry.materials[0]
-        const href = sourceUrlOf(representative)
-        return <article key={meta.id || meta.title || index} className="qvl-source-card">
-          <div className="qvl-source-card-icon"><Icon name="file" size={17}/></div>
-          <div className="qvl-source-card-copy">
-            <strong>{meta.title || meta.id || 'Publication source'}</strong>
-            <span>{[meta.organisation, meta.year, meta.id].filter(Boolean).join(' · ')}</span>
-            {locators.length > 0 && <small>{locators.slice(0, 5).join(' · ')}</small>}
-          </div>
-          <div className="qvl-source-card-actions">
-            {href && <a href={href} target="_blank" rel="noreferrer" aria-label="Ouvrir la source"><Icon name="external" size={14}/></a>}
-            <button type="button" onClick={() => onProof(representative)} aria-label="Voir la preuve"><Icon name="file" size={14}/></button>
-          </div>
-        </article>
-      })}
-    </div>
-  </section>
-}
-
-function ExploreResults({ need, result, materials, searchContext, onAdd, onProof }) {
-  const all = Array.isArray(result?.results) ? result.results : (Array.isArray(result?.materials) ? result.materials : [])
-  const visibleIds = new Set((materials || []).map(item => materialIdOf(item)).filter(Boolean))
-  const extras = all.filter(item => {
-    const id = materialIdOf(item)
-    return id ? !visibleIds.has(id) : !(materials || []).includes(item)
-  }).slice(0, 6)
-
-  return <section className="qvl-explore-results">
-    {searchContext?.source === 'canvas' && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Recherche à partir du canevas</strong><span>{result?.interpretation?.context_used ? `Contexte utilisé : ${result.interpretation.context_subject || result.interpretation.subject_query}` : result?.interpretation?.subject_query ? `Sujet interprété : ${result.interpretation.subject_query}` : 'Le besoin sélectionné est appliqué au post-it actif et au contexte utile du canevas.'}</span></div></div>}
-    {searchContext?.source === 'manual' && result?.interpretation?.context_used && <div className="qvl-guided-status"><Icon name="target" size={16}/><div><strong>Contexte du canevas utilisé</strong><span>{result.interpretation.context_subject || result.interpretation.subject_query}</span></div></div>}
-
-    <div className="qvl-general-advice qvl-explore-advice"><Icon name="info" size={16}/><div><strong>Point de vigilance</strong><p>{need?.advice}</p></div></div>
-
-    <div className="qvl-corpus-boundary qvl-explore-boundary"><Icon name="info" size={17}/><div><strong>Périmètre du bot</strong><p>Il répond uniquement à partir des publications du bulletin Quiritès intégrées au corpus actif. Une absence ou une faible couverture ici ne signifie pas que le sujet est absent de la littérature ou des connaissances disponibles en dehors du bulletin.</p></div></div>
-
-    {result && extras.length > 0 && <div className="qvl-explore-more">
-      <div className="qvl-explore-more-heading"><strong>Autres éléments trouvés par la recherche</strong><span>Ils n’entrent pas directement dans la catégorie sélectionnée, mais peuvent aider à élargir la lecture.</span></div>
-      <div className="qvl-explore-more-list">{extras.map((material, index) => <ResultMaterial key={materialIdOf(material) || index} material={material} onAdd={() => onAdd(material)} onProof={() => onProof(material)}/>)}</div>
-    </div>}
-
-    {!result && <div className="qvl-right-empty compact"><span className="qvl-round-book"><Icon name="target" size={25}/></span><strong>Des pistes apparaîtront ici.</strong><p>Lancez d’abord une recherche ou choisissez un besoin informationnel à gauche.</p></div>}
-    {result && extras.length === 0 && <div className="qvl-explore-empty"><strong>Aucun autre élément n’a été écarté de cette réponse.</strong><span>Utilisez les autres besoins informationnels ou reformulez votre question pour ouvrir un autre angle de lecture.</span></div>}
-  </section>
-}
-
-function ResultMaterial({ material, onAdd, onProof }) {
-  const id = materialIdOf(material)
-  const meta = publicationMeta(material)
-  const locator = locatorOf(material)
-  const provenance = provenanceLevelOf(material)
-  const sourceUrl = sourceUrlOf(material)
-  return <article className="qvl-result-card">
-    <div className="qvl-result-card-top"><span>{materialKind(material)}</span>{id && <small>{id.replace(':', ' · ')}</small>}</div>
-    <p className="qvl-result-excerpt">{shortText(materialText(material), 360)}</p>
-    <div className="qvl-result-source">
-      <strong>{meta.title || meta.id || 'Publication source'}</strong>
-      <span>{[meta.organisation, meta.year].filter(Boolean).join(' · ')}</span>
-      <div>{meta.id && <em>{meta.id}</em>}{locator?.label && <em>{locator.label}</em>}{provenance && <em>provenance {provenance}</em>}</div>
-    </div>
-    <div className="qvl-result-actions">
-      {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noreferrer"><Icon name="external" size={14}/>{sourceButtonLabel(material)}</a> : <span className="qvl-source-unavailable">Lien source indisponible</span>}
-      <button type="button" className="ghost" onClick={onProof}><Icon name="file" size={14}/>Voir la preuve complète</button>
-      <button type="button" className="primary" onClick={onAdd}><Icon name="plus" size={14}/>Ajouter au canevas</button>
-    </div>
-  </article>
 }
 
 function ProofModal({ state, onClose }) {
@@ -1275,4 +878,188 @@ function ProofModal({ state, onClose }) {
       </footer>
     </section>
   </div>
+}
+
+// ---------------------------------------------------------------------------
+// Volet gauche : chercher un mot d'abord, puis valoriser le fonds (thèmes,
+// publications, types d'éléments). Tous les nombres viennent de la base.
+// ---------------------------------------------------------------------------
+function CorpusStart({ index, query, setQuery, onSearch, inputRef, openTheme, selection, onTheme, onPublication, onType }) {
+  const featured = index.typeStats.filter(stat => FEATURED_TYPES.includes(stat.id) && stat.count > 0)
+  const activePub = selection?.kind === 'publication' ? selection.publication?.publication_id : ''
+  return <div className="qce-start">
+    <form className="qce-search" onSubmit={onSearch} role="search">
+      <label htmlFor="qce-query">Chercher dans les publications</label>
+      <div className="qce-search-row">
+        <input id="qce-query" ref={inputRef} value={query} onChange={event => setQuery(event.target.value)} placeholder="Un mot, un sujet : incendie, narcotrafic…" autoComplete="off"/>
+        <button type="submit" disabled={!query.trim()}><Icon name="search" size={16}/><span>Chercher</span></button>
+      </div>
+    </form>
+
+    <h3 className="qce-label">Ou partir de notre fonds · par thème</h3>
+    <div className="qce-themes">
+      {index.themes.map(theme => {
+        const open = openTheme === theme.label
+        const active = selection?.kind === 'theme' && selection.title === theme.label
+        return <div key={theme.label} className={`qce-theme ${open ? 'open' : ''}`}>
+          <button type="button" className={`qce-theme-btn ${active ? 'active' : ''}`} aria-expanded={open} onClick={() => onTheme(theme.label)}>
+            <span>{theme.label}</span><em>{theme.publications.length}</em>
+          </button>
+          {open && <ul className="qce-pubs">
+            {theme.publications.map(pub => <li key={pub.publication_id}>
+              <button type="button" className={activePub === pub.publication_id ? 'active' : ''} onClick={() => onPublication(pub.publication_id)} title={pub.title}>{pub.title}</button>
+            </li>)}
+          </ul>}
+        </div>
+      })}
+    </div>
+
+    {featured.length > 0 && <>
+      <h3 className="qce-label">Ou par type d’élément</h3>
+      <div className="qce-types">
+        {featured.map(stat => <button key={stat.id} type="button" className={`qce-type ${selection?.kind === 'type' && selection.groupId === stat.id ? 'active' : ''}`} onClick={() => onType(stat.id)}>
+          <strong>{stat.count}</strong><span>{stat.label}</span><small>{stat.pubCount} publication{stat.pubCount > 1 ? 's' : ''}</small>
+        </button>)}
+      </div>
+    </>}
+  </div>
+}
+
+// ---------------------------------------------------------------------------
+// Volet droit : ce que la base contient pour la sélection, classé par type.
+// Un onglet n'apparaît que s'il contient au moins un élément.
+// ---------------------------------------------------------------------------
+const PAGE_SIZE = 25
+
+function CorpusResults({ index, selection, keptIds, onKeep, onProof, onPublication }) {
+  const [tab, setTab] = useState('')
+  const [shown, setShown] = useState(PAGE_SIZE)
+  const boxRef = useRef(null)
+
+  const tabs = useMemo(() => {
+    if (!selection) return []
+    const list = ELEMENT_TYPES
+      .map(group => ({ id: group.id, label: group.label, items: selection.elements.filter(el => el.group === group.id) }))
+      .filter(entry => entry.items.length)
+    if (selection.passages?.length) list.push({ id: 'passages', label: 'Passages', items: selection.passages })
+    return list
+  }, [selection])
+
+  useEffect(() => {
+    setShown(PAGE_SIZE)
+    if (boxRef.current) boxRef.current.scrollTop = 0
+    if (!selection) { setTab(''); return }
+    // Pour une recherche, on ouvre d'abord le type le plus fourni en éléments
+    // structurés ; à défaut, les passages.
+    setTab(tabs[0]?.id || '')
+  }, [selection]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!selection) {
+    return <div className="qce-results qce-overview">
+      <h2>Ce que contient la base</h2>
+      <p className="qce-muted">Les résultats s’afficheront ici, chacun avec sa publication et sa page.</p>
+      <div className="qce-totals">
+        <div><strong>{index.totals.publications}</strong><span>publications</span></div>
+        <div><strong>{index.totals.passages.toLocaleString('fr-FR')}</strong><span>passages consultables</span></div>
+        <div><strong>{index.totals.acteurs}</strong><span>acteurs</span></div>
+        <div><strong>{index.totals.actions}</strong><span>actions</span></div>
+      </div>
+      <p className="qce-warning">Une absence de résultat signifie que les publications du bulletin n’en parlent pas, pas que le sujet n’existe pas.</p>
+    </div>
+  }
+
+  const current = tabs.find(entry => entry.id === tab) || tabs[0]
+  const items = current?.items || []
+  const isType = selection.kind === 'type'
+  const pubCount = selection.publications.length
+  const empty = !tabs.length
+
+  // Pour un type parcouru sur toute la base, on regroupe par publication.
+  const grouped = isType ? groupByPublication(items.slice(0, shown)) : null
+
+  return <div className="qce-results" ref={boxRef}>
+    <header className="qce-results-head">
+      <div>
+        <span className="qce-kicker">{selection.kind === 'search' ? 'Recherche' : selection.kind === 'theme' ? 'Thème' : selection.kind === 'publication' ? 'Publication' : 'Type d’élément'}</span>
+        <h2>{selection.kind === 'search' ? `« ${selection.title} »` : selection.title}</h2>
+        {selection.subtitle && <p className="qce-muted">{selection.subtitle}</p>}
+      </div>
+      {selection.kind !== 'publication' && <span className="qce-count">{pubCount} publication{pubCount > 1 ? 's' : ''}</span>}
+    </header>
+
+    {selection.kind === 'publication' && selection.publication && <PublicationLinks pub={selection.publication}/>}
+
+    {empty ? <div className="qce-empty">
+      <strong>{selection.tooShort ? 'Tapez au moins un mot de trois lettres.' : 'La base ne contient rien sur ce point pour le moment.'}</strong>
+      {!selection.tooShort && <p>Essayez un mot plus court ou plus général (« drogue » plutôt que « trafic de drogues de synthèse »), ou partez d’un thème. Une absence de résultat ne signifie pas que le sujet n’existe pas en dehors du bulletin.</p>}
+    </div> : <>
+      {selection.kind !== 'publication' && !isType && pubCount > 0 && <PublicationList pubs={selection.publications} onPublication={onPublication}/>}
+
+      {tabs.length > 1 && <div className="qce-tabs" role="tablist" aria-label="Types d’éléments">
+        {tabs.map(entry => <button key={entry.id} type="button" role="tab" aria-selected={entry.id === current?.id} className={entry.id === current?.id ? 'active' : ''} onClick={() => { setTab(entry.id); setShown(PAGE_SIZE) }}>
+          {entry.label}<em>{entry.items.length}</em>
+        </button>)}
+      </div>}
+      {tabs.length === 1 && <p className="qce-single-tab">{current.label} · {items.length}</p>}
+
+      <div className="qce-items" role="tabpanel">
+        {isType
+          ? grouped.map(group => <section key={group.pub.publication_id} className="qce-group">
+              <button type="button" className="qce-group-title" onClick={() => onPublication(group.pub.publication_id)}>{group.pub.title}</button>
+              {group.items.map(item => <ResultItem key={item.material_id} item={item} kept={keptIds.has(item.material_id)} onKeep={onKeep} onProof={onProof} hidePublication/>)}
+            </section>)
+          : items.slice(0, shown).map(item => <ResultItem key={item.material_id} item={item} kept={keptIds.has(item.material_id)} onKeep={onKeep} onProof={onProof} hidePublication={selection.kind === 'publication'}/>)}
+      </div>
+      {items.length > shown && <button type="button" className="qce-more" onClick={() => setShown(value => value + PAGE_SIZE)}>Afficher {Math.min(PAGE_SIZE, items.length - shown)} de plus ({items.length - shown} restant{items.length - shown > 1 ? 's' : ''})</button>}
+    </>}
+  </div>
+}
+
+function groupByPublication(items) {
+  const map = new Map()
+  items.forEach(item => {
+    if (!map.has(item.publication_id)) map.set(item.publication_id, { pub: { publication_id: item.publication_id, title: displayPubTitle(item.publication_title) }, items: [] })
+    map.get(item.publication_id).items.push(item)
+  })
+  return [...map.values()]
+}
+
+function displayPubTitle(title) {
+  const value = String(title || '').trim()
+  return value ? value.charAt(0).toUpperCase() + value.slice(1) : value
+}
+
+function PublicationList({ pubs, onPublication }) {
+  const [all, setAll] = useState(false)
+  const visible = all ? pubs : pubs.slice(0, 4)
+  return <div className="qce-publist">
+    {visible.map(pub => <button key={pub.publication_id} type="button" onClick={() => onPublication(pub.publication_id)} title="Voir tout ce que contient cette publication">
+      <span>{pub.title}</span><Icon name="chevron" size={13}/>
+    </button>)}
+    {pubs.length > 4 && <button type="button" className="qce-publist-more" onClick={() => setAll(value => !value)}>{all ? 'Réduire la liste' : `+ ${pubs.length - 4} autre${pubs.length - 4 > 1 ? 's' : ''}`}</button>}
+  </div>
+}
+
+function PublicationLinks({ pub }) {
+  const href = pub.url_contenu || pub.url_source
+  return <div className="qce-publinks">
+    <span>{[pub.theme, pub.domaine && pub.domaine !== pub.theme ? pub.domaine : ''].filter(Boolean).join(' · ')}</span>
+    {href && <a href={href} target="_blank" rel="noreferrer"><Icon name="external" size={13}/>Ouvrir la publication</a>}
+  </div>
+}
+
+function ResultItem({ item, kept, onKeep, onProof, hidePublication = false }) {
+  const isPassage = item.material_id.startsWith('chunk:')
+  const text = isPassage ? shortText(item.text, 320) : item.label
+  const where = [hidePublication ? '' : displayPubTitle(item.publication_title), item.pages].filter(Boolean).join(' · ')
+  return <article className={`qce-item ${isPassage ? 'passage' : ''}`}>
+    <div className="qce-item-text">
+      <p>{text}</p>
+      {where && <small>{where}</small>}
+    </div>
+    <div className="qce-item-actions">
+      <button type="button" className={`qce-keep ${kept ? 'kept' : ''}`} onClick={() => onKeep(item)} disabled={kept}>{kept ? 'Gardé ✓' : '+ Garder'}</button>
+      <button type="button" className="qce-proof" onClick={() => onProof(item)}>Preuve</button>
+    </div>
+  </article>
 }
