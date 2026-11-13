@@ -6,6 +6,8 @@ import GlossaryWorkspace from './GlossaryWorkspace.jsx'
 import RecommendationWorkspaceV1 from './RecommendationWorkspaceV1.jsx'
 import ExpertsWorkspace from './ExpertsWorkspace.jsx'
 import ScenarioWorkspace from './ScenarioWorkspace.jsx'
+import ScenarioWorkspaceV3 from './ScenarioWorkspaceV3.jsx'
+import { isScenarioV3Enabled } from '../services/scenarioV3Api.js'
 import { generateTreatment } from '../services/treatmentApi.js'
 import { normalize } from '../lib/text.js'
 import '@fontsource/manrope/latin-400.css'
@@ -112,7 +114,8 @@ function Workspace({treatment,data,onBack,initialNeed=''}){
  if(treatment.traitement_id==='T02') return <GlossaryWorkspace treatment={treatment} data={data} onBack={onBack}/>
  if(treatment.traitement_id==='T04') return <RecommendationWorkspaceV1 treatment={treatment} data={data} onBack={onBack}/>
  if(treatment.traitement_id==='T08') return <ExpertsWorkspace treatment={treatment} data={data} onBack={onBack}/>
- if(treatment.traitement_id==='T06') return <ScenarioWorkspace treatment={treatment} data={data} onBack={onBack}/>
+ // T06 : la version 3 (test) ne s'affiche qu'avec « ?t06=v3 » dans l'adresse.
+ if(treatment.traitement_id==='T06') return isScenarioV3Enabled() ? <ScenarioWorkspaceV3 onBack={onBack}/> : <ScenarioWorkspace treatment={treatment} data={data} onBack={onBack}/>
  const pubs=data.publications.filter(p=>p.has_graph)
  const isT01=treatment.traitement_id==='T01'
  const firstChunkPub=pubs.find(p=>(p.chunk_count||0)>0)
