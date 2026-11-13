@@ -115,7 +115,7 @@ function Workspace({treatment,data,onBack,initialNeed=''}){
  if(treatment.traitement_id==='T04') return <RecommendationWorkspaceV1 treatment={treatment} data={data} onBack={onBack}/>
  if(treatment.traitement_id==='T08') return <ExpertsWorkspace treatment={treatment} data={data} onBack={onBack}/>
  // T06 : la version 3 (test) ne s'affiche qu'avec « ?t06=v3 » dans l'adresse.
- if(treatment.traitement_id==='T06') return isScenarioV3Enabled() ? <ScenarioWorkspaceV3 onBack={onBack}/> : <ScenarioWorkspace treatment={treatment} data={data} onBack={onBack}/>
+ if(treatment.traitement_id==='T06') return <ScenarioWorkspaceV3 onBack={onBack}/>
  const pubs=data.publications.filter(p=>p.has_graph)
  const isT01=treatment.traitement_id==='T01'
  const firstChunkPub=pubs.find(p=>(p.chunk_count||0)>0)
