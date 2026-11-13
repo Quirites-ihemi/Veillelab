@@ -4449,7 +4449,7 @@
     "node_id": "N0552",
     "publication_id": "PUB021",
     "type_noeud": "notion_idee",
-    "libelle": "Connaissance des milieux, des espèces et de la biodiversité",
+    "libelle": "Connaissance des milieux des espèces et de la biodiversité",
     "libelle_normalise": "connaissance des milieux des espèces et de la biodiversité",
     "page_source": "02:18;02:48",
     "chunk_id_source": "C0444"
@@ -11964,7 +11964,7 @@
     "node_id": "N1418",
     "publication_id": "PUB122",
     "type_noeud": "notion_idee",
-    "libelle": "Groupe comme régulateur du stress et support de l’adaptation",
+    "libelle": "Groupe comme régulateur du stress et support de l'adaptation",
     "libelle_normalise": "groupe regulateur stress support adaptation",
     "page_source": "67",
     "chunk_id_source": "C1081"
@@ -11973,7 +11973,7 @@
     "node_id": "N1425",
     "publication_id": "PUB122",
     "type_noeud": "action",
-    "libelle": "Débriefing et retour d’expérience pour adapter les procédures opérationnelles",
+    "libelle": "Débriefing et retour d'expérience pour adapter les procédures opérationnelles",
     "libelle_normalise": "debriefing retour experience adapter procedures operationnelles",
     "page_source": "67;74",
     "chunk_id_source": "C1082;C1088"
@@ -12208,7 +12208,7 @@
     "publication_id": "PUB125",
     "type_noeud": "instrument_dispositif",
     "libelle": "Loi du 24 juillet 2015, encadrement légal des techniques de renseignement",
-    "libelle_normalise": "loi du 24 juillet 2015 encadrement legal des techniques de renseignement",
+    "libelle_normalise": "Loi du 24 juillet 2015, encadrement légal des techniques de renseignement",
     "page_source": "1;3;4",
     "chunk_id_source": "C1111"
   },
@@ -12217,7 +12217,7 @@
     "publication_id": "PUB125",
     "type_noeud": "notion_idee",
     "libelle": "Intelligence artificielle, transformation du geste métier, du métier et de l’environnement métier",
-    "libelle_normalise": "intelligence artificielle transformation du geste metier du metier et de l environnement metier",
+    "libelle_normalise": "Intelligence artificielle, transformation du geste métier, du métier et de l’environnement métier",
     "page_source": "2;3",
     "chunk_id_source": "C1112"
   },
@@ -12253,7 +12253,7 @@
     "publication_id": "PUB125",
     "type_noeud": "notion_idee",
     "libelle": "Transformation du renseignement en preuve judiciaire",
-    "libelle_normalise": "Transformation du renseignement en preuve judiciaire",
+    "libelle_normalise": "transformation du renseignement en preuve judiciaire",
     "page_source": "3;4",
     "chunk_id_source": "C1115"
   },
@@ -12361,7 +12361,7 @@
     "publication_id": "PUB126",
     "type_noeud": "notion_idee",
     "libelle": "Connaissance des milieux, des espèces et de la biodiversité",
-    "libelle_normalise": "connaissance des milieux des espèces et de la biodiversité",
+    "libelle_normalise": "connaissance des milieux, des espèces et de la biodiversité",
     "page_source": "125;126",
     "chunk_id_source": "C1122"
   },
@@ -12418,5 +12418,779 @@
     "libelle_normalise": "détecter, identifier, suivre et guider grâce aux images",
     "page_source": "4",
     "chunk_id_source": "C1133"
+  },
+  {
+    "node_id": "N1541",
+    "publication_id": "PUB128",
+    "type_noeud": "tendance",
+    "libelle": "Montée en puissance du renseignement allemand depuis 2022",
+    "libelle_normalise": "montée en puissance du renseignement allemand depuis 2022",
+    "page_source": "12:20-14:30;28:15-29:25",
+    "chunk_id_source": "C1134"
+  },
+  {
+    "node_id": "N1542",
+    "publication_id": "PUB128",
+    "type_noeud": "probleme",
+    "libelle": "Contraintes juridiques et parlementaires pesant sur le renseignement extérieur allemand",
+    "libelle_normalise": "contraintes juridiques et parlementaires pesant sur le renseignement extérieur allemand",
+    "page_source": "01:50-03:45;10:15-11:15",
+    "chunk_id_source": "C1135"
+  },
+  {
+    "node_id": "N1543",
+    "publication_id": "PUB128",
+    "type_noeud": "methode",
+    "libelle": "Réforme des capacités opérationnelles du renseignement extérieur allemand",
+    "libelle_normalise": "réforme des capacités opérationnelles du renseignement extérieur allemand",
+    "page_source": "20:30-22:10;31:40-32:00",
+    "chunk_id_source": "C1136"
+  },
+  {
+    "node_id": "N1544",
+    "publication_id": "PUB128",
+    "type_noeud": "tendance",
+    "libelle": "Développement des capacités allemandes de renseignement spatial",
+    "libelle_normalise": "développement des capacités allemandes de renseignement spatial",
+    "page_source": "22:15-25:25",
+    "chunk_id_source": "C1137"
+  },
+  {
+    "node_id": "N1545",
+    "publication_id": "PUB128",
+    "type_noeud": "notion_idee",
+    "libelle": "Surveillance plus fréquente des territoires par satellite",
+    "libelle_normalise": "surveillance plus fréquente des territoires par satellite",
+    "page_source": "24:20-25:25",
+    "chunk_id_source": "C1138"
+  },
+  {
+    "node_id": "N1546",
+    "publication_id": "PUB128",
+    "type_noeud": "tendance",
+    "libelle": "Renforcement du contre-espionnage allemand",
+    "libelle_normalise": "renforcement du contre-espionnage allemand",
+    "page_source": "29:30-30:50;32:15-34:15",
+    "chunk_id_source": "C1139"
+  },
+  {
+    "node_id": "N1547",
+    "publication_id": "PUB128",
+    "type_noeud": "probleme",
+    "libelle": "Cloisonnement entre renseignement, police et justice en Allemagne",
+    "libelle_normalise": "cloisonnement entre renseignement, police et justice en Allemagne",
+    "page_source": "29:35-31:35",
+    "chunk_id_source": "C1140"
+  },
+  {
+    "node_id": "N1525",
+    "publication_id": "PUB128",
+    "type_noeud": "notion_idee",
+    "libelle": "Transformation du renseignement en preuve judiciaire",
+    "libelle_normalise": "transformation du renseignement en preuve judiciaire",
+    "page_source": "29:35-30:00",
+    "chunk_id_source": "C1141"
+  },
+  {
+    "node_id": "N1548",
+    "publication_id": "PUB128",
+    "type_noeud": "tendance",
+    "libelle": "Recomposition des coopérations européennes de renseignement",
+    "libelle_normalise": "recomposition des coopérations européennes de renseignement",
+    "page_source": "36:20-40:15",
+    "chunk_id_source": "C1142"
+  },
+  {
+    "node_id": "N1549",
+    "publication_id": "PUB128",
+    "type_noeud": "probleme",
+    "libelle": "Concurrence industrielle liée aux investissements allemands dans le renseignement",
+    "libelle_normalise": "concurrence industrielle liée aux investissements allemands dans le renseignement",
+    "page_source": "25:30-27:10;37:40-39:15",
+    "chunk_id_source": "C1143"
+  },
+  {
+    "node_id": "N1550",
+    "publication_id": "PUB128",
+    "type_noeud": "notion_idee",
+    "libelle": "Tournant stratégique allemand après l'invasion de l'Ukraine",
+    "libelle_normalise": "tournant stratégique allemand après l'invasion de l'Ukraine",
+    "page_source": "12:20-13:35",
+    "chunk_id_source": "C1144"
+  },
+  {
+    "node_id": "N1551",
+    "publication_id": "PUB128",
+    "type_noeud": "probleme",
+    "libelle": "Méfiance historique envers le renseignement allemand",
+    "libelle_normalise": "méfiance historique envers le renseignement allemand",
+    "page_source": "11:50-12:25",
+    "chunk_id_source": "C1145"
+  },
+  {
+    "node_id": "N1552",
+    "publication_id": "PUB128",
+    "type_noeud": "probleme",
+    "libelle": "Difficultés d'anticipation des menaces par le renseignement allemand",
+    "libelle_normalise": "difficultés d'anticipation des menaces par le renseignement allemand",
+    "page_source": "12:30-13:20;16:20-17:30",
+    "chunk_id_source": "C1146;C1147"
+  },
+  {
+    "node_id": "N1553",
+    "publication_id": "PUB129",
+    "type_noeud": "tendance",
+    "libelle": "Industrialisation du narcotrafic",
+    "libelle_normalise": "industrialisation du narcotrafic",
+    "page_source": "53",
+    "chunk_id_source": "C1148"
+  },
+  {
+    "node_id": "N1554",
+    "publication_id": "PUB129",
+    "type_noeud": "tendance",
+    "libelle": "Extension des violences liées au narcotrafic à de nouveaux territoires",
+    "libelle_normalise": "extension des violences liées au narcotrafic à de nouveaux territoires",
+    "page_source": "54",
+    "chunk_id_source": "C1149"
+  },
+  {
+    "node_id": "N1629",
+    "publication_id": "PUB129",
+    "type_noeud": "notion_idee",
+    "libelle": "Corruption des services chargés de lutter contre le narcotrafic",
+    "libelle_normalise": "corruption des services chargés de lutter contre le narcotrafic",
+    "page_source": "54;57",
+    "chunk_id_source": "C1150"
+  },
+  {
+    "node_id": "N1555",
+    "publication_id": "PUB129",
+    "type_noeud": "probleme",
+    "libelle": "Corruption des institutions publiques et menace sur l'État de droit",
+    "libelle_normalise": "corruption des institutions publiques et menace sur l'état de droit",
+    "page_source": "57",
+    "chunk_id_source": "C1151"
+  },
+  {
+    "node_id": "N1556",
+    "publication_id": "PUB129",
+    "type_noeud": "methode",
+    "libelle": "Renforcement de la coordination nationale contre la criminalité organisée",
+    "libelle_normalise": "renforcement de la coordination nationale contre la criminalité organisée",
+    "page_source": "55;56",
+    "chunk_id_source": "C1152"
+  },
+  {
+    "node_id": "N1557",
+    "publication_id": "PUB129",
+    "type_noeud": "methode",
+    "libelle": "Recours aux repentis et aux informateurs pour démanteler les réseaux criminels",
+    "libelle_normalise": "recours aux repentis et aux informateurs pour démanteler les réseaux criminels",
+    "page_source": "55",
+    "chunk_id_source": "C1153"
+  },
+  {
+    "node_id": "N1558",
+    "publication_id": "PUB129",
+    "type_noeud": "probleme",
+    "libelle": "Tensions entre efficacité des enquêtes et protection des libertés",
+    "libelle_normalise": "tensions entre efficacité des enquêtes et protection des libertés",
+    "page_source": "55;57",
+    "chunk_id_source": "C1154;C1155"
+  },
+  {
+    "node_id": "N1559",
+    "publication_id": "PUB129",
+    "type_noeud": "notion_idee",
+    "libelle": "Adaptation du droit face à la criminalité organisée",
+    "libelle_normalise": "adaptation du droit face à la criminalité organisée",
+    "page_source": "56;57",
+    "chunk_id_source": "C1156"
+  },
+  {
+    "node_id": "N1560",
+    "publication_id": "PUB129",
+    "type_noeud": "probleme",
+    "libelle": "Insuffisance de la prévention et de l'accompagnement des consommateurs de drogues",
+    "libelle_normalise": "insuffisance de la prévention et de l'accompagnement des consommateurs de drogues",
+    "page_source": "58;59",
+    "chunk_id_source": "C1157;C1158"
+  },
+  {
+    "node_id": "N1561",
+    "publication_id": "PUB130",
+    "type_noeud": "tendance",
+    "libelle": "Diffusion des usages de drogues dans de nouveaux territoires et milieux sociaux",
+    "libelle_normalise": "diffusion des usages de drogues dans de nouveaux territoires et milieux sociaux",
+    "page_source": "35;36",
+    "chunk_id_source": "C1159"
+  },
+  {
+    "node_id": "N1562",
+    "publication_id": "PUB130",
+    "type_noeud": "tendance",
+    "libelle": "Place croissante du narcotrafic dans le débat public",
+    "libelle_normalise": "place croissante du narcotrafic dans le débat public",
+    "page_source": "35;36",
+    "chunk_id_source": "C1160"
+  },
+  {
+    "node_id": "N1563",
+    "publication_id": "PUB130",
+    "type_noeud": "probleme",
+    "libelle": "Effacement des enjeux sanitaires derrière la lutte contre les trafics",
+    "libelle_normalise": "effacement des enjeux sanitaires derrière la lutte contre les trafics",
+    "page_source": "35;36;37",
+    "chunk_id_source": "C1161"
+  },
+  {
+    "node_id": "N1564",
+    "publication_id": "PUB130",
+    "type_noeud": "probleme",
+    "libelle": "Limites des politiques de prohibition des drogues",
+    "libelle_normalise": "limites des politiques de prohibition des drogues",
+    "page_source": "36;38;39",
+    "chunk_id_source": "C1162"
+  },
+  {
+    "node_id": "N1565",
+    "publication_id": "PUB130",
+    "type_noeud": "notion_idee",
+    "libelle": "Effets de la prohibition sur les marchés et les violences liés aux drogues",
+    "libelle_normalise": "effets de la prohibition sur les marchés et les violences liés aux drogues",
+    "page_source": "38;39",
+    "chunk_id_source": "C1163"
+  },
+  {
+    "node_id": "N1566",
+    "publication_id": "PUB130",
+    "type_noeud": "methode",
+    "libelle": "Développement des politiques de réduction des risques liés aux drogues",
+    "libelle_normalise": "développement des politiques de réduction des risques liés aux drogues",
+    "page_source": "37;38;39",
+    "chunk_id_source": "C1164;C1165"
+  },
+  {
+    "node_id": "N1567",
+    "publication_id": "PUB130",
+    "type_noeud": "methode",
+    "libelle": "Articulation des réponses sanitaires, sociales et sécuritaires aux drogues",
+    "libelle_normalise": "articulation des réponses sanitaires, sociales et sécuritaires aux drogues",
+    "page_source": "38;39",
+    "chunk_id_source": "C1166"
+  },
+  {
+    "node_id": "N1568",
+    "publication_id": "PUB130",
+    "type_noeud": "methode",
+    "libelle": "Participation des habitants et des usagers aux politiques des drogues",
+    "libelle_normalise": "participation des habitants et des usagers aux politiques des drogues",
+    "page_source": "38;39;40",
+    "chunk_id_source": "C1167"
+  },
+  {
+    "node_id": "N1560",
+    "publication_id": "PUB130",
+    "type_noeud": "probleme",
+    "libelle": "Insuffisance de la prévention et de l'accompagnement des consommateurs de drogues",
+    "libelle_normalise": "insuffisance de la prévention et de l'accompagnement des consommateurs de drogues",
+    "page_source": "35;36;39",
+    "chunk_id_source": "C1168"
+  },
+  {
+    "node_id": "N1569",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Diversité des parcours pénaux des jeunes suivis par la justice",
+    "libelle_normalise": "L'étude met en évidence l'hétérogénéité des parcours pénaux des jeunes suivis par la protection judiciaire de la jeunesse, tant dans leur intensité que dans leur évolution.",
+    "page_source": "1;2;7",
+    "chunk_id_source": "C1169;C1173"
+  },
+  {
+    "node_id": "N1570",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Association entre intensité du parcours pénal et type de suivi judiciaire",
+    "libelle_normalise": "Les parcours pénaux les plus denses sont associés à des modalités de suivi judiciaire différentes de celles observées pour les parcours moins denses, sans que cette association permette d'établir une causalité.",
+    "page_source": "2;3;5",
+    "chunk_id_source": "C1172"
+  },
+  {
+    "node_id": "N1571",
+    "publication_id": "PUB131",
+    "type_noeud": "tendance",
+    "libelle": "Pic des affaires pénales à 17 ans puis diminution après la majorité",
+    "libelle_normalise": "Le nombre d'affaires pénales atteint un maximum à 17 ans avant de diminuer après la majorité, y compris pour des jeunes présentant des parcours pénaux soutenus.",
+    "page_source": "10",
+    "chunk_id_source": "C1180"
+  },
+  {
+    "node_id": "N1572",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Poursuite des parcours pénaux après la majorité",
+    "libelle_normalise": "Les trajectoires pénales de certains jeunes suivis pendant leur minorité se prolongent au-delà de 18 ans, selon des rythmes et des intensités variables.",
+    "page_source": "3;6;7",
+    "chunk_id_source": "C1171"
+  },
+  {
+    "node_id": "N1573",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Typologie des quatre trajectoires pénales des jeunes suivis par la protection judiciaire de la jeunesse",
+    "libelle_normalise": "L'analyse statistique distingue quatre profils de parcours pénaux parmi les jeunes ayant bénéficié d'un suivi conséquent par la protection judiciaire de la jeunesse.",
+    "page_source": "7;8",
+    "chunk_id_source": "C1173"
+  },
+  {
+    "node_id": "N1574",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Association entre situations de danger durant l'enfance et parcours pénaux plus denses",
+    "libelle_normalise": "Les jeunes présentant des parcours pénaux plus denses sont davantage concernés par certaines situations de danger signalées durant leur enfance. Cette association ne démontre pas de lien causal.",
+    "page_source": "8;9",
+    "chunk_id_source": "C1178"
+  },
+  {
+    "node_id": "N1575",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Association entre fugues et intensité des parcours pénaux",
+    "libelle_normalise": "Les fugues apparaissent plus fréquemment dans certains parcours judiciaires particulièrement denses et constituent un élément de différenciation des trajectoires.",
+    "page_source": "8",
+    "chunk_id_source": "C1179"
+  },
+  {
+    "node_id": "N1576",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Bifurcations possibles dans les parcours pénaux après la majorité",
+    "libelle_normalise": "Les trajectoires pénales ne sont pas nécessairement linéaires : certains parcours connaissent une diminution ou une interruption des affaires pénales après la majorité.",
+    "page_source": "10;11",
+    "chunk_id_source": "C1182"
+  },
+  {
+    "node_id": "N1577",
+    "publication_id": "PUB131",
+    "type_noeud": "methode",
+    "libelle": "Analyse des parcours judiciaires par rapprochement de données administratives",
+    "libelle_normalise": "L'étude rapproche des données administratives relatives aux procédures pénales et aux suivis éducatifs afin de reconstituer et de comparer les parcours judiciaires des jeunes.",
+    "page_source": "1;5;9",
+    "chunk_id_source": "C1183;C1184"
+  },
+  {
+    "node_id": "N1578",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Les jeunes aux parcours pénaux peu denses et à l'entrée tardive dans la délinquance représentent 28 % des jeunes ayant bénéficié d'un suivi conséquent",
+    "libelle_normalise": "Ce profil rassemble 28 % des jeunes ayant bénéficié d'un suivi conséquent par la protection judiciaire de la jeunesse. Leurs parcours pénaux se caractérisent par une entrée relativement tardive et une faible densité d'affaires.",
+    "page_source": "7;8",
+    "chunk_id_source": "C1174"
+  },
+  {
+    "node_id": "N1579",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Les jeunes dont le parcours pénal se développe principalement après la majorité représentent 38 % des jeunes ayant bénéficié d'un suivi conséquent",
+    "libelle_normalise": "Ce profil représente 38 % des jeunes ayant bénéficié d'un suivi conséquent. Leur activité pénale enregistrée se développe principalement après le passage à la majorité.",
+    "page_source": "7;8",
+    "chunk_id_source": "C1175"
+  },
+  {
+    "node_id": "N1580",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Les jeunes entrés précocement dans la délinquance mais pris en charge tardivement représentent 18 % des jeunes ayant bénéficié d'un suivi conséquent",
+    "libelle_normalise": "Ce profil correspond à 18 % des jeunes ayant bénéficié d'un suivi conséquent. Il associe une entrée précoce dans les affaires pénales à une prise en charge judiciaire plus tardive.",
+    "page_source": "7;8",
+    "chunk_id_source": "C1176"
+  },
+  {
+    "node_id": "N1581",
+    "publication_id": "PUB131",
+    "type_noeud": "notion_idee",
+    "libelle": "Les jeunes aux parcours pénaux précoces, persistants et particulièrement intensifs représentent 16 % des jeunes ayant bénéficié d'un suivi conséquent",
+    "libelle_normalise": "Ce profil regroupe 16 % des jeunes ayant bénéficié d'un suivi conséquent. Leurs parcours pénaux se distinguent par leur précocité, leur persistance et leur forte intensité.",
+    "page_source": "7;8",
+    "chunk_id_source": "C1177"
+  },
+  {
+    "node_id": "N1582",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Performance analytique fondée sur l'articulation des compétences, de l'organisation et des technologies",
+    "libelle_normalise": "La performance de l'analyse repose sur l'interaction entre les compétences humaines, les dispositifs organisationnels et les outils technologiques. Aucun de ces leviers ne suffit isolément à garantir la fluidité, la cohérence et la valeur décisionnelle des analyses.",
+    "page_source": "491;494;499",
+    "chunk_id_source": "C1208;C1210"
+  },
+  {
+    "node_id": "N1583",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Centralité de l'analyse dans la transformation de l'information en connaissance utile à la décision",
+    "libelle_normalise": "L'analyse constitue une étape centrale du cycle de veille et de renseignement. Elle permet d'interpréter les informations collectées, d'établir des liens, de construire une compréhension des situations et de produire des connaissances susceptibles d'éclairer la décision.",
+    "page_source": "18;19;494",
+    "chunk_id_source": "C1185;C1210"
+  },
+  {
+    "node_id": "N1584",
+    "publication_id": "PUB132",
+    "type_noeud": "probleme",
+    "libelle": "Dégradation de la qualité de l'analyse par un mauvais cadrage des besoins ou une diffusion inadaptée",
+    "libelle_normalise": "La qualité du travail analytique dépend de l'ensemble du cycle de veille. Une définition insuffisante des besoins, une collecte mal ciblée ou une diffusion inadaptée aux destinataires peuvent compromettre la pertinence et l'utilisation des résultats.",
+    "page_source": "494;495",
+    "chunk_id_source": "C1210"
+  },
+  {
+    "node_id": "N1585",
+    "publication_id": "PUB132",
+    "type_noeud": "methode",
+    "libelle": "Articulation des dimensions humaines, organisationnelles et technologiques de l'analyse",
+    "libelle_normalise": "L'auteur propose de considérer conjointement les compétences des analystes, l'organisation du travail et les technologies mobilisées. Cette approche vise à mettre en cohérence les trois dimensions pour améliorer le fonctionnement du dispositif analytique et éviter les limites d'une intervention centrée sur un seul levier.",
+    "page_source": "470;498;499",
+    "chunk_id_source": "C1200;C1212"
+  },
+  {
+    "node_id": "N1586",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Contribution des compétences de l'analyste à la fluidité et à la cohérence du travail analytique",
+    "libelle_normalise": "L'enquête met en évidence une association robuste entre les compétences des analystes et la fluidité du processus de renseignement. Les capacités de cadrage, de sélection des sources, d'interprétation et de communication contribuent à limiter les incompréhensions et les reprises inutiles.",
+    "page_source": "433;434",
+    "chunk_id_source": "C1193"
+  },
+  {
+    "node_id": "N1587",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Contribution de la collaboration structurée à la fluidité de l'analyse",
+    "libelle_normalise": "L'enquête identifie une association robuste entre la collaboration et la fluidité du travail analytique. Les échanges entre analystes, experts et commanditaires facilitent la confrontation des interprétations, la circulation des connaissances et la cohérence des productions.",
+    "page_source": "433;434;491",
+    "chunk_id_source": "C1194;C1208"
+  },
+  {
+    "node_id": "N1588",
+    "publication_id": "PUB132",
+    "type_noeud": "probleme",
+    "libelle": "Obstacles organisationnels à la circulation et à l'exploitation des informations",
+    "libelle_normalise": "Les cloisonnements entre services, l'imprécision des responsabilités et les difficultés de coordination peuvent freiner le partage des informations et perturber le processus analytique. L'enquête identifie une association robuste entre les obstacles organisationnels et la dégradation de la fluidité du dispositif.",
+    "page_source": "429;433;456;457",
+    "chunk_id_source": "C1195;C1196"
+  },
+  {
+    "node_id": "N1589",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Contribution des technologies d'aide à l'analyse à la fluidité des processus",
+    "libelle_normalise": "L'enquête identifie une association robuste entre l'utilisation des technologies d'aide à l'analyse et la fluidité du travail analytique. Les outils peuvent faciliter certaines opérations de recherche, de traitement et de structuration de l'information, sous réserve d'être intégrés aux pratiques professionnelles.",
+    "page_source": "433;491",
+    "chunk_id_source": "C1198;C1208"
+  },
+  {
+    "node_id": "N1590",
+    "publication_id": "PUB132",
+    "type_noeud": "methode",
+    "libelle": "Évaluation des leviers de performance analytique par couverture et densité des témoignages",
+    "libelle_normalise": "L'auteur examine les associations entre leviers et effets de l'analyse à partir de deux indicateurs : la couverture, correspondant au nombre d'entretiens dans lesquels une association apparaît, et la densité, correspondant au nombre de citations concernées. Cette démarche permet de distinguer les associations robustes, modérées et faibles dans le corpus étudié.",
+    "page_source": "430;431;432",
+    "chunk_id_source": "C1191"
+  },
+  {
+    "node_id": "N1591",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Six associations robustes identifiées dans l'enquête, dont cinq reprises dans le tableau des recommandations",
+    "libelle_normalise": "Le tableau V-6 identifie six associations robustes parmi douze hypothèses examinées : compétences et fluidité, compétences et valeur décisionnelle, compétences et qualité mesurée, collaboration et fluidité, obstacles organisationnels et fluidité, technologies d'aide à l'analyse et fluidité. Le tableau récapitulatif des recommandations ne reprend toutefois que cinq de ces associations, sans celle relative aux obstacles organisationnels. Ces résultats reposent sur les cooccurrences observées dans les entretiens et ne démontrent pas des causalités.",
+    "page_source": "433;464;465",
+    "chunk_id_source": "C1192;C1199"
+  },
+  {
+    "node_id": "N1592",
+    "publication_id": "PUB132",
+    "type_noeud": "methode",
+    "libelle": "Capitalisation des analyses dans une mémoire documentaire réutilisable et traçable",
+    "libelle_normalise": "La capitalisation consiste à organiser et conserver les informations, les analyses et les connaissances produites afin de les retrouver et de les réutiliser. Elle peut faciliter la continuité des travaux, la transmission des connaissances et la contextualisation de nouvelles situations, notamment lors des changements d'interlocuteurs.",
+    "page_source": "458;459",
+    "chunk_id_source": "C1197"
+  },
+  {
+    "node_id": "N1593",
+    "publication_id": "PUB132",
+    "type_noeud": "recommandation",
+    "libelle": "Cinquante-huit recommandations pour renforcer les capacités humaines, organisationnelles et techniques de l'analyse",
+    "libelle_normalise": "À partir de l'interprétation des résultats de l'enquête, l'auteur formule 58 recommandations réparties entre les dimensions humaines (19), organisationnelles (22) et techniques (17). Il souligne l'importance d'une mise en œuvre coordonnée de ces dimensions. Ces recommandations n'ont pas fait l'objet d'une validation expérimentale de leurs effets.",
+    "page_source": "463;464;465",
+    "chunk_id_source": "C1199"
+  },
+  {
+    "node_id": "N1594",
+    "publication_id": "PUB132",
+    "type_noeud": "probleme",
+    "libelle": "Limites de généralisation d'une enquête qualitative fondée sur vingt analystes",
+    "libelle_normalise": "L'étude repose sur les témoignages de vingt analystes français et présente des limites liées à la taille et à la composition de l'échantillon, aux biais possibles des entretiens et aux choix méthodologiques de codage. L'auteur souligne la nécessité de reproduire les recherches dans d'autres contextes et d'évaluer les propositions sur le terrain.",
+    "page_source": "491;492",
+    "chunk_id_source": "C1209"
+  },
+  {
+    "node_id": "N1595",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Raisonnement par hypothèses pour analyser des situations incertaines",
+    "libelle_normalise": "Face à une situation incertaine, l'analyste peut partir d'indices pour élaborer plusieurs explications plausibles, puis rechercher les informations permettant de les confronter aux faits. Cette démarche mobilise notamment le raisonnement abductif et vise à produire des interprétations argumentées et révisables.",
+    "page_source": "470;471;483",
+    "chunk_id_source": "C1201;C1202"
+  },
+  {
+    "node_id": "N1596",
+    "publication_id": "PUB132",
+    "type_noeud": "methode",
+    "libelle": "Protocole d'analyse « Formuler – Tester – Tracer » : élaborer des hypothèses, les confronter aux faits et documenter le raisonnement",
+    "libelle_normalise": "Christophe Deschamps propose un protocole en trois étapes pour structurer l'analyse en situation d'incertitude. Formuler consiste à élaborer plusieurs hypothèses plausibles à partir des indices disponibles. Tester consiste à rechercher des preuves et des contre-preuves pour départager les hypothèses. Tracer consiste à conserver les sources, les critères et les arguments ayant conduit aux conclusions. Le protocole vise à rendre le raisonnement plus rigoureux, transparent et vérifiable, sans prétendre éliminer l'incertitude.",
+    "page_source": "484;485;486",
+    "chunk_id_source": "C1202;C1203"
+  },
+  {
+    "node_id": "N1602",
+    "publication_id": "PUB132",
+    "type_noeud": "tendance",
+    "libelle": "Usage des modèles de langage par dix-huit des vingt analystes interrogés",
+    "libelle_normalise": "Dans l'enquête qualitative menée auprès de vingt analystes, dix-huit déclarent utiliser des modèles de langage, dont la moitié quotidiennement. Cette observation illustre l'intégration de ces outils dans les pratiques des participants, sans permettre de généraliser ce taux à l'ensemble des professionnels de l'analyse.",
+    "page_source": "487",
+    "chunk_id_source": "C1204"
+  },
+  {
+    "node_id": "N1603",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Assistance de l'intelligence artificielle à la recherche, au traitement et à la synthèse des informations",
+    "libelle_normalise": "Les analystes interrogés décrivent différents usages de l'intelligence artificielle : exploration de sujets, identification de mots-clés, recherche de sources, traduction, résumé, comparaison de documents et structuration des informations. Des usages plus avancés d'extraction et de rapprochement des données sont également évoqués.",
+    "page_source": "488;489",
+    "chunk_id_source": "C1205"
+  },
+  {
+    "node_id": "N1604",
+    "publication_id": "PUB132",
+    "type_noeud": "probleme",
+    "libelle": "Nécessité de vérifier les productions et les sources fournies par l'intelligence artificielle",
+    "libelle_normalise": "Les témoignages soulignent les risques d'erreur des modèles de langage et la nécessité de vérifier leurs réponses. Les analystes insistent sur le contrôle des sources, le recoupement des informations et le maintien d'un jugement humain critique face aux productions automatisées.",
+    "page_source": "488;489",
+    "chunk_id_source": "C1206"
+  },
+  {
+    "node_id": "N1605",
+    "publication_id": "PUB132",
+    "type_noeud": "recommandation",
+    "libelle": "Conception d'outils d'intelligence artificielle adaptés aux connaissances métier et aux pratiques des analystes",
+    "libelle_normalise": "Plusieurs participants expriment le besoin d'outils d'intelligence artificielle capables de mobiliser les connaissances internes de leur organisation et de répondre aux exigences spécifiques du travail analytique. Les témoignages soulignent notamment l'intérêt d'associer les analystes à la conception des outils plutôt que de privilégier une approche uniquement technique.",
+    "page_source": "490",
+    "chunk_id_source": "C1207"
+  },
+  {
+    "node_id": "N1606",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Construction collective du sens à partir d'informations et d'expertises dispersées",
+    "libelle_normalise": "L'analyse de l'information repose sur la confrontation et la mise en relation de connaissances, d'expériences et d'interprétations issues de différents acteurs. La revue de littérature souligne notamment, à travers les travaux de Nicolas Lesca, que la construction collective du sens contribue à produire une compréhension partagée des situations.",
+    "page_source": "401;497",
+    "chunk_id_source": "C1190;C1211"
+  },
+  {
+    "node_id": "N1607",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Rôle du jugement, de l'expérience et de la créativité dans l'analyse de l'information",
+    "libelle_normalise": "L'analyse ne se réduit pas au traitement technique des données ou à l'application de méthodes formalisées. Elle mobilise les capacités de jugement, l'expérience, l'intuition et la créativité de l'analyste pour établir des liens entre des informations dispersées, identifier des changements et élaborer des interprétations pertinentes.",
+    "page_source": "383;384",
+    "chunk_id_source": "C1186"
+  },
+  {
+    "node_id": "N1608",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Différence entre résumé documentaire et synthèse orientée vers la décision",
+    "libelle_normalise": "Contrairement au résumé, qui condense un contenu, la synthèse sélectionne, interprète et organise les informations essentielles en fonction des besoins d'un destinataire et d'un objectif de décision. Elle implique un jugement et une prise de responsabilité de son auteur dans la représentation de la situation.",
+    "page_source": "385;386",
+    "chunk_id_source": "C1188"
+  },
+  {
+    "node_id": "N1609",
+    "publication_id": "PUB132",
+    "type_noeud": "probleme",
+    "libelle": "Risque d'appauvrissement de l'analyse par l'utilisation mécanique des grilles et méthodes standardisées",
+    "libelle_normalise": "La revue de littérature souligne que les méthodes et grilles d'analyse standardisées, notamment SWOT, PESTEL ou les cinq forces de Porter, peuvent orienter excessivement l'interprétation lorsque leur application se limite à remplir des catégories prédéfinies. Leur utilisation doit rester au service du raisonnement critique et ne pas s'y substituer.",
+    "page_source": "384;401",
+    "chunk_id_source": "C1187"
+  },
+  {
+    "node_id": "N1610",
+    "publication_id": "PUB132",
+    "type_noeud": "notion_idee",
+    "libelle": "Rôle actif du décideur dans l'interprétation des informations produites par les analystes",
+    "libelle_normalise": "Le décideur n'est pas uniquement le destinataire des productions analytiques. Il les confronte à sa propre expérience, les interprète et les contextualise pour construire sa représentation de la situation et prendre une décision. Christophe Deschamps relève que seuls cinq des soixante-dix ouvrages examinés abordent explicitement cette fonction analytique du décideur.",
+    "page_source": "399;400;401",
+    "chunk_id_source": "C1189"
+  },
+  {
+    "node_id": "N1611",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Exposition des fichiers sensibles de l'État aux cyberattaques",
+    "libelle_normalise": "Le débat examine les conséquences de l'intrusion dans les systèmes du ministère de l'Intérieur et de l'accès à des informations issues de fichiers sensibles, notamment les antécédents judiciaires et les personnes recherchées. Les intervenants distinguent la gravité potentielle de l'exploitation de ces données de la profondeur technique de l'intrusion.",
+    "page_source": "",
+    "chunk_id_source": "C1213;C1214"
+  },
+  {
+    "node_id": "N1612",
+    "publication_id": "PUB133",
+    "type_noeud": "notion_idee",
+    "libelle": "Erreurs humaines à l'origine de compromissions informatiques",
+    "libelle_normalise": "Les intervenants présentent l'utilisation insuffisamment sécurisée d'identifiants professionnels comme une vulnérabilité ayant facilité l'intrusion au ministère de l'Intérieur. Sylvain Guillet souligne qu'une attaque peut exploiter des pratiques ordinaires de sécurité défaillantes sans recourir à des techniques sophistiquées.",
+    "page_source": "",
+    "chunk_id_source": "C1215"
+  },
+  {
+    "node_id": "N1613",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Protection numérique inégale des services de l'État",
+    "libelle_normalise": "Antoine Chauveau et Sylvain Guillet soulignent que les capacités de cybersécurité ne sont pas homogènes dans l'administration. Les services les mieux dotés peuvent disposer de protections avancées, tandis que d'autres structures ou agents présentent des vulnérabilités plus importantes.",
+    "page_source": "",
+    "chunk_id_source": "C1218;C1233"
+  },
+  {
+    "node_id": "N1614",
+    "publication_id": "PUB133",
+    "type_noeud": "methode",
+    "libelle": "Renforcement de la sécurité des accès informatiques",
+    "libelle_normalise": "Sylvain Guillet identifie l'authentification multifacteur comme une mesure permettant de réduire les risques d'accès frauduleux à partir d'identifiants volés. Il évoque son renforcement au ministère de l'Intérieur à la suite de la cyberattaque.",
+    "page_source": "",
+    "chunk_id_source": "C1216"
+  },
+  {
+    "node_id": "N1615",
+    "publication_id": "PUB133",
+    "type_noeud": "notion_idee",
+    "libelle": "Cybersécurité fondée sur la prévention et l'amélioration continue",
+    "libelle_normalise": "Sylvain Guillet considère qu'une sécurité excluant toute attaque est irréaliste. Il préconise d'évaluer les incidents à partir de leurs conséquences, des mesures de réaction et des améliorations apportées aux pratiques humaines et techniques.",
+    "page_source": "",
+    "chunk_id_source": "C1217"
+  },
+  {
+    "node_id": "N1616",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Insuffisante formation des agents et des responsables politiques aux risques cyber",
+    "libelle_normalise": "Antoine Chauveau souligne les difficultés d'acculturation à la cybersécurité chez certains agents publics et responsables politiques. Il évoque les risques liés à des comportements insuffisamment prudents et la difficulté pour des décideurs généralistes de maîtriser des enjeux techniques complexes.",
+    "page_source": "",
+    "chunk_id_source": "C1215;C1220"
+  },
+  {
+    "node_id": "N1617",
+    "publication_id": "PUB133",
+    "type_noeud": "notion_idee",
+    "libelle": "Rôle des normes dans la prévention des cyberattaques",
+    "libelle_normalise": "Sylvain Guillet présente les normes et les processus de conformité comme des éléments structurants de la cybersécurité. Il cite notamment la directive NIS2 et le règlement européen sur la cyberrésilience pour illustrer l'importance de la préparation et des bonnes pratiques.",
+    "page_source": "",
+    "chunk_id_source": "C1219"
+  },
+  {
+    "node_id": "N1618",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Difficultés de détection rapide des intrusions informatiques",
+    "libelle_normalise": "Antoine Chauveau souligne que les attaquants auraient pu accéder à des fichiers du ministère de l'Intérieur pendant plusieurs jours avant leur détection. Il évoque une durée allant jusqu'à vingt-six jours selon une source de presse, tout en reconnaissant la capacité des autorités à réagir après la découverte de l'intrusion.",
+    "page_source": "",
+    "chunk_id_source": "C1221"
+  },
+  {
+    "node_id": "N1619",
+    "publication_id": "PUB133",
+    "type_noeud": "notion_idee",
+    "libelle": "Exploitation criminelle des données volées",
+    "libelle_normalise": "Les intervenants distinguent plusieurs usages possibles des données dérobées : revente, recherche d'avantages financiers, réutilisation d'identifiants, constitution de bases d'informations et pressions sur des personnes. Antoine Chauveau évoque notamment les risques que représenterait l'accès de groupes criminels à des informations judiciaires sensibles.",
+    "page_source": "",
+    "chunk_id_source": "C1214;C1223"
+  },
+  {
+    "node_id": "N1620",
+    "publication_id": "PUB133",
+    "type_noeud": "notion_idee",
+    "libelle": "Diversité des motivations des cyberattaquants",
+    "libelle_normalise": "Les intervenants distinguent les motivations financières, la recherche de notoriété, l'exploitation d'informations sensibles et les objectifs de perturbation ou de démonstration de puissance. Ils soulignent que des cyberattaques apparemment similaires peuvent relever de logiques différentes.",
+    "page_source": "",
+    "chunk_id_source": "C1222"
+  },
+  {
+    "node_id": "N1621",
+    "publication_id": "PUB133",
+    "type_noeud": "notion_idee",
+    "libelle": "Fragilisation de la confiance dans les institutions par les cyberattaques",
+    "libelle_normalise": "À propos de l'attaque contre La Poste, Antoine Chauveau considère que la perturbation de services essentiels peut aussi viser la confiance des citoyens dans les institutions. Les dysfonctionnements deviennent alors un moyen de mettre en évidence publiquement les vulnérabilités des services publics.",
+    "page_source": "",
+    "chunk_id_source": "C1225;C1226"
+  },
+  {
+    "node_id": "N1622",
+    "publication_id": "PUB133",
+    "type_noeud": "notion_idee",
+    "libelle": "Deux formes de cyberattaques : vol de données et interruption de services",
+    "libelle_normalise": "Le débat oppose l'intrusion au ministère de l'Intérieur, caractérisée par l'accès à des données sensibles, et l'attaque contre La Poste, présentée comme une attaque par déni de service visant à perturber son fonctionnement. Les conséquences, les objectifs possibles et les réponses de sécurité diffèrent selon la nature de l'attaque.",
+    "page_source": "",
+    "chunk_id_source": "C1224"
+  },
+  {
+    "node_id": "N1623",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Dépendance de l'État aux technologies étrangères",
+    "libelle_normalise": "Antoine Chauveau souligne le recours de services publics français à des solutions développées par de grandes entreprises étrangères, notamment américaines. Il présente cette dépendance comme un enjeu de souveraineté, de maîtrise des infrastructures, d'innovation et d'autonomie stratégique.",
+    "page_source": "",
+    "chunk_id_source": "C1227;C1230"
+  },
+  {
+    "node_id": "N1624",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Risques liés à l'extraterritorialité du droit américain",
+    "libelle_normalise": "Sylvain Guillet évoque les effets potentiels des législations américaines sur les informations hébergées ou traitées par des fournisseurs de services numériques américains. Il présente ce contexte juridique comme un risque pour la souveraineté numérique française.",
+    "page_source": "",
+    "chunk_id_source": "C1228"
+  },
+  {
+    "node_id": "N1625",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Faible adoption des solutions françaises de cybersécurité qualifiées",
+    "libelle_normalise": "Sylvain Guillet cite le référentiel SecNumCloud et l'existence d'entreprises françaises qualifiées pour souligner un décalage entre l'offre disponible et les choix effectivement réalisés par les organisations. Le débat présente l'adoption de solutions nationales comme un enjeu distinct de leur disponibilité technique.",
+    "page_source": "",
+    "chunk_id_source": "C1229"
+  },
+  {
+    "node_id": "N1626",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Pénurie européenne d'experts en cybersécurité",
+    "libelle_normalise": "Le débat évoque un manque important de spécialistes de cybersécurité en Europe, à partir notamment d'une intervention attribuée à une porte-parole de l'ENISA. Sylvain Guillet souligne également les capacités limitées de formation et le besoin d'enseignants, tout en relevant le dynamisme de certains pôles français.",
+    "page_source": "",
+    "chunk_id_source": "C1231"
+  },
+  {
+    "node_id": "N1627",
+    "publication_id": "PUB133",
+    "type_noeud": "probleme",
+    "libelle": "Difficultés de fidélisation des experts cyber dans le secteur public",
+    "libelle_normalise": "Antoine Chauveau décrit une concurrence entre administrations et entreprises privées pour attirer les spécialistes de cybersécurité. Il estime que les différences de rémunération et de perspectives professionnelles peuvent fragiliser la capacité des services publics à conserver leurs compétences.",
+    "page_source": "",
+    "chunk_id_source": "C1232"
+  },
+  {
+    "node_id": "N1628",
+    "publication_id": "PUB133",
+    "type_noeud": "methode",
+    "libelle": "Accompagnement des petites collectivités et entreprises face aux cyberattaques",
+    "libelle_normalise": "Antoine Chauveau distingue trois formes d'accompagnement des structures disposant de moyens limités : la prévention et la sensibilisation, l'audit des dispositifs de sécurité et l'assistance à la gestion de crise après une attaque. Il souligne les difficultés particulières rencontrées par les petites collectivités et les petites et moyennes entreprises.",
+    "page_source": "",
+    "chunk_id_source": "C1234"
   }
 ]

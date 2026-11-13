@@ -1,11 +1,11 @@
 {
-  "source_workbook": "Quirites_BDD_auditee_sans_doublons_SN003.xlsx + correctifs validés de novembre 2026",
+  "source_workbook": "Quirites_BDD_a_jour_R121_08_corrigee.xlsx",
   "counts": {
-    "publications": 52,
-    "nodes": 1380,
-    "relations": 1222,
+    "publications": 58,
+    "nodes": 1466,
+    "relations": 1280,
     "treatments": 10,
-    "contents": 1082,
+    "contents": 1161,
     "expertise_nodes": 131,
     "expertise_edges": 181
   },
@@ -61,7 +61,13 @@
     "PUB124",
     "PUB125",
     "PUB126",
-    "PUB127"
+    "PUB127",
+    "PUB128",
+    "PUB129",
+    "PUB130",
+    "PUB131",
+    "PUB132",
+    "PUB133"
   ],
   "chunk_publications": [
     "PUB001",
@@ -109,7 +115,12 @@
     "PUB124",
     "PUB125",
     "PUB126",
-    "PUB127"
+    "PUB127",
+    "PUB128",
+    "PUB129",
+    "PUB130",
+    "PUB131",
+    "PUB132"
   ],
   "graph_publications_without_chunks": [
     "PUB052",
@@ -117,7 +128,8 @@
     "PUB060",
     "PUB068",
     "PUB116",
-    "PUB117"
+    "PUB117",
+    "PUB133"
   ],
   "images": [
     "PUB001.png",
@@ -180,5 +192,11 @@
     "frise.jpg"
   ],
   "expertise_source_workbook": "Quirites_BDD_auditee_sans_doublons_SN003.xlsx",
-  "expertise_update": "Actualisation PUB120–PUB127 et reconstruction contrôlée des associations, 10 novembre 2026."
+  "expertise_update": "Actualisation PUB120–PUB127 et reconstruction contrôlée des associations, 10 novembre 2026.",
+  "active_publication_limit": 58,
+  "provenance_levels": {
+    "A": 51,
+    "B": 6,
+    "C": 1
+  }
 }
