@@ -379,7 +379,7 @@ export default function AtlasGuide({
         >
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <div className="atlas-guide-compact-text">
-            <span className="atlas-guide-kicker">Guide{step > 1 ? ` · étape ${step} sur 4` : ''}</span>
+            <span className="atlas-guide-kicker">Guide{step > 1 ? `` : ''}</span>
             <p>{shortText}</p>
           </div>
           <div className="atlas-guide-actions">
@@ -441,7 +441,7 @@ export default function AtlasGuide({
             <strong>Guide</strong>
             <small>Votre guide dans l’Atlas</small>
           </span>
-          <span className="atlas-eclaireur-step">{step}/4</span>
+          
           <button
             type="button"
             className="atlas-guide-reduce"
@@ -511,7 +511,7 @@ export default function AtlasGuide({
             </>
           ) : (
             <div className="atlas-guide-step">
-              <span className="atlas-guide-kicker">Parcours guidé · étape {step} sur 4</span>
+              <span className="atlas-guide-kicker">Guide</span>
               <h3>{content.title}</h3>
               {content.body}
             </div>

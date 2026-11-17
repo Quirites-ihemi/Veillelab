@@ -303,8 +303,7 @@ export default function ExplorerGuide({
       title: 'Posez une question (IA)',
       body: (
         <p>
-          Posez une question en langage naturel : les éléments concernés
-          s’allument dans le graphe. La réponse est générée par IA : vérifiez-la dans les passages cités.
+          Posez une question en langage naturel et consultez la réponse. Vérifiez les informations dans les passages cités.
         </p>
       ),
     },
@@ -314,7 +313,7 @@ export default function ExplorerGuide({
     1: 'Bonjour ! Je suis votre guide dans ce graphe.',
     2: 'Cliquez sur un élément de l’orbite pour le placer au centre.',
     3: 'La fiche, à droite, donne les pages et l’extrait qui prouvent le sujet.',
-    4: 'Posez une question (IA) à la publication : les éléments concernés s’allument.',
+    4: 'Posez une question (IA) et consultez les passages cités.',
   }[step]
 
   const beamSvg = beam && (
@@ -361,7 +360,7 @@ export default function ExplorerGuide({
         <section ref={cardRef} onPointerDown={drag.onPointerDown} className="atlas-guide atlas-guide-compact" style={style} aria-label="Guide" aria-live="polite">
           <span className="atlas-orb atlas-orb-small" aria-hidden="true" />
           <div className="atlas-guide-compact-text">
-            <span className="atlas-guide-kicker">Guide{step > 1 ? ` · étape ${step} sur 4` : ''}</span>
+            <span className="atlas-guide-kicker">Guide{step > 1 ? `` : ''}</span>
             <p>{shortText}</p>
           </div>
           {actions(true)}
@@ -397,7 +396,7 @@ export default function ExplorerGuide({
             <strong>Guide</strong>
             <small>Votre guide dans la publication</small>
           </span>
-          <span className="atlas-eclaireur-step">{step}/4</span>
+          
           <button type="button" className="atlas-guide-reduce" onClick={onCollapse} aria-label="Réduire le guide" title="Réduire le guide">−</button>
         </header>
 
@@ -444,7 +443,7 @@ export default function ExplorerGuide({
             </>
           ) : (
             <div className="atlas-guide-step">
-              <span className="atlas-guide-kicker">Parcours guidé · étape {step} sur 4</span>
+              <span className="atlas-guide-kicker">Guide</span>
               <h3>{content.title}</h3>
               {content.body}
             </div>

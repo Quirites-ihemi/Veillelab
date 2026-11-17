@@ -43,7 +43,7 @@ export default function ExplorerEclaireur({ step, paused, onTogglePause, onColla
         </div>
 
         <div className="explorer-eclaireur-head-actions">
-          <span>{step}/7</span>
+
           <button
             type="button"
             className="explorer-eclaireur-close"
@@ -71,7 +71,7 @@ export default function ExplorerEclaireur({ step, paused, onTogglePause, onColla
             <button type="button" onClick={onTogglePause} className="explorer-eclaireur-pause">
               {paused ? '▶ Reprendre' : 'Ⅱ Pause'}
             </button>
-            <span>La démonstration se poursuit automatiquement.</span>
+
           </div>
         )}
 
