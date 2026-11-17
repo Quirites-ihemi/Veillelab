@@ -868,6 +868,16 @@
         "url_contenu": "",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -890,10 +900,14 @@
       {
         "id": "ME168",
         "count": 1
+      },
+      {
+        "id": "ME175",
+        "count": 1
       }
     ],
-    "publication_count": 3,
-    "degree": 5
+    "publication_count": 4,
+    "degree": 6
   },
   {
     "id": "ME027",
@@ -5327,16 +5341,30 @@
         "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
         "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME161",
         "count": 1
+      },
+      {
+        "id": "ME179",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 1
+    "publication_count": 2,
+    "degree": 2
   },
   {
     "id": "ME164",
@@ -5359,6 +5387,16 @@
         "url_contenu": "https://www.immigration.interieur.gouv.fr/sites/dgef/files/medias/documents/2026-08/Note%20de%20synth%C3%A8se%20-%20Int%C3%A9gration%20pr%C3%A9coce%20des%20demandeurs%20de%20protection%20internationale%20-%20juillet%202026.pdf",
         "url_source": "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/note-de-synthese-lintegration-precoce-des-demandeurs-de-protection-internationale.html",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
       }
     ],
     "associated": [
@@ -5369,10 +5407,14 @@
       {
         "id": "ME162",
         "count": 1
+      },
+      {
+        "id": "ME179",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 2
+    "publication_count": 2,
+    "degree": 3
   },
   {
     "id": "ME165",
@@ -5721,5 +5763,188 @@
     ],
     "publication_count": 1,
     "degree": 1
+  },
+  {
+    "id": "ME175",
+    "label": "Adéquation des compétences des migrants au marché du travail",
+    "family": "Problème public",
+    "definition": "Enjeu de correspondance entre les qualifications et compétences des migrants et les exigences des emplois occupés.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)"
+    ],
+    "domains": [
+      "Migrations / Intégration professionnelle / Emploi"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME177",
+        "count": 1
+      },
+      {
+        "id": "ME178",
+        "count": 1
+      },
+      {
+        "id": "ME179",
+        "count": 1
+      },
+      {
+        "id": "ME024",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 4
+  },
+  {
+    "id": "ME176",
+    "label": "Analyse comparée des politiques d'adéquation des compétences des migrants",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à comparer les politiques, instruments et pratiques visant à améliorer l'adéquation des compétences des migrants.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)"
+    ],
+    "domains": [
+      "Migrations / Intégration professionnelle / Emploi"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [],
+    "publication_count": 1,
+    "degree": 0
+  },
+  {
+    "id": "ME177",
+    "label": "Analyse des facteurs de déclassement professionnel des migrants",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à identifier et analyser les facteurs individuels, institutionnels et économiques du déclassement professionnel des migrants.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)"
+    ],
+    "domains": [
+      "Migrations / Intégration professionnelle / Emploi"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME175",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 1
+  },
+  {
+    "id": "ME178",
+    "label": "Évaluation et reconnaissance des qualifications acquises à l'étranger",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à évaluer les qualifications et compétences acquises à l'étranger et à analyser leurs conditions de reconnaissance.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)"
+    ],
+    "domains": [
+      "Migrations / Intégration professionnelle / Emploi"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME175",
+        "count": 1
+      },
+      {
+        "id": "ME179",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME179",
+    "label": "Conception de parcours intégrés d'insertion professionnelle des migrants",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à articuler reconnaissance des compétences, formation linguistique, qualification professionnelle et accompagnement vers l'emploi.",
+    "entities": [
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)"
+    ],
+    "domains": [
+      "Migrations / Intégration professionnelle / Emploi"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB134",
+        "titre": "Favoriser l'intégration durable des ressortissants d'un pays tiers sur le marché du travail : politiques et outils en matière d'adéquation des compétences",
+        "annee": "2026",
+        "organisme": "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME175",
+        "count": 1
+      },
+      {
+        "id": "ME163",
+        "count": 1
+      },
+      {
+        "id": "ME164",
+        "count": 1
+      },
+      {
+        "id": "ME178",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 4
   }
 ]
