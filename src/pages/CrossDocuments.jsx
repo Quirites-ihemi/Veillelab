@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import ExportShare from '../components/ExportShare.jsx'
+import { exportDocx, exportXlsx, printHtml, escapeXml, pubLabel, sourceLink } from '../utils/knowledgeExport.js'
+import { exportTimelinePng } from '../utils/timelineExport.js'
 import DocumentLinksWorkspace from './DocumentLinksWorkspace.jsx'
 import { useChronologyData } from '../hooks/useChronologyData.js'
 import './cross-documents.css'
@@ -1209,14 +1212,14 @@ function ChronologyWorkspace({ data, onBack }) {
 const SUB_TO_VIEW = { frise: 'chronology', notions: 'notions', recommandations: 'recommendations' }
 const VIEW_TO_SUB = { chronology: 'frise', notions: 'notions', recommendations: 'recommandations', home: '' }
 
-export default function CrossDocuments({ data, sub = '', onSub }) {
+export default function CrossDocuments({ data, sub = '', onSub, deepArgs = [], onDeepRoute = null }) {
   const [localView, setLocalView] = useState('home')
   const view = onSub ? (SUB_TO_VIEW[sub] || 'home') : localView
   const setView = v => (onSub ? onSub(VIEW_TO_SUB[v] || '') : setLocalView(v))
 
-  if (view === 'recommendations') return <DocumentLinksWorkspace data={data} onBack={() => setView('home')} />
-  if (view === 'chronology') return <ChronoFrise data={data} onBack={() => setView('home')} />
-  if (view === 'notions') return <NotionSpace data={data} onBack={() => setView('home')} />
+  if (view === 'recommendations') return <DocumentLinksWorkspace data={data} initialPublicationId={deepArgs[0] || ''} onSelectPublicationId={id => onDeepRoute?.(['recommandations', id])} onBack={() => setView('home')} />
+  if (view === 'chronology') return <ChronoFrise data={data} initialPublicationId={deepArgs[0] || ''} onPublicationChange={id => onDeepRoute?.(['frise', id])} onBack={() => setView('home')} />
+  if (view === 'notions') return <NotionSpace data={data} initialNotionId={deepArgs[0] || ''} onNotionChange={id => onDeepRoute?.(['notions', id])} onBack={() => setView('home')} />
   return <CrossDocumentsHome
     data={data}
     onOpenChronology={() => setView('chronology')}
@@ -1249,14 +1252,15 @@ function useStageSize(ref) {
   return size
 }
 
-function NotionSpace({ data, onBack }) {
+function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null }) {
   const stageRef = useRef(null)
   const orbRef = useRef(null)
   const trailRef = useRef(null)
   const { w, h } = useStageSize(stageRef)
   const reduceMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-  const [notionId, setNotionId] = useState(null)
+  const [notionId, setNotionId] = useState(() => TRANSVERSAL_NOTIONS.some(n => n.id === initialNotionId) ? initialNotionId : null)
   const [paused, setPaused] = useState(false)
+  useEffect(() => { if (initialNotionId && TRANSVERSAL_NOTIONS.some(n => n.id === initialNotionId)) setNotionId(initialNotionId) }, [initialNotionId])
   const [run, setRun] = useState(0)
   const [state, setState] = useState({ step: -1, phase: 'idle' })
   const [viewing, setViewing] = useState(null)
@@ -1354,7 +1358,7 @@ function NotionSpace({ data, onBack }) {
   const proofChunks = selectedNode ? String(selectedNode.chunk_id_source || '').split(';').map(x => contentsById[x.trim()]).filter(Boolean) : []
   const sourceUrl = selectedStop ? cleanUrl(selectedStop.publication.url_contenu || selectedStop.publication.url_source) : ''
 
-  const chooseNotion = id => { setNotionId(id); setPaused(false); setRun(r => r + 1) }
+  const chooseNotion = id => { setNotionId(id); setPaused(false); setRun(r => r + 1); onNotionChange?.(id) }
   const replay = () => { setPaused(false); setRun(r => r + 1) }
   const overview = () => { clockRef.current.t = total; setPaused(false); setViewing(null) }
   const revisit = i => { if (!done) return; setViewing(i); setSelectedNodeId(null); if (orbRef.current && geo) { orbRef.current.style.left = `${geo.pts[i].x}px`; orbRef.current.style.top = `${geo.pts[i].y}px` } }
@@ -1379,6 +1383,16 @@ function NotionSpace({ data, onBack }) {
       <h1>Suivre une notion</h1>
       <span className="xd-spacer"/>
       {notion && <div className="xd-actions">
+        <ExportShare shareParts={['documents', 'notions', notion.id]} label={`Suivre une notion · ${notion.label}`}
+          formats={[{ label: 'Apports sourcés · Word', action: () => exportDocx(`Notion_${notion.id}`, `Suivre une notion — ${notion.label}`, [
+            { text: `${stops.length} publications · ${stops.reduce((n, p) => n + p.nodes.length, 0)} éléments déjà présents dans le corpus` },
+            ...stops.flatMap(stop => [
+              { heading: true, text: pubLabel(stop.publication) },
+              ...(sourceLink(stop.publication) ? [{ text: `Source : ${sourceLink(stop.publication)}` }] : []),
+              ...stop.nodes.map(node => ({ text: `${TYPE_LABELS[node.type_noeud] || node.type_noeud} — ${node.libelle} · page/timecode : ${node.page_source || 'non renseigné'} · extrait : ${node.chunk_id_source || 'non renseigné'}` })),
+            ]),
+          ]) }]}
+        />
         <button type="button" className="xd-btn" onClick={overview} disabled={done}>Vue d’ensemble</button>
       </div>}
     </header>
@@ -1538,10 +1552,10 @@ function XdHighlight({ text, expression }) {
   return <>{t.slice(0, i)}<mark>{t.slice(i, i + x.length)}</mark>{t.slice(i + x.length)}</>
 }
 
-function ChronoFrise({ data, onBack }) {
+function ChronoFrise({ data, onBack, initialPublicationId = '', onPublicationChange = null }) {
   const { chronology, error } = useChronologyData(true)
   const reduceMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-  const [publicationId, setPublicationId] = useState(ELIGIBLE_PUBLICATIONS[0])
+  const [publicationId, setPublicationId] = useState(ELIGIBLE_PUBLICATIONS.includes(initialPublicationId) ? initialPublicationId : ELIGIBLE_PUBLICATIONS[0])
   const [count, setCount] = useState(0)          // repères déjà placés (ordre du document)
   const [sub, setSub] = useState('idle')         // idle | show | place | done
   const [paused, setPaused] = useState(false)
@@ -1586,7 +1600,8 @@ function ChronoFrise({ data, onBack }) {
 
   useEffect(() => { if (sub === 'place' && current) rowRefs.current[current.chrono_id]?.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' }) }, [sub, current, reduceMotion])
 
-  const choose = id => { setPublicationId(id); setCount(0); setSub('idle'); setSelectedId(null); setPaused(false); setDimmed(new Set()) }
+  const choose = id => { setPublicationId(id); setCount(0); setSub('idle'); setSelectedId(null); setPaused(false); setDimmed(new Set()); onPublicationChange?.(id) }
+  useEffect(() => { if (initialPublicationId && ELIGIBLE_PUBLICATIONS.includes(initialPublicationId) && publicationId !== initialPublicationId) choose(initialPublicationId) }, [initialPublicationId])
   const start = () => { setSelectedId(null); setCount(0); setPaused(false); setSub(total ? 'show' : 'done') }
   const overview = () => { setCount(total); setSub('done'); setPaused(false) }
   const toggleNature = n => setDimmed(d => { const x = new Set(d); x.has(n) ? x.delete(n) : x.add(n); return x })
@@ -1635,6 +1650,14 @@ function ChronoFrise({ data, onBack }) {
         </button>
       })}</div>
       <div className="xd-actions">
+        <ExportShare shareParts={['documents', 'frise', publicationId]} label={`Frise · ${pub?.titre || publicationId}`}
+          formats={[
+            { label: 'Frise · PNG', action: () => exportTimelinePng(pub, readingOrder, provenances) },
+            { label: 'Repères · Excel', action: () => exportXlsx(`Chronologie_${publicationId}`, ['Publication', 'Titre de publication', 'Organisme', 'Année', 'Nature', 'Date / période', 'Événement', 'Pages / timecodes', 'Preuve', 'Lien source'],
+              readingOrder.map(e => { const proof = (provenances[e.chrono_id] || [])[0]; return [publicationId, pub?.titre || '', pub?.organisme_producteur || '', pub?.['année_publication'] || '', NAT_LABELS[e.nature_chronologique] || e.nature_chronologique, e.expression_temporelle_source || '', e.libelle || '', proof?.page_source || '', proof?.preuve || '', sourceUrl] })) },
+            { label: 'Repères · PDF (impression)', action: () => printHtml(`Chronologie — ${pub?.titre || publicationId}`, `<p>${escapeXml(pubLabel(pub))}</p>${readingOrder.map(e => { const pr = (provenances[e.chrono_id] || [])[0]; return `<h2>${escapeXml(e.expression_temporelle_source || 'Sans date précise')}</h2><p>${escapeXml(e.libelle)}</p><p class="source">${escapeXml(NAT_LABELS[e.nature_chronologique] || e.nature_chronologique)} · ${escapeXml(pr?.page_source || 'Page non renseignée')}</p>` }).join('')}`) },
+          ]}
+        />
         <button type="button" className="xd-btn primary" onClick={start}><Icon name="spark" size={15}/>{sub === 'idle' ? 'Transformer en frise' : 'Rejouer'}</button>
         <button type="button" className="xd-btn" onClick={() => setPaused(p => !p)} disabled={sub !== 'show' && sub !== 'place'} aria-pressed={paused}>{paused ? <>▶ Reprendre</> : <>❚❚ Pause</>}</button>
         <button type="button" className="xd-btn" onClick={overview} disabled={sub === 'done'}>Vue d’ensemble</button>

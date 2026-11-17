@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import ExportShare from '../components/ExportShare.jsx'
+import { exportDocx, exportSvgPng, printSvgPdf, sourceLink, pubLabel } from '../utils/knowledgeExport.js'
 import ExpertiseConstellation from '../components/ExpertiseConstellation.jsx'
 import AtlasGuide from '../components/AtlasGuide.jsx'
 import {
@@ -338,12 +340,12 @@ function ExpertiseCard({ selected, data, onClose, onOpen, guideTarget }) {
   )
 }
 
-export default function Expertises({ data, focusExpertiseId = null, focusToken = 0, onSelectExpertise }) {
+export default function Expertises({ data, focusExpertiseId = null, focusToken = 0, onSelectExpertise, initialEntity = null, initialFamily = null }) {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
-  const [entity, setEntity] = useState('Toutes les entités')
-  const [family, setFamily] = useState('Tous')
+  const [entity, setEntity] = useState(initialEntity || 'Toutes les entités')
+  const [family, setFamily] = useState(initialFamily || 'Tous')
   const [eclaireurCollapsed, setEclaireurCollapsed] = useState(false)
   const [eclaireurStep, setEclaireurStep] = useState(1)
   const [eclaireurCluster, setEclaireurCluster] = useState(null)
@@ -358,6 +360,8 @@ export default function Expertises({ data, focusExpertiseId = null, focusToken =
   const sideRef = useRef(null)
   const screenRef = useRef(null)
   const stageRef = useRef(null)
+
+  useEffect(() => { if (initialEntity !== null) setEntity(initialEntity); if (initialFamily !== null) setFamily(initialFamily) }, [initialEntity, initialFamily])
 
   // Arrivée depuis l’onglet 2 (« Voir dans l’Atlas ») : on ouvre la fiche.
   useEffect(() => {
@@ -602,6 +606,22 @@ export default function Expertises({ data, focusExpertiseId = null, focusToken =
           <span><strong>{visibleEdges.length}</strong> lien{visibleEdges.length > 1 ? 's' : ''}</span>
         </div>
 
+        <ExportShare
+          shareParts={['atlas', 'vue', entity, family, selected?.id || '']}
+          label={selected?.label || 'Atlas des expertises ministérielles'}
+          formats={[
+            { label: 'Graphe · PNG', action: () => exportSvgPng(stageRef.current?.querySelector('svg.atlas-svg'), 'expertises_graphe') },
+            { label: 'Graphe · PDF (impression)', action: () => printSvgPdf(stageRef.current?.querySelector('svg.atlas-svg'), 'Atlas des expertises ministérielles') },
+            ...(selected ? [{ label: 'Fiche expertise · Word', action: () => exportDocx(`Expertise_${selected.id}`, selected.label, [
+              { text: `${selected.family || ''} · ${selected.id}` },
+              { text: selected.definition || 'Définition non renseignée.' },
+              { heading: true, text: 'Expertises associées' },
+              ...(selected.associated || []).map(a => ({ text: data.expertise_nodes.find(n => n.id === a.id)?.label || a.id })),
+              { heading: true, text: 'Publications associées' },
+              ...(selected.publications || []).flatMap(pub => [{ text: pubLabel(pub) }, ...(sourceLink(pub) ? [{ text: `Source : ${sourceLink(pub)}` }] : [])]),
+            ]) }] : []),
+          ]}
+        />
         <div className="atlas-toolbar-actions">
           <button type="button" className="atlas-btn ghost" onClick={() => setFitToken(x => x + 1)} title="Ajuster à l’écran">
             <Icon name="target" size={16} />

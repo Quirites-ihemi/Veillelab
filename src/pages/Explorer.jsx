@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import ExportShare from '../components/ExportShare.jsx'
+import { exportDocx, exportSvgPng, printSvgPdf, pubLabel, sourceLink } from '../utils/knowledgeExport.js'
 import ProofModal from '../components/ProofModal.jsx'
 import PublicationOrbit, {
   ORBIT_TYPES,
@@ -447,6 +449,22 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
           <span className="orbit-chat-orb" aria-hidden="true" />Poser une question (IA)
         </button>
 
+        <ExportShare
+          shareParts={['explorer', selectedPub.publication_id, focusId || '']}
+          label={focusId ? (nodeMap[focusId]?.libelle || selectedPub.titre) : selectedPub.titre}
+          formats={[
+            { label: 'Graphe · PNG', action: () => exportSvgPng(stageRef.current?.querySelector('svg.orbit-svg'), `Graphe_${selectedPub.publication_id}`) },
+            { label: 'Graphe · PDF (impression)', action: () => printSvgPdf(stageRef.current?.querySelector('svg.orbit-svg'), `Graphe de connaissances — ${selectedPub.titre}`) },
+            { label: 'Connaissances · Word', action: () => exportDocx(`Connaissances_${selectedPub.publication_id}`, selectedPub.titre, [
+              { text: pubLabel(selectedPub) },
+              ...(sourceLink(selectedPub) ? [{ text: `Source : ${sourceLink(selectedPub)}` }] : []),
+              { heading: true, text: `Éléments affichés (${nodes.length})` },
+              ...nodes.map(n => ({ text: `[${typeLabel(normalizeType(n.type_noeud))}] ${n.libelle} — ${n.page_source || 'Page non indiquée'} — ${n.chunk_id_source || 'Extrait non indiqué'}` })),
+              { heading: true, text: `Relations affichées (${relations.length})` },
+              ...relations.map(r => ({ text: `${nodeMap[r.source_id]?.libelle || r.source_id} — ${r.type_relation || r.relation || 'relation'} — ${nodeMap[r.cible_id]?.libelle || r.cible_id} · ${r.page_source || 'Page non indiquée'}` })),
+            ]) },
+          ]}
+        />
         <button type="button" className="atlas-btn outline" onClick={resetView}>
           <Icon name="reset" size={16} /><span>Réinitialiser</span>
         </button>

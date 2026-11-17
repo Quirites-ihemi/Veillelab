@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import ExportShare from '../components/ExportShare.jsx'
+import { exportDocx, pubLabel, sourceLink } from '../utils/knowledgeExport.js'
 import recommendationsCatalog from '../recommendationsCatalog.json'
 import './document-links.css'
 
@@ -105,7 +107,7 @@ function TreeCrown({ payload, byId, onExplore, type, error }) {
   </section>
 }
 
-export default function DocumentLinksWorkspace({ data, onBack }) {
+export default function DocumentLinksWorkspace({ data, onBack, initialPublicationId = '', onSelectPublicationId = null }) {
   const publications = useMemo(() => {
     const m = new Map((data.publications || []).map(p => [p.publication_id, p]))
     for (const p of recommendationsCatalog) m.set(p.publication_id, {...p,...(m.get(p.publication_id)||{})})
@@ -116,7 +118,7 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
     [publications]
   )
 
-  const [publicationId, setPublicationId] = useState('')
+  const [publicationId, setPublicationId] = useState(initialPublicationId)
   const [thematicResult, setThematicResult] = useState(null)
   const [thematicError, setThematicError] = useState('')
   const [query, setQuery] = useState('')
@@ -176,6 +178,7 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
       setHistory(current => [...current, result?.source_publication_id || thematicResult?.source_publication_id].slice(-8))
     }
     setPublicationId(cleanId)
+    onSelectPublicationId?.(cleanId)
     setLoading(true)
     setError('')
     setThematicError('')
@@ -204,6 +207,8 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
   }
 
 
+  useEffect(() => { if (initialPublicationId && publicationsById[initialPublicationId]) loadPublication(initialPublicationId) }, [initialPublicationId]) // eslint-disable-line react-hooks/exhaustive-deps
+
   function exploreTarget(id) {
     loadPublication(id, { addHistory: true })
   }
@@ -220,6 +225,24 @@ export default function DocumentLinksWorkspace({ data, onBack }) {
     <div className="doclinks-topbar">
       <button className="chrono-return" type="button" onClick={onBack}><Icon name="back" size={15}/> D’un document à l’autre</button>
       {history.length > 0 && <button className="doclinks-history-back" type="button" onClick={goBackInJourney}><Icon name="back" size={14}/> Publication précédente</button>}
+      <span style={{ flex: 1 }}/>
+      {(result || thematicResult) && <ExportShare shareParts={['documents', 'recommandations', result?.source_publication_id || thematicResult?.source_publication_id || publicationId]} label={`Arbre des recommandations · ${sourcePublication.titre || publicationId}`}
+        formats={[{ label: 'Relations sourcées · Word', action: () => exportDocx(`Arbre_${publicationId}`, `D’un document à l’autre — ${sourcePublication.titre || publicationId}`, [
+          { text: pubLabel(sourcePublication) },
+          ...(sourceLink(sourcePublication) ? [{ text: `Source : ${sourceLink(sourcePublication)}` }] : []),
+          ...[result, thematicResult].flatMap((branch, i) => [
+            { heading: true, text: i === 0 ? 'Publications liées' : 'Pour aller plus loin' },
+            ...(branch?.leaves || []).flatMap(leaf => {
+              const target = publicationsById[leaf.target_publication_id] || {};
+              return [{ text: `${pubLabel(target) || leaf.target_publication_id} · ${leaf.decision || ''}` },
+                { text: `Justification : ${leaf.pourquoi || 'Non renseignée'}` },
+                { text: `Source : ${leaf.source_locator || 'non renseignée'} · Cible : ${leaf.target_locator || 'non renseignée'}` },
+                ...(sourceLink(target) ? [{ text: `Document cible : ${sourceLink(target)}` }] : [])];
+            }),
+          ]),
+        ]) }]}
+      />}
+
     </div>
 
     <header className={`doclinks-hero ${(result || thematicResult) ? '' : 'doclinks-hero-big'}`}>

@@ -1,5 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import ExportShare from '../components/ExportShare.jsx'
+import { exportCanvasPng, exportCanvasPdf, exportCanvasWord } from '../utils/canvasExport.js'
 import { runReflectionAction } from '../services/reflectionApi.js'
 import { buildCorpusIndex, searchIndex, selectTheme, selectPublication, selectType, typeGroup, FEATURED_TYPES, ELEMENT_TYPES } from '../lib/corpusIndex.js'
 import './reflection-workspace.css'
@@ -557,6 +559,12 @@ export default function ReflectionWorkspaceV1({ onBack, data }) {
       <h1>Avancer avec le corpus</h1>
       <span className="etb-bar-regime">Enrichissement contrôlé</span>
       <span className="etb-bar-spacer"/>
+      <ExportShare formats={[
+        { label: 'Canevas · PNG', action: () => exportCanvasPng(cards, links, activeSubject) },
+        { label: 'Canevas · PDF (impression)', action: () => exportCanvasPdf(cards, links, activeSubject) },
+        { label: 'Post-it et sources · Word', action: () => exportCanvasWord(cards, links, activeSubject) },
+      ]}/>
+
       <div className={`qce-postit-bar ${eclaireur.mode === 'open' && eclaireur.step === 'canvas' ? 'qvl-eclaireur-target' : ''}`} role="group" aria-label="Créer un post-it">
         <span className="qce-postit-bar-label">Créer un post-it</span>
         {CARD_TYPES.map(type => <button key={type.id} type="button" className={`qce-postit-btn ${type.tone} ${composer?.id === type.id ? 'active' : ''}`} onClick={() => beginComposer(type.id)}><span aria-hidden="true">{type.icon}</span>{type.label}</button>)}
