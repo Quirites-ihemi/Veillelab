@@ -30,7 +30,7 @@ function Footer() {
 }
 
 export default function App(){
-  const [showLanding,setShowLanding]=useState(true)
+  const [showLanding,setShowLanding]=useState(() => !/^#\/(?:atlas|explorer|documents)(?:\/|$)/.test(window.location.hash))
   const route=useHashRoute()
   const {data,error}=useData()
   const active=VIEW_TO_TAB[route.view] ?? 'home'
@@ -66,14 +66,15 @@ export default function App(){
     <Header active={active} onChange={tab=>navigate([TAB_TO_VIEW[tab]||'accueil'])}/>
     {active==='home'&&<Home data={data}/>}
     {active==='expertises'&&<Expertises data={data}
-      focusExpertiseId={a[0]||null} focusToken={a[0]||''}
+      focusExpertiseId={a[0]==='vue' ? (a[3]||null) : (a[0]||null)} focusToken={a.join('|')}
+      initialEntity={a[0]==='vue' ? a[1] : null} initialFamily={a[0]==='vue' ? a[2] : null}
       onSelectExpertise={id=>navigate(['atlas',id],{replace:true})}/>}
     {active==='explorer'&&<Explorer data={data}
       route={a}
       onRoute={(parts,opts)=>navigate(['explorer',...parts],opts)}
       onOpenAtlas={id=>navigate(['atlas',id])}/>}
     {active==='atelier'&&<Atelier data={data}/>}
-    {active==='documents'&&<CrossDocuments data={data} sub={a[0]||''} onSub={s=>navigate(['documents',s])}/>}
+    {active==='documents'&&<CrossDocuments data={data} sub={a[0]||''} deepArgs={a.slice(1)} onSub={s=>navigate(['documents',s])} onDeepRoute={parts=>navigate(['documents',...parts],{replace:true})}/>}
     {active==='about'&&<About data={data}/>}
     {active==='legal'&&<MentionsLegales/>}
     {active==='accessibility'&&<Accessibilite/>}

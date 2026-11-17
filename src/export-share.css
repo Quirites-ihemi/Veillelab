@@ -1,0 +1,16 @@
+.qvl-export-share{display:inline-flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0;position:relative;z-index:30;font-family:Manrope,Arial,sans-serif}
+.qvl-export-menu{position:relative;flex:none}
+.qvl-action-button{list-style:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:35px;padding:7px 12px;border:1px solid #bed0e7;border-radius:9px;background:#fff;color:#224a77;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap}
+.qvl-action-button::-webkit-details-marker{display:none}
+.qvl-action-button:hover,.qvl-export-menu[open]>.qvl-action-button{background:#eaf3fd;border-color:#7fa7d5}
+.qvl-export-options{position:absolute;top:calc(100% + 7px);right:0;z-index:1000;display:grid;min-width:210px;padding:7px;gap:3px;border:1px solid #d1ddec;background:#fff;border-radius:11px;box-shadow:0 14px 35px rgba(20,49,84,.18)}
+.qvl-export-options button,.qvl-export-options a{display:block;border:0;border-radius:7px;text-align:left;text-decoration:none;white-space:normal;background:transparent;padding:9px 10px;color:#1c3a61;font-family:inherit;font-size:12px;line-height:1.4;cursor:pointer}
+.qvl-export-options button:hover,.qvl-export-options a:hover{background:#eaf2fc}
+.qvl-export-options button:disabled{opacity:.45;cursor:not-allowed}
+.qvl-share-caption{font-size:10px;color:#58728f;padding:4px 10px;border-bottom:1px solid #edf1f5;max-width:260px}
+.qvl-export-status{font-size:11px;color:#236547;max-width:220px}
+@media(max-width:760px){.qvl-export-share{gap:5px}.qvl-action-button{padding:6px 8px;min-height:32px}.qvl-export-options{min-width:190px;right:-12px}}
+
+/* Les deux nouvelles actions ne doivent pas tronquer les champs de recherche. */
+@media(max-width:1480px){.atlas-screen .atlas-toolbar,.orbit-screen .orbit-toolbar{flex-wrap:wrap;row-gap:7px}}
+@media(max-width:1400px){.atelier-screen .etb-bar{height:auto;min-height:62px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}}
