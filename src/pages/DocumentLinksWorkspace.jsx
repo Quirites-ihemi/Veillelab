@@ -226,7 +226,7 @@ export default function DocumentLinksWorkspace({ data, onBack, initialPublicatio
       <button className="chrono-return" type="button" onClick={onBack}><Icon name="back" size={15}/> D’un document à l’autre</button>
       {history.length > 0 && <button className="doclinks-history-back" type="button" onClick={goBackInJourney}><Icon name="back" size={14}/> Publication précédente</button>}
       <span style={{ flex: 1 }}/>
-      {(result || thematicResult) && <ExportShare shareParts={['documents', 'recommandations', result?.source_publication_id || thematicResult?.source_publication_id || publicationId]} label={`Arbre des recommandations · ${sourcePublication.titre || publicationId}`}
+      {(result || thematicResult) ? <ExportShare shareParts={['documents', 'recommandations', result?.source_publication_id || thematicResult?.source_publication_id || publicationId]} label={`Arbre des recommandations · ${sourcePublication.titre || publicationId}`}
         formats={[{ label: 'Relations sourcées · Word', action: () => exportDocx(`Arbre_${publicationId}`, `D’un document à l’autre — ${sourcePublication.titre || publicationId}`, [
           { text: pubLabel(sourcePublication) },
           ...(sourceLink(sourcePublication) ? [{ text: `Source : ${sourceLink(sourcePublication)}` }] : []),
@@ -241,7 +241,7 @@ export default function DocumentLinksWorkspace({ data, onBack, initialPublicatio
             }),
           ]),
         ]) }]}
-      />}
+      /> : <ExportShare waitingFor="Sélectionnez une publication pour exporter ou partager l’arbre." showShareWhenWaiting />}
 
     </div>
 

@@ -477,7 +477,7 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
   }, [chronology])
 
   const features = [
-    { key: 'chrono', color: '#e3a73b', tag: 'Chronologie · bêta', title: 'Du texte à la frise',
+    { key: 'chrono', color: '#e3a73b', tag: 'Chronologie', title: 'Du texte à la frise',
       lead: 'Faites apparaître la trame temporelle d’une publication : jalons, événements, tendances et inflexions replacés dans le temps et reliés à leur preuve.',
       you: 'Une publication datée', get: 'Sa frise, chaque élément relié à sa preuve',
       meta: chronology ? `${chronoStats.publications} publications · ${chronoStats.elements} éléments positionnés dans le temps` : 'Chargement de la chronologie…',
@@ -503,6 +503,7 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
           <p>Trois façons de traverser les publications du bulletin sans jamais perdre le passage source.</p>
         </div>
         <div className="xda-corpus"><b>{publications.length} publications</b>du bulletin de veille</div>
+        <div className="xda-home-actions"><ExportShare waitingFor="Ouvrez un parcours pour exporter ou partager sa sélection." showShareWhenWaiting /></div>
       </header>
       <section className="xda-cols" aria-label="Fonctionnalités">
         {features.map(f => <button key={f.key} type="button" className="xda-card" style={{ '--c': f.color }} onClick={f.open}
@@ -670,7 +671,7 @@ function NotionWorkspace({ data, onBack }) {
       <div className="crossdoc-kicker">D’UN DOCUMENT À L’AUTRE</div>
       <div className="notion-title-row">
         <h1>Suivre une notion</h1>
-        <span className="crossdoc-beta notion-beta-inline">BÊTA</span>
+        
       </div>
       <p className="ribbon-intro">La notion se déplace d’une publication à l’autre, puis déploie localement ses déclinaisons.</p>
     </header>
@@ -1031,7 +1032,7 @@ function ChronologyWorkspace({ data, onBack }) {
     <header className="chrono-hero">
       <div className="chrono-title-line">
         <h1>Du texte à la frise, sans perdre la source</h1>
-        <span className="chrono-beta-badge">BÊTA</span>
+        
       </div>
       <p className="chrono-subtitle">Une publication <b>→</b> ses repères temporels <b>→</b> une frise interactive</p>
 
@@ -1382,7 +1383,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
       <button type="button" className="xd-back" onClick={onBack}><Icon name="back" size={16}/>D’un document à l’autre</button>
       <h1>Suivre une notion</h1>
       <span className="xd-spacer"/>
-      {notion && <div className="xd-actions">
+      {notion ? <div className="xd-actions">
         <ExportShare shareParts={['documents', 'notions', notion.id]} label={`Suivre une notion · ${notion.label}`}
           formats={[{ label: 'Apports sourcés · Word', action: () => exportDocx(`Notion_${notion.id}`, `Suivre une notion — ${notion.label}`, [
             { text: `${stops.length} publications · ${stops.reduce((n, p) => n + p.nodes.length, 0)} éléments déjà présents dans le corpus` },
@@ -1394,7 +1395,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
           ]) }]}
         />
         <button type="button" className="xd-btn" onClick={overview} disabled={done}>Vue d’ensemble</button>
-      </div>}
+      </div> : <ExportShare waitingFor="Choisissez une notion pour exporter ou partager." showShareWhenWaiting />}
     </header>
     <div className="xd-notion-intro" role="note">
       <strong>Une notion, plusieurs éclairages</strong>
@@ -1640,7 +1641,7 @@ function ChronoFrise({ data, onBack, initialPublicationId = '', onPublicationCha
     <header className="xd-bar">
       <button type="button" className="xd-back" onClick={onBack}><Icon name="back" size={16}/>D’un document à l’autre</button>
       <h1>Du texte à la frise</h1>
-      <span className="xd-beta">Bêta</span>
+      
       <span className="xd-spacer"/>
       <div className="xd-pubs">{choices.map(c => {
         const n = chronology.elements.filter(e => e.publication_id === c.publication_id).length

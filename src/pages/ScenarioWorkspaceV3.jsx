@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { analyzeScenarioV3, scenarioV3BackendUrl } from '../services/scenarioV3Api.js'
+import ExportShare from '../components/ExportShare.jsx'
+import { analyzeScenarioV3 } from '../services/scenarioV3Api.js'
 import { exportScenarioV3Word } from '../utils/scenarioExportV3.js'
 import './scenario-v3.css'
 
@@ -69,18 +70,17 @@ export default function ScenarioWorkspaceV3({ onBack }) {
 
   const toggle = id => setKept(list => list.includes(id) ? list.filter(x => x !== id) : [...list, id])
   const axes = result?.axes || []
-  const testBackend = scenarioV3BackendUrl()
 
   return <main className="t06v3">
     <div className="t06v3-top">
       <button type="button" className="t06v3-back" onClick={onBack}>‹ Atelier de veille</button>
       <span>Scénario de veille</span>
-      <em className="t06v3-test" title={testBackend}>Version de test</em>
+      <ExportShare formats={result && kept.length ? [{ label: 'Axes de veille · Word', action: () => exportScenarioV3Word(result, kept) }] : []} waitingFor={!result ? 'Générez des axes pour activer l’export.' : !kept.length ? 'Conservez au moins un axe pour exporter.' : ''} />
     </div>
 
     <section className="t06v3-start">
       <h1>{result ? `${axes.length} axe${axes.length > 1 ? 's' : ''} de veille proposé${axes.length > 1 ? 's' : ''}` : 'Quels axes de veille sur votre sujet ?'}</h1>
-      {!result && <p className="t06v3-lead">Décrivez votre besoin en une phrase. L’IA range en quelques axes ce que contiennent les publications du bulletin : problèmes, tendances, signaux faibles, actions, recommandations… Chaque élément est repris tel quel, avec sa source.</p>}
+      {!result && <p className="t06v3-lead">Décrivez votre besoin en une phrase pour obtenir des axes de veille à partir du corpus.</p>}
       <form className="t06v3-form" onSubmit={run}>
         <label htmlFor="t06v3-need">Votre besoin de veille</label>
         <textarea id="t06v3-need" value={need} onChange={e => setNeed(e.target.value)} rows={result ? 2 : 3} maxLength={600}
@@ -90,7 +90,6 @@ export default function ScenarioWorkspaceV3({ onBack }) {
           <button type="submit" className="t06v3-go" disabled={!need.trim() || loading}>{loading ? 'Recherche en cours…' : result ? 'Relancer' : 'Proposer des axes de veille →'}</button>
         </div>
       </form>
-      {!result && <p className="t06v3-note">L’outil ne s’appuie que sur les publications du bulletin. S’il en trouve peu sur le sujet, il le dit au lieu de compléter.</p>}
     </section>
 
     {loading && <div className="t06v3-loading"><span/>Recherche dans les publications, puis rangement des éléments en axes…</div>}
@@ -139,7 +138,6 @@ export default function ScenarioWorkspaceV3({ onBack }) {
         })}
       </div>
       <div className="t06v3-bottom">
-        <p className="t06v3-ai">Titres et questions des axes proposés par l’IA. Les éléments sont repris tels quels des publications, avec leur repère.</p>
         <button type="button" className="t06v3-go" disabled={!kept.length} onClick={() => exportScenarioV3Word(result, kept)}>Télécharger ({kept.length} axe{kept.length > 1 ? 's' : ''}, .docx)</button>
       </div>
     </>}

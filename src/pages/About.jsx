@@ -34,7 +34,7 @@ export default function About({ data }) {
           <p>
             {pubs.length} publications sont analysées à ce jour, et une dizaine s’ajoute chaque mois.
             {' '}{withText} d’entre elles disposent de leur texte consultable ; pour les autres, seules les idées clés et leurs liens sont présentés.
-            {' '}Les fonctions marquées « bêta » sont expérimentales et couvrent une partie des publications.
+            {' '}Certaines explorations transversales portent sur une sélection de publications.
           </p>
         </div>
       </div>

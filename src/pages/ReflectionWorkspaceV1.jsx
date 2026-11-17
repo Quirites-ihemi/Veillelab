@@ -791,7 +791,7 @@ function EclaireurGuide({ step = 'start', mode = 'open', onClose, onMinimize, on
 
   if (mode === 'minimized') {
     return <div {...moveProps} onPointerDown={movable.onPointerDown} title="Glisser pour déplacer le guide" className={`qvl-eclaireur-minimized qvl-eclaireur-side-${side}${movedClass}`} aria-label={`Guide, étape ${number} sur 3, réduit`}>
-      <button type="button" className="qvl-eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer le guide"><span aria-hidden="true">✦</span><strong>Guide</strong><small>{number}/3</small></button>
+      <button type="button" className="qvl-eclaireur-minimized-main" onClick={onRestore} aria-label="Déployer le guide"><span aria-hidden="true">✦</span><strong>Guide</strong></button>
       <button type="button" className="qvl-eclaireur-minimized-close" onClick={onClose} aria-label="Fermer le guide">×</button>
     </div>
   }

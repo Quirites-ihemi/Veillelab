@@ -108,10 +108,10 @@ export default function Home({ data }) {
         <article className="home-service s-documents">
           <p className="home-service-tab">D’un document à l’autre</p>
           <h2>Voir les textes se recomposer sous vos yeux : en frise, en parcours, en arbre de lecture.</h2>
-          <p className="home-service-lead">Une approche expérimentale : l’interface fait émerger ce que contiennent les publications, sans jamais perdre le passage source.</p>
+          <p className="home-service-lead">Explorez les liens entre les publications et leurs passages sources.</p>
           <ul className="home-status-list">
-            <li><span className="status beta">Bêta</span><span><a href="#/documents/frise" onClick={go(['documents', 'frise'])}><strong>Du texte à la frise</strong></a> : la trame temporelle d’une publication apparaît, dates, jalons et tendances, chaque repère relié à son passage ({ELIGIBLE_PUBLICATIONS.length} publications).</span></li>
-            <li><span className="status beta">Bêta</span><span><a href="#/documents/notions" onClick={go(['documents', 'notions'])}><strong>Suivre une notion</strong></a> : une notion passe d’une publication à l’autre ({TRANSVERSAL_NOTIONS.length} notions).</span></li>
+            <li><span><a href="#/documents/frise" onClick={go(['documents', 'frise'])}><strong>Du texte à la frise</strong></a> : la trame temporelle d’une publication apparaît, dates, jalons et tendances, chaque repère relié à son passage ({ELIGIBLE_PUBLICATIONS.length} publications).</span></li>
+            <li><span><a href="#/documents/notions" onClick={go(['documents', 'notions'])}><strong>Suivre une notion</strong></a> : une notion passe d’une publication à l’autre ({TRANSVERSAL_NOTIONS.length} notions).</span></li>
             <li><span className="status ok">Disponible</span><span><a href="#/documents/recommandations" onClick={go(['documents', 'recommandations'])}><strong>L’arbre des recommandations</strong></a> : à partir d’une publication, ses fils de lecture se séparent en publications liées et en pistes pour aller plus loin (toutes les publications).</span></li>
           </ul>
           <a className="home-cta" href="#/documents" onClick={go(['documents'])}>Ouvrir D’un document à l’autre<Arrow /></a>

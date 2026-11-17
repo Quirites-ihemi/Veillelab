@@ -382,6 +382,7 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
   if (!selectedPub) {
     return (
       <div className="atlas-screen orbit-screen orbit-screen-home">
+        <div className="orbit-home-actions"><ExportShare waitingFor="Choisissez une publication pour activer les actions." showShareWhenWaiting /></div>
         <ExplorerHome onChoose={openHomeDrawer} count={graphPubs.length} />
         <PublicationDrawer open={drawerOpen} onClose={closeHomeDrawer} publications={graphPubs} search={search} setSearch={setSearch} onSelect={choosePublication} theme={routeTheme} themeLabel={routeTheme ? domainLabel(routeTheme) : null} onClearTheme={clearTheme} />
       </div>

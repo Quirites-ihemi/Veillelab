@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import ExportShare from '../components/ExportShare.jsx'
+import { exportDocx, pubLabel, sourceLink } from '../utils/knowledgeExport.js'
 import ReflectionMap from '../components/ReflectionMap.jsx'
 import ReflectionWorkspaceV1 from './ReflectionWorkspaceV1.jsx'
 import GlossaryWorkspace from './GlossaryWorkspace.jsx'
@@ -59,6 +61,7 @@ export default function Atelier({data}){
   const current=six.find(x=>x.spec.key===preview)||six[0]
   const curRegime=current?(current.t.regime_IA||current.spec.fallbackRegime):''
   return <div className="atelier-screen"><main className="workshop-page qvl-v02 etb-home">
+    <div className="etb-home-actions"><ExportShare waitingFor="Ouvrez un outil et produisez un résultat pour l’exporter." /></div>
     <header className="etb-hero">
       <div className="etb-hero-copy">
         <span className="etb-kicker">Atelier de veille</span>
@@ -356,7 +359,29 @@ function ReflectionEmpty({onGenerate,disabled}){return <div className="qvl-refle
 function ReflectionLoading(){return <div className="reflection-state loading"><div className="generation-spinner">✦</div><strong>La réflexion prend forme…</strong><p>Le moteur sélectionne les passages utiles, distingue ce qui est documenté de ce qui relève d’une piste IA, puis construit le parcours de réflexion.</p><div className="thinking-steps"><span className="active">Structurer le problème</span><span>Éclairer les enjeux</span><span>Ouvrir les autres dimensions</span></div></div>}
 
 function GenerationT01({generation,loading,error,need,selectedCount,onGenerate}){if(loading)return <div className="generation-state loading"><div className="generation-spinner">✦</div><strong>Couverture documentaire et génération…</strong><p>Le moteur couvre la publication selon sa longueur et conserve les pages ou timecodes sources.</p></div>;if(error)return <div className="generation-state error"><span aria-hidden="true">⚠</span><strong>La génération n’a pas abouti</strong><p>{error}</p><button className="btn primary" onClick={onGenerate}>Réessayer</button></div>;if(!generation)return <div className="t01-generate-action"><button className="btn primary t01-generate-btn" disabled={!need.trim()||!selectedCount} onClick={onGenerate}><Icon name="spark" size={17}/>Générer le résumé</button></div>;return <ResumeAnalytique result={generation} onRegenerate={onGenerate}/>}
-function ResumeAnalytique({result,onRegenerate}){const out=result?.output||{};return <section className="generated-output"><header className="generated-output-head"><div><span className="generated-kicker">PRODUCTION IA · SYNTHÈSE STRICTE</span><h2>Résumé analytique</h2><p>{result?.corpus?.map(p=>p.titre).join(' · ')}</p></div><div className="generation-metrics"><span>{result?.selection?.chunks_retenus||0} chunks retenus</span><button onClick={onRegenerate}>↻ Régénérer</button></div></header><PointSection title="Sujet" point={out.sujet}/><PointSection title="Problématique" point={out.problematique}/><ListSection title="Résultats" items={out.resultats}/><ListSection title="Enseignements" items={out.enseignements}/>{out.nuances?.length>0&&<ListSection title="Nuances et précautions" items={out.nuances} subtle/>}<div className="generated-sources"><h3>Sources</h3>{(result?.corpus||[]).map(pub=><a key={pub.publication_id} href={pub.url||'#'} target="_blank" rel="noreferrer"><span aria-hidden="true">↗</span><span><strong>{pub.titre}</strong><small>{pub.organisme_producteur}{pub.annee_publication?` · ${pub.annee_publication}`:''}</small></span></a>)}</div></section>}
+function resumeExportParagraphs(result) {
+  const out = result?.output || {}
+  const texts = []
+  for (const pub of result?.corpus || []) {
+    texts.push({ text: pubLabel(pub) })
+    if (sourceLink(pub)) texts.push({ text: `Document source : ${sourceLink(pub)}` })
+  }
+  const provenance = p => {
+    const refs = (p?.provenances || []).map(x => {
+      const loc = x.type === 'timecode' || x.timecode_debut || x.timecode_fin
+        ? (x.label || [x.timecode_debut, x.timecode_fin].filter(Boolean).join('–'))
+        : (x.page || x.label || '')
+      return [x.publication_id, loc].filter(Boolean).join(' · ')
+    }).filter(Boolean)
+    return refs.length ? [{ text: `Provenance : ${refs.join(' ; ')}` }] : []
+  }
+  const section = (heading, items) => {
+    const arr = Array.isArray(items) ? items : [items]
+    return [{ heading: true, text: heading }, ...arr.filter(x => x?.texte).flatMap(x => [{ text: x.texte }, ...provenance(x)])]
+  }
+  return [...texts, ...section('Sujet', out.sujet), ...section('Problématique', out.problematique), ...section('Résultats', out.resultats || []), ...section('Enseignements', out.enseignements || []), ...(out.nuances?.length ? section('Nuances et précautions', out.nuances) : [])]
+}
+function ResumeAnalytique({result,onRegenerate}){const out=result?.output||{};return <section className="generated-output"><header className="generated-output-head"><div><span className="generated-kicker">PRODUCTION IA · SYNTHÈSE STRICTE</span><h2>Résumé analytique</h2><p>{result?.corpus?.map(p=>p.titre).join(' · ')}</p></div><ExportShare formats={[{ label: 'Résumé sourcé · Word', action: () => exportDocx('Resume_analytique', 'Résumé analytique — Quiritès Veille Lab', resumeExportParagraphs(result)) }]}/><div className="generation-metrics"><span>{result?.selection?.chunks_retenus||0} chunks retenus</span><button onClick={onRegenerate}>↻ Régénérer</button></div></header><PointSection title="Sujet" point={out.sujet}/><PointSection title="Problématique" point={out.problematique}/><ListSection title="Résultats" items={out.resultats}/><ListSection title="Enseignements" items={out.enseignements}/>{out.nuances?.length>0&&<ListSection title="Nuances et précautions" items={out.nuances} subtle/>}<div className="generated-sources"><h3>Sources</h3>{(result?.corpus||[]).map(pub=><a key={pub.publication_id} href={pub.url||'#'} target="_blank" rel="noreferrer"><span aria-hidden="true">↗</span><span><strong>{pub.titre}</strong><small>{pub.organisme_producteur}{pub.annee_publication?` · ${pub.annee_publication}`:''}</small></span></a>)}</div></section>}
 function PointSection({title,point}){if(!point?.texte)return null;return <section className="generated-section"><h3>{title}</h3><p>{point.texte}</p><ProvenanceChips provenances={point.provenances}/></section>}
 function ListSection({title,items=[],subtle=false}){if(!items.length)return null;return <section className={`generated-section ${subtle?'subtle':''}`}><h3>{title}</h3><div className="generated-list">{items.map((item,i)=><article key={i}><span className="generated-index">{i+1}</span><div><p>{item.texte}</p><ProvenanceChips provenances={item.provenances}/></div></article>)}</div></section>}
 function ProvenanceChips({provenances=[]}){if(!provenances.length)return null;const groups=new Map();provenances.forEach(p=>{const pub=p.publication_id||'Source';if(!groups.has(pub))groups.set(pub,{pages:[],timecodes:[],seen:new Set()});const g=groups.get(pub);const isTimecode=p.type==='timecode'||Boolean(p.timecode_debut)||Boolean(p.timecode_fin);const value=isTimecode?(p.label||[p.timecode_debut,p.timecode_fin].filter(Boolean).join('–')):String(p.page||p.label||'').trim();if(!value)return;const key=`${isTimecode?'t':'p'}|${value}`;if(g.seen.has(key))return;g.seen.add(key);(isTimecode?g.timecodes:g.pages).push(value)});const labels=[];groups.forEach((g,pub)=>{if(g.pages.length)labels.push(`${pub} · ${g.pages.map(p=>`p. ${p}`).join(' ; ')}`);if(g.timecodes.length)labels.push(`${pub} · ${g.timecodes.join(' ; ')}`)});if(!labels.length)return null;return <div className="provenance-chips">{labels.map((label,i)=><span key={`${label}-${i}`}>{label}</span>)}</div>}
