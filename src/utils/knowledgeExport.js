@@ -88,13 +88,21 @@ export async function svgPngData(svg, { maxWidth = 3200, background = '#ffffff' 
     if (!out) return
     const style = SVG_STYLE.map(k => `${k}:${computed.getPropertyValue(k)}`).join(';')
     out.setAttribute('style',[out.getAttribute('style')||'',style].join(';'))
-    if (svg.classList.contains('atlas-svg') && el.tagName?.toLowerCase()==='text') {
-      out.style.setProperty('fill','#1c3352')
-      out.style.setProperty('stroke','#fff')
-      out.style.setProperty('stroke-width','1px')
-      out.style.setProperty('paint-order','stroke')
-      out.style.setProperty('font-family','Georgia,Arial,sans-serif')
-      out.style.setProperty('font-weight','600')
+    // Palette adaptée au papier, sur la copie exportée uniquement.
+    // Les tspan possèdent leur propre style calculé : les recolorer aussi,
+    // sans quoi ils conservent le blanc et le contour noir du thème interactif.
+    if (svg.classList.contains('atlas-svg')) {
+      const tag = el.tagName?.toLowerCase()
+      const text = tag === 'text' ? el : tag === 'tspan' ? el.closest('text') : null
+      if (text) {
+        const isSubtitle = text.classList.contains('entry-cluster-transdirectional-svg') ||
+          text.classList.contains('atlas-title-trans')
+        out.style.setProperty('fill', isSubtitle ? '#2f4b6a' : '#183355')
+        out.style.setProperty('stroke', '#ffffff')
+        out.style.setProperty('stroke-width', '0.75px')
+        out.style.setProperty('paint-order', 'stroke')
+        out.style.setProperty('stroke-linejoin', 'round')
+      }
     }
   })
   copy.setAttribute('viewBox',[bounds.x,bounds.y,bounds.width,bounds.height].join(' '))
