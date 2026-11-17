@@ -6,11 +6,11 @@ import quiritesLogo from './landing-quirites-logo.png'
 import radarVisual from './landing-radar.png'
 
 const cguDraft = [
-  'Quiritès Veille Lab est un prototype d’exploration documentaire fondé sur un corpus de publications sélectionnées dans les bulletins de veille.',
+  'Quiritès Veille Lab est une application d’exploration documentaire fondée sur les publications sélectionnées dans les bulletins de veille.',
   'Les contenus, résultats, rapprochements et visualisations proposés dépendent du périmètre du corpus actif et peuvent être incomplets.',
   'L’utilisateur reste responsable de l’interprétation, de la vérification et de l’usage des informations produites par l’application.',
   'Les fonctionnalités d’assistance ne se substituent ni à l’analyse professionnelle ni à la consultation des sources originales.',
-  'Ce texte est provisoire et pourra être remplacé ultérieurement par les conditions générales d’utilisation définitives.'
+  'Les conditions d’utilisation peuvent être actualisées.'
 ]
 
 export default function LandingPage({ onEnter }) {

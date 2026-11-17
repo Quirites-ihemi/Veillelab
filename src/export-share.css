@@ -14,3 +14,32 @@
 /* Les deux nouvelles actions ne doivent pas tronquer les champs de recherche. */
 @media(max-width:1480px){.atlas-screen .atlas-toolbar,.orbit-screen .orbit-toolbar{flex-wrap:wrap;row-gap:7px}}
 @media(max-width:1400px){.atelier-screen .etb-bar{height:auto;min-height:62px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}}
+
+/* Actions d'export / partage : visibles sans explorer un sous-menu. */
+.qvl-export-share{display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;flex-shrink:0;max-width:100%;margin-left:auto;padding:5px 7px;background:#edf5ff;border:1px solid #a8c6ec;border-radius:12px;box-shadow:0 2px 9px rgba(19,64,120,.12);z-index:80}
+.qvl-export-menu{z-index:80}
+.qvl-action-button{font-size:14px;min-height:42px;padding:9px 16px;font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.07);gap:8px}
+.qvl-action-export{background:#1859a4;color:#fff;border-color:#1859a4}
+.qvl-action-export:hover,.qvl-export-menu[open]>.qvl-action-export{background:#104780;color:#fff;border-color:#104780}
+.qvl-action-share{background:#fff;color:#174b88;border-color:#8db6e5}
+.qvl-action-share:hover,.qvl-export-menu[open]>.qvl-action-share{background:#d9eaff;color:#0d3b75;border-color:#447cb9}
+.qvl-action-button:focus-visible,.qvl-export-options button:focus-visible,.qvl-export-options a:focus-visible{outline:3px solid #e2a83d;outline-offset:2px}
+.qvl-export-options{min-width:240px;z-index:9999}
+.qvl-export-options button,.qvl-export-options a{font-size:14px;padding:11px 12px}
+.qvl-export-share-waiting{background:#f5f8fd;border-color:#d8e2ee;box-shadow:none;flex-wrap:wrap}
+.qvl-export-share-waiting .qvl-action-button{opacity:.70;cursor:not-allowed;box-shadow:none}
+.qvl-export-share-waiting .qvl-action-export{background:#cad9ec;border-color:#cad9ec;color:#2c507a}
+.qvl-action-hint{font-size:12px;color:#526b87;max-width:300px;line-height:1.3;font-weight:550}
+/* En cas de barre chargée, réserver une place distincte aux commandes. */
+.atlas-toolbar>.qvl-export-share,.orbit-toolbar>.qvl-export-share{order:100;margin-left:auto}
+.xd-bar .qvl-export-share{margin-left:auto}
+.xd-actions{flex-wrap:wrap;align-items:center}
+.xd-actions>.qvl-export-share{order:100}
+.orbit-home-actions,.etb-home-actions,.xda-home-actions{display:flex;justify-content:flex-end;align-items:center;padding:12px 18px}
+.xda-home-actions{padding:0}
+.doclinks-topbar>.qvl-export-share{margin-left:auto}
+.etb-bar>.qvl-export-share{margin-left:auto}
+.generated-output-head>.qvl-export-share{margin-left:auto}
+.t06v3-top>.qvl-export-share{margin-left:auto}
+@media(max-width:1100px){.qvl-export-share{margin-left:0}.qvl-action-hint{max-width:100%}.qvl-export-options{left:0;right:auto}.xda-home-actions{width:100%;justify-content:flex-start}}
+@media(max-width:760px){.qvl-action-button{font-size:13px;min-height:40px;padding:8px 11px}.qvl-export-share{gap:5px;padding:4px 5px}.qvl-export-share-waiting .qvl-action-hint{width:100%}.orbit-home-actions,.etb-home-actions{padding:8px 12px}}

@@ -349,7 +349,7 @@ function CrossDocumentsHome({ onOpenChronology, onOpenNotions, publicationCount 
         <div className="crossdoc-feature-copy">
           <div className="crossdoc-feature-topline">
             <span>CHRONOLOGIE</span>
-            <em className="crossdoc-beta">BÊTA · {publicationCount || 0} publications</em>
+            <em className="crossdoc-beta">{publicationCount || 0} publications</em>
           </div>
           <h2>Du texte à la frise, sans perdre la source</h2>
           <p>Faites apparaître la trame temporelle d’une publication : événements, jalons, émergences, tendances et inflexions sont replacés dans le temps et reliés à leur preuve source.</p>
@@ -519,7 +519,7 @@ function NotionWorkspace({ data, onBack }) {
       <div className="crossdoc-kicker">D’UN DOCUMENT À L’AUTRE</div>
       <div className="notion-title-row">
         <h1>Suivre une notion</h1>
-        <span className="crossdoc-beta notion-beta-inline">BÊTA</span>
+        
       </div>
       <p className="ribbon-intro">La notion se déplace d’une publication à l’autre, puis déploie localement ses déclinaisons.</p>
     </header>
@@ -880,7 +880,7 @@ function ChronologyWorkspace({ data, onBack }) {
     <header className="chrono-hero">
       <div className="chrono-title-line">
         <h1>Du texte à la frise, sans perdre la source</h1>
-        <span className="chrono-beta-badge">BÊTA</span>
+        
       </div>
       <p className="chrono-subtitle">Une publication <b>→</b> ses repères temporels <b>→</b> une frise interactive</p>
 
