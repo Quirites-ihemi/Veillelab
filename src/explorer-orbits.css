@@ -331,6 +331,37 @@
 .orbit-screen .orbit-chat-form button{width:42px;border:0;border-radius:10px;background:linear-gradient(135deg,#FFB86B,#FF7A59);color:#1b0d05;cursor:pointer}
 .orbit-screen .orbit-chat-form button:disabled{opacity:.4;cursor:not-allowed}
 
+/* Ajustement de lisibilité (chatbot de l'exploration) — sans impact sur le graphe. */
+.orbit-screen .orbit-chat.is-expanded{
+  position:fixed;inset:50% auto auto 50%;right:auto;top:50%;
+  transform:translate(-50%,-50%);
+  width:min(880px,calc(100vw - 36px));
+  height:min(740px,calc(100dvh - 36px));
+  max-width:none;max-height:none;
+  z-index:130;
+  box-shadow:0 0 0 100vmax rgba(1,9,13,.68),0 25px 70px rgba(0,0,0,.65);
+}
+.orbit-screen .orbit-chat .chat-answer{
+  padding:8px 4px;font-size:15.5px;line-height:1.64;overflow:visible;
+}
+.orbit-screen .orbit-chat .chat-answer p,
+.orbit-screen .orbit-chat .chat-answer li{
+  font-size:15.5px;line-height:1.64;
+}
+.orbit-screen .orbit-chat .chat-answer-section h4{
+  font-size:16px;line-height:1.4;
+}
+.orbit-screen .orbit-chat-response{font-size:15.5px;line-height:1.64}
+.orbit-screen .orbit-chat-response h4{font-size:16px}
+.orbit-screen .orbit-chat-suggestions button{font-size:13.5px;line-height:1.45}
+.orbit-screen .orbit-chat .orbit-chat-resize{font-size:20px}
+@media(max-width:600px){
+  .orbit-screen .orbit-chat.is-expanded{width:calc(100vw - 18px);height:calc(100dvh - 18px)}
+  .orbit-screen .orbit-chat .chat-answer,
+  .orbit-screen .orbit-chat .chat-answer p,
+  .orbit-screen .orbit-chat .chat-answer li{font-size:15px}
+}
+
 /* ------------------------------------------------------------------ Fiche */
 .orbit-screen .orbit-card{gap:0}
 .orbit-screen .orbit-card-meta{margin:0 0 8px;color:var(--atlas-text-3);font-size:12.5px}
