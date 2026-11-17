@@ -1,7 +1,8 @@
 // Exports locaux, sans appel serveur. Les sources sont celles du corpus affiché.
 import { buildZip, downloadBytes } from './expertExport.js'
 
-const xml = value => String(value ?? '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+// Filtrage XML 1.0 strict, y compris les demi-surrogates isolés.
+const xml = value => Array.from(String(value ?? '')).filter(ch => {const cp=ch.codePointAt(0);return cp===9||cp===10||cp===13||(cp>=32&&cp<=0xD7FF)||(cp>=0xE000&&cp<=0xFFFD)||(cp>=0x10000&&cp<=0x10FFFF)}).join('').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')
 export const namePart = value => String(value || 'export').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]+/g, '_').slice(0, 60)
 export const sourceLink = pub => {
   const url = String(pub?.url_contenu || pub?.url_source || '').trim().split(/\s+/)[0]
@@ -43,14 +44,41 @@ export function exportXlsx(filename, headers, rows) {
 
 // Export PNG du SVG réellement affiché : conserve les filtres, le zoom et le cadrage.
 const SVG_STYLE = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linecap', 'stroke-linejoin', 'opacity', 'font-family', 'font-size', 'font-weight', 'font-style', 'letter-spacing', 'text-anchor', 'paint-order', 'color', 'visibility']
-export async function svgPngData(svg, { maxWidth = 2000, background = '#ffffff' } = {}) {
+
+function graphExportBounds(svg) {
+  const vb=svg.viewBox?.baseVal, fallback={x:vb?.x||0,y:vb?.y||0,width:vb?.width||1000,height:vb?.height||600};
+  const root=svg.getScreenCTM?.();if(!root)return fallback;
+  let inv;try{inv=root.inverse()}catch{return fallback}
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity,count=0;
+  svg.querySelectorAll('text,.atlas-node-core,.orbit-core').forEach(el=>{
+    if(el.closest('defs'))return;
+    const st=getComputedStyle(el);
+    if(st.display==='none'||st.visibility==='hidden'||st.opacity==='0')return;
+    try{
+      const b=el.getBBox(),c=el.getScreenCTM();
+      if(!c||!Number.isFinite(b.width)||!Number.isFinite(b.height)||(b.width===0&&b.height===0))return;
+      const m=inv.multiply(c);
+      for(const [x,y] of [[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]]){
+        const xx=m.a*x+m.c*y+m.e,yy=m.b*x+m.d*y+m.f;
+        if(!Number.isFinite(xx)||!Number.isFinite(yy))return;
+        x0=Math.min(x0,xx);x1=Math.max(x1,xx);y0=Math.min(y0,yy);y1=Math.max(y1,yy);
+      }
+      count++;
+    }catch{}
+  });
+  if(!count||x1<=x0||y1<=y0)return fallback;
+  const p=Math.max(18,Math.min(125,.065*Math.max(x1-x0,y1-y0)));
+  return{x:x0-p,y:y0-p,width:x1-x0+2*p,height:y1-y0+2*p};
+}
+
+export async function svgPngData(svg, { maxWidth = 3200, background = '#ffffff' } = {}) {
   if (!svg) throw new Error('Aucun graphe affiché à exporter.')
-  const original = svg.getBoundingClientRect()
-  const vb = svg.viewBox?.baseVal
-  const ratio = vb?.width && vb?.height ? vb.width / vb.height : (original.width || 4) / (original.height || 3)
-  const width = Math.round(Math.min(maxWidth, Math.max(1000, (original.width || 900) * 2)))
-  const height = Math.round(width / ratio)
-  if (width * height > 15000000) throw new Error('Graphe trop grand pour cet export.')
+  const bounds = graphExportBounds(svg)
+  const ratio = Math.max(.25,Math.min(5,bounds.width/bounds.height))
+  let width = Math.min(3800, Math.max(1800,maxWidth))
+  let height = Math.round(width/ratio)
+  if (height>3800){height=3800;width=Math.round(height*ratio)}
+  if (width*height>14500000){const k=Math.sqrt(14500000/(width*height));width=Math.floor(width*k);height=Math.floor(height*k)}
   const copy = svg.cloneNode(true)
   const from = [svg, ...svg.querySelectorAll('*')]
   const to = [copy, ...copy.querySelectorAll('*')]
@@ -59,8 +87,18 @@ export async function svgPngData(svg, { maxWidth = 2000, background = '#ffffff' 
     const out = to[idx]
     if (!out) return
     const style = SVG_STYLE.map(k => `${k}:${computed.getPropertyValue(k)}`).join(';')
-    out.setAttribute('style', `${out.getAttribute('style') || ''};${style}`)
+    out.setAttribute('style',[out.getAttribute('style')||'',style].join(';'))
+    if (svg.classList.contains('atlas-svg') && el.tagName?.toLowerCase()==='text') {
+      out.style.setProperty('fill','#1c3352')
+      out.style.setProperty('stroke','#fff')
+      out.style.setProperty('stroke-width','1px')
+      out.style.setProperty('paint-order','stroke')
+      out.style.setProperty('font-family','Georgia,Arial,sans-serif')
+      out.style.setProperty('font-weight','600')
+    }
   })
+  copy.setAttribute('viewBox',[bounds.x,bounds.y,bounds.width,bounds.height].join(' '))
+  copy.setAttribute('preserveAspectRatio','xMidYMid meet')
   copy.setAttribute('width', String(width))
   copy.setAttribute('height', String(height))
   copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
