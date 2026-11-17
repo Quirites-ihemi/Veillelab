@@ -15,75 +15,239 @@ export const ELIGIBLE_PUBLICATIONS = ['PUB006', 'PUB012', 'PUB113']
 
 export const TRANSVERSAL_NOTIONS = [
   {
-    id: 'criminalites',
-    label: 'Criminalités',
-    icon: 'graph',
-    accent: '#2f7ee6',
-    selections: {
-      PUB006: ['N0092','N0095','N0103','N0104'],
-      PUB007: ['N0182'],
-      PUB015: ['N0433','N0436','N0441','N0443','N0457'],
-      PUB024: ['N0598','N0599','N0600','N0605','N0612','N0610','N0630','N0632'],
-      PUB025: ['N0666','N0671','N0676','N0677','N0678'],
-      PUB057: ['N0925','N0931','N0936','N0940','N0941','N0944','N0953'],
-    },
+    "id": "criminalites",
+    "label": "Criminalités",
+    "icon": "graph",
+    "accent": "#2f7ee6",
+    "selections": {
+      "PUB006": [
+        "N0092",
+        "N0095",
+        "N0103",
+        "N0104"
+      ],
+      "PUB007": [
+        "N0182"
+      ],
+      "PUB015": [
+        "N0433",
+        "N0436",
+        "N0441",
+        "N0443",
+        "N0457"
+      ],
+      "PUB024": [
+        "N0598",
+        "N0599",
+        "N0600",
+        "N0605",
+        "N0612",
+        "N0610",
+        "N0630",
+        "N0632"
+      ],
+      "PUB025": [
+        "N0666",
+        "N0671",
+        "N0676",
+        "N0677",
+        "N0678"
+      ],
+      "PUB057": [
+        "N0925",
+        "N0931",
+        "N0936",
+        "N0940",
+        "N0941",
+        "N0944",
+        "N0953"
+      ]
+    }
   },
   {
-    id: 'ia',
-    label: 'Intelligence artificielle',
-    icon: 'spark',
-    accent: '#176fd0',
-    selections: {
-      PUB005: ['N0122','N0123','N0124','N0132','N0133','N0136'],
-      PUB006: ['N0096'],
-      PUB033: ['N1115','N1116','N1120','N1128'],
-    },
+    "id": "ia",
+    "label": "Intelligence artificielle",
+    "icon": "spark",
+    "accent": "#176fd0",
+    "selections": {
+      "PUB005": [
+        "N0122",
+        "N0123",
+        "N0124",
+        "N0132",
+        "N0133",
+        "N0136"
+      ],
+      "PUB006": [
+        "N0096"
+      ],
+      "PUB033": [
+        "N1115",
+        "N1116",
+        "N1120",
+        "N1128"
+      ]
+    }
   },
   {
-    id: 'violences-sexuelles',
-    label: 'Violences sexuelles',
-    icon: 'target',
-    accent: '#2d83cc',
-    selections: {
-      PUB008: ['N0220','N0222','N0224','N0247','N0248'],
-      PUB031: ['N1088','N1089','N1091','N1093'],
-      PUB090: ['N1156','N1157'],
-    },
+    "id": "violences-sexuelles",
+    "label": "Violences sexuelles",
+    "icon": "target",
+    "accent": "#2d83cc",
+    "selections": {
+      "PUB008": [
+        "N0220",
+        "N0222",
+        "N0224",
+        "N0247",
+        "N0248"
+      ],
+      "PUB031": [
+        "N1088",
+        "N1089",
+        "N1091",
+        "N1093"
+      ],
+      "PUB090": [
+        "N1156",
+        "N1157"
+      ]
+    }
   },
   {
-    id: 'stupefiants',
-    label: 'Stupéfiants',
-    icon: 'layers',
-    accent: '#208c67',
-    selections: {
-      PUB008: ['N0227','N0228','N0229','N0239','N0250','N0257'],
-      PUB014: ['N0396','N0401'],
-      PUB025: ['N0666','N0671','N0676','N0677','N0678'],
-    },
+    "id": "stupefiants",
+    "label": "Stupéfiants",
+    "icon": "layers",
+    "accent": "#208c67",
+    "selections": {
+      "PUB008": [
+        "N0227",
+        "N0228",
+        "N0229",
+        "N0239",
+        "N0250",
+        "N0257"
+      ],
+      "PUB025": [
+        "N0666",
+        "N0671",
+        "N0676",
+        "N0677",
+        "N0678"
+      ],
+      "PUB129": [
+        "N1553",
+        "N1554",
+        "N1555",
+        "N1556",
+        "N1557",
+        "N1558"
+      ],
+      "PUB130": [
+        "N1561",
+        "N1562",
+        "N1564",
+        "N1565",
+        "N1566",
+        "N1568"
+      ],
+      "PUB137": [
+        "N1716",
+        "N1717",
+        "N1720",
+        "N1723",
+        "N1726",
+        "N1730",
+        "N1729",
+        "N1735",
+        "N1737"
+      ]
+    }
   },
   {
-    id: 'chien',
-    label: 'Chien',
-    icon: 'target',
-    accent: '#4f86c6',
-    selections: {
-      PUB012: ['N0661','N0639','N0642','N0652'],
-      PUB113: ['N1284'],
-    },
+    "id": "chien",
+    "label": "Chien",
+    "icon": "target",
+    "accent": "#4f86c6",
+    "selections": {
+      "PUB012": [
+        "N0661",
+        "N0639",
+        "N0642",
+        "N0652"
+      ],
+      "PUB113": [
+        "N1284"
+      ]
+    }
   },
   {
-    id: 'gestion-crise',
-    label: 'Gestion de crise',
-    icon: 'compass',
-    accent: '#5577b7',
-    selections: {
-      PUB010: ['N0269'],
-      PUB054: ['N0915'],
-      PUB113: ['N1267'],
-      PUB005: ['N0129'],
-      PUB118: ['N1443'],
-    },
+    "id": "gestion-crise",
+    "label": "Gestion de crise",
+    "icon": "compass",
+    "accent": "#5577b7",
+    "selections": {
+      "PUB010": [
+        "N0269"
+      ],
+      "PUB054": [
+        "N0915"
+      ],
+      "PUB113": [
+        "N1267"
+      ],
+      "PUB005": [
+        "N0129"
+      ],
+      "PUB118": [
+        "N1443"
+      ],
+      "PUB122": [
+        "N1506",
+        "N1507",
+        "N1505",
+        "N1508"
+      ],
+      "PUB123": [
+        "N1509",
+        "N1510"
+      ]
+    }
   },
+  {
+    "id": "sante-mentale",
+    "label": "Santé mentale",
+    "icon": "target",
+    "accent": "#bb789d",
+    "selections": {
+      "PUB008": [
+        "N0218"
+      ],
+      "PUB090": [
+        "N1166"
+      ],
+      "PUB135": [
+        "N1654",
+        "N1659",
+        "N1683",
+        "N1677"
+      ],
+      "PUB114": [
+        "N1292"
+      ],
+      "PUB116": [
+        "N1378",
+        "N1379"
+      ],
+      "PUB118": [
+        "N1446"
+      ],
+      "PUB122": [
+        "N1503",
+        "N1505"
+      ]
+    }
+  }
 ]
 
 const TYPE_LABELS = {
