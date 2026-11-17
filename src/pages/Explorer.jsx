@@ -225,6 +225,7 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
   const [chat, setChat] = useState(null)
   const [loading, setLoading] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
+  const [chatExpanded, setChatExpanded] = useState(false)
   const [resetToken, setResetToken] = useState(0)
   const [understandOpen, setUnderstandOpen] = useState(false)
   const [guideStep, setGuideStep] = useState(1)
@@ -233,6 +234,13 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
   })
   const screenRef = useRef(null)
   const stageRef = useRef(null)
+
+  useEffect(() => {
+    if (!chatExpanded) return undefined
+    const onEscape = event => { if (event.key === 'Escape') setChatExpanded(false) }
+    window.addEventListener('keydown', onEscape)
+    return () => window.removeEventListener('keydown', onEscape)
+  }, [chatExpanded])
 
   // En vue publication, l'écran reste calé sur la fenêtre (pas de défilement).
   useEffect(() => {
@@ -288,6 +296,7 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
     setChat(null)
     setQuestion('')
     setChatOpen(false)
+    setChatExpanded(false)
     setNodeSearch('')
     setDrawerOpen(false)
     setResetToken(x => x + 1)
@@ -514,11 +523,12 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
           )}
 
           {chatOpen && (
-            <div className="orbit-chat" role="dialog" aria-label="Poser une question (IA)">
+            <div className={`orbit-chat${chatExpanded ? ' is-expanded' : ''}`} role="dialog" aria-label="Poser une question (IA)" aria-modal={chatExpanded}>
               <header>
                 <span className="orbit-chat-orb" aria-hidden="true" />
                 <strong>Poser une question (IA)</strong>
-                <button type="button" className="orbit-icon-btn" onClick={() => setChatOpen(false)} aria-label="Réduire">−</button>
+                <button type="button" className="orbit-icon-btn orbit-chat-resize" onClick={() => setChatExpanded(v => !v)} aria-label={chatExpanded ? 'Revenir à la taille normale du chatbot' : 'Agrandir le chatbot'} title={chatExpanded ? 'Taille normale' : 'Agrandir'}>{chatExpanded ? '⤡' : '⤢'}</button>
+                <button type="button" className="orbit-icon-btn" onClick={() => { setChatOpen(false); setChatExpanded(false) }} aria-label="Fermer le chatbot" title="Fermer">−</button>
               </header>
               <div className="orbit-chat-scroll">
                 {!chat && !loading && <p className="orbit-chat-welcome">Posez une question sur les connaissances et les relations présentes dans cette publication.</p>}

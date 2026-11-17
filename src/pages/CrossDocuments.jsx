@@ -1264,6 +1264,7 @@ function NotionSpace({ data, onBack }) {
   const clockRef = useRef({ t: 0, last: 0, paused: false })
   const xdContribution = type => ({ probleme: "problème", notion_idee: "idée", tendance: "tendance", signal_faible: "signal faible", acteur: "acteur", action: "action", recommandation: "recommandation", instrument_dispositif: "dispositif", expert_public: "expertise", localisation: "localisation" }[type] || "éclairage")
 
+
   const publications = useMemo(() => (data.publications || []).filter(p => p.has_graph).sort((a, b) => a.publication_id.localeCompare(b.publication_id)), [data.publications])
   const publicationsById = useMemo(() => Object.fromEntries((data.publications || []).map(p => [p.publication_id, p])), [data.publications])
   const nodesById = useMemo(() => Object.fromEntries((data.nodes || []).map(n => [n.node_id, n])), [data.nodes])
@@ -1364,7 +1365,7 @@ function NotionSpace({ data, onBack }) {
     const cw = cols === 2 ? Math.min(280, (Math.min(w - 40, geo.R * 2.1) - gap) / 2) : Math.min(340, geo.R * 1.6)
     const perLine = Math.max(16, Math.floor((cw - 23) / 6.9))
     const heightOf = node => {
-      const contribution = `Apport à la notion de ${notion.label.toLocaleLowerCase('fr-FR')} : ${xdContribution(node.type_noeud)} de ${node.libelle || ''}`
+      const contribution = `Apport à la notion ${xdNotionPhrase(notion.label)} : ${xdContribution(node.type_noeud)} de ${xdDisplayIdea(node)}`
       return 12 + 17 + Math.ceil(contribution.length / perLine) * 17.8 + 16
     }
     const colH = Array(cols).fill(0), placed = s.nodes.map((node, k) => { const c = k % cols, y = colH[c]; colH[c] += heightOf(node) + gap; return { node, c, y } })
@@ -1428,7 +1429,7 @@ function NotionSpace({ data, onBack }) {
             onClick={() => { if (!done) return; revisit(i); setSelectedNodeId(node.node_id) }} tabIndex={visible && done ? 0 : -1}/>
         }))}
         {showChips && chips.map(({ node, w: cw, x, y, dot }) => <XdChip key={`${activeStop}-${node.node_id}-${run}`} node={node} width={cw} from={geo.pts[activeStop]} to={{ x, y }} back={condensing ? dot : null}
-          notionLabel={notion.label} contribution={xdContribution(node.type_noeud)} selected={selectedNodeId === node.node_id} onClick={() => setSelectedNodeId(node.node_id)}/>)}
+          notionLabel={notion.label} contribution={xdContribution(node.type_noeud)} displayLabel={xdDisplayIdea(node)} selected={selectedNodeId === node.node_id} onClick={() => setSelectedNodeId(node.node_id)}/>)}
         {notion && <div ref={orbRef} className="xd-orb" aria-hidden="true"/>}
         {notion && <div className="xd-notion-controls" aria-label="Commandes de l'animation">
           <button type="button" className="xd-btn primary" onClick={replay}><Icon name="reset" size={15}/>Rejouer</button>
@@ -1477,7 +1478,22 @@ function NotionSpace({ data, onBack }) {
   </main>
 }
 
-function XdChip({ node, width, from, to, back, notionLabel, contribution, selected, onClick }) {
+// Normalisation de présentation uniquement : les libellés canoniques restent inchangés.
+const xdDisplayIdea = node => {
+  const label = String(node?.libelle || '')
+  if (node?.type_noeud !== 'notion_idee') return label
+  const leading = label.trimStart().split(/[\s,;:()]/u)[0]
+  // Préserver les sigles et les noms propres repérés parmi les notions suivies.
+  if (/^\p{Lu}{2,}$/u.test(leading) || ['Caraïbes', 'Crime-as-a-Service'].includes(leading)) return label
+  return label.replace(/^(\s*)(\p{Lu})(?=\p{Ll})/u, (_, spaces, letter) => spaces + letter.toLocaleLowerCase('fr-FR'))
+}
+const xdNotionPhrase = label => {
+  const value = String(label || '').toLocaleLowerCase('fr-FR')
+  return /^[aeiouyàâäéèêëîïôöùûüœ]/u.test(value) ? `d’${value}` : `de ${value}`
+}
+
+
+function XdChip({ node, width, from, to, back, notionLabel, contribution, displayLabel, selected, onClick }) {
   const [entered, setEntered] = useState(false)
   useEffect(() => { const r = requestAnimationFrame(() => requestAnimationFrame(() => setEntered(true))); return () => cancelAnimationFrame(r) }, [])
   const target = back ? { x: back.x - 20, y: back.y - 10 } : (entered ? to : { x: from.x - width / 2, y: from.y - 20 })
@@ -1485,7 +1501,7 @@ function XdChip({ node, width, from, to, back, notionLabel, contribution, select
     style={{ left: target.x, top: target.y, width, '--c': xdTypeVar(node.type_noeud), transform: entered && !back ? 'none' : back ? 'scale(.15)' : 'scale(.4)' }}
     onClick={onClick}>
     <span className="xd-chip-type">{TYPE_LABELS[node.type_noeud] || node.type_noeud}</span>
-    <span className="xd-chip-label"><b>Apport à la notion de {notionLabel.toLocaleLowerCase('fr-FR')} :</b> {contribution} de {node.libelle}</span>
+    <span className="xd-chip-label"><b>Apport à la notion {xdNotionPhrase(notionLabel)} :</b> {contribution} de {displayLabel}</span>
   </button>
 }
 
