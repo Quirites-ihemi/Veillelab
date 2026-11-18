@@ -300,7 +300,7 @@ export default function ExplorerGuide({
       ),
     },
     4: {
-      title: 'Posez une question (IA)',
+      title: 'Interrogez le graphe (IA)',
       body: (
         <p>
           Posez une question en langage naturel et consultez la réponse. Vérifiez les informations dans les passages cités.
@@ -313,7 +313,7 @@ export default function ExplorerGuide({
     1: 'Bonjour ! Je suis votre guide dans ce graphe.',
     2: 'Cliquez sur un élément de l’orbite pour le placer au centre.',
     3: 'La fiche, à droite, donne les pages et l’extrait qui prouvent le sujet.',
-    4: 'Posez une question (IA) et consultez les passages cités.',
+    4: 'Interrogez le graphe (IA) et consultez les passages cités.',
   }[step]
 
   const beamSvg = beam && (
