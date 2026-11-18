@@ -55,7 +55,10 @@ function cleanChatText(value = '') {
 function legacyChatItems(text = '') {
   const cleaned = cleanChatText(text)
   if (!cleaned) return { intro: '', items: [] }
-  const parts = cleaned.split(/\s+(?=\d+\.\s+)/g)
+  // Numéro de liste : 1 ou 2 chiffres, après une fin de phrase ou un deux-points,
+  // suivi d'une majuscule. Une année (« depuis 2016. Les… ») ou une page (« p. 12. »)
+  // ne doit pas être prise pour un numéro de liste (même règle que graphChat.js).
+  const parts = cleaned.split(/(?<=[.:;!?])(?<!\bp\.)\s+(?=[1-9]\d?\.\s+\p{Lu})/u)
   if (parts.length < 2) return { intro: cleaned, items: [] }
   const intro = parts.shift().replace(/[:\s]+$/, '').trim()
   const items = parts.map(x => x.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)
