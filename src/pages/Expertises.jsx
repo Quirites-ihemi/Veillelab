@@ -10,6 +10,8 @@ import {
 } from '../components/expertiseGephiLayout.js'
 import { atlasClusterColor } from '../components/atlasPalette.js'
 import { normalize, sentenceCase } from '../lib/text.js'
+import { navigate } from '../lib/router.js'
+import { ATLAS_THEME_EXAMPLES, findDocumentedTopics, findThematicExpertises } from '../lib/atlasThematicSearch.js'
 // Feuilles historiques conservées : d'autres règles globales peuvent en
 // dépendre. Le nouvel Atlas n'utilise que des classes « atlas-* ».
 import '../expertises-fenetres-originales.css'
@@ -408,19 +410,26 @@ export default function Expertises({ data, focusExpertiseId = null, focusToken =
     [data, entity, family]
   )
 
-  const found = useMemo(() => {
-    const q = normalize(search)
+  const documented = useMemo(
+    () => findDocumentedTopics(data, search),
+    [data, search]
+  )
+  const found = useMemo(
+    () => findThematicExpertises(filtered, documented, search),
+    [filtered, documented, search]
+  )
 
-    return q
-      ? filtered
-          .filter(n =>
-            normalize(
-              `${n.label} ${n.definition} ${(n.entities || []).join(' ')}`
-            ).includes(q)
-          )
-          .slice(0, 8)
-      : []
-  }, [search, filtered])
+  const openDocument = match => {
+    const pub = match.publication
+    const node = match.nodes?.[0]
+    if (pub.has_graph) {
+      navigate(['explorer', pub.publication_id, node?.node_id])
+    } else {
+      const url = pub.url_contenu || pub.url_source
+      if (url) window.open(url, '_blank', 'noopener,noreferrer')
+    }
+    setSearchFocused(false)
+  }
 
   const visibleEdges = useMemo(() => {
     const ids = new Set(filtered.map(n => n.id))
@@ -528,41 +537,94 @@ export default function Expertises({ data, focusExpertiseId = null, focusToken =
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
             onKeyDown={e => {
-              if (e.key === 'Enter' && found[0]) {
-                openExpertise(found[0])
-                setSearch('')
+              if (e.key === 'Enter') {
+                const direct = found.find(match => match.kind === 'direct')
+                if (direct) {
+                  openExpertise(direct.expertise)
+                  setSearch('')
+                } else if (documented[0]) {
+                  openDocument(documented[0])
+                } else if (found[0]) {
+                  openExpertise(found[0].expertise)
+                  setSearch('')
+                }
               }
               if (e.key === 'Escape') setSearch('')
             }}
-            placeholder="Rechercher une expertise, un mot-clé, une entité…"
-            aria-label="Rechercher une expertise ou un mot-clé"
+            placeholder="Rechercher une expertise ou un sujet documenté…"
+            aria-label="Rechercher une expertise ou un sujet documenté"
           />
 
-          {searchFocused && search && (
-            <div className="atlas-search-results" role="listbox">
-              {found.length === 0 && (
-                <p className="atlas-muted">Aucune expertise ne correspond.</p>
+          {searchFocused && (
+            <div className="atlas-search-results atlas-thematic-results" role="region" aria-label="Résultats de la recherche">
+              {!search.trim() ? (
+                <div className="atlas-thematic-examples">
+                  <p className="atlas-thematic-title">Exemples de thèmes à explorer</p>
+                  <div className="atlas-thematic-chips">
+                    {ATLAS_THEME_EXAMPLES.map(example => (
+                      <button
+                        type="button"
+                        key={example.label}
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={() => setSearch(example.query)}
+                      >{example.label}</button>
+                    ))}
+                  </div>
+                  <p className="atlas-thematic-note">La recherche porte sur les intitulés des expertises et les publications et nœuds présents dans le corpus.</p>
+                </div>
+              ) : (
+                <>
+                  <section className="atlas-thematic-section" aria-label="Expertises correspondantes">
+                    <h3>Expertises ministérielles</h3>
+                    {found.length ? found.map(({ expertise, kind, viaPublication }) => {
+                      const c = expertiseGephiLayout[expertise.id]?.cluster
+                      return (
+                        <button
+                          type="button"
+                          key={expertise.id}
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => { openExpertise(expertise); setSearch(''); setSearchFocused(false) }}
+                        >
+                          <i style={{ background: atlasClusterColor(c) }} aria-hidden="true" />
+                          <span>
+                            {expertise.label}
+                            <small>{kind === 'direct'
+                              ? `Correspondance directe · ${expertise.family}`
+                              : kind === 'theme'
+                                ? `Élargissement thématique de recherche · ${expertise.family}`
+                                : `Correspondance indirecte : publication associée « ${sentenceCase(viaPublication?.titre || '')} »`}</small>
+                          </span>
+                        </button>
+                      )
+                    }) : <p className="atlas-muted">Aucune expertise correspondante avec les filtres actuels.</p>}
+                  </section>
+                  <section className="atlas-thematic-section" aria-label="Publications et connaissances">
+                    <h3>Publications et connaissances</h3>
+                    {documented.length ? documented.map(match => {
+                      const pub = match.publication
+                      const node = match.nodes[0]
+                      return (
+                        <button
+                          type="button"
+                          key={pub.publication_id}
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => openDocument(match)}
+                          disabled={!pub.has_graph && !(pub.url_contenu || pub.url_source)}
+                        >
+                          <i className="atlas-thematic-document-dot" aria-hidden="true" />
+                          <span>
+                            {sentenceCase(pub.titre)}
+                            <small>{node ? `Sujet documenté : ${node.libelle}` : 'Correspondance avec le titre de la publication'}</small>
+                            {node?.page_source && <small>Preuve : {/^\d+:\d+/.test(node.page_source) ? 'timecode' : 'p.'} {node.page_source}</small>}
+                            <small className="atlas-thematic-destination">{pub.has_graph ? 'Explorer le nœud et sa preuve dans l’onglet Publications' : 'Consulter la publication source'}</small>
+                          </span>
+                        </button>
+                      )
+                    }) : <p className="atlas-muted">Aucune publication ou connaissance ne correspond à ce terme ou à ses variantes de recherche.</p>}
+                  </section>
+                  <p className="atlas-thematic-note">La recherche peut être élargie à des termes associés (drogues, stupéfiants, narcotrafic). Cela ne crée aucune relation entre les nœuds du graphe.</p>
+                </>
               )}
-              {found.map(n => {
-                const c = expertiseGephiLayout[n.id]?.cluster
-                return (
-                  <button
-                    type="button"
-                    key={n.id}
-                    onMouseDown={e => e.preventDefault()}
-                    onClick={() => {
-                      openExpertise(n)
-                      setSearch('')
-                    }}
-                  >
-                    <i style={{ background: atlasClusterColor(c) }} aria-hidden="true" />
-                    <span>
-                      {n.label}
-                      <small>{n.family}</small>
-                    </span>
-                  </button>
-                )
-              })}
             </div>
           )}
         </div>
