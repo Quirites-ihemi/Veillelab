@@ -1,7 +1,11 @@
 const DEFAULT_GRAPH_CHAT_URL =
   'https://veillelab-cloud-backend2-633342872265.europe-west9.run.app/graph-chat'
 
-const REQUEST_TIMEOUT_MS = 35000
+// Délai d'attente aligné sur le serveur (graphChat.js) : le serveur peut attendre
+// le modèle jusqu'à 45 s et réessayer une fois (2 × 45 s + 0,9 s de pause).
+// À 35 s, l'interface abandonnait parfois une réponse qui allait arriver.
+// Correctif du 19/11/2026 : 100 s, légèrement au-delà du pire cas du serveur.
+const REQUEST_TIMEOUT_MS = 100000
 
 function graphChatUrl() {
   return import.meta.env.VITE_GRAPH_CHAT_URL?.trim() || DEFAULT_GRAPH_CHAT_URL
