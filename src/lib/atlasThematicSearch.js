@@ -17,19 +17,24 @@ export const ATLAS_THEME_EXAMPLES = [
   { label: 'Technologies', query: 'intelligence artificielle' },
 ]
 
-// Uniquement des variantes lexicales sûres (singulier/pluriel). Ne pas
-// assimiler « drogue », « stupéfiants » et « narcotrafic » : leurs périmètres
-// ne sont pas interchangeables.
+// Variantes lexicales simples (singulier/pluriel) pour les autres sujets.
 const INFLECTIONS = {
-  drogue: ['drogue', 'drogues'],
-  stupefiant: ['stupefiant', 'stupefiants'],
   violence: ['violence', 'violences'],
   migration: ['migration', 'migrations'],
   cyberattaque: ['cyberattaque', 'cyberattaques'],
 }
 
-// Variantes orthographiques d'un même terme, pas des synonymes thématiques.
-// On harmonise les trois écritures sans élargir la recherche à « drogues ».
+// Élargissement de recherche validé pour cette famille thématique.
+// « drogue », « stupéfiant » et « narcotrafic » ne sont PAS des synonymes
+// stricts : l'équivalence sert uniquement à retrouver des documents et des
+// expertises contenant l'un des termes. Elle ne crée aucune relation graphe.
+const DRUG_SEARCH_FAMILY = [
+  'drogue', 'drogues',
+  'stupefiant', 'stupefiants',
+  'narcotrafic', 'narcotrafics',
+]
+
+// Variantes orthographiques d'un même terme, dont narco-trafic et narco trafic.
 function normalizeThemeText(value) {
   return normalize(value).replace(/\bnarco[\s-]+(trafics?)\b/g, (_, suffix) => `narco${suffix}`)
 }
@@ -37,6 +42,7 @@ function normalizeThemeText(value) {
 function searchForms(query) {
   const q = normalizeThemeText(query)
   if (!q) return []
+  if (DRUG_SEARCH_FAMILY.includes(q)) return DRUG_SEARCH_FAMILY
   const forms = Object.values(INFLECTIONS).find(group => group.includes(q))
   return forms || [q]
 }
@@ -99,18 +105,23 @@ export function findThematicExpertises(expertises, documented, query, limit = 8)
   const byPub = new Map(documented.map(match => [match.publication.publication_id, match]))
 
   const ranked = (expertises || []).map(expertise => {
+    const searchable = `${expertise.label} ${expertise.definition} ${(expertise.entities || []).join(' ')}`
     // Conserver la recherche partielle historique dans les expertises (ex. « prévent »).
-    const direct = normalizeThemeText(`${expertise.label} ${expertise.definition} ${(expertise.entities || []).join(' ')}`).includes(normalizeThemeText(query))
+    const direct = normalizeThemeText(searchable).includes(normalizeThemeText(query))
+    // Un autre terme de la famille permet une découverte thématique, mais ne
+    // doit pas être présenté comme une correspondance directe au mot saisi.
+    const thematic = !direct && DRUG_SEARCH_FAMILY.includes(normalizeThemeText(query))
+      && containsText(searchable, DRUG_SEARCH_FAMILY)
     const related = (expertise.publications || [])
       .map(p => byPub.get(p.publication_id))
       .filter(Boolean)
       .sort((a, b) => b.score - a.score)
-    if (!direct && !related.length) return null
+    if (!direct && !thematic && !related.length) return null
     return {
       expertise,
-      kind: direct ? 'direct' : 'publication',
+      kind: direct ? 'direct' : thematic ? 'theme' : 'publication',
       viaPublication: related[0]?.publication || null,
-      score: (direct ? 100 : 0) + (related[0]?.score || 0),
+      score: (direct ? 100 : thematic ? 60 : 0) + (related[0]?.score || 0),
     }
   }).filter(Boolean)
 
