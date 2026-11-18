@@ -89,7 +89,7 @@ export default function Home({ data }) {
             <li>Saisir l’architecture d’un texte : problèmes, acteurs, actions, recommandations et tendances.</li>
             <li>Suivre les liens plutôt que les pages : à quel problème répond une recommandation, qui la porte, ce qui y contribue.</li>
             <li>Retrouver pour chaque idée sa page, ou son timecode, et le passage source.</li>
-            <li>Poser une question (IA) à la publication. Réponse générée par IA, à vérifier dans les passages cités.</li>
+            <li>Interroger le graphe (IA) de la publication. Réponse générée par IA, à vérifier dans les passages cités.</li>
           </ul>
           <a className="home-cta" href="#/explorer" onClick={go(['explorer'])}>Explorer une publication<Arrow /></a>
         </article>

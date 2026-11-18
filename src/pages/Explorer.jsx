@@ -62,15 +62,36 @@ function legacyChatItems(text = '') {
   return { intro, items }
 }
 
+const GRAPH_LIMIT_NOTICE = 'Le graphe ne couvre pas tout le contenu de la publication. Consultez le document original ou l’Atelier de veille.'
+
+// Réponse qui s'arrête sans ponctuation finale : le texte renvoyé par le service est incomplet.
+function looksTruncated(text = '') {
+  const t = String(text || '').trim()
+  if (!t) return false
+  return !/[.!?…»)\]"']$/.test(t)
+}
+
+// Retire un bloc « Provenance — … » collé en fin de réponse, pour juger la fin réelle du texte.
+function answerBody(text = '') {
+  return String(text || '').split(/\s*Provenance\s+—/)[0].trim()
+}
+
 function ChatAnswer({ chat }) {
   if (!chat) return null
   if (chat.error) return <div className="chat-answer chat-answer-error"><p>{chat.reponse || chat.error}</p></div>
   const sections = Array.isArray(chat.sections) ? chat.sections.filter(s => s && Array.isArray(s.items) && s.items.length) : []
   const intro = cleanChatText(chat.reponse || '')
   const legacy = sections.length ? null : legacyChatItems(chat.reponse || '')
+  // Le serveur corrigé renvoie `tronque` (true/false) : on s'y fie. La détection par
+  // la ponctuation ne sert que de repli tant que l'ancien serveur est en ligne.
+  const truncated = typeof chat.tronque === 'boolean'
+    ? chat.tronque
+    : looksTruncated(cleanChatText(answerBody(chat.reponse || '')))
+  const showNotice = chat.insuffisant === true || truncated
   return (
     <div className="chat-answer">
       {(sections.length ? intro : legacy?.intro) && <p className="chat-answer-intro">{sections.length ? intro : legacy.intro}</p>}
+      {truncated && <p className="chat-answer-intro">[Réponse incomplète : le texte a été interrompu.]</p>}
       {sections.map((section, index) => (
         <section className="chat-answer-section" key={`${section.titre}-${index}`}>
           <h4>{cleanChatText(section.titre)}</h4>
@@ -80,6 +101,7 @@ function ChatAnswer({ chat }) {
       {!sections.length && legacy?.items?.length > 0 && (
         <section className="chat-answer-section"><ul>{legacy.items.map((item, i) => <li key={i}>{item}</li>)}</ul></section>
       )}
+      {showNotice && <p className="chat-answer-intro" role="note"><em>{GRAPH_LIMIT_NOTICE}</em></p>}
     </div>
   )
 }
@@ -184,7 +206,7 @@ function ExplorerHome({ onChoose, count }) {
           ['Choisissez une publication', 'Recherchez une source parmi les publications du bulletin.'],
           ['Placez un sujet au centre', 'Les éléments liés gravitent autour, avec le verbe de chaque lien.'],
           ['Lisez la preuve', 'La fiche indique les pages où le sujet apparaît, avec l’extrait qui le prouve.'],
-          ['Posez une question (IA)', 'Posez vos questions en langage naturel.'],
+          ['Interrogez le graphe (IA)', 'Posez vos questions en langage naturel sur les éléments du graphe.'],
         ].map(([t, d], i) => (
           <div className="orbit-home-step" key={t}><b>{i + 1}</b><div><strong>{t}</strong><p>{d}</p></div></div>
         ))}
@@ -447,7 +469,7 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
         </div>
 
         <button type="button" className={`orbit-chat-pill ${chatOpen ? 'is-open' : ''}`} onClick={() => setChatOpen(v => !v)} aria-expanded={chatOpen}>
-          <span className="orbit-chat-orb" aria-hidden="true" />Poser une question (IA)
+          <span className="orbit-chat-orb" aria-hidden="true" />Interroger le graphe (IA)
         </button>
 
         <ExportShare
@@ -542,10 +564,10 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
           )}
 
           {chatOpen && (
-            <div className={`orbit-chat${chatExpanded ? ' is-expanded' : ''}`} role="dialog" aria-label="Poser une question (IA)" aria-modal={chatExpanded}>
+            <div className={`orbit-chat${chatExpanded ? ' is-expanded' : ''}`} role="dialog" aria-label="Interroger le graphe (IA)" aria-modal={chatExpanded}>
               <header>
                 <span className="orbit-chat-orb" aria-hidden="true" />
-                <strong>Poser une question (IA)</strong>
+                <strong>Interroger le graphe (IA)</strong>
                 <button type="button" className="orbit-icon-btn orbit-chat-resize" onClick={() => setChatExpanded(v => !v)} aria-label={chatExpanded ? 'Revenir à la taille normale du chatbot' : 'Agrandir le chatbot'} title={chatExpanded ? 'Taille normale' : 'Agrandir'}>{chatExpanded ? '⤡' : '⤢'}</button>
                 <button type="button" className="orbit-icon-btn" onClick={() => { setChatOpen(false); setChatExpanded(false) }} aria-label="Fermer le chatbot" title="Fermer">−</button>
               </header>
