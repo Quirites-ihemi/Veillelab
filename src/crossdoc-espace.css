@@ -6,7 +6,7 @@
   --xd-ink:#14213a;--xd-ink2:#3c4a60;--xd-mute:#677385;--xd-line:#d8dde5;--xd-soft:#eceff3;--xd-bg:#f4f6f9;
   --xd-accent:#2747b5;--xd-accent-soft:#eef2fd;--xd-glow:#3d6bff;--xd-mark:#ffe08a;
   --xd-t-probleme:#c2553a;--xd-t-notion_idee:#2f63c0;--xd-t-tendance:#2f8a5c;--xd-t-signal_faible:#a8790b;--xd-t-acteur:#7a5aa8;--xd-t-action:#1f8a8a;
-  --xd-t-recommandation:#b8641c;--xd-t-instrument_dispositif:#5a6b8c;--xd-t-expert_public:#8a4f7d;--xd-t-localisation:#4f7d3a;
+  --xd-t-recommandation:#b8641c;--xd-t-instrument_dispositif:#5a6b8c;--xd-t-expert_public:#8a4f7d;--xd-t-localisation:#4f7d3a;--xd-t-methode:#8a6d1f;
   --xd-n-evenement:#2f63c0;--xd-n-jalon:#2f8a5c;--xd-n-tendance:#b8860b;--xd-n-emergence:#7a5aa8;--xd-n-rupture_inflexion:#c2553a;--xd-n-sequence_historique:#1f8a8a;
   display:flex;flex-direction:column;height:calc(100vh - 124px);min-height:600px;
   background:var(--xd-bg);color:var(--xd-ink);
