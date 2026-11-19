@@ -261,6 +261,7 @@ const TYPE_LABELS = {
   recommandation: 'Recommandation',
   tendance: 'Tendance',
   instrument_dispositif: 'Instrument / dispositif',
+  methode: 'Méthode',
 }
 
 const NAT_LABELS = {
@@ -536,7 +537,7 @@ const XDA_NOTION_ID = 'violences-sexuelles'
 
 function XdaFrise({ chronology }) {
   const years = useMemo(() => {
-    const els = (chronology?.elements || []).filter(e => e.decision_post_traitement === 'retenu' && temporalValue(e) !== null)
+    const els = (chronology?.elements || []).filter(e => ELIGIBLE_PUBLICATIONS.includes(e.publication_id) && e.decision_post_traitement === 'retenu' && temporalValue(e) !== null)
     const byPub = {}
     for (const e of els) (byPub[e.publication_id] ||= []).push(e)
     const best = Object.entries(byPub).sort((a, b) => b[1].length - a[1].length)[0]
@@ -636,7 +637,7 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
   const [replay, setReplay] = useState({})
   const publications = useMemo(() => (data?.publications || []).filter(p => p.has_graph).sort((a, b) => a.publication_id.localeCompare(b.publication_id)), [data])
   const chronoStats = useMemo(() => {
-    const els = (chronology?.elements || []).filter(e => e.decision_post_traitement === 'retenu' && temporalValue(e) !== null)
+    const els = (chronology?.elements || []).filter(e => ELIGIBLE_PUBLICATIONS.includes(e.publication_id) && e.decision_post_traitement === 'retenu' && temporalValue(e) !== null)
     return { publications: new Set(els.map(e => e.publication_id)).size, elements: els.length }
   }, [chronology])
 
@@ -1400,7 +1401,7 @@ export default function CrossDocuments({ data, sub = '', onSub, deepArgs = [], o
    Données identiques à la version précédente : TRANSVERSAL_NOTIONS,
    nœuds, extraits. Aucun nouveau rapprochement n'est créé.
    ========================================================================== */
-const XD_TYPE_ORDER = ['probleme', 'notion_idee', 'tendance', 'signal_faible', 'acteur', 'action', 'recommandation', 'instrument_dispositif', 'expert_public', 'localisation']
+const XD_TYPE_ORDER = ['probleme', 'notion_idee', 'tendance', 'signal_faible', 'acteur', 'action', 'methode', 'recommandation', 'instrument_dispositif', 'expert_public', 'localisation']
 const XD_TRAVEL = 1100
 const XD_CONDENSE = 700
 const xdDwell = count => 2200 + count * 650
@@ -1431,7 +1432,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
   const [viewing, setViewing] = useState(null)
   const [selectedNodeId, setSelectedNodeId] = useState(null)
   const clockRef = useRef({ t: 0, last: 0, paused: false })
-  const xdContribution = type => ({ probleme: "problème", notion_idee: "idée", tendance: "tendance", signal_faible: "signal faible", acteur: "acteur", action: "action", recommandation: "recommandation", instrument_dispositif: "dispositif", expert_public: "expertise", localisation: "localisation" }[type] || "éclairage")
+  const xdContribution = type => ({ probleme: "problème", notion_idee: "idée", tendance: "tendance", signal_faible: "signal faible", acteur: "acteur", action: "action", recommandation: "recommandation", instrument_dispositif: "dispositif", methode: "méthode", expert_public: "expertise", localisation: "localisation" }[type] || "éclairage")
 
 
   const publications = useMemo(() => (data.publications || []).filter(p => p.has_graph).sort((a, b) => a.publication_id.localeCompare(b.publication_id)), [data.publications])
