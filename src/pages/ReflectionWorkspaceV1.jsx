@@ -1066,7 +1066,7 @@ function PublicationLinks({ pub }) {
 
 function ResultItem({ item, kept, onKeep, onProof, hidePublication = false }) {
   const isPassage = item.material_id.startsWith('chunk:')
-  const text = isPassage ? shortText(item.text, 320) : item.label
+  const text = isPassage ? (item.excerpt || shortText(item.text, 320)) : item.label
   const where = [hidePublication ? '' : displayPubTitle(item.publication_title), item.pages].filter(Boolean).join(' · ')
   return <article className={`qce-item ${isPassage ? 'passage' : ''}`}>
     <div className="qce-item-text">
