@@ -999,6 +999,7 @@ function CorpusResults({ index, selection, keptIds, onKeep, onProof, onPublicati
         <span className="qce-kicker">{selection.kind === 'search' ? 'Recherche' : selection.kind === 'theme' ? 'Thème' : selection.kind === 'publication' ? 'Publication' : 'Type d’élément'}</span>
         <h2>{selection.kind === 'search' ? `« ${selection.title} »` : selection.title}</h2>
         {selection.subtitle && <p className="qce-muted">{selection.subtitle}</p>}
+        {selection.alsoSearched?.length > 0 && <p className="qce-muted">Inclut aussi : {selection.alsoSearched.map(form => `« ${form} »`).join(', ')}</p>}
       </div>
       {selection.kind !== 'publication' && <span className="qce-count">{pubCount} publication{pubCount > 1 ? 's' : ''}</span>}
     </header>
