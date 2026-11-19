@@ -9,6 +9,7 @@ export const DOMAIN_LABELS = {
   'Migrations/intégration': 'Migrations, intégration, citoyenneté',
   'Démocraties et sujets informationnels': 'Démocratie et information',
   "Administration territoriale de l'Etat": 'Administration territoriale',
+  "Administration territoriale de l'État": 'Administration territoriale',
   'Radicalités / Terrorisme': 'Radicalités et terrorisme',
 }
 export const domainLabel = d => DOMAIN_LABELS[d] || d

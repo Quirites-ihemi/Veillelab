@@ -243,9 +243,15 @@ function makeCanvasCard({ kind = 'Note', title = '', text = '', tone = 'lilac', 
   }
 }
 
+// Le canevas est conservé dans le navigateur (localStorage) : il survit à la fermeture de l'onglet.
+// Lecture de secours dans sessionStorage pour reprendre un canevas enregistré par l'ancienne version.
+function readStored(key) {
+  try { return localStorage.getItem(key) || sessionStorage.getItem(key) } catch { return null }
+}
+
 function restoreWorkspace() {
   try {
-    const current = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null')
+    const current = JSON.parse(readStored(STORAGE_KEY) || 'null')
     if (current && Array.isArray(current.cards)) {
       return {
         cards: current.cards.map(card => ({ ...card, title: String(card?.title || ''), collapsed: Boolean(card.collapsed) })),
@@ -253,7 +259,7 @@ function restoreWorkspace() {
         activeSubject: String(current.activeSubject || ''),
       }
     }
-    const legacy = JSON.parse(sessionStorage.getItem(LEGACY_STORAGE_KEY) || 'null')
+    const legacy = JSON.parse(readStored(LEGACY_STORAGE_KEY) || 'null')
     if (Array.isArray(legacy)) return { cards: legacy.map(card => ({ ...card, title: String(card?.title || ''), collapsed: false })), links: [], activeSubject: '' }
   } catch {}
   return { cards: [], links: [], activeSubject: '' }
@@ -316,7 +322,7 @@ export default function ReflectionWorkspaceV1({ onBack, data }) {
   const keptIds = useMemo(() => new Set(cards.map(card => card.materialId).filter(Boolean)), [cards])
 
   useEffect(() => {
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
   }, [cards, links, activeSubject])
 
   useEffect(() => {
@@ -479,8 +485,10 @@ export default function ReflectionWorkspaceV1({ onBack, data }) {
     setShowLinks(false)
     setEclaireur({ mode: 'closed', step: 'start' })
     try {
-      sessionStorage.removeItem(STORAGE_KEY)
-      sessionStorage.removeItem(LEGACY_STORAGE_KEY)
+      for (const store of [localStorage, sessionStorage]) {
+        store.removeItem(STORAGE_KEY)
+        store.removeItem(LEGACY_STORAGE_KEY)
+      }
     } catch {}
   }
 
