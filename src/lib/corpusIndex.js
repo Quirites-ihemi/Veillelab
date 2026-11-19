@@ -16,7 +16,7 @@ export const THEME_RULES = [
   { label: 'Menaces et sécurité nationale', keys: ['radicalit', 'terroris', 'renseignement', 'contre-espionnage', 'securite nationale', 'prospective', 'defense'] },
   { label: 'Crises et sécurité civile', keys: ['securite civile', 'crise', 'resilience', 'catastrophe'] },
   { label: 'Criminalités et trafics', keys: ['criminalit', 'criminel', 'narcotrafic', 'drogue', 'stupefiant', 'cyber', 'violences', 'homicide', 'trafic'] },
-  { label: 'Métiers de la sécurité', keys: ['travail', 'emploi', 'formation', 'metier'] },
+  { label: 'Travail, emploi, formation', keys: ['travail', 'emploi', 'formation', 'metier'] },
   { label: 'Sécurité publique et délinquance', keys: ['securite publique', 'securite routiere', 'maintien de l', 'securite interieure', 'justice', 'mineurs', 'criminologie', 'delinquance'] },
 ]
 
@@ -298,10 +298,72 @@ export function selectType(index, groupId) {
   }
 }
 
+// --- Synonymes validés ------------------------------------------------------
+// Quand la requête contient l'une de ces formes, la recherche est aussi faite
+// avec les autres formes du même groupe, et l'utilisateur en est informé
+// (« Inclut aussi : … »). Pour ajouter un groupe, compléter cette liste.
+export const SYNONYM_GROUPS = [
+  ['IA', 'intelligence artificielle'],
+  ['drogue', 'drogues', 'stupéfiants', 'stupéfiant'],
+  ['crime organisé', 'criminalité organisée'],
+  ['féminicide', 'féminicides', 'morts violentes au sein du couple'],
+  ['vidéoprotection', 'vidéosurveillance'],
+]
+
+const squash = text => ` ${searchable(text).split(/\s+/).filter(Boolean).join(' ')} `
+
+// Variantes de la requête : chaque forme reconnue est remplacée par les autres
+// formes de son groupe (une seule variante par forme distincte affichée).
+export function synonymVariants(query) {
+  const q = squash(query)
+  const variants = []
+  for (const group of SYNONYM_GROUPS) {
+    const found = group.find(form => q.includes(squash(form)))
+    if (!found) continue
+    const seen = new Set([squash(found)])
+    for (const alt of group) {
+      const key = squash(alt)
+      // Les simples pluriels d'une forme déjà cherchée n'apportent rien.
+      if (seen.has(key) || [...seen].some(k => queryTerms(k).join(' ') === queryTerms(key).join(' '))) continue
+      seen.add(key)
+      // La forme d'origine est remplacée dans la requête telle que tapée.
+      const variant = q.replace(squash(found), key).trim()
+      variants.push({ query: alt === 'IA' ? variant.replace(/(^| )ia( |$)/, '$1IA$2') : variant, label: alt })
+    }
+  }
+  return variants
+}
+
 // Recherche : tous les mots doivent figurer dans l'élément ou le passage.
 // Les résultats sont classés du plus pertinent au moins pertinent, et les
 // publications selon ce qu'elles apportent sur le sujet (titre compris).
 export function searchIndex(index, query) {
+  const base = searchCore(index, query)
+  if (base.tooShort) return base
+  const variants = synonymVariants(query)
+  if (!variants.length) return base
+  // Fusion : un élément trouvé par plusieurs variantes garde son meilleur score.
+  const merge = lists => {
+    const map = new Map()
+    lists.flat().forEach(item => {
+      const cur = map.get(item.material_id)
+      if (!cur || item._score > cur._score) map.set(item.material_id, item)
+    })
+    return [...map.values()].sort((a, b) => b._score - a._score)
+  }
+  const runs = [base, ...variants.map(v => searchCore(index, v.query))]
+  const pubScore = new Map()
+  runs.forEach(run => run.pubScores.forEach(([id, score]) => pubScore.set(id, Math.max(pubScore.get(id) || 0, score))))
+  return {
+    ...base,
+    alsoSearched: variants.map(v => v.label),
+    elements: merge(runs.map(run => run.elements)),
+    passages: merge(runs.map(run => run.passages)),
+    publications: [...pubScore.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => index.pubMap.get(id)).filter(Boolean),
+  }
+}
+
+function searchCore(index, query) {
   const terms = queryTerms(query)
   if (!terms.length) return { kind: 'search', title: query, query, terms, publications: [], elements: [], passages: [], tooShort: true }
   const phrase = terms.length > 1 ? ` ${searchable(query).split(/\s+/).filter(Boolean).join(' ')} `.replace(/\s+/g, ' ') : ''
@@ -326,11 +388,9 @@ export function searchIndex(index, query) {
     count.set(item.publication_id, (count.get(item.publication_id) || 0) + 1)
   })
   best.forEach((value, id) => add(id, value + 2 * Math.min(count.get(id), 10)))
-  const publications = [...pubScore.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([id]) => index.pubMap.get(id))
-    .filter(Boolean)
-  return { kind: 'search', title: query, query, terms, publications, elements, passages }
+  const pubScores = [...pubScore.entries()].sort((a, b) => b[1] - a[1])
+  const publications = pubScores.map(([id]) => index.pubMap.get(id)).filter(Boolean)
+  return { kind: 'search', title: query, query, terms, publications, elements, passages, pubScores }
 }
 
 // Extrait d'environ 320 caractères centré sur le premier mot trouvé, pour que
