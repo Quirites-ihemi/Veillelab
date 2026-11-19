@@ -32,6 +32,9 @@ export const ELEMENT_TYPES = [
   { id: 'dispositifs', label: 'Dispositifs', one: 'Dispositif', types: ['instrument_dispositif'] },
   { id: 'methodes', label: 'Méthodes', one: 'Méthode', types: ['methode'] },
   { id: 'acteurs', label: 'Acteurs', one: 'Acteur', types: ['acteur'] },
+  // Les notions sont le type le plus fréquent du graphe : elles sont cherchées
+  // et s'affichent dans leur propre onglet, sans être mises en avant à l'accueil.
+  { id: 'notions', label: 'Notions', one: 'Notion', types: ['notion_idee'] },
 ]
 // Types mis en avant dans « Ou par type d’élément » (les autres restent
 // accessibles par les onglets des résultats).
@@ -50,18 +53,89 @@ export function normalize(text) {
 
 const STOP = new Set(['les', 'des', 'une', 'aux', 'dans', 'sur', 'pour', 'par', 'avec', 'que', 'qui', 'quoi', 'est', 'sont', 'ces', 'cette', 'son', 'ses', 'leur', 'leurs', 'entre', 'plus', 'moins', 'comme', 'face', 'quel', 'quels', 'quelle', 'quelles', 'comment', 'pourquoi', 'and', 'the'])
 
-export function queryTerms(query) {
-  // Pluriels simples : « drogues » cherche aussi « drogue », « réseaux » « réseau ».
-  const stem = term => term.length >= 5 ? term.replace(/(?:s|x)$/, '') : term
-  // Les sigles de deux lettres tapés en majuscules (IA, UE…) sont gardés.
-  const acronyms = new Set((String(query || '').match(/\b[A-Z]{2}\b/g) || []).map(normalize))
-  return [...new Set(normalize(query).split(/[^a-z0-9]+/).filter(term => (term.length >= 3 || acronyms.has(term)) && !STOP.has(term)).map(stem))]
+// Texte cherchable : sans accents, en minuscules, et toute ponctuation remplacée
+// par une espace, caractère pour caractère. Ainsi « sapeurs-pompiers » contient
+// le mot « pompiers », « (IA) » le mot « ia », et les positions restent celles
+// du texte d'origine (utile pour centrer l'extrait sur le passage trouvé).
+export function searchable(text) {
+  let out = ''
+  for (const ch of String(text || '')) {
+    const base = ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    const c = base.charAt(0) || ' '
+    out += /[a-z0-9]/.test(c) || base === 'œ' || base === 'æ' ? (base === 'œ' ? 'o' : base === 'æ' ? 'a' : c) : ' '
+    // Un caractère d'origine sur deux unités UTF-16 (emoji…) garde la même longueur.
+    if (ch.length === 2) out += ' '
+  }
+  return out
 }
 
-// Un terme correspond s'il commence un mot du texte (« drogue » trouve
-// « drogues », « incendi » trouve « incendies »).
-function matchesAll(normText, terms) {
-  return terms.every(term => normText.includes(` ${term}`))
+export function queryTerms(query) {
+  // Pluriels simples : « drogues » cherche aussi « drogue », « élus » « élu », « feux » « feu ».
+  const stem = term => term.length >= 4 && !/\d/.test(term) ? term.replace(/(?:s|x)$/, '') : term
+  // Les sigles de deux lettres tapés en majuscules (IA, UE…) sont gardés.
+  const acronyms = new Set((String(query || '').match(/\b[A-Z]{2}\b/g) || []).map(normalize))
+  return [...new Set(searchable(query).split(/\s+/).filter(term => (term.length >= 3 || acronyms.has(term)) && !STOP.has(term)).map(stem))]
+}
+
+// Un terme d'au moins 5 lettres correspond s'il commence un mot (« incendi »
+// trouve « incendies »). Un terme court doit correspondre à un mot entier, au
+// pluriel ou au féminin près : « élu » trouve « élus », pas « élucidation » ;
+// « IA » trouve « IA », pas « iatrogène ».
+const termRegexCache = new Map()
+function termRegex(term) {
+  if (!termRegexCache.has(term)) {
+    const body = term.length >= 5 ? `${term}[a-z0-9]*` : `${term}(?:s|x|e|es)?`
+    termRegexCache.set(term, new RegExp(`(?<![a-z0-9])${body}(?![a-z0-9])`, 'g'))
+  }
+  const re = termRegexCache.get(term)
+  re.lastIndex = 0
+  return re
+}
+
+function countTerm(normText, term, cap = 6) {
+  const re = termRegex(term)
+  let n = 0
+  while (n < cap && re.exec(normText)) n += 1
+  return n
+}
+
+function firstMatch(normText, terms) {
+  let best = -1
+  for (const term of terms) {
+    const re = termRegex(term)
+    const m = re.exec(normText)
+    if (m && (best < 0 || m.index < best)) best = m.index
+  }
+  return best
+}
+
+// Score : chaque terme trouvé compte, ses répétitions un peu, et l'expression
+// exacte tapée par l'utilisateur beaucoup. Les éléments du graphe, courts et
+// déjà synthétiques, passent devant les passages à score égal.
+function scoreOf(normText, terms, phrase) {
+  let score = 0
+  for (const term of terms) {
+    const n = countTerm(normText, term)
+    if (!n) return 0
+    score += 10 + Math.min(n, 6)
+  }
+  if (terms.length > 1) {
+    if (phrase && normText.includes(phrase)) score += 25
+    else if (closeTogether(normText, terms)) score += 12
+    else score -= 15 // mots présents mais éloignés : probablement un autre sujet
+  }
+  return score
+}
+
+// Vrai si tous les termes apparaissent dans une fenêtre de 12 mots.
+function closeTogether(normText, terms, window = 12) {
+  const words = normText.split(' ').filter(Boolean)
+  const hits = terms.map(term => {
+    const re = new RegExp(termRegex(term).source)
+    return words.map((w, i) => (re.test(w) ? i : -1)).filter(i => i >= 0)
+  })
+  if (hits.some(list => !list.length)) return false
+  return hits[0].some(i => hits.every(list => list.some(j => Math.abs(j - i) <= window)))
 }
 
 function pagesLabel(raw) {
@@ -122,7 +196,7 @@ export function buildCorpusIndex(data) {
       pages: pagesLabel(node.page_source),
       ...pubInfo(pubById.get(node.publication_id)),
       theme: pub.theme,
-      _norm: ` ${normalize(`${node.libelle} ${node.libelle_normalise || ''}`)}`,
+      _norm: searchable(`${node.libelle} ${node.libelle_normalise || ''}`),
     })
   })
 
@@ -138,7 +212,7 @@ export function buildCorpusIndex(data) {
       section: chunk.section || '',
       ...pubInfo(pubById.get(chunk.publication_id)),
       theme: pubMap.get(chunk.publication_id).theme,
-      _norm: ` ${normalize(chunk.texte)}`,
+      _norm: searchable(chunk.texte),
     }))
 
   // Thèmes : du plus fourni au moins fourni.
@@ -224,12 +298,53 @@ export function selectType(index, groupId) {
   }
 }
 
+// Recherche : tous les mots doivent figurer dans l'élément ou le passage.
+// Les résultats sont classés du plus pertinent au moins pertinent, et les
+// publications selon ce qu'elles apportent sur le sujet (titre compris).
 export function searchIndex(index, query) {
   const terms = queryTerms(query)
   if (!terms.length) return { kind: 'search', title: query, query, terms, publications: [], elements: [], passages: [], tooShort: true }
-  const elements = index.elements.filter(el => matchesAll(el._norm, terms))
-  const passages = index.passages.filter(p => matchesAll(p._norm, terms))
-  const titleHits = index.pubs.filter(pub => matchesAll(` ${normalize(pub.title)}`, terms))
-  const publications = pubsOf(index, [...titleHits, ...elements, ...passages])
+  const phrase = terms.length > 1 ? ` ${searchable(query).split(/\s+/).filter(Boolean).join(' ')} `.replace(/\s+/g, ' ') : ''
+  const rank = (list, bonus) => list
+    .map(item => ({ item, score: scoreOf(` ${item._norm} `.replace(/\s+/g, ' '), terms, phrase) }))
+    .filter(entry => entry.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(entry => ({ ...entry.item, _score: entry.score + bonus }))
+  const elements = rank(index.elements, 5)
+  const passages = rank(index.passages, 0).map(p => ({ ...p, excerpt: excerptAround(p.text, p._norm, terms) }))
+  const pubScore = new Map()
+  const add = (id, value) => pubScore.set(id, (pubScore.get(id) || 0) + value)
+  index.pubs.forEach(pub => {
+    const score = scoreOf(` ${searchable(pub.title)} `.replace(/\s+/g, ' '), terms, phrase)
+    if (score) add(pub.publication_id, 100 + score)
+  })
+  // Une publication vaut par son meilleur élément ou passage, puis un peu par
+  // leur nombre : beaucoup de mentions éparses ne passent pas devant un apport précis.
+  const best = new Map(), count = new Map()
+  ;[...elements, ...passages].forEach(item => {
+    best.set(item.publication_id, Math.max(best.get(item.publication_id) || 0, item._score))
+    count.set(item.publication_id, (count.get(item.publication_id) || 0) + 1)
+  })
+  best.forEach((value, id) => add(id, value + 2 * Math.min(count.get(id), 10)))
+  const publications = [...pubScore.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([id]) => index.pubMap.get(id))
+    .filter(Boolean)
   return { kind: 'search', title: query, query, terms, publications, elements, passages }
+}
+
+// Extrait d'environ 320 caractères centré sur le premier mot trouvé, pour que
+// l'utilisateur voie d'emblée pourquoi le passage est proposé.
+export function excerptAround(text, normText, terms, max = 320) {
+  const value = String(text || '')
+  if (value.length <= max) return value.replace(/\s+/g, ' ').trim()
+  const at = firstMatch(normText, terms)
+  if (at < 0) return `${value.slice(0, max).replace(/\s+/g, ' ').trim()}…`
+  let start = Math.max(0, at - 90)
+  if (start > 0) {
+    const space = value.indexOf(' ', start)
+    start = space > 0 && space < at ? space + 1 : start
+  }
+  const end = Math.min(value.length, start + max)
+  return `${start > 0 ? '…' : ''}${value.slice(start, end).replace(/\s+/g, ' ').trim()}${end < value.length ? '…' : ''}`
 }
