@@ -681,6 +681,36 @@
 }
 .atlas-screen .atlas-zoom-tools button:last-child{border-right:0}
 .atlas-screen .atlas-zoom-tools button:hover{background:rgba(92,216,255,.12)}
+.atlas-screen .atlas-zoom-tools .atlas-names-toggle{width:auto;padding:0 14px;font:700 13px/1 var(--atlas-font)}
+.atlas-screen .atlas-zoom-tools .atlas-names-toggle.is-on{background:rgba(92,216,255,.22);color:#ffffff}
+.atlas-screen .atlas-names-hint{
+  position:absolute;
+  z-index:6;
+  left:50%;
+  bottom:12px;
+  transform:translateX(-50%);
+  max-width:min(440px,calc(100% - 28px));
+  text-align:center;
+  margin:0;
+  padding:6px 10px;
+  border-radius:9px;
+  background:rgba(8,16,38,.82);
+  color:var(--atlas-text);
+  font:500 12px/1.35 var(--atlas-font);
+  pointer-events:none;
+}
+/* Noms permanents de la vue d'ensemble (bouton « Noms ») */
+.atlas-screen .atlas-overview-label{
+  fill:#dbe4ff;
+  font-family:var(--atlas-font);
+  font-weight:600;
+  paint-order:stroke;
+  stroke:#050a18;
+  stroke-width:3.5px;
+  stroke-linejoin:round;
+}
+.atlas-screen .atlas-overview-label.is-selected{fill:#ffffff;font-weight:700}
+.atlas-screen .atlas-overview-lead{stroke-width:1;opacity:.55;vector-effect:non-scaling-stroke}
 
 .atlas-screen .atlas-back-cluster{
   position:absolute;

@@ -254,6 +254,15 @@
 .orbit-screen .orbit-zoom button{width:40px;height:38px;border:0;border-right:1px solid var(--atlas-line);background:transparent;color:#fff;font:600 18px var(--atlas-font);cursor:pointer}
 .orbit-screen .orbit-zoom button:last-child{border-right:0}
 .orbit-screen .orbit-zoom button:hover{background:rgba(63,224,197,.12)}
+.orbit-screen .orbit-zoom .orbit-names-toggle{width:auto;padding:0 13px;font:700 13px var(--atlas-font)}
+.orbit-screen .orbit-zoom .orbit-names-toggle.is-on{background:rgba(63,224,197,.22)}
+.orbit-screen .orbit-label-outer{fill:#cfe3ea;font-weight:500;stroke-width:3.5px}
+.orbit-screen .orbit-label-outer.ring-3{fill:#a9c3cc}
+.orbit-screen .orbit-names-hint{
+  position:absolute;left:14px;top:14px;z-index:6;margin:0;
+  max-width:min(360px,calc(100% - 260px));padding:6px 10px;border-radius:9px;text-align:left;
+  background:rgba(4,18,25,.85);color:#dbe9ef;font:500 12px/1.35 var(--atlas-font);pointer-events:none;
+}
 
 .orbit-screen .orbit-crumb{
   position:absolute;left:14px;top:12px;z-index:6;right:170px;
