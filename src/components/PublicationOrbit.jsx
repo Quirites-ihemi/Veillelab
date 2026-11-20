@@ -153,6 +153,16 @@ export default function PublicationOrbit({
   const [size, setSize] = useState({ w: 900, h: 700 })
   const [hoverId, setHoverId] = useState(null)
   const [scale, setScale] = useState(1)
+  // Bouton « Noms » : nomme aussi les éléments des cercles extérieurs
+  // (indispensable sur tablette, où le survol n'existe pas).
+  const [showNames, setShowNames] = useState(() => {
+    try { return localStorage.getItem('qvl:explorer:showNames') !== '0' } catch { return true }
+  })
+  const toggleNames = () => setShowNames(value => {
+    const next = !value
+    try { localStorage.setItem('qvl:explorer:showNames', next ? '1' : '0') } catch {}
+    return next
+  })
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [fontsReady, setFontsReady] = useState(0)
 
@@ -358,6 +368,66 @@ export default function PublicationOrbit({
       }
     })
 
+    // Noms des cercles extérieurs (bouton « Noms ») : une ligne, tronquée,
+    // posée vers l'extérieur ; un nom qui recouvrirait autre chose est omis.
+    const outerLabels = []
+    let outerHidden = 0
+    if (showNames) {
+      const outer = nodes.filter(n => { const p = pos.get(n.node_id); return p && p.ring >= 2 })
+      outer.forEach(n => {
+        const p = pos.get(n.node_id)
+        const r = radius(n) + 3
+        placed.push({ x0: p.x - r, x1: p.x + r, y0: p.y - r, y1: p.y + r })
+      })
+      const size = dense ? 11 : 11.5
+      const font = `500 ${size}px ${FONT}`
+      const h = size * 1.3
+      outer
+        .sort((a, b) => pos.get(a.node_id).ring - pos.get(b.node_id).ring)
+        .forEach(n => {
+          const p = pos.get(n.node_id)
+          const maxW = p.ring === 2 ? 165 : 135
+          let text = String(n.libelle || '')
+          if (measure(text, font) > maxW) {
+            while (text.length > 4 && measure(`${text}…`, font) > maxW) text = text.slice(0, -1)
+            text = `${text.trim()}…`
+          }
+          const w = measure(text, font)
+          const c = Math.cos(p.angle)
+          const sn = Math.sin(p.angle)
+          const r = radius(n)
+          let found = null
+          // Vers l'extérieur d'abord ; au bord de l'écran, vers l'intérieur.
+          for (let attempt = 0; attempt < 12 && !found; attempt += 1) {
+            const step = attempt % 6
+            const inward = attempt >= 6
+            const d = r + 5 + step * 6
+            let x0, y0, anchor
+            if (Math.abs(c) > 0.32) {
+              const right = (c > 0) !== inward
+              anchor = right ? 'start' : 'end'
+              x0 = right ? p.x + d : p.x - d - w
+              y0 = p.y - h / 2 + (step % 2 ? 1 : -1) * Math.ceil(step / 2) * (h * 0.8)
+            } else if (inward) {
+              anchor = 'middle'
+              x0 = p.x - w / 2 + (step % 2 ? 1 : -1) * Math.ceil(step / 2) * 12
+              y0 = sn < 0 ? p.y + d : p.y - d - h
+            } else {
+              anchor = 'middle'
+              x0 = p.x - w / 2 + (step % 2 ? 1 : -1) * Math.ceil(step / 2) * 12
+              y0 = sn < 0 ? p.y - d - h : p.y + d
+            }
+            if (x0 < 6 || x0 + w > W - 6 || y0 < top - 6 || y0 + h > bottom) continue
+            const box = { x0: x0 - 2, x1: x0 + w + 2, y0: y0 - 1, y1: y0 + h + 1 }
+            if (!placed.some(b => overlap(box, b))) found = { box, x0, y0, w, anchor }
+          }
+          if (!found) { outerHidden += 1; return }
+          placed.push(found.box)
+          const tx = found.anchor === 'start' ? found.x0 : found.anchor === 'end' ? found.x0 + found.w : found.x0 + found.w / 2
+          outerLabels.push({ id: n.node_id, text, full: n.libelle, tx, ty: found.y0 + size - 1, anchor: found.anchor, size, ring: p.ring })
+        })
+    }
+
     const edges = []
     relations.forEach((r, index) => {
       const a = pos.get(r.source_id)
@@ -368,8 +438,8 @@ export default function PublicationOrbit({
       edges.push({ r, a, b, level, key: `${r.relation_id || index}` })
     })
 
-    return { W, H, cx, cy, pos, ring1, ring1Map, radius, labels, pills, edges, focus, focusLines, focusBox, rx1, ry1, rx2, ry2, rx3, ry3, top, bottom, dense }
-  }, [size, byId, adjacency, focusId, nodes, relations, fontsReady])
+    return { W, H, cx, cy, pos, ring1, ring1Map, radius, labels, pills, outerLabels, outerHidden, edges, focus, focusLines, focusBox, rx1, ry1, rx2, ry2, rx3, ry3, top, bottom, dense }
+  }, [size, byId, adjacency, focusId, nodes, relations, fontsReady, showNames])
 
   // ------------------------------------------------------ interactions
   const nodeAt = event => {
@@ -429,7 +499,7 @@ export default function PublicationOrbit({
     return <div className="orbit-wrap" ref={wrapRef}><p className="orbit-empty">Aucune entité à afficher avec les filtres actuels.</p></div>
   }
 
-  const { W, H, cx, cy, pos, ring1, ring1Map, radius, labels, pills, edges, focus, focusLines, focusBox, dense } = model
+  const { W, H, cx, cy, pos, ring1, ring1Map, radius, labels, pills, outerLabels, outerHidden, edges, focus, focusLines, focusBox, dense } = model
   const t = `translate(${cx + pan.x} ${cy + pan.y}) scale(${scale}) translate(${-cx} ${-cy})`
   const hoverNode = hoverId ? byId.get(hoverId) : null
   const hoverPos = hoverNode ? pos.get(hoverId) : null
@@ -537,6 +607,12 @@ export default function PublicationOrbit({
           </g>
 
           <g key={`labels-${focusId}`} className="orbit-labels">
+            {outerLabels.map(L => (
+              <text key={`outer-${L.id}`} className={`orbit-label orbit-label-outer ring-${L.ring}`} x={L.tx} y={L.ty} textAnchor={L.anchor} style={{ fontSize: `${L.size}px` }}>
+                <title>{L.full}</title>
+                {L.text}
+              </text>
+            ))}
             {ring1.map(n => {
               const L = labels.get(n.node_id)
               if (!L) return null
@@ -594,7 +670,22 @@ export default function PublicationOrbit({
         <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant" title="Zoom avant">+</button>
         <button type="button" onClick={() => zoom(0.85)} aria-label="Zoom arrière" title="Zoom arrière">−</button>
         <button type="button" onClick={() => { setScale(1); setPan({ x: 0, y: 0 }) }} aria-label="Recentrer" title="Recentrer">⌾</button>
+        <button
+          type="button"
+          className={`orbit-names-toggle ${showNames ? 'is-on' : ''}`}
+          onClick={toggleNames}
+          aria-pressed={showNames}
+          title={showNames ? 'Masquer les noms des éléments éloignés' : 'Afficher les noms de tous les éléments'}
+        >
+          Noms
+        </button>
       </div>
+
+      {showNames && outerHidden > 0 && (
+        <p className="orbit-names-hint" aria-live="polite">
+          {outerHidden} nom{outerHidden > 1 ? 's' : ''} masqué{outerHidden > 1 ? 's' : ''} pour rester lisible : zoomez ou survolez les points.
+        </p>
+      )}
 
     </div>
   )

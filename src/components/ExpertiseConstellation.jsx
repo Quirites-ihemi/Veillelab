@@ -444,6 +444,16 @@ export default function ExpertiseConstellation({
   const [hoveredId, setHoveredId] = useState(null)
   const [hoveredTitleId, setHoveredTitleId] = useState(null)
   const [scale, setScale] = useState(HOME_SCALE)
+  // Bouton « Noms » : affiche en permanence les noms des familles et des
+  // expertises (indispensable sur tablette, où le survol n'existe pas).
+  const [showNames, setShowNames] = useState(() => {
+    try { return localStorage.getItem('qvl:atlas:showNames') !== '0' } catch { return true }
+  })
+  const toggleNames = () => setShowNames(value => {
+    const next = !value
+    try { localStorage.setItem('qvl:atlas:showNames', next ? '1' : '0') } catch {}
+    return next
+  })
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [fontsReady, setFontsReady] = useState(0)
   // Cadrage calculé à l'ouverture d'une communauté : sert à maintenir les
@@ -1199,6 +1209,103 @@ export default function ExpertiseConstellation({
       : px * unit
   }
 
+  // Étiquettes permanentes de la vue d'ensemble (bouton « Noms »). Taille
+  // constante à l'écran ; une étiquette qui chevaucherait une autre étiquette
+  // ou un titre de famille n'est pas affichée (zoomer en révèle davantage).
+  const overviewLabels = (() => {
+    if (!showNames || activeCluster !== null || !positionedNodes.length) return { items: [], hidden: 0 }
+    const u = unit / Math.max(HOME_SCALE, scale)
+    const font = 12.5 * u
+    const lineH = font * 1.3
+    const charW = font * 0.56
+    const MAX_CHARS = 42
+    const rects = []
+    const overlaps = r => rects.some(o => r.x0 < o.x1 && r.x1 > o.x0 && r.y0 < o.y1 && r.y1 > o.y0)
+    // Zone visible, en coordonnées du graphe (inverse du zoom et du déplacement) :
+    // un nom qui sortirait du cadre n'est pas affiché à cet endroit.
+    const toWorldX = v => viewCenter.x + (v - viewCenter.x - pan.x) / scale
+    const toWorldY = v => viewCenter.y + (v - viewCenter.y - pan.y) / scale
+    const margin = 6 * u
+    const visible = {
+      x0: toWorldX(view.x) + margin,
+      x1: toWorldX(view.x + view.w) - margin,
+      y0: toWorldY(view.y) + margin,
+      y1: toWorldY(view.y + view.h) - margin,
+    }
+    const inside = r => r.x0 >= visible.x0 && r.x1 <= visible.x1 && r.y0 >= visible.y0 && r.y1 <= visible.y1
+    // Zones occupées par les boutons posés sur le graphe (en pixels d'écran) :
+    // zoom et « Noms » en haut à droite, phrase d'aide en bas au centre.
+    const screenRect = (x0, y0, x1, y1) => ({
+      x0: toWorldX(view.x + x0 * unit), x1: toWorldX(view.x + x1 * unit),
+      y0: toWorldY(view.y + y0 * unit), y1: toWorldY(view.y + y1 * unit),
+    })
+    const vw = view.w / unit
+    const vh = view.h / unit
+    rects.push(screenRect(vw - 300, 0, vw, 66))
+    rects.push(screenRect(vw / 2 - 230, vh - 52, vw / 2 + 230, vh))
+    // Les titres de familles affichés sont des obstacles.
+    clusterStats.forEach(cluster => {
+      const spot = cluster.placement
+      if (!spot || !(cluster.showLabel || showNames)) return
+      const k = titleScale
+      // Marge autour du titre : les lettres et leur contour débordent du cadre calculé.
+      const padX = 6 * u
+      const padY = lineH * 0.6
+      rects.push({
+        x0: spot.cx + (spot.rect.x0 - spot.cx) * k - padX,
+        x1: spot.cx + (spot.rect.x1 - spot.cx) * k + padX,
+        y0: spot.cy + (spot.rect.y0 - spot.cy) * k - padY,
+        y1: spot.cy + (spot.rect.y1 - spot.cy) * k + padY,
+      })
+    })
+    // Les nœuds eux-mêmes ne doivent pas être recouverts.
+    positionedNodes.forEach(node => {
+      const r = radiusFor(node)
+      rects.push({ x0: node.x - r, x1: node.x + r, y0: node.y - r, y1: node.y + r })
+    })
+    const order = [...positionedNodes]
+      .filter(node => node.id !== labelNode?.id)
+      .sort((a, b) => (selectedId === b.id) - (selectedId === a.id) || (b.gephiSize || 0) - (a.gephiSize || 0))
+    const items = []
+    let hidden = 0
+    order.forEach(node => {
+      const label = String(node.label || '')
+      const text = label.length > MAX_CHARS ? `${label.slice(0, MAX_CHARS - 1).trim()}…` : label
+      const w = text.length * charW
+      const r = radiusFor(node)
+      const gap = 5 * u
+      // Position naturelle d'abord, puis décalée verticalement (avec un trait
+      // de rappel) : les expertises empilées en colonne gardent toutes leur nom.
+      const candidates = [
+        { side: 'right', x: node.x + r + gap, y0: node.y - lineH / 2, lead: false },
+        { side: 'left', x: node.x - r - gap, y0: node.y - lineH / 2, lead: false },
+      ]
+      const far = r + gap + 18 * u
+      ;[1, -1, 2, -2, 3, -3, 4, -4].forEach(step => {
+        candidates.push({ side: 'right', x: node.x + far, y0: node.y - lineH / 2 + step * lineH, lead: true })
+        candidates.push({ side: 'left', x: node.x - far, y0: node.y - lineH / 2 + step * lineH, lead: true })
+      })
+      const spot = candidates.find(c => {
+        const x0 = c.side === 'right' ? c.x : c.x - w
+        const r = { x0, x1: x0 + w, y0: c.y0, y1: c.y0 + lineH }
+        return inside(r) && !overlaps(r)
+      })
+      if (!spot) {
+        // Seuls les nœuds visibles à l'écran comptent dans les noms masqués.
+        if (node.x >= visible.x0 && node.x <= visible.x1 && node.y >= visible.y0 && node.y <= visible.y1) hidden += 1
+        return
+      }
+      const x0 = spot.side === 'right' ? spot.x : spot.x - w
+      rects.push({ x0, x1: x0 + w, y0: spot.y0, y1: spot.y0 + lineH })
+      items.push({
+        id: node.id, text, full: label, x: spot.x, y: spot.y0 + font * 0.98,
+        anchor: spot.side === 'right' ? 'start' : 'end', font, selected: selectedId === node.id,
+        lead: spot.lead ? { x1: node.x + (spot.side === 'right' ? r : -r), y1: node.y, x2: spot.x - (spot.side === 'right' ? 3 * u : -3 * u), y2: spot.y0 + lineH / 2, color: node.color } : null,
+      })
+    })
+    return { items, hidden }
+  })()
+
   const activeClusterStat =
     activeCluster !== null
       ? clusterStats.find(cluster => cluster.id === activeCluster)
@@ -1318,7 +1425,22 @@ export default function ExpertiseConstellation({
         <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant" title="Zoom avant">+</button>
         <button type="button" onClick={() => zoom(0.86)} aria-label="Zoom arrière" title="Zoom arrière">−</button>
         <button type="button" onClick={resetView} aria-label="Recentrer" title="Recentrer">⌾</button>
+        <button
+          type="button"
+          className={`atlas-names-toggle ${showNames ? 'is-on' : ''}`}
+          onClick={toggleNames}
+          aria-pressed={showNames}
+          title={showNames ? 'Masquer les noms des expertises' : 'Afficher les noms des expertises'}
+        >
+          Noms
+        </button>
       </div>
+
+      {showNames && activeCluster === null && overviewLabels.hidden > 0 && (
+        <p className="atlas-names-hint" aria-live="polite">
+          {overviewLabels.hidden} nom{overviewLabels.hidden > 1 ? 's' : ''} masqué{overviewLabels.hidden > 1 ? 's' : ''} pour rester lisible : zoomez ou ouvrez une famille.
+        </p>
+      )}
 
       {activeCluster !== null && mode === 'cluster' && (
         <button
@@ -1660,6 +1782,7 @@ export default function ExpertiseConstellation({
 
                 const revealed =
                   cluster.showLabel ||
+                  showNames ||
                   emphasisClusterId === cluster.id ||
                   guideClusterId === cluster.id ||
                   guideTitleClusterId === cluster.id ||
@@ -1785,6 +1908,32 @@ export default function ExpertiseConstellation({
                   </g>
                 )
               })}
+            </g>
+          )}
+
+          {overviewLabels.items.length > 0 && (
+            <g className="atlas-overview-labels" pointerEvents="none">
+              {overviewLabels.items.filter(item => item.lead).map(item => (
+                <line
+                  key={`overview-lead-${item.id}`}
+                  className="atlas-overview-lead"
+                  {...item.lead}
+                  stroke={item.lead.color}
+                />
+              ))}
+              {overviewLabels.items.map(item => (
+                <text
+                  key={`overview-label-${item.id}`}
+                  x={item.x}
+                  y={item.y}
+                  textAnchor={item.anchor}
+                  className={`atlas-overview-label ${item.selected ? 'is-selected' : ''}`}
+                  style={{ fontSize: `${item.font}px` }}
+                >
+                  <title>{item.full}</title>
+                  {item.text}
+                </text>
+              ))}
             </g>
           )}
 
