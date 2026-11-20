@@ -19,6 +19,8 @@ const MAX_SCALE = 6
 // Vue d'ensemble à l'entrée de l'onglet : le graphe est légèrement réduit
 // pour respirer dans le cadre (zoom avant toujours possible).
 const HOME_SCALE = 0.86
+// Au-delà de ce nombre d'expertises affichées, les noms ne s'affichent pas d'office.
+const NAMES_AUTO_MAX = 40
 
 // ---------------------------------------------------------------------------
 // COMPACTAGE GÉOMÉTRIQUE — calculé une seule fois, au chargement du module.
@@ -446,14 +448,14 @@ export default function ExpertiseConstellation({
   const [scale, setScale] = useState(HOME_SCALE)
   // Bouton « Noms » : affiche en permanence les noms des familles et des
   // expertises (indispensable sur tablette, où le survol n'existe pas).
-  const [showNames, setShowNames] = useState(() => {
-    try { return localStorage.getItem('qvl:atlas:showNames') !== '0' } catch { return true }
-  })
-  const toggleNames = () => setShowNames(value => {
-    const next = !value
-    try { localStorage.setItem('qvl:atlas:showNames', next ? '1' : '0') } catch {}
-    return next
-  })
+  // Par défaut : désactivé sur l'atlas complet (la vue d'entrée reste lisible),
+  // activé automatiquement quand le graphe est réduit (filtre, recherche).
+  // Un clic sur le bouton impose le choix de l'utilisateur.
+  const [namesChoice, setNamesChoice] = useState(null)
+  const showNames = namesChoice ?? nodes.length <= NAMES_AUTO_MAX
+  const toggleNames = () => setNamesChoice(!showNames)
+  // Nouveau filtre : on revient au réglage automatique.
+  useEffect(() => { setNamesChoice(null) }, [nodes.length])
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [fontsReady, setFontsReady] = useState(0)
   // Cadrage calculé à l'ouverture d'une communauté : sert à maintenir les
