@@ -1,4 +1,4 @@
-import { normalize } from './text.js'
+import { searchMatcher, searchText } from './searchFamilies.js'
 
 // Exemples de portes d'entrée ; ce ne sont ni des micro-expertises, ni un
 // thesaurus de synonymes. Les résultats restent calculés à partir du corpus.
@@ -17,66 +17,33 @@ export const ATLAS_THEME_EXAMPLES = [
   { label: 'Technologies', query: 'intelligence artificielle' },
 ]
 
-// Variantes lexicales simples (singulier/pluriel) pour les autres sujets.
-const INFLECTIONS = {
-  violence: ['violence', 'violences'],
-  migration: ['migration', 'migrations'],
-  cyberattaque: ['cyberattaque', 'cyberattaques'],
-}
-
-// Élargissement de recherche validé pour cette famille thématique.
-// « drogue », « stupéfiant » et « narcotrafic » ne sont PAS des synonymes
-// stricts : l'équivalence sert uniquement à retrouver des documents et des
-// expertises contenant l'un des termes. Elle ne crée aucune relation graphe.
-const DRUG_SEARCH_FAMILY = [
-  'drogue', 'drogues',
-  'stupefiant', 'stupefiants',
-  'narcotrafic', 'narcotrafics',
-]
-
-// Variantes orthographiques d'un même terme, dont narco-trafic et narco trafic.
-function normalizeThemeText(value) {
-  return normalize(value).replace(/\bnarco[\s-]+(trafics?)\b/g, (_, suffix) => `narco${suffix}`)
-}
-
-function searchForms(query) {
-  const q = normalizeThemeText(query)
-  if (!q) return []
-  if (DRUG_SEARCH_FAMILY.includes(q)) return DRUG_SEARCH_FAMILY
-  const forms = Object.values(INFLECTIONS).find(group => group.includes(q))
-  return forms || [q]
-}
-
-function containsText(haystack, forms) {
-  if (!forms.length) return false
-  const text = ` ${normalizeThemeText(haystack)} `
-  return forms.some(form => text.includes(` ${form} `))
-}
-
+// Les familles de termes (drogue → stupéfiants, cocaïne…) sont partagées avec
+// l'onglet Explorer : voir lib/searchFamilies.js.
 // L'index est documentaire : correspondance explicite avec le titre de la
 // publication ou le libellé d'un nœud de cette publication. Les textes des
 // chunks ne sont pas interrogés pour éviter des rapprochements peu précis.
 export function findDocumentedTopics(data, query, limit = 8) {
-  const forms = searchForms(query)
-  if (!forms.length) return []
+  const m = searchMatcher(query)
+  if (m.empty) return []
 
   const matchedByPublication = new Map()
   for (const node of data.nodes || []) {
-    const labelMatch = containsText(node.libelle, forms)
-    const normalizedMatch = containsText(node.libelle_normalise, forms)
+    const labelMatch = m.test(node.libelle)
+    const normalizedMatch = m.test(node.libelle_normalise)
     if (!labelMatch && !normalizedMatch) continue
     if (!matchedByPublication.has(node.publication_id)) {
       matchedByPublication.set(node.publication_id, [])
     }
     matchedByPublication.get(node.publication_id).push({
       node,
-      score: labelMatch ? 4 : 2,
+      // Le mot tapé lui-même compte davantage qu'un terme de sa famille.
+      score: (labelMatch ? 3 : 2) + (m.testDirect(node.libelle) ? 1 : 0),
     })
   }
 
   return (data.publications || [])
     .map(publication => {
-      const titleMatched = containsText(publication.titre, forms)
+      const titleMatched = m.test(publication.titre)
       const nodes = (matchedByPublication.get(publication.publication_id) || [])
         .sort((a, b) => b.score - a.score || a.node.node_id.localeCompare(b.node.node_id))
       if (!titleMatched && !nodes.length) return null
@@ -100,18 +67,17 @@ export function findDocumentedTopics(data, query, limit = 8) {
 //   portant un nœud/titre correspondant. Cela NE constitue pas une nouvelle
 //   relation validée entre la micro-expertise et le sujet du nœud.
 export function findThematicExpertises(expertises, documented, query, limit = 8) {
-  const forms = searchForms(query)
-  if (!forms.length) return []
+  const m = searchMatcher(query)
+  if (m.empty) return []
   const byPub = new Map(documented.map(match => [match.publication.publication_id, match]))
 
   const ranked = (expertises || []).map(expertise => {
     const searchable = `${expertise.label} ${expertise.definition} ${(expertise.entities || []).join(' ')}`
     // Conserver la recherche partielle historique dans les expertises (ex. « prévent »).
-    const direct = normalizeThemeText(searchable).includes(normalizeThemeText(query))
+    const direct = searchText(searchable).includes(searchText(query)) || m.testDirect(searchable)
     // Un autre terme de la famille permet une découverte thématique, mais ne
     // doit pas être présenté comme une correspondance directe au mot saisi.
-    const thematic = !direct && DRUG_SEARCH_FAMILY.includes(normalizeThemeText(query))
-      && containsText(searchable, DRUG_SEARCH_FAMILY)
+    const thematic = !direct && m.test(searchable)
     const related = (expertise.publications || [])
       .map(p => byPub.get(p.publication_id))
       .filter(Boolean)
