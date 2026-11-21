@@ -447,3 +447,16 @@
   .orbit-screen .orbit-home{grid-template-columns:1fr}
   .orbit-screen .orbit-home-hero{grid-template-columns:1fr 220px}
 }
+
+/* Vue d'ensemble (entrée de l'Explorer) : arcs de même importance,
+   survol = l'élément, ses voisins et les verbes de ses liens. */
+.orbit-screen .orbit-edge.ov{stroke-opacity:.42;stroke-width:1.2;transition:stroke-opacity .25s ease, stroke-width .25s ease}
+.orbit-screen .orbit-edge.ov.is-on{stroke-opacity:.95;stroke-width:2}
+.orbit-screen .orbit-edge.ov.is-dim{stroke-opacity:.07}
+.orbit-screen .orbit-overview .orbit-label{transition:opacity .25s ease}
+.orbit-screen .orbit-overview .orbit-label.is-dim{opacity:.18}
+.orbit-screen .orbit-pill-static{cursor:default}
+.orbit-screen .orbit-pill-static text{font-size:11.5px}
+.orbit-screen .orbit-crumb button.orbit-crumb-home{color:var(--orbit-amber);font-weight:650}
+.orbit-screen .orbit-ov-intro{margin:4px 0 12px;color:var(--atlas-text-2);font-size:13.5px;line-height:1.5}
+.orbit-screen .orbit-stage:has(.orbit-crumb) .orbit-names-hint{top:50px}
