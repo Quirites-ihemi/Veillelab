@@ -302,8 +302,13 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
     relations.forEach(r => { d[r.source_id] = (d[r.source_id] || 0) + 1; d[r.cible_id] = (d[r.cible_id] || 0) + 1 })
     return d
   }, [relations])
-  const hub = useMemo(() => [...nodes].sort((a, b) => (degree[b.node_id] || 0) - (degree[a.node_id] || 0))[0], [nodes, degree])
-  const focus = (focusId && nodes.find(n => n.node_id === focusId)) || hub || null
+  // À l'entrée, aucun élément n'est mis au centre : vue d'ensemble du graphe.
+  const focus = (focusId && nodes.find(n => n.node_id === focusId)) || null
+  const mostLinked = useMemo(
+    () => nodes.filter(n => degree[n.node_id]).sort((a, b) => (degree[b.node_id] || 0) - (degree[a.node_id] || 0) || a.libelle.localeCompare(b.libelle, 'fr')).slice(0, 8),
+    [nodes, degree]
+  )
+  const loneCount = nodes.filter(n => !degree[n.node_id]).length
 
   const expertises = useMemo(
     () => (pubId ? data.expertise_nodes.filter(x => (x.publications || []).some(p => p.publication_id === pubId)) : []),
@@ -531,13 +536,15 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
         </aside>
 
         <section className="orbit-stage" ref={stageRef} aria-label="Graphe de la publication">
-          {trail.length > 1 && (
+          {focus && (
             <nav className="orbit-crumb" aria-label="Parcours">
               <span className="orbit-crumb-k">Parcours</span>
-              {trail.map((id, i) => {
+              <button type="button" className="orbit-crumb-home" onClick={() => { setFocusId(null); setTrail([]) }} title="Revenir à la vue d’ensemble du graphe">Vue d’ensemble</button>
+              <span className="orbit-crumb-sep" aria-hidden="true">›</span>
+              {(trail.length ? trail : [focus.node_id]).map((id, i, list) => {
                 const n = nodeMap[id]
                 if (!n) return null
-                const last = i === trail.length - 1
+                const last = i === list.length - 1
                 return (
                   <React.Fragment key={`${id}-${i}`}>
                     {i > 0 && <span className="orbit-crumb-sep" aria-hidden="true">›</span>}
@@ -550,11 +557,11 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
             </nav>
           )}
 
-          {focus ? (
+          {nodes.length ? (
             <PublicationOrbit
               nodes={nodes}
               relations={relations}
-              focusId={focus.node_id}
+              focusId={focus?.node_id || null}
               onFocus={goTo}
               onOpenRelation={r => setProof(r)}
               onOpenProof={n => setProof(n)}
@@ -609,6 +616,47 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
         </section>
 
         <aside className="orbit-side" aria-label="Fiche de l’élément">
+          {!focus && nodes.length > 0 && (
+            <article className="atlas-card orbit-card">
+              <div className="atlas-card-type">
+                <i style={{ background: '#3FE0C5' }} />
+                Vue d’ensemble
+              </div>
+              <h2>{sentenceCase(selectedPub.titre)}</h2>
+              <p className="orbit-card-meta">
+                {nodes.length} élément{nodes.length > 1 ? 's' : ''} · {relations.length} lien{relations.length > 1 ? 's' : ''}
+                {loneCount > 0 ? ` · ${loneCount} élément${loneCount > 1 ? 's' : ''} sans lien` : ''}
+              </p>
+              <p className="orbit-ov-intro">
+                Cliquez sur un élément du graphe, ou dans la liste ci-dessous, pour l’explorer :
+                il passe au centre, entouré des éléments qui lui sont directement liés.
+              </p>
+
+              <Accordion title="Éléments les plus reliés" count={mostLinked.length} defaultOpen>
+                <div className="orbit-linked">
+                  {mostLinked.length === 0 && <span className="atlas-muted">Aucun lien dans le graphe de cette publication.</span>}
+                  {mostLinked.map(n => (
+                    <button type="button" key={n.node_id} onClick={() => goTo(n)}>
+                      <i style={{ background: typeColor(normalizeType(n.type_noeud)) }} />
+                      <span>{n.libelle}<small>{typeLabel(normalizeType(n.type_noeud))} · {degree[n.node_id]} lien{degree[n.node_id] > 1 ? 's' : ''}</small></span>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+
+              <Accordion title="Expertises révélées par la publication" count={expertises.length}>
+                <div className="orbit-expertises">
+                  {expertises.length === 0 && <span className="atlas-muted">Aucune expertise de l’Atlas n’est rattachée à cette publication.</span>}
+                  {expertises.map(x => (
+                    <button type="button" key={x.id} onClick={() => onOpenAtlas?.(x.id)} title="Ouvrir dans l’Atlas des expertises">
+                      <span>{x.label}</span>
+                      <small>Voir dans l’Atlas →</small>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+            </article>
+          )}
           {focus && (
             <article className="atlas-card orbit-card">
               <div className="atlas-card-type">
