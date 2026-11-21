@@ -12,6 +12,7 @@ import { atlasClusterColor } from '../components/atlasPalette.js'
 import { normalize, sentenceCase } from '../lib/text.js'
 import { navigate } from '../lib/router.js'
 import { ATLAS_THEME_EXAMPLES, findDocumentedTopics, findThematicExpertises } from '../lib/atlasThematicSearch.js'
+import { searchMatcher } from '../lib/searchFamilies.js'
 // Feuilles historiques conservées : d'autres règles globales peuvent en
 // dépendre. Le nouvel Atlas n'utilise que des classes « atlas-* ».
 import '../expertises-fenetres-originales.css'
@@ -574,6 +575,9 @@ export default function Expertises({ data, focusExpertiseId = null, focusToken =
                 </div>
               ) : (
                 <>
+                  {searchMatcher(search).alsoSearched.length > 0 && (
+                    <p className="atlas-thematic-note atlas-search-also">Inclut aussi : {searchMatcher(search).alsoSearched.join(', ')}</p>
+                  )}
                   <section className="atlas-thematic-section" aria-label="Expertises correspondantes">
                     <h3>Expertises ministérielles</h3>
                     {found.length ? found.map(({ expertise, kind, viaPublication }) => {

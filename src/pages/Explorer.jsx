@@ -17,6 +17,7 @@ import PublicationOrbit, {
 import ExplorerGuide from '../components/ExplorerGuide.jsx'
 import { askGraph } from '../services/chatApi.js'
 import { normalize, sentenceCase } from '../lib/text.js'
+import { searchMatcher } from '../lib/searchFamilies.js'
 import { domainLabel } from './Home.jsx'
 // Feuilles historiques conservées (règles éventuellement partagées).
 import '../explorer-eclaireur.css'
@@ -114,7 +115,11 @@ function PublicationDrawer({ open, onClose, publications, search, setSearch, onS
     const q = normalize(search)
     const base = theme ? publications.filter(p => String(p.domaine || '').trim() === theme) : publications
     if (!q) return base
-    return base.filter(p => normalize(`${p.publication_id} ${p.titre} ${p.organisme_producteur} ${p.domaine || ''} ${p.année_publication || ''}`).includes(q))
+    const m = searchMatcher(search)
+    return base.filter(p => {
+      const meta = `${p.publication_id} ${p.titre} ${p.organisme_producteur} ${p.domaine || ''} ${p.année_publication || ''}`
+      return normalize(meta).includes(q) || m.test(meta)
+    })
   }, [search, publications, theme])
   return (
     <>
@@ -420,7 +425,24 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
   }
 
   const q = normalize(nodeSearch)
-  const nodeMatches = q ? allNodes.filter(n => normalize(n.libelle).includes(q)).slice(0, 8) : []
+  // Recherche d'élément : mots tapés, pluriels, et familles de termes
+  // (« drogue » retrouve aussi « stupéfiants », « cocaïne »…).
+  const nodeMatcher = q ? searchMatcher(nodeSearch) : null
+  const nodeMatches = q
+    ? allNodes
+      .map(n => {
+        const sub = normalize(n.libelle).includes(q)
+        const direct = sub || nodeMatcher.testDirect(n.libelle)
+        return direct || nodeMatcher.test(n.libelle) ? { n, rank: sub ? 0 : direct ? 1 : 2 } : null
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.rank - b.rank)
+      .slice(0, 8)
+      .map(x => x.n)
+    : []
+  const nodeAlso = nodeMatcher && nodeMatches.some(n => !nodeMatcher.testDirect(n.libelle) && !normalize(n.libelle).includes(q))
+    ? nodeMatcher.alsoSearched
+    : []
   const highlighted = chat?.noeuds_selectionnes || []
 
   const focusRelations = focus ? allRelations.filter(r => r.source_id === focus.node_id || r.cible_id === focus.node_id) : []
@@ -460,6 +482,7 @@ export default function Explorer({ data, onOpenAtlas, route = null, onRoute = nu
           {searchFocused && nodeSearch && (
             <div className="atlas-search-results" role="listbox">
               {nodeMatches.length === 0 && <p className="atlas-muted">Aucun élément ne correspond.</p>}
+              {nodeAlso.length > 0 && <p className="atlas-muted orbit-search-also">Inclut aussi : {nodeAlso.join(', ')}</p>}
               {nodeMatches.map(n => (
                 <button type="button" key={n.node_id} onMouseDown={e => e.preventDefault()} onClick={() => { goTo(n); setNodeSearch('') }}>
                   <i style={{ background: typeColor(normalizeType(n.type_noeud)) }} aria-hidden="true" />
