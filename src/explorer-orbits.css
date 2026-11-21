@@ -460,3 +460,4 @@
 .orbit-screen .orbit-crumb button.orbit-crumb-home{color:var(--orbit-amber);font-weight:650}
 .orbit-screen .orbit-ov-intro{margin:4px 0 12px;color:var(--atlas-text-2);font-size:13.5px;line-height:1.5}
 .orbit-screen .orbit-stage:has(.orbit-crumb) .orbit-names-hint{top:50px}
+.orbit-screen .orbit-search-also{padding:4px 12px 6px;font-size:12px;font-style:italic}
