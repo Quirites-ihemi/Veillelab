@@ -90,7 +90,7 @@ export default function ExplorerGuide({
     const screen = screenRef.current
     if (!screen || collapsed) return null
     if (step === 2) {
-      const core = screen.querySelector('.orbit-node.ring-0 .orbit-core')
+      const core = screen.querySelector('.orbit-node.ring-0 .orbit-core, .orbit-node.is-hub .orbit-core')
       return core ? core.getBoundingClientRect() : null
     }
     if (step === 3) {
@@ -279,13 +279,14 @@ export default function ExplorerGuide({
   // Contenu ------------------------------------------------------------------
   const content = {
     2: {
-      title: 'Le sujet au centre',
+      title: 'Les éléments et leurs liens',
       body: (
         <p>
-          L’élément au centre est le sujet que vous explorez. Les éléments qui lui
-          sont <strong>directement liés</strong> gravitent autour, avec le
-          <strong> verbe</strong> du lien. Cliquez sur l’un d’eux :
-          elle passe au centre, et vous suivez le fil du texte.
+          Le graphe montre les éléments de la publication et les
+          <strong> liens</strong> qui les unissent. Cliquez sur un élément :
+          il passe au centre, entouré des éléments qui lui sont
+          <strong> directement liés</strong>, avec le <strong>verbe</strong> du
+          lien. Vous suivez ainsi le fil du texte.
         </p>
       ),
     },
@@ -311,7 +312,7 @@ export default function ExplorerGuide({
 
   const shortText = {
     1: 'Bonjour ! Je suis votre guide dans ce graphe.',
-    2: 'Cliquez sur un élément de l’orbite pour le placer au centre.',
+    2: 'Cliquez sur un élément du graphe pour le placer au centre.',
     3: 'La fiche, à droite, donne les pages et l’extrait qui prouvent le sujet.',
     4: 'Interrogez le graphe (IA) et consultez les passages cités.',
   }[step]

@@ -134,6 +134,57 @@ const STRIP_H = 0
 const TOP_H = 54
 const TYPE_ORDER = Object.keys(ORBIT_TYPES)
 
+// Vue d'ensemble : disposition « à ressorts » déterministe (Fruchterman-
+// Reingold) des seuls éléments reliés. Même publication → même dessin.
+function forceLayout(ids, links) {
+  const N = ids.length
+  const index = new Map(ids.map((id, i) => [id, i]))
+  const P = ids.map((_, i) => {
+    const r = Math.sqrt((i + 0.5) / N)
+    const a = i * 2.399963
+    return { x: Math.cos(a) * r, y: Math.sin(a) * r }
+  })
+  const E = links
+    .map(([a, b]) => [index.get(a), index.get(b)])
+    .filter(([a, b]) => a != null && b != null && a !== b)
+  if (N < 2) return P
+  const k = Math.sqrt(1 / N)
+  let temp = 0.1
+  for (let it = 0; it < 420; it += 1) {
+    const D = P.map(() => ({ x: 0, y: 0 }))
+    for (let i = 0; i < N; i += 1) {
+      for (let j = i + 1; j < N; j += 1) {
+        const dx = P[i].x - P[j].x
+        const dy = P[i].y - P[j].y
+        const d = Math.max(1e-3, Math.hypot(dx, dy))
+        const f = (k * k) / d
+        D[i].x += (dx / d) * f; D[i].y += (dy / d) * f
+        D[j].x -= (dx / d) * f; D[j].y -= (dy / d) * f
+      }
+    }
+    E.forEach(([a, b]) => {
+      const dx = P[a].x - P[b].x
+      const dy = P[a].y - P[b].y
+      const d = Math.max(1e-3, Math.hypot(dx, dy))
+      const f = (d * d) / k
+      D[a].x -= (dx / d) * f; D[a].y -= (dy / d) * f
+      D[b].x += (dx / d) * f; D[b].y += (dy / d) * f
+    })
+    P.forEach((p, i) => {
+      D[i].x -= p.x * 1.6 * k
+      D[i].y -= p.y * 1.6 * k
+      const len = Math.hypot(D[i].x, D[i].y)
+      if (len > 0) {
+        const m = Math.min(len, temp)
+        p.x += (D[i].x / len) * m
+        p.y += (D[i].y / len) * m
+      }
+    })
+    temp = Math.max(0.002, temp * 0.985)
+  }
+  return P
+}
+
 export default function PublicationOrbit({
   nodes,
   relations,
@@ -441,11 +492,206 @@ export default function PublicationOrbit({
     return { W, H, cx, cy, pos, ring1, ring1Map, radius, labels, pills, outerLabels, outerHidden, edges, focus, focusLines, focusBox, rx1, ry1, rx2, ry2, rx3, ry3, top, bottom, dense }
   }, [size, byId, adjacency, focusId, nodes, relations, fontsReady, showNames])
 
+  // ------------------------------------------------- vue d'ensemble (entrée)
+  // Aucun élément n'est mis en avant : tous les éléments reliés sont
+  // disposés selon leurs liens ; les éléments sans lien forment le halo.
+  const ov = useMemo(() => {
+    if (focusId || !nodes.length) return null
+    const W = size.w
+    const H = size.h
+    const top = TOP_H
+    const bottom = H - STRIP_H - 10
+    const cx = W / 2
+    const cy = (top + bottom) / 2 + 4
+    const availH = bottom - top
+    const deg = new Map(nodes.map(n => [n.node_id, (adjacency.get(n.node_id) || []).length]))
+    const byType = (a, b) => {
+      const ta = TYPE_ORDER.indexOf(normalizeType(a.type_noeud))
+      const tb = TYPE_ORDER.indexOf(normalizeType(b.type_noeud))
+      return ta - tb || a.libelle.localeCompare(b.libelle, 'fr')
+    }
+    const linked = nodes.filter(n => deg.get(n.node_id) > 0).sort(byType)
+    const lone = nodes.filter(n => !deg.get(n.node_id)).sort(byType)
+
+    const rx1 = Math.min(W * 0.28, 320)
+    const ry1 = Math.min(availH * 0.36, 240)
+    const rx3 = Math.min(rx1 * 1.9, W / 2 - 14)
+    const ry3 = Math.min(ry1 * 1.78, availH / 2 - 2)
+    const hw = lone.length ? rx3 * 0.74 : W / 2 - 110
+    const hh = lone.length ? ry3 * 0.66 : availH / 2 - 46
+
+    const pos = new Map()
+    const ids = linked.map(n => n.node_id)
+    const P = forceLayout(ids, relations.map(r => [r.source_id, r.cible_id]))
+    if (P.length) {
+      const xs = P.map(p => p.x)
+      const ys = P.map(p => p.y)
+      const bx = (Math.min(...xs) + Math.max(...xs)) / 2
+      const by = (Math.min(...ys) + Math.max(...ys)) / 2
+      const bw = Math.max(1e-3, (Math.max(...xs) - Math.min(...xs)) / 2)
+      const bh = Math.max(1e-3, (Math.max(...ys) - Math.min(...ys)) / 2)
+      let sx = hw / bw
+      let sy = hh / bh
+      const s = Math.min(sx, sy)
+      sx = Math.min(sx, s * 1.5)
+      sy = Math.min(sy, s * 1.5)
+      // Petits graphes : on évite des liens démesurés.
+      const idx = new Map(ids.map((id, i) => [id, i]))
+      const lens = relations
+        .map(r => [idx.get(r.source_id), idx.get(r.cible_id)])
+        .filter(([a, b]) => a != null && b != null)
+        .map(([a, b]) => Math.hypot((P[a].x - P[b].x) * sx, (P[a].y - P[b].y) * sy))
+      const avg = lens.length ? lens.reduce((x, y) => x + y, 0) / lens.length : 0
+      if (avg > 170) { sx *= 170 / avg; sy *= 170 / avg }
+      ids.forEach((id, i) => pos.set(id, { x: cx + (P[i].x - bx) * sx, y: cy + (P[i].y - by) * sy, ring: 1, angle: Math.atan2(P[i].y - by, P[i].x - bx) }))
+    }
+    lone.forEach((n, i) => {
+      const a = -Math.PI / 2 + ((i + 0.5) * 2 * Math.PI) / Math.max(1, lone.length)
+      pos.set(n.node_id, { x: cx + Math.cos(a) * rx3, y: cy + Math.sin(a) * ry3, ring: 3, angle: a })
+    })
+
+    const maxDeg = Math.max(1, ...deg.values())
+    const radius = n => {
+      const p = pos.get(n.node_id)
+      if (!p) return 3
+      if (p.ring === 3) return 3.6
+      return 5.5 + 8 * Math.sqrt((deg.get(n.node_id) || 0) / maxDeg)
+    }
+    const hubId = linked.length ? [...linked].sort((a, b) => deg.get(b.node_id) - deg.get(a.node_id))[0].node_id : null
+
+    // Zone réservée au bandeau d'aide, en haut à gauche.
+    const placed = [{ x0: 0, x1: Math.min(390, W - 280), y0: 0, y1: top + 6 }]
+    const placedLabels = [placed[0]]
+    nodes.forEach(n => {
+      const p = pos.get(n.node_id)
+      const r = radius(n) + 3
+      placed.push({ x0: p.x - r, x1: p.x + r, y0: p.y - r, y1: p.y + r })
+    })
+
+    // Noms des éléments reliés : les plus reliés d'abord ; sans « Noms »,
+    // seuls les six plus reliés sont nommés.
+    const labelSize = 12.5
+    const labelFont = `600 ${labelSize}px ${FONT}`
+    const lineH = labelSize * 1.25
+    const labels = new Map()
+    let hidden = 0
+    const order = [...linked].sort((a, b) => deg.get(b.node_id) - deg.get(a.node_id) || byType(a, b))
+    order.forEach((n, rank) => {
+      if (!showNames && rank >= 6) return
+      const p = pos.get(n.node_id)
+      const r = radius(n)
+      let lines = wrap(n.libelle, 150, labelFont)
+      if (lines.length > 2) {
+        let second = lines.slice(1).join(' ')
+        while (second.length > 4 && measure(`${second}…`, labelFont) > 150) second = second.slice(0, -1)
+        lines = [lines[0], `${second.trim()}…`]
+      }
+      const w = Math.max(...lines.map(l => measure(l, labelFont)))
+      const h = lines.length * lineH
+      const right = p.x >= cx
+      const cands = []
+      for (let step = 0; step < 4; step += 1) {
+        const d = r + 6 + step * 7
+        const side = [
+          { x0: p.x + d, y0: p.y - h / 2, anchor: 'start' },
+          { x0: p.x - d - w, y0: p.y - h / 2, anchor: 'end' },
+        ]
+        if (!right) side.reverse()
+        cands.push(...side,
+          { x0: p.x - w / 2, y0: p.y + d, anchor: 'middle' },
+          { x0: p.x - w / 2, y0: p.y - d - h, anchor: 'middle' })
+      }
+      // En dernier recours : en diagonale, au-dessus ou au-dessous.
+      for (const dy of [-1, 1]) {
+        for (const dir of right ? [1, -1] : [-1, 1]) {
+          const y0 = dy < 0 ? p.y - r - h - 2 : p.y + r + 2
+          cands.push(dir > 0 ? { x0: p.x + r * 0.6, y0, anchor: 'start' } : { x0: p.x - r * 0.6 - w, y0, anchor: 'end' })
+        }
+      }
+      // Les trois éléments les plus reliés sont toujours nommés : leur nom
+      // peut passer sur un point voisin, jamais sur un autre nom.
+      const against = rank < 3 ? placedLabels : placed
+      let found = null
+      for (const c of cands) {
+        if (c.x0 < 6 || c.x0 + w > W - 6 || c.y0 < top - 6 || c.y0 + h > bottom) continue
+        const box = { x0: c.x0 - 3, x1: c.x0 + w + 3, y0: c.y0 - 2, y1: c.y0 + h + 2 }
+        if (!against.some(b => overlap(box, b))) { found = { ...c, box }; break }
+      }
+      if (!found) { hidden += 1; return }
+      placed.push(found.box)
+      placedLabels.push(found.box)
+      const tx = found.anchor === 'start' ? found.x0 : found.anchor === 'end' ? found.x0 + w : found.x0 + w / 2
+      labels.set(n.node_id, { lines, tx, ty: found.y0 + labelSize - 1, anchor: found.anchor, size: labelSize, lineH })
+    })
+
+    // Noms des éléments sans lien (halo), comme dans la vue centrée.
+    const outerLabels = []
+    if (showNames) {
+      const size = 11.5
+      const font = `500 ${size}px ${FONT}`
+      const h = size * 1.3
+      lone.forEach(n => {
+        const p = pos.get(n.node_id)
+        let text = String(n.libelle || '')
+        if (measure(text, font) > 135) {
+          while (text.length > 4 && measure(`${text}…`, font) > 135) text = text.slice(0, -1)
+          text = `${text.trim()}…`
+        }
+        const w = measure(text, font)
+        const c = Math.cos(p.angle)
+        const sn = Math.sin(p.angle)
+        const r = radius(n)
+        let found = null
+        for (let attempt = 0; attempt < 12 && !found; attempt += 1) {
+          const step = attempt % 6
+          const inward = attempt >= 6
+          const d = r + 5 + step * 6
+          let x0, y0, anchor
+          if (Math.abs(c) > 0.32) {
+            const toRight = (c > 0) !== inward
+            anchor = toRight ? 'start' : 'end'
+            x0 = toRight ? p.x + d : p.x - d - w
+            y0 = p.y - h / 2 + (step % 2 ? 1 : -1) * Math.ceil(step / 2) * (h * 0.8)
+          } else {
+            anchor = 'middle'
+            x0 = p.x - w / 2 + (step % 2 ? 1 : -1) * Math.ceil(step / 2) * 12
+            y0 = (sn < 0) !== inward ? p.y - d - h : p.y + d
+          }
+          if (x0 < 6 || x0 + w > W - 6 || y0 < top - 6 || y0 + h > bottom) continue
+          const box = { x0: x0 - 2, x1: x0 + w + 2, y0: y0 - 1, y1: y0 + h + 1 }
+          if (!placed.some(b => overlap(box, b))) found = { box, x0, y0, w, anchor }
+        }
+        if (!found) { hidden += 1; return }
+        placed.push(found.box)
+        const tx = found.anchor === 'start' ? found.x0 : found.anchor === 'end' ? found.x0 + found.w : found.x0 + found.w / 2
+        outerLabels.push({ id: n.node_id, text, full: n.libelle, tx, ty: found.y0 + size - 1, anchor: found.anchor, size, ring: 3 })
+      })
+    }
+
+    // Arcs : courbes légères, toutes de même importance.
+    const edges = []
+    relations.forEach((r, index) => {
+      const a = pos.get(r.source_id)
+      const b = pos.get(r.cible_id)
+      if (!a || !b) return
+      const mx = (a.x + b.x) / 2
+      const my = (a.y + b.y) / 2
+      const len = Math.hypot(b.x - a.x, b.y - a.y) || 1
+      const k = 0.14 * len
+      const qx = mx - ((b.y - a.y) / len) * k
+      const qy = my + ((b.x - a.x) / len) * k
+      edges.push({ r, a, b, qx, qy, midX: 0.25 * a.x + 0.5 * qx + 0.25 * b.x, midY: 0.25 * a.y + 0.5 * qy + 0.25 * b.y, key: `${r.relation_id || index}` })
+    })
+
+    return { W, H, cx, cy, pos, radius, labels, outerLabels, hidden, edges, hubId, deg, top, bottom, rx3, ry3, loneCount: lone.length }
+  }, [size, adjacency, focusId, nodes, relations, fontsReady, showNames])
+
   // ------------------------------------------------------ interactions
   const nodeAt = event => {
     const svg = svgRef.current
     const ctm = groupRef.current?.getScreenCTM?.()
-    if (!svg || !ctm || !model) return null
+    const M = model || ov
+    if (!svg || !ctm || !M) return null
     const pt = svg.createSVGPoint()
     pt.x = event.clientX
     pt.y = event.clientY
@@ -454,10 +700,10 @@ export default function PublicationOrbit({
     let best = null
     let bestD = Infinity
     nodes.forEach(n => {
-      const p = model.pos.get(n.node_id)
+      const p = M.pos.get(n.node_id)
       if (!p) return
       const d = Math.hypot(p.x - w.x, p.y - w.y) * k
-      const reach = model.radius(n) * k + (p.ring === 3 ? 7 : 9)
+      const reach = M.radius(n) * k + (p.ring === 3 ? 7 : 9)
       if (d <= reach && d < bestD) { best = n; bestD = d }
     })
     return best
@@ -495,6 +741,180 @@ export default function PublicationOrbit({
   }
   const zoom = f => setScale(s => clamp(s * f, 0.6, 3.2))
 
+  const gradientDefs = (
+    <defs>
+      {Object.entries(ORBIT_TYPES).map(([k, [, c]]) => (
+        <React.Fragment key={k}>
+          <radialGradient id={`ob-core-${k.replace(/\W/g, '')}`} cx="42%" cy="40%" r="62%">
+            <stop offset="0" stopColor="#fff" />
+            <stop offset=".3" stopColor="#fff" stopOpacity=".9" />
+            <stop offset=".56" stopColor={c} />
+            <stop offset="1" stopColor={c} />
+          </radialGradient>
+          <radialGradient id={`ob-halo-${k.replace(/\W/g, '')}`}>
+            <stop offset="0" stopColor={c} stopOpacity=".5" />
+            <stop offset=".36" stopColor={c} stopOpacity=".16" />
+            <stop offset="1" stopColor={c} stopOpacity="0" />
+          </radialGradient>
+        </React.Fragment>
+      ))}
+    </defs>
+  )
+  const zoomControls = (
+    <div className="orbit-zoom" aria-label="Zoom">
+      <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant" title="Zoom avant">+</button>
+      <button type="button" onClick={() => zoom(0.85)} aria-label="Zoom arrière" title="Zoom arrière">−</button>
+      <button type="button" onClick={() => { setScale(1); setPan({ x: 0, y: 0 }) }} aria-label="Recentrer" title="Recentrer">⌾</button>
+      <button
+        type="button"
+        className={`orbit-names-toggle ${showNames ? 'is-on' : ''}`}
+        onClick={toggleNames}
+        aria-pressed={showNames}
+        title={showNames ? 'Ne nommer que les éléments principaux' : 'Afficher les noms de tous les éléments'}
+      >
+        Noms
+      </button>
+    </div>
+  )
+
+  if (ov) {
+    const { W, H, cx, cy, pos, radius, labels, outerLabels, hidden, edges, hubId, deg } = ov
+    const t = `translate(${cx + pan.x} ${cy + pan.y}) scale(${scale}) translate(${-cx} ${-cy})`
+    const hoverNode = hoverId ? byId.get(hoverId) : null
+    const hoverPos = hoverNode ? pos.get(hoverId) : null
+    const near = new Set(hoverId ? [hoverId, ...(adjacency.get(hoverId) || []).map(x => x.other)] : [])
+    const hoverEdges = hoverId ? edges.filter(e => e.r.source_id === hoverId || e.r.cible_id === hoverId) : []
+    const pillFont = `600 11.5px ${FONT}`
+    return (
+      <div className="orbit-wrap" ref={wrapRef}>
+        <svg
+          ref={svgRef}
+          className={`orbit-svg orbit-overview${hoverId ? ' has-hover' : ''}`}
+          width={W}
+          height={H - STRIP_H}
+          viewBox={`0 0 ${W} ${H - STRIP_H}`}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          onPointerLeave={() => !dragRef.current && setHoverId(null)}
+          onClick={onClick}
+          onWheel={e => zoom(e.deltaY < 0 ? 1.08 : 0.92)}
+          style={hoverId ? { cursor: 'pointer' } : undefined}
+          role="img"
+          aria-label={`Vue d’ensemble du graphe : ${nodes.length} éléments et ${relations.length} liens`}
+        >
+          {gradientDefs}
+          <g ref={groupRef} transform={t}>
+            {ov.loneCount > 0 && <ellipse className="orbit-ring outer" cx={cx} cy={cy} rx={ov.rx3} ry={ov.ry3} />}
+
+            <g key="ov-edges" className="orbit-edges">
+              {edges.map(e => {
+                const on = near.size && (e.r.source_id === hoverId || e.r.cible_id === hoverId)
+                const src = byId.get(e.r.source_id)
+                return (
+                  <path
+                    key={e.key}
+                    className={`orbit-edge ov${on ? ' is-on' : ''}${near.size && !on ? ' is-dim' : ''}`}
+                    d={`M${e.a.x},${e.a.y} Q${e.qx},${e.qy} ${e.b.x},${e.b.y}`}
+                    stroke={typeColor(normalizeType(src?.type_noeud))}
+                  />
+                )
+              })}
+            </g>
+
+            <g className="orbit-nodes">
+              {nodes.map(n => {
+                const p = pos.get(n.node_id)
+                if (!p) return null
+                const type = normalizeType(n.type_noeud)
+                const gid = (ORBIT_TYPES[type] ? type : 'notion_idee').replace(/\W/g, '')
+                const r = radius(n)
+                const dim = near.size && !near.has(n.node_id)
+                const op = dim ? 0.22 : p.ring === 3 ? (n.node_id === hoverId ? 1 : 0.55) : 1
+                return (
+                  <g
+                    key={n.node_id}
+                    className={`orbit-node ring-${p.ring}${n.node_id === hubId ? ' is-hub' : ''}`}
+                    data-node-id={n.node_id}
+                    style={{ transform: `translate(${p.x}px, ${p.y}px)`, opacity: op }}
+                  >
+                    {p.ring === 1 && <circle r={r * 2.6} fill={`url(#ob-halo-${gid})`} />}
+                    {highlight.has(n.node_id) && <circle className="orbit-highlight" r={r + 9} />}
+                    <circle className="orbit-core" r={r} fill={`url(#ob-core-${gid})`} stroke={typeColor(type)} />
+                    <circle
+                      r={Math.max(r, 6)}
+                      fill="transparent"
+                      pointerEvents="none"
+                      tabIndex="0"
+                      role="button"
+                      aria-label={`${n.libelle} (${deg.get(n.node_id) || 0} lien${(deg.get(n.node_id) || 0) > 1 ? 's' : ''})`}
+                      onFocus={() => setHoverId(n.node_id)}
+                      onBlur={() => setHoverId(null)}
+                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onFocus?.(n) } }}
+                    />
+                  </g>
+                )
+              })}
+            </g>
+
+            <g key="ov-labels" className={`orbit-labels${near.size ? ' is-dim' : ''}`}>
+              {outerLabels.map(L => (
+                <text key={`outer-${L.id}`} className={`orbit-label orbit-label-outer ring-3${near.size && !near.has(L.id) ? ' is-dim' : ''}`} x={L.tx} y={L.ty} textAnchor={L.anchor} style={{ fontSize: `${L.size}px` }}>
+                  <title>{L.full}</title>
+                  {L.text}
+                </text>
+              ))}
+              {[...labels.entries()].map(([id, L]) => (
+                <text key={id} className={`orbit-label${near.size && !near.has(id) ? ' is-dim' : ''}`} x={L.tx} y={L.ty} textAnchor={L.anchor} style={{ fontSize: `${L.size}px` }}>
+                  {L.lines.map((line, i) => <tspan key={i} x={L.tx} dy={i ? L.lineH : 0}>{line}</tspan>)}
+                </text>
+              ))}
+            </g>
+
+            {hoverEdges.map(e => {
+              const text = verbLabel(e.r.type_relation)
+              const w = measure(text, pillFont) + 14
+              return (
+                <g key={`verb-${e.key}`} className="orbit-pill orbit-pill-static" pointerEvents="none">
+                  <rect x={e.midX - w / 2} y={e.midY - 10} width={w} height="20" rx="10" stroke={typeColor(normalizeType(byId.get(e.r.source_id)?.type_noeud))} />
+                  <text x={e.midX} y={e.midY + 4} textAnchor="middle">{text}</text>
+                </g>
+              )
+            })}
+
+            {hoverNode && hoverPos && (() => {
+              const L = labels.get(hoverId)
+              if (L && L.lines.join(' ') === hoverNode.libelle) return null
+              const lines = wrap(hoverNode.libelle, 220, `600 13px ${FONT}`)
+              const w = Math.max(...lines.map(l => measure(l, `600 13px ${FONT}`))) + 18
+              const h = lines.length * 17 + 12
+              const r = radius(hoverNode)
+              const x = clamp(hoverPos.x - w / 2, 6, W - w - 6)
+              const y = hoverPos.y - r - h - 10 < 4 ? hoverPos.y + r + 10 : hoverPos.y - r - h - 10
+              return (
+                <g className="orbit-tip" pointerEvents="none">
+                  <rect x={x} y={y} width={w} height={h} rx="9" stroke={typeColor(normalizeType(hoverNode.type_noeud))} />
+                  <text x={x + 9} y={y + 19}>
+                    {lines.map((l, i) => <tspan key={i} x={x + 9} dy={i ? 17 : 0}>{l}</tspan>)}
+                  </text>
+                </g>
+              )
+            })()}
+          </g>
+        </svg>
+
+        {zoomControls}
+
+        <p className="orbit-names-hint orbit-ov-hint" aria-live="polite">
+          Cliquez sur un élément pour l’explorer.
+          {ov.loneCount > 0 ? ' En périphérie : les éléments sans lien.' : ''}
+          {hidden > 0 ? ` ${hidden} nom${hidden > 1 ? 's' : ''} masqué${hidden > 1 ? 's' : ''} : zoomez ou survolez les points.` : ''}
+        </p>
+      </div>
+    )
+  }
+
   if (!model) {
     return <div className="orbit-wrap" ref={wrapRef}><p className="orbit-empty">Aucune entité à afficher avec les filtres actuels.</p></div>
   }
@@ -528,23 +948,7 @@ export default function PublicationOrbit({
         role="img"
         aria-label={`Graphe de la publication centré sur : ${focus.libelle}`}
       >
-        <defs>
-          {Object.entries(ORBIT_TYPES).map(([k, [, c]]) => (
-            <React.Fragment key={k}>
-              <radialGradient id={`ob-core-${k.replace(/\W/g, '')}`} cx="42%" cy="40%" r="62%">
-                <stop offset="0" stopColor="#fff" />
-                <stop offset=".3" stopColor="#fff" stopOpacity=".9" />
-                <stop offset=".56" stopColor={c} />
-                <stop offset="1" stopColor={c} />
-              </radialGradient>
-              <radialGradient id={`ob-halo-${k.replace(/\W/g, '')}`}>
-                <stop offset="0" stopColor={c} stopOpacity=".5" />
-                <stop offset=".36" stopColor={c} stopOpacity=".16" />
-                <stop offset="1" stopColor={c} stopOpacity="0" />
-              </radialGradient>
-            </React.Fragment>
-          ))}
-        </defs>
+        {gradientDefs}
 
         <g ref={groupRef} transform={t}>
           <ellipse className="orbit-ring" cx={cx} cy={cy} rx={model.rx1} ry={model.ry1} />
@@ -666,20 +1070,7 @@ export default function PublicationOrbit({
         </g>
       </svg>
 
-      <div className="orbit-zoom" aria-label="Zoom">
-        <button type="button" onClick={() => zoom(1.18)} aria-label="Zoom avant" title="Zoom avant">+</button>
-        <button type="button" onClick={() => zoom(0.85)} aria-label="Zoom arrière" title="Zoom arrière">−</button>
-        <button type="button" onClick={() => { setScale(1); setPan({ x: 0, y: 0 }) }} aria-label="Recentrer" title="Recentrer">⌾</button>
-        <button
-          type="button"
-          className={`orbit-names-toggle ${showNames ? 'is-on' : ''}`}
-          onClick={toggleNames}
-          aria-pressed={showNames}
-          title={showNames ? 'Masquer les noms des éléments éloignés' : 'Afficher les noms de tous les éléments'}
-        >
-          Noms
-        </button>
-      </div>
+      {zoomControls}
 
       {showNames && outerHidden > 0 && (
         <p className="orbit-names-hint" aria-live="polite">
