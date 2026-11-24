@@ -965,9 +965,10 @@ function CorpusResults({ index, selection, keptIds, onKeep, onProof, onPublicati
     setShown(PAGE_SIZE)
     if (boxRef.current) boxRef.current.scrollTop = 0
     if (!selection) { setTab(''); return }
-    // Pour une recherche, on ouvre d'abord le type le plus fourni en éléments
-    // structurés ; à défaut, les passages.
-    setTab(tabs[0]?.id || '')
+    // Un type demandé dans la requête (« tendances narcotrafic ») s'ouvre
+    // directement ; sinon, le premier type trouvé, à défaut les passages.
+    const asked = (selection.focusGroups || []).find(id => tabs.some(entry => entry.id === id))
+    setTab(asked || tabs[0]?.id || '')
   }, [selection]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!selection) {
@@ -999,7 +1000,10 @@ function CorpusResults({ index, selection, keptIds, onKeep, onProof, onPublicati
         <span className="qce-kicker">{selection.kind === 'search' ? 'Recherche' : selection.kind === 'theme' ? 'Thème' : selection.kind === 'publication' ? 'Publication' : 'Type d’élément'}</span>
         <h2>{selection.kind === 'search' ? `« ${selection.title} »` : selection.title}</h2>
         {selection.subtitle && <p className="qce-muted">{selection.subtitle}</p>}
+        {selection.corrections?.length > 0 && <p className="qce-muted">Recherche corrigée : {selection.corrections.map(c => `« ${c.from} » → « ${c.to} »`).join(', ')}</p>}
         {selection.alsoSearched?.length > 0 && <p className="qce-muted">Inclut aussi : {selection.alsoSearched.map(form => `« ${form} »`).join(', ')}</p>}
+        {selection.focusMissing && <p className="qce-muted">Aucun élément de type « {selection.focusGroups.map(id => typeGroup(id)?.label.toLowerCase()).join(', ')} » sur ce sujet dans la base : voici les autres éléments trouvés.</p>}
+        {selection.partial && <p className="qce-muted">Aucun résultat ne contient tous les mots de la recherche : voici les plus proches.</p>}
       </div>
       {selection.kind !== 'publication' && <span className="qce-count">{pubCount} publication{pubCount > 1 ? 's' : ''}</span>}
     </header>
@@ -1073,6 +1077,7 @@ function ResultItem({ item, kept, onKeep, onProof, hidePublication = false }) {
     <div className="qce-item-text">
       <p>{text}</p>
       {where && <small>{where}</small>}
+      {item.viaPublication && <small className="qce-via" title="Le sujet est traité dans les passages de cette publication ; cet élément du graphe n’en reprend pas les mots.">Même publication · le sujet y est traité dans le texte</small>}
     </div>
     <div className="qce-item-actions">
       <button type="button" className={`qce-keep ${kept ? 'kept' : ''}`} onClick={() => onKeep(item)} disabled={kept}>{kept ? 'Gardé ✓' : '+ Garder'}</button>
