@@ -2,14 +2,6 @@
 export const VIDEO_PAGE = 'https://quirites-ihemi.github.io/videolancementV1/'
 
 export const VIDEOS = {
-  lancement: {
-    id: 'lancement',
-    title: 'Quiritès Veille Lab en 90 secondes',
-    lead: 'Découvrez l’application en une minute et demie : repérer les expertises, explorer une publication, construire votre propre travail.',
-    duration: '1 min 30',
-    href: VIDEO_PAGE + 'teaser.html',
-    image: VIDEO_PAGE + 'vignette_lancement.jpg',
-  },
   atlas: {
     id: 'atlas',
     title: 'L’Atlas des expertises ministérielles',
@@ -28,11 +20,9 @@ export const VIDEOS = {
   },
 }
 
-// Vidéo proposée à l'ouverture de chaque onglet.
+// Vidéo de prise en main proposée à l'ouverture de l'onglet correspondant.
+// La vidéo de lancement (teaser.html) sert à la diffusion extérieure : elle n'est pas proposée ici.
 export const TAB_VIDEO = {
-  home: 'lancement',
   expertises: 'atlas',
-  explorer: 'lancement',
   atelier: 'atelier',
-  documents: 'lancement',
 }
