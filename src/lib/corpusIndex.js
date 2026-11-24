@@ -1,3 +1,5 @@
+import { SEARCH_FAMILIES } from './searchFamilies.js'
+
 // Index local de la base pour « Avancer avec le corpus ».
 // Tout est calculé à partir des fichiers public/data/*.json chargés par l'application :
 // quand la base s'enrichit, les thèmes, les types et tous les nombres suivent
@@ -112,13 +114,17 @@ function firstMatch(normText, terms) {
 // Score : chaque terme trouvé compte, ses répétitions un peu, et l'expression
 // exacte tapée par l'utilisateur beaucoup. Les éléments du graphe, courts et
 // déjà synthétiques, passent devant les passages à score égal.
-function scoreOf(normText, terms, phrase) {
+function scoreOf(normText, terms, phrase, need = terms.length) {
   let score = 0
+  let found = 0
   for (const term of terms) {
     const n = countTerm(normText, term)
-    if (!n) return 0
+    if (!n) continue
+    found += 1
     score += 10 + Math.min(n, 6)
   }
+  if (found < need || !found) return 0
+  if (found < terms.length) return score - 8 * (terms.length - found)
   if (terms.length > 1) {
     if (phrase && normText.includes(phrase)) score += 25
     else if (closeTogether(normText, terms)) score += 12
@@ -230,9 +236,19 @@ export function buildCorpusIndex(data) {
     return { ...group, count: list.length, pubCount: new Set(list.map(el => el.publication_id)).size }
   })
 
+  // Vocabulaire de la base (mots d'au moins 5 lettres), pour corriger une
+  // faute de frappe dans la requête (« narcotrafoc » → « narcotrafic »).
+  const vocabulary = new Map()
+  ;[...elements, ...passages].forEach(item => {
+    item._norm.split(/\s+/).forEach(word => {
+      if (word.length >= 5 && !/\d/.test(word)) vocabulary.set(word, (vocabulary.get(word) || 0) + 1)
+    })
+  })
+
   return {
     pubs,
     pubMap,
+    vocabulary,
     themes,
     elements,
     passages,
@@ -298,49 +314,197 @@ export function selectType(index, groupId) {
   }
 }
 
-// --- Synonymes validés ------------------------------------------------------
-// Quand la requête contient l'une de ces formes, la recherche est aussi faite
-// avec les autres formes du même groupe, et l'utilisateur en est informé
-// (« Inclut aussi : … »). Pour ajouter un groupe, compléter cette liste.
-export const SYNONYM_GROUPS = [
-  ['IA', 'intelligence artificielle'],
-  ['drogue', 'drogues', 'stupéfiants', 'stupéfiant'],
-  ['crime organisé', 'criminalité organisée'],
-  ['féminicide', 'féminicides', 'morts violentes au sein du couple'],
-  ['vidéoprotection', 'vidéosurveillance'],
-]
+// --- Familles de termes ----------------------------------------------------
+// Mêmes familles que l'Atlas et l'Explorer (lib/searchFamilies.js) : quand la
+// requête contient l'une de ces formes, la recherche est aussi faite avec les
+// autres formes de la famille, et l'utilisateur en est informé
+// (« Inclut aussi : … »). Une famille n'est pas une liste de synonymes stricts.
+export const SYNONYM_GROUPS = SEARCH_FAMILIES.map(family => family.forms)
+
+// Variantes d'écriture d'un même mot, ramenées à une seule forme.
+function canonicalQuery(query) {
+  return String(query || '').replace(/\bnarco[\s-]+(trafics?|trafiquants?)\b/gi, 'narco$1')
+}
 
 const squash = text => ` ${searchable(text).split(/\s+/).filter(Boolean).join(' ')} `
+const sameTerms = (a, b) => queryTerms(a).join(' ') === queryTerms(b).join(' ')
 
 // Variantes de la requête : chaque forme reconnue est remplacée par les autres
-// formes de son groupe (une seule variante par forme distincte affichée).
+// formes de sa famille (une seule variante par forme distincte affichée).
 export function synonymVariants(query) {
   const q = squash(query)
   const variants = []
   for (const group of SYNONYM_GROUPS) {
-    const found = group.find(form => q.includes(squash(form)))
+    // Forme reconnue : l'expression elle-même, ou son singulier/pluriel.
+    const found = group
+      .map(form => ({ form, key: squash(form) }))
+      .find(({ form, key }) => q.includes(key) || ` ${queryTerms(query).join(' ')} `.includes(` ${queryTerms(form).join(' ')} `))
     if (!found) continue
-    const seen = new Set([squash(found)])
+    const seen = [found.form]
     for (const alt of group) {
-      const key = squash(alt)
-      // Les simples pluriels d'une forme déjà cherchée n'apportent rien.
-      if (seen.has(key) || [...seen].some(k => queryTerms(k).join(' ') === queryTerms(key).join(' '))) continue
-      seen.add(key)
-      // La forme d'origine est remplacée dans la requête telle que tapée.
-      const variant = q.replace(squash(found), key).trim()
-      variants.push({ query: alt === 'IA' ? variant.replace(/(^| )ia( |$)/, '$1IA$2') : variant, label: alt })
+      if (seen.some(form => sameTerms(form, alt))) continue
+      seen.push(alt)
+      const terms = queryTerms(query)
+      const foundTerms = queryTerms(found.form)
+      // La forme reconnue est remplacée par la forme alternative.
+      const rest = terms.filter(term => !foundTerms.includes(term))
+      const variant = [alt, ...rest].join(' ')
+      variants.push({ query: variant, label: alt })
+      // Texte écrit en deux mots (« narco-trafic ») : cherché sans être affiché.
+      if (/^narco/i.test(alt)) variants.push({ query: [alt.replace(/^narco/i, 'narco '), ...rest].join(' '), label: null })
     }
+    if (/^narco/i.test(found.form)) variants.push({ query: [found.form.replace(/^narco/i, 'narco '), ...queryTerms(query).filter(t => !queryTerms(found.form).includes(t))].join(' '), label: null })
   }
   return variants
+}
+
+// --- Types demandés dans la requête -----------------------------------------
+// « tendances narcotrafic », « acteurs de la cybersécurité »… : le mot de type
+// n'est pas cherché dans les textes, il oriente vers l'onglet correspondant.
+const TYPE_WORDS = [
+  { group: 'signaux', re: /\bsign(?:al|aux)(?:\s+faibles?)?\b/ },
+  { group: 'tendances', re: /\btendances?(?:\s+fortes?)?\b/ },
+  { group: 'recommandations', re: /\brecommandations?\b|\bpreconisations?\b/ },
+  { group: 'problemes', re: /\bproblemes?\b|\benjeux\b/ },
+  { group: 'actions', re: /\bactions?\b/ },
+  { group: 'dispositifs', re: /\bdispositifs?\b/ },
+  { group: 'methodes', re: /\bmethodes?\b/ },
+  { group: 'acteurs', re: /\bacteurs?\b/ },
+  { group: 'notions', re: /\bnotions?\b|\bconcepts?\b/ },
+]
+
+export function parseQuery(query) {
+  let text = ` ${searchable(canonicalQuery(query)).replace(/\s+/g, ' ')} `
+  const groups = []
+  for (const { group, re } of TYPE_WORDS) {
+    const m = text.match(re)
+    if (!m) continue
+    groups.push(group)
+    text = text.replace(re, ' ')
+  }
+  return { groups, rest: text.replace(/\s+/g, ' ').trim() }
+}
+
+// --- Correction des fautes de frappe ----------------------------------------
+function distance(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i)
+  for (let i = 1; i <= a.length; i += 1) {
+    const cur = [i]
+    let best = i
+    for (let j = 1; j <= b.length; j += 1) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1))
+      best = Math.min(best, cur[j])
+    }
+    if (best > max) return max + 1
+    prev = cur
+  }
+  return prev[b.length]
+}
+
+// Un mot de la requête absent de toute la base est remplacé par le mot le plus
+// proche et le plus fréquent de la base (une ou deux lettres d'écart).
+function correctQuery(index, query) {
+  const vocab = index.vocabulary
+  if (!vocab) return { query, corrections: [] }
+  const corrections = []
+  const words = searchable(query).split(/\s+/).filter(Boolean)
+  const fixed = words.map(word => {
+    if (word.length < 5 || /\d/.test(word) || STOP.has(word)) return word
+    const stem = word.replace(/(?:s|x)$/, '')
+    for (const known of vocab.keys()) if (known.startsWith(stem)) return word
+    const max = word.length >= 8 ? 2 : 1
+    let best = null
+    for (const [known, count] of vocab) {
+      const d = distance(word, known, max)
+      if (d <= max && (!best || d < best.d || (d === best.d && count > best.count))) best = { known, d, count }
+    }
+    if (!best) return word
+    corrections.push({ from: word, to: best.known })
+    return best.known
+  })
+  return corrections.length ? { query: fixed.join(' '), corrections } : { query, corrections }
 }
 
 // Recherche : tous les mots doivent figurer dans l'élément ou le passage.
 // Les résultats sont classés du plus pertinent au moins pertinent, et les
 // publications selon ce qu'elles apportent sur le sujet (titre compris).
-export function searchIndex(index, query) {
-  const base = searchCore(index, query)
+// Si aucun résultat ne contient tous les mots, les résultats qui en contiennent
+// presque tous sont proposés, en le signalant.
+export function searchIndex(index, rawQuery) {
+  const typed = String(rawQuery || '').trim()
+  const { groups, rest } = parseQuery(typed)
+  // Seulement un type (« tendances ») : on parcourt ce type dans toute la base.
+  if (groups.length && !queryTerms(rest).length) {
+    return { ...selectType(index, groups[0]), subject: typed }
+  }
+  let query = groups.length ? rest : canonicalQuery(typed)
+  const { query: corrected, corrections } = correctQuery(index, query)
+  query = corrected
+  let result = searchWithFamilies(index, query)
+  result = withPublicationContext(index, result)
+  // Aucun élément du type demandé sur ce sujet : on le dit, et on montre le reste.
+  const focusMissing = groups.length > 0 && !result.elements.some(el => groups.includes(el.group))
+  if (!result.elements.length && !result.passages.length && queryTerms(query).length > 1) {
+    const loose = searchWithFamilies(index, query, true)
+    if (loose.elements.length || loose.passages.length) result = { ...loose, partial: true }
+  }
+  return {
+    ...result,
+    title: typed,
+    query: typed,
+    focusGroups: groups,
+    focusMissing,
+    corrections,
+  }
+}
+
+// Famille de mots : « terrorisme » cherche aussi « terroriste(s) »,
+// « radicalisation » « radicalisé(s) », « criminalité » « criminel »… La racine
+// garde au moins 7 lettres pour ne pas rapprocher des mots sans rapport.
+const rootOf = term => term.replace(/i(?:sme|ste)s?$/, 'is').replace(/(?:ations?|ites?)$/, '')
+export function rootQuery(query) {
+  const terms = queryTerms(query)
+  let changed = false
+  const roots = terms.map(term => {
+    const root = rootOf(term)
+    if (root !== term && root.length >= 7) { changed = true; return root }
+    return term
+  })
+  return changed ? roots.join(' ') : null
+}
+
+// Une publication peut traiter le sujet dans son texte sans qu'aucun de ses
+// éléments du graphe n'en reprenne les mots (ex. « Empreintes » n° 274 sur le
+// narcotrafic : ses éléments parlent de « criminalité organisée »). Si au moins
+// deux de ses passages et un cinquième de son texte correspondent, ses éléments
+// sont proposés après les autres, avec la mention « Même publication ».
+function withPublicationContext(index, result) {
+  if (!result.passages?.length) return result
+  const total = index.passageCount || (index.passageCount = index.passages.reduce((m, p) => m.set(p.publication_id, (m.get(p.publication_id) || 0) + 1), new Map()))
+  const hits = new Map()
+  result.passages.forEach(p => hits.set(p.publication_id, (hits.get(p.publication_id) || 0) + 1))
+  const direct = new Set(result.elements.map(el => el.publication_id))
+  const extra = []
+  // Au plus les trois publications où le sujet occupe la plus grande part du texte.
+  ;[...hits.entries()]
+    .filter(([id, n]) => !direct.has(id) && n >= 2 && n / (total.get(id) || 1) >= 0.2)
+    .sort((a, b) => b[1] / (total.get(b[0]) || 1) - a[1] / (total.get(a[0]) || 1))
+    .slice(0, 3)
+    .forEach(([id]) => {
+    index.elements
+      .filter(el => el.publication_id === id)
+      .forEach(el => extra.push({ ...el, _score: 1, viaPublication: true }))
+    })
+  return extra.length ? { ...result, elements: [...result.elements, ...extra] } : result
+}
+
+function searchWithFamilies(index, query, loose = false) {
+  const base = searchCore(index, query, loose)
   if (base.tooShort) return base
   const variants = synonymVariants(query)
+  const rooted = rootQuery(query)
+  if (rooted) variants.push({ query: rooted, label: null })
   if (!variants.length) return base
   // Fusion : un élément trouvé par plusieurs variantes garde son meilleur score.
   const merge = lists => {
@@ -351,24 +515,28 @@ export function searchIndex(index, query) {
     })
     return [...map.values()].sort((a, b) => b._score - a._score)
   }
-  const runs = [base, ...variants.map(v => searchCore(index, v.query))]
+  // À pertinence égale, le mot tapé lui-même passe devant les autres termes de sa famille.
+  const lift = list => list.map(item => ({ ...item, _score: item._score + 6 }))
+  const runs = [{ ...base, elements: lift(base.elements), passages: lift(base.passages) }, ...variants.map(v => searchCore(index, v.query, loose))]
   const pubScore = new Map()
-  runs.forEach(run => run.pubScores.forEach(([id, score]) => pubScore.set(id, Math.max(pubScore.get(id) || 0, score))))
+  runs.forEach(run => (run.pubScores || []).forEach(([id, score]) => pubScore.set(id, Math.max(pubScore.get(id) || 0, score))))
   return {
     ...base,
-    alsoSearched: variants.map(v => v.label),
+    alsoSearched: [...new Set(variants.map(v => v.label).filter(Boolean))],
     elements: merge(runs.map(run => run.elements)),
     passages: merge(runs.map(run => run.passages)),
     publications: [...pubScore.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => index.pubMap.get(id)).filter(Boolean),
   }
 }
 
-function searchCore(index, query) {
+function searchCore(index, query, loose = false) {
   const terms = queryTerms(query)
   if (!terms.length) return { kind: 'search', title: query, query, terms, publications: [], elements: [], passages: [], tooShort: true }
   const phrase = terms.length > 1 ? ` ${searchable(query).split(/\s+/).filter(Boolean).join(' ')} `.replace(/\s+/g, ' ') : ''
+  // Recherche souple : un mot sur trois peut manquer (jamais le seul mot).
+  const need = loose ? Math.max(1, Math.ceil(terms.length * 2 / 3)) : terms.length
   const rank = (list, bonus) => list
-    .map(item => ({ item, score: scoreOf(` ${item._norm} `.replace(/\s+/g, ' '), terms, phrase) }))
+    .map(item => ({ item, score: scoreOf(` ${item._norm} `.replace(/\s+/g, ' '), terms, phrase, need) }))
     .filter(entry => entry.score > 0)
     .sort((a, b) => b.score - a.score)
     .map(entry => ({ ...entry.item, _score: entry.score + bonus }))

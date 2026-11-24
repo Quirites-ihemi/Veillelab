@@ -12,8 +12,14 @@ export const SEARCH_FAMILIES = [
   { id: 'drogues', forms: ['drogue', 'stupéfiant', 'narcotrafic', 'cocaïne', 'cannabis', 'héroïne', 'crack', 'opium'] },
   { id: 'ia', forms: ['IA', 'intelligence artificielle'] },
   { id: 'crime-organise', forms: ['crime organisé', 'criminalité organisée'] },
-  { id: 'feminicide', forms: ['féminicide', 'morts violentes au sein du couple'] },
+  { id: 'feminicide', forms: ['féminicide', 'violences conjugales', 'violences intrafamiliales', 'au sein du couple'] },
   { id: 'videoprotection', forms: ['vidéoprotection', 'vidéosurveillance'] },
+  // Familles validées le 24 novembre 2026.
+  { id: 'prison', forms: ['prison', 'carcéral', 'carcérale', 'pénitentiaire', 'détenu'] },
+  { id: 'immigration', forms: ['immigration', 'migration', 'migrant', 'étrangers'] },
+  { id: 'securite-routiere', forms: ['sécurité routière', 'routier', 'routière', 'route'] },
+  { id: 'jeunes', forms: ['jeune', 'mineur', 'adolescent'] },
+  { id: 'incendies', forms: ['incendie', 'feux'] },
 ]
 
 const STOP = new Set(['le', 'la', 'les', 'l', 'de', 'des', 'du', 'd', 'un', 'une', 'et', 'ou', 'en', 'au', 'aux', 'a', 'sur', 'pour', 'dans', 'par', 'avec'])
