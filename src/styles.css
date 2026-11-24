@@ -1705,3 +1705,26 @@ body{color:var(--ink);font-size:16px;line-height:1.55}
   .navtab{padding:0 6px;font-size:11.7px;gap:4px}
   .navtab svg{display:none}
 }
+
+/* Résumé analytique : choix de la publication par recherche */
+.t01-picker h3{font-size:13px!important;margin-bottom:10px}
+.t01-picked{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;background:#f4f7ff;border:1px solid #cfdcff;border-radius:10px;padding:9px;margin-bottom:12px}
+.t01-picked img,.t01-picked .mini-placeholder{width:48px;height:60px;object-fit:cover;border-radius:4px}
+.t01-picked strong{display:block;font-size:12.5px;line-height:1.3;color:#173568}
+.t01-picked span{display:block;font-size:11px;color:#6b7a94;margin-top:3px}
+.t01-picker-empty{font-size:12px;color:#6b7a94;margin:0 0 10px}
+.t01-search{display:flex;align-items:center;gap:7px;border:1px solid #c9d6ee;border-radius:9px;padding:8px 10px;background:#fff;color:#6b7a94}
+.t01-search:focus-within{border-color:#3158ff;box-shadow:0 0 0 3px rgba(49,88,255,.12)}
+.t01-search input{border:0;outline:0;flex:1;font:inherit;font-size:13px;color:#173568;min-width:0;background:transparent}
+.t01-also,.t01-count{font-size:11px;color:#6b7a94;margin:7px 2px 2px}
+.t01-also{font-style:italic}
+.t01-results{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.t01-result{text-align:left;border:1px solid #e3e9f4;border-radius:9px;background:#fff;padding:8px 10px;cursor:pointer;font:inherit}
+.t01-result:hover:not(:disabled){border-color:#9fb3ea;background:#f8faff}
+.t01-result.selected{border-color:#3158ff;background:#f1f5ff}
+.t01-result:disabled{opacity:.6;cursor:not-allowed}
+.t01-result strong{display:block;font-size:12px;line-height:1.3;color:#173568}
+.t01-result span{display:block;font-size:10.5px;color:#73819b;margin-top:2px}
+.t01-result small{display:block;font-size:10.5px;color:#3f5db8;margin-top:3px}
+.t01-result small.t01-unavailable{color:#8a5a16}
+.t01-browse{margin-top:10px;border:0;background:none;color:#3158ff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:4px 2px}
