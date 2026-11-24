@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './LandingPage.css'
 import './presentation.css'
-import { PresentationIntro, PresentationLab } from './components/PresentationText.jsx'
 import quiritesLogo from './landing-quirites-logo.png'
 import radarVisual from './landing-radar.png'
 
@@ -46,7 +45,7 @@ export default function LandingPage({ onEnter }) {
           />
 
           <div className="qlab-radar-landing__eyebrow">
-            EXPLORER · RELIER · METTRE EN PERSPECTIVE
+            EXPLORER · COMPRENDRE · AGIR
           </div>
 
           <h1>
@@ -57,7 +56,7 @@ export default function LandingPage({ onEnter }) {
           </h1>
 
           <p className="qlab-radar-landing__companion">
-            L’application compagne du bulletin de veille de Quiritès
+            De la connaissance à l’action
           </p>
 
           <p className="qlab-radar-landing__lead">
@@ -109,12 +108,16 @@ export default function LandingPage({ onEnter }) {
           <section className="qlab-radar-landing__presentation" aria-label="Présentation de Quiritès Veille Lab" aria-hidden={!reading}>
             <div className="qlab-radar-landing__presentation-inner">
               <div className="qlab-radar-landing__presentation-top">
-                <span className="qlab-radar-landing__pres-kicker">PRÉSENTATION</span>
+                <span className="qlab-radar-landing__pres-kicker">CE QUE VOUS POUVEZ FAIRE</span>
                 <button type="button" className="qlab-radar-landing__toggle" onClick={() => setReading(false)} tabIndex={reading ? 0 : -1}>Revoir le radar</button>
               </div>
               <div className="qvl-pres qvl-pres--dark">
-                <PresentationIntro/>
-                <PresentationLab motto={false}/>
+                <ul className="qvl-pres-aims">
+                  <li><strong>Valoriser les expertises ministérielles</strong><div>Mettre en lumière les savoirs, les savoir-faire et les travaux des services du ministère de l’Intérieur.</div></li>
+                  <li><strong>Questionner le corpus</strong><div>Interroger en langage naturel les publications du bulletin, rechercher des informations, confronter des approches et approfondir une problématique.</div></li>
+                  <li><strong>Mobiliser et actionner la veille</strong><div>S’appuyer sur les connaissances réunies par la veille pour comprendre une situation, préparer un travail, construire son propre raisonnement et éclairer ses choix.</div></li>
+                </ul>
+                <p className="qvl-pres-trust" style={{ marginTop: 16 }}><strong>Des connaissances toujours reliées à leurs sources</strong><br/>Chaque résultat reste relié à la publication dont il est issu et à la page ou au passage qui le fonde : on peut toujours revenir à la source.</p>
               </div>
             </div>
           </section>
