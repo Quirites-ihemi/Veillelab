@@ -1,0 +1,28 @@
+/* Encart « vidéo » affiché à l'ouverture des onglets, en bas à gauche. */
+.qvl-video-hint{
+  position:fixed;left:18px;bottom:18px;z-index:120;
+  display:flex;align-items:center;gap:10px;
+  max-width:calc(100vw - 36px);box-sizing:border-box;padding:8px 8px 8px 10px;
+  background:#0b1a3d;color:#fff;border-radius:999px;border:1px solid rgba(242,180,64,.55);
+  box-shadow:0 14px 32px -12px rgba(5,12,30,.6);font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;
+  animation:qvlVideoHintIn .3s ease-out both
+}
+@keyframes qvlVideoHintIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.qvl-video-hint-link{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;min-width:0}
+.qvl-video-hint-play{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#f2b440;color:#0b1a3d}
+.qvl-video-hint-text{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.qvl-video-hint-text strong{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qvl-video-hint-text>span{font-size:13px;color:#f2b440;font-weight:600}
+.qvl-video-hint-link:hover strong{text-decoration:underline}
+.qvl-video-hint-never{flex:none;margin-left:6px;padding:6px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#c4cfe6;font:600 12.5px/1 "Source Sans 3",Arial,sans-serif;cursor:pointer;white-space:nowrap}
+.qvl-video-hint-never:hover{color:#fff;border-color:#fff}
+.qvl-video-hint-x{flex:none;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#c4cfe6;font-size:21px;line-height:1;cursor:pointer}
+.qvl-video-hint-x:hover{background:rgba(255,255,255,.1);color:#fff}
+.qvl-video-hint :focus-visible{outline:3px solid #7fd0ff;outline-offset:2px}
+@media(max-width:520px){
+  .qvl-video-hint{left:10px;right:10px;bottom:10px;border-radius:16px;flex-wrap:wrap;padding-right:40px}
+  .qvl-video-hint-link{flex:1 1 100%}
+  .qvl-video-hint-never{margin-left:44px}
+  .qvl-video-hint-x{position:absolute;top:6px;right:6px}
+}
+@media(prefers-reduced-motion:reduce){.qvl-video-hint{animation:none}}

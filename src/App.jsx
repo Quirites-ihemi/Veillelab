@@ -10,6 +10,7 @@ import Home from './pages/Home.jsx'
 import CrossDocuments from './pages/CrossDocuments.jsx'
 import { MentionsLegales, Accessibilite, DonneesPersonnelles, Contact } from './pages/LegalPages.jsx'
 import { useHashRoute, navigate, VIEW_TO_TAB, TAB_TO_VIEW } from './lib/router.js'
+import VideoHint from './components/VideoHint.jsx'
 import './site.css'
 
 const FOOTER_TABS = new Set(['home', 'atelier', 'documents', 'about', 'legal', 'accessibility', 'privacy', 'contact'])
@@ -81,5 +82,6 @@ export default function App(){
     {active==='privacy'&&<DonneesPersonnelles/>}
     {active==='contact'&&<Contact/>}
     {FOOTER_TABS.has(active)&&<Footer/>}
+    <VideoHint tab={active}/>
   </>
 }
