@@ -1408,13 +1408,16 @@ const xdDwell = count => 2200 + count * 650
 const xdTypeVar = type => `var(--xd-t-${TYPE_LABELS[type] ? type : 'notion_idee'})`
 
 function useStageSize(ref) {
+  // Suit l'élément même s'il apparaît après le premier rendu (changement de vue).
   const [size, setSize] = useState({ w: 0, h: 0 })
+  const [el, setEl] = useState(null)
+  useEffect(() => { if (ref.current !== el) setEl(ref.current) })
   useEffect(() => {
-    if (!ref.current) return
+    if (!el) { setSize(s => (s.w || s.h ? { w: 0, h: 0 } : s)); return }
     const ro = new ResizeObserver(([entry]) => setSize({ w: entry.contentRect.width, h: entry.contentRect.height }))
-    ro.observe(ref.current)
+    ro.observe(el)
     return () => ro.disconnect()
-  }, [ref])
+  }, [el])
   return size
 }
 
