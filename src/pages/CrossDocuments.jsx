@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ExportShare from '../components/ExportShare.jsx'
 import { exportDocx, exportXlsx, printHtml, escapeXml, pubLabel, sourceLink } from '../utils/knowledgeExport.js'
@@ -1431,6 +1431,21 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
   const [state, setState] = useState({ step: -1, phase: 'idle' })
   const [viewing, setViewing] = useState(null)
   const [selectedNodeId, setSelectedNodeId] = useState(null)
+  const [mode, setMode] = useState('eclairages')
+  const [typeFilter, setTypeFilter] = useState(null)
+  const [eclView, setEclView] = useState('dim')
+  const [selNode, setSelNode] = useState(null)
+  const [expanded, setExpanded] = useState({})
+  const [rays, setRays] = useState([])
+  const [showAll, setShowAll] = useState(false)
+  const [showAllPubs, setShowAllPubs] = useState(false)
+  const [picked, setPicked] = useState([])
+  const eclRef = useRef(null)
+  const eclSize = useStageSize(eclRef)
+  const [animate, setAnimate] = useState(false)
+  const [pubFilter, setPubFilter] = useState(null)
+  const [openProof, setOpenProof] = useState(null)
+  const [copied, setCopied] = useState(null)
   const clockRef = useRef({ t: 0, last: 0, paused: false })
   const xdContribution = type => ({ probleme: "problème", notion_idee: "idée", tendance: "tendance", signal_faible: "signal faible", acteur: "acteur", action: "action", recommandation: "recommandation", instrument_dispositif: "dispositif", methode: "méthode", expert_public: "expertise", localisation: "localisation" }[type] || "éclairage")
 
@@ -1479,7 +1494,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
   useEffect(() => {
     if (!notion || !geo) return
     const clock = clockRef.current
-    clock.t = reduceMotion ? total : 0
+    clock.t = reduceMotion || !animate ? total : 0
     clock.last = performance.now()
     setViewing(null); setSelectedNodeId(null)
     const lengths = geo.segs.map(d => { const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); return { p, len: p.getTotalLength() } })
@@ -1506,9 +1521,10 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
     }
     raf = requestAnimationFrame(frame)
     return () => cancelAnimationFrame(raf)
-  }, [notion, geo, schedule, total, run, reduceMotion])
+  }, [notion, geo, schedule, total, run, reduceMotion, animate])
 
   const done = state.phase === 'done'
+  useEffect(() => { if (selectedNodeId) requestAnimationFrame(() => { const d = document.querySelector('.xd-notion .xd-detail'), a = d?.closest('.xd-side'); if (d && a) a.scrollTo({ top: d.offsetTop - a.offsetTop - 8, behavior: 'smooth' }) }) }, [selectedNodeId])
   const seen = useMemo(() => {
     const upto = done ? stops.length : state.step + (state.phase === 'travel' ? 0 : 1)
     const counts = {}, firstAt = {}
@@ -1524,8 +1540,69 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
   const proofChunks = selectedNode ? String(selectedNode.chunk_id_source || '').split(';').map(x => contentsById[x.trim()]).filter(Boolean) : []
   const sourceUrl = selectedStop ? cleanUrl(selectedStop.publication.url_contenu || selectedStop.publication.url_source) : ''
 
-  const chooseNotion = id => { setNotionId(id); setPaused(false); setRun(r => r + 1); onNotionChange?.(id) }
-  const replay = () => { setPaused(false); setRun(r => r + 1) }
+  const chooseNotion = id => { setNotionId(id); setPaused(false); setRun(r => r + 1); setMode('eclairages'); setAnimate(false); setPubFilter(null); setTypeFilter(null); setOpenProof(null); onNotionChange?.(id) }
+  const showJourney = () => { setPaused(false); setAnimate(true); setRun(r => r + 1); setMode('parcours') }
+  const pagesLabel = node => { const pages = String(node.page_source || '').split(';').map(x => x.trim()).filter(Boolean); return pages.length ? `p. ${pages.slice(0, 6).join(', ')}${pages.length > 6 ? '…' : ''}` : '' }
+  const citation = (node, pub) => `${node.libelle} — ${pub.titre} (${pub.organisme_producteur || 'source non renseignée'}, ${pub['année_publication'] || 's. d.'})${pagesLabel(node) ? `, ${pagesLabel(node)}` : ''}.`
+  const copyCitation = async (node, pub) => {
+    const text = citation(node, pub)
+    try { await navigator.clipboard.writeText(text) } catch {
+      try { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove() } catch { /* copie indisponible */ }
+    }
+    setCopied(node.node_id); setTimeout(() => setCopied(c => c === node.node_id ? null : c), 1800)
+  }
+  const listGroups = useMemo(() => {
+    const items = stops.flatMap((s, i) => s.nodes.map(node => ({ node, stop: s, index: i }))).filter(x => !pubFilter || x.stop.id === pubFilter)
+    return XD_TYPE_ORDER.map(t => ({ type: t, items: items.filter(x => x.node.type_noeud === t) })).filter(g => g.items.length)
+  }, [stops, pubFilter])
+  useEffect(() => { setTypeFilter(null); setPubFilter(null); setOpenProof(null); setMode('eclairages'); setAnimate(false); setSelNode(null); setExpanded({}); setEclView('dim'); setShowAll(false); setShowAllPubs(false)
+    let saved = []; try { saved = JSON.parse(localStorage.getItem(`qvl:notion-picks:${notionId}`) || '[]') } catch { /* stockage indisponible */ }
+    setPicked(Array.isArray(saved) ? saved : []) }, [notionId])
+  useEffect(() => { if (!notionId) return; try { localStorage.setItem(`qvl:notion-picks:${notionId}`, JSON.stringify(picked)) } catch { /* stockage indisponible */ } }, [picked, notionId])
+  const togglePick = id => setPicked(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id])
+  const pickedItems = () => stops.flatMap(st => st.nodes.filter(n => picked.includes(n.node_id)).map(node => ({ node, stop: st })))
+  const copyPicked = async () => {
+    const text = `${notion?.label || ''}\n\n` + pickedItems().map(({ node, stop }) => `• ${citation(node, stop.publication)}`).join('\n')
+    try { await navigator.clipboard.writeText(text) } catch { try { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove() } catch { /* copie indisponible */ } }
+    setCopied('__picked'); setTimeout(() => setCopied(c => c === '__picked' ? null : c), 1800)
+  }
+  const exportPicked = () => { const items = pickedItems(); exportDocx(`Notion_${notion.id}_selection`, `${notion.label} — éléments retenus`, [
+    { text: `${items.length} élément${items.length > 1 ? 's' : ''} retenu${items.length > 1 ? 's' : ''}, avec leur source et leur preuve.` },
+    ...items.flatMap(({ node, stop }) => { const chunk = String(node.chunk_id_source || '').split(';').map(x => contentsById[x.trim()]).find(Boolean)
+      return [{ heading: true, text: node.libelle }, { text: `${pubLabel(stop.publication)}${pagesLabel(node) ? ` · ${pagesLabel(node)}` : ''}` }, ...(sourceLink(stop.publication) ? [{ text: `Source : ${sourceLink(stop.publication)}` }] : []), ...(chunk ? [{ text: `Extrait : « ${chunk.texte} »` }] : [])] }),
+  ]) }
+  const dimGroups = useMemo(() => XD_TYPE_ORDER.map(t => ({ type: t, items: stops.flatMap(st => st.nodes.filter(n => n.type_noeud === t).map(node => ({ node, stop: st }))) })).filter(g => g.items.length), [stops])
+  const selItem = selNode ? stops.flatMap(st => st.nodes.map(node => ({ node, stop: st }))).find(x => x.node.node_id === selNode) || null : null
+  useLayoutEffect(() => {
+    if (mode !== 'eclairages' || eclView !== 'dim') return
+    const root = eclRef.current?.querySelector('.xd-dim-layout'); if (!root) return
+    const measure = () => {
+      const r = root.getBoundingClientRect(), core = root.querySelector('.xd-dim-core')?.getBoundingClientRect(); if (!core) return
+      const cx = core.left + core.width / 2 - r.left, cy = core.top + core.height / 2 - r.top
+      setRays([...root.querySelectorAll('.xd-say')].map(el => { const b = el.getBoundingClientRect(); const left = b.left + b.width / 2 < core.left + core.width / 2
+        return { key: el.dataset.type, x1: cx, y1: cy, x2: (left ? b.right : b.left) - r.left, y2: b.top + Math.min(40, b.height / 2) - r.top, w: r.width, h: r.height } }))
+    }
+    measure(); const ro = new ResizeObserver(measure); ro.observe(root); const sc = eclRef.current; sc?.addEventListener('scroll', measure, { passive: true }); return () => { ro.disconnect(); sc?.removeEventListener('scroll', measure) }
+  }, [mode, eclView, stops, expanded, eclSize, showAll])
+  const eclStop = pubFilter ? stops.find(st => st.id === pubFilter) || null : null
+  const eclTypes = useMemo(() => XD_TYPE_ORDER.map(t => ({ type: t, count: stops.reduce((n, st) => n + st.nodes.filter(x => x.type_noeud === t).length, 0) })).filter(t => t.count), [stops])
+  const eclGeo = useMemo(() => {
+    const { w: W, h: H0 } = eclSize
+    if (!W || !H0 || !stops.length) return null
+    const n = stops.length, ch = 112, gap = 14, coreW = Math.min(300, W * .3)
+    const cw = Math.max(190, Math.min(270, (W - coreW) / 2 - 70))
+    const left = stops.filter((_, i) => i % 2 === 0), right = stops.filter((_, i) => i % 2 === 1)
+    const perCol = Math.max(left.length, right.length)
+    const H = Math.max(H0, perCol * (ch + gap) + 40, 340)
+    const cx = W / 2, cy = H / 2
+    const col = (list, side) => list.map((stop, k) => {
+      const m = list.length, y = cy + (k - (m - 1) / 2) * (ch + gap) * (m > 2 ? 1 : 1.25)
+      const bow = m > 1 ? Math.abs(k - (m - 1) / 2) / ((m - 1) / 2) : 0
+      const x = side < 0 ? 18 + cw / 2 + bow * 26 : W - 18 - cw / 2 - bow * 26
+      return { stop, x, y, cw }
+    })
+    return { cx, cy, H, coreW, cards: [...col(left, -1), ...col(right, 1)] }
+  }, [eclSize, stops])
   const overview = () => { clockRef.current.t = total; setPaused(false); setViewing(null) }
   const revisit = i => { if (!done) return; setViewing(i); setSelectedNodeId(null); if (orbRef.current && geo) { orbRef.current.style.left = `${geo.pts[i].x}px`; orbRef.current.style.top = `${geo.pts[i].y}px` } }
 
@@ -1559,7 +1636,13 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
             ]),
           ]) }]}
         />
-        <button type="button" className="xd-btn" onClick={overview} disabled={done}>Vue d’ensemble</button>
+        {mode === 'eclairages'
+          ? <button type="button" className="xd-btn" onClick={showJourney}>▶ Voir le parcours animé</button>
+          : <>
+            {!done && <button type="button" className="xd-btn" onClick={() => setPaused(p => !p)} aria-pressed={paused}>{paused ? <>▶ Reprendre</> : <>❚❚ Pause</>}</button>}
+            {!done && <button type="button" className="xd-btn" onClick={overview}>Passer</button>}
+            <button type="button" className="xd-btn" onClick={() => setMode('eclairages')}>◎ Revenir aux éclairages</button>
+          </>}
       </div> : <ExportShare waitingFor="Choisissez une notion pour exporter ou partager." showShareWhenWaiting />}
     </header>
     <div className="xd-notion-intro" role="note">
@@ -1575,7 +1658,131 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
         </button>
       })}
     </nav>
-    <div className="xd-body">
+    {notion && mode === 'eclairages' ? <div className="xd-body">
+      <section className="xd-ecl" ref={eclRef} aria-label={`${notion.label} : la notion au centre, ses éclairages autour`}>
+        {eclView === 'dim' ? (() => {
+          const all = stops.flatMap(st => st.nodes.map(node => ({ node, stop: st })))
+          const lim = 12, items = showAll ? all : all.slice(0, lim)
+          const cols = [items.filter((_, i) => i % 2 === 0), items.filter((_, i) => i % 2 === 1)]
+          const card = ({ node, stop }) => <div key={node.node_id} data-type={node.node_id} className={`xd-say ${selNode === node.node_id ? 'on' : ''} ${pubFilter && pubFilter !== stop.id ? 'dim' : ''} ${picked.includes(node.node_id) ? 'picked' : ''}`}>
+            <label className="xd-say-check" title="Garder pour l’export"><input type="checkbox" checked={picked.includes(node.node_id)} onChange={() => togglePick(node.node_id)} aria-label={`Garder : ${node.libelle}`}/></label>
+            <button type="button" className="xd-say-body" onClick={() => setSelNode(n => n === node.node_id ? null : node.node_id)}>
+              <span>{node.libelle}</span>
+              <small>{stop.id} · {stop.publication.organisme_producteur}{stop.publication['année_publication'] ? ` · ${stop.publication['année_publication']}` : ''}</small>
+            </button>
+          </div>
+          return <div className="xd-dim-layout">
+            <svg className="xd-layer" width="100%" height="100%" aria-hidden="true">{rays.map(r => <line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className={`xd-ecl-ray ${selNode === r.key ? 'on' : ''}`} strokeWidth="1.5"/>)}</svg>
+            <div className="xd-dim-col">{cols[0].map(card)}</div>
+            <div className="xd-ecl-core xd-dim-core">
+              <small>Notion</small>
+              <strong>{notion.label}</strong>
+              <span>{all.length} éléments · {stops.length} publications</span>
+              {all.length > lim && <button type="button" className="xd-dim-switch" onClick={() => setShowAll(v => !v)}>{showAll ? 'Afficher l’essentiel' : `Voir les ${all.length} éléments`}</button>}
+            </div>
+            <div className="xd-dim-col">{cols[1].map(card)}</div>
+          </div>
+        })() : <>
+        <div className="xd-ecl-canvas" style={{ height: eclGeo ? eclGeo.H : undefined }}>
+        {eclGeo && <svg className="xd-layer" width={eclSize.w} height={eclGeo.H} aria-hidden="true">
+          {eclGeo.cards.map(c => <line key={c.stop.id} x1={eclGeo.cx} y1={eclGeo.cy} x2={c.x} y2={c.y}
+            className={`xd-ecl-ray ${pubFilter === c.stop.id ? 'on' : ''} ${typeFilter && !c.stop.nodes.some(n => n.type_noeud === typeFilter) ? 'off' : ''}`}
+            strokeWidth={1.5 + Math.min(4, c.stop.nodes.length / 2)}/>)}
+        </svg>}
+        {eclGeo && <div className="xd-ecl-core" style={{ left: eclGeo.cx, top: eclGeo.cy, width: eclGeo.coreW }}>
+          <small>Notion</small>
+          <strong>{notion.label}</strong>
+          <span>{stops.length} éclairages · {stops.reduce((n, st) => n + st.nodes.length, 0)} apports</span>
+          <div className="xd-ecl-types">{eclTypes.map(t => <button key={t.type} type="button" className={`xd-ecl-type ${typeFilter === t.type ? 'on' : ''}`} style={{ '--c': xdTypeVar(t.type) }}
+            aria-pressed={typeFilter === t.type} onClick={() => setTypeFilter(f => f === t.type ? null : t.type)}><i/>{TYPE_LABELS[t.type] || t.type}<b>{t.count}</b></button>)}</div>
+        </div>}
+        {eclGeo && eclGeo.cards.map(({ stop, x, y, cw }) => {
+          const counts = XD_TYPE_ORDER.map(t => [t, stop.nodes.filter(n => n.type_noeud === t).length]).filter(([, n]) => n)
+          const nf = typeFilter ? stop.nodes.filter(n => n.type_noeud === typeFilter).length : stop.nodes.length
+          return <button key={stop.id} type="button" className={`xd-ecl-card ${pubFilter === stop.id ? 'on' : ''} ${typeFilter && !nf ? 'off' : ''}`}
+            style={{ left: x, top: y, width: cw }} aria-pressed={pubFilter === stop.id} onClick={() => { setPubFilter(f => f === stop.id ? null : stop.id); setOpenProof(null) }}>
+            <span className="xd-ecl-card-meta">{stop.id} · {stop.publication.organisme_producteur}{stop.publication['année_publication'] ? ` · ${stop.publication['année_publication']}` : ''}</span>
+            <strong>{stop.publication.titre}</strong>
+            <span className="xd-ecl-foot"><span className="xd-ecl-dots">{counts.map(([t, n]) => <span key={t} style={{ '--c': xdTypeVar(t) }} title={`${TYPE_LABELS[t] || t} : ${n}`}><i/>{n}</span>)}</span>
+            <em>{typeFilter ? `${nf} ${(TYPE_LABELS[typeFilter] || '').toLowerCase()}` : `${stop.nodes.length} apport${stop.nodes.length > 1 ? 's' : ''}`} →</em></span>
+          </button>
+        })}
+        {eclGeo && <button type="button" className="xd-dim-switch xd-dim-switch-float" onClick={() => setEclView('dim')}>Voir par dimension</button>}
+        </div>
+        </>}
+      </section>
+      <aside className="xd-side xd-ecl-side">
+        {eclView === 'dim' && picked.length > 0 && <div className="xd-pick-bar">
+          <strong>{picked.length} élément{picked.length > 1 ? 's' : ''} gardé{picked.length > 1 ? 's' : ''}</strong>
+          <span>
+            <button type="button" className="xd-mini" onClick={copyPicked}>{copied === '__picked' ? 'Copié ✓' : 'Copier'}</button>
+            <button type="button" className="xd-mini primary" onClick={exportPicked}>Exporter (Word)</button>
+            <button type="button" className="xd-mini" onClick={() => setPicked([])}>Vider</button>
+          </span>
+        </div>}
+        {eclView === 'dim' && selItem ? (() => {
+          const { node, stop } = selItem
+          const chunks = String(node.chunk_id_source || '').split(';').map(x => contentsById[x.trim()]).filter(Boolean)
+          const src = cleanUrl(stop.publication.url_contenu || stop.publication.url_source)
+          return <>
+            <button type="button" className="xd-ecl-back" style={{ display: 'block' }} onClick={() => setSelNode(null)}>← {notion.label}</button>
+                        <h2>{node.libelle}</h2>
+            <dl className="xd-dim-dl"><dt>Publication</dt><dd>{stop.id} · {stop.publication.titre}</dd><dt>Organisme</dt><dd>{stop.publication.organisme_producteur}{stop.publication['année_publication'] ? ` · ${stop.publication['année_publication']}` : ''}</dd>{pagesLabel(node) && <><dt>Pages</dt><dd>{pagesLabel(node)}</dd></>}</dl>
+            <div className="xd-item-actions">
+              <button type="button" className="xd-mini" onClick={() => copyCitation(node, stop.publication)}>{copied === node.node_id ? 'Copié ✓' : 'Copier'}</button>
+              <button type="button" className={`xd-mini ${picked.includes(node.node_id) ? 'on' : ''}`} onClick={() => togglePick(node.node_id)}>{picked.includes(node.node_id) ? '✓ Gardé pour l’export' : 'Garder pour l’export'}</button>
+              <a className="xd-mini" href={`#/explorer/${stop.id}`}>Ouvrir dans Explorer</a>
+              {src && <a className="xd-mini" href={src} target="_blank" rel="noreferrer">Source ↗</a>}
+            </div>
+            <h3>Preuve</h3>
+            {chunks.length ? chunks.slice(0, 2).map(chunk => <article key={chunk.chunk_id} className="xd-proof"><header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header><p>{chunk.texte}</p></article>)
+              : <p className="xd-hint">Aucun extrait source disponible dans les données chargées.</p>}
+            {chunks.length > 2 && <p className="xd-hint">{chunks.length - 2} autre{chunks.length - 2 > 1 ? 's' : ''} extrait{chunks.length - 2 > 1 ? 's' : ''} dans la publication.</p>}
+          </>
+        })() : eclView === 'dim' ? <>
+          <h2>{notion.label}</h2>
+          <p className="xd-hint">Autour de la notion, ce que les publications en disent. Cliquez sur un élément pour lire sa preuve ; cochez ceux à garder pour les copier ou les exporter.</p>
+          <h3>Publications qui l’éclairent</h3>
+          <div className="xd-stops">{(showAllPubs ? [...stops].sort((x, y) => y.nodes.length - x.nodes.length) : [...stops].sort((x, y) => y.nodes.length - x.nodes.length).slice(0, 8)).map(st => <button key={st.id} type="button" className={`xd-stop done ${pubFilter === st.id ? 'now' : ''}`} aria-pressed={pubFilter === st.id} onClick={() => setPubFilter(f => f === st.id ? null : st.id)}>
+            <b>{st.nodes.length}</b><span>{st.id} · {st.publication.titre}<small>{st.publication.organisme_producteur}{pubFilter === st.id ? ' · mis en avant' : ''}</small></span>
+          </button>)}</div>
+          {stops.length > 8 && <button type="button" className="xd-dim-more" onClick={() => setShowAllPubs(v => !v)}>{showAllPubs ? 'Réduire' : `Voir les ${stops.length} publications`}</button>}
+        </> : !eclStop ? <>
+          <h2>{notion.label}</h2>
+          <p className="xd-hint">La notion est au centre. Autour d’elle, chaque publication apporte son éclairage. Choisissez un éclairage pour lire ses apports, leurs pages et leurs preuves. Les dimensions, au centre, filtrent ce que l’on regarde.</p>
+          <h3>Éclairages</h3>
+          <div className="xd-stops">{stops.map((st, i) => <button key={st.id} type="button" className="xd-stop done" onClick={() => setPubFilter(st.id)}>
+            <b>{i + 1}</b><span>{st.id} · {st.publication.titre}<small>{st.nodes.length} apport{st.nodes.length > 1 ? 's' : ''}</small></span>
+          </button>)}</div>
+        </> : <>
+          <button type="button" className="xd-ecl-back" onClick={() => { setPubFilter(null); setOpenProof(null) }}>← Tous les éclairages</button>
+          <span className="xd-ecl-side-meta">Éclairage · {eclStop.id} · {eclStop.publication['année_publication']}</span>
+          <h2>{eclStop.publication.titre}</h2>
+          <p className="xd-ecl-org">{eclStop.publication.organisme_producteur}</p>
+          <div className="xd-item-actions">
+            <a className="xd-mini" href={`#/explorer/${eclStop.id}`}>Ouvrir dans Explorer</a>
+            {cleanUrl(eclStop.publication.url_contenu || eclStop.publication.url_source) && <a className="xd-mini" href={cleanUrl(eclStop.publication.url_contenu || eclStop.publication.url_source)} target="_blank" rel="noreferrer">Source ↗</a>}
+          </div>
+          <h3>Ce qu’elle apporte{typeFilter ? ` · ${TYPE_LABELS[typeFilter]}` : ''}</h3>
+          <ul className="xd-ecl-list">{eclStop.nodes.filter(n => !typeFilter || n.type_noeud === typeFilter).map(node => {
+            const chunks = String(node.chunk_id_source || '').split(';').map(x => contentsById[x.trim()]).filter(Boolean)
+            const open = openProof === node.node_id
+            return <li key={node.node_id} className="xd-item" style={{ '--c': xdTypeVar(node.type_noeud) }}>
+              <span className="xd-type">{TYPE_LABELS[node.type_noeud] || node.type_noeud}</span>
+              <strong>{node.libelle}</strong>
+              {pagesLabel(node) && <span className="xd-item-meta">{pagesLabel(node)}</span>}
+              <span className="xd-item-actions">
+                <button type="button" className="xd-mini" onClick={() => setOpenProof(open ? null : node.node_id)} aria-expanded={open} disabled={!chunks.length}>{open ? 'Masquer la preuve' : 'Voir la preuve'}</button>
+                <button type="button" className="xd-mini" onClick={() => copyCitation(node, eclStop.publication)}>{copied === node.node_id ? 'Copié ✓' : 'Copier la référence'}</button>
+              </span>
+              {open && chunks.slice(0, 2).map(chunk => <article key={chunk.chunk_id} className="xd-proof">
+                <header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header><p>{chunk.texte}</p>
+              </article>)}
+            </li>
+          })}</ul>
+        </>}
+      </aside>
+    </div> : <div className="xd-body">
       <section className="xd-stage" ref={stageRef}>
         {geo && <svg className="xd-layer" width={w} height={h} aria-hidden="true">
           <defs>
@@ -1611,10 +1818,6 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
         {showChips && chips.map(({ node, w: cw, x, y, dot }) => <XdChip key={`${activeStop}-${node.node_id}-${run}`} node={node} width={cw} from={geo.pts[activeStop]} to={{ x, y }} back={condensing ? dot : null}
           notionLabel={notion.label} contribution={xdContribution(node.type_noeud)} displayLabel={xdDisplayIdea(node)} selected={selectedNodeId === node.node_id} onClick={() => setSelectedNodeId(node.node_id)}/>)}
         {notion && <div ref={orbRef} className="xd-orb" aria-hidden="true"/>}
-        {notion && <div className="xd-notion-controls" aria-label="Commandes de l'animation">
-          <button type="button" className="xd-btn primary" onClick={replay}><Icon name="reset" size={15}/>Rejouer</button>
-          <button type="button" className="xd-btn" onClick={() => setPaused(p => !p)} disabled={done} aria-pressed={paused}>{paused ? <>▶ Reprendre</> : <>❚❚ Pause</>}</button>
-        </div>}
         {notion && activeStop !== null && <div className="xd-caption">
           <small>Escale {activeStop + 1} sur {stops.length} · {stops[activeStop].id} · {stops[activeStop].publication['année_publication']}</small>
           <strong>{stops[activeStop].publication.titre}</strong>
@@ -1623,7 +1826,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
         {notion && done && viewing === null && <div className="xd-caption">
           <small>Parcours complet</small>
           <strong>{notion.label} : {stops.length} escales, {types.length} dimensions</strong>
-          <span>Cliquez sur une publication éclairée, un point ou une escale pour revoir ses éléments.</span>
+          <span>Cliquez sur une publication éclairée ou une escale pour voir ce qu’elle apporte, puis sur un élément pour lire sa preuve.</span>
         </div>}
         {!notion && <div className="xd-caption"><small>Espace documentaire</small><strong>Les {publications.length} publications du bulletin forment le cercle.</strong><span>Choisissez une notion : elle voyagera d’une publication à l’autre et fera apparaître ses dimensions.</span></div>}
       </section>
@@ -1650,11 +1853,14 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
             {proofChunks.length ? proofChunks.map(chunk => <article key={chunk.chunk_id} className="xd-proof">
               <header><b>{chunk.chunk_id}</b><span>{chunk.section || `p. ${chunk.page_debut || ''}`}</span></header><p>{chunk.texte}</p>
             </article>) : <p className="xd-hint">Aucun extrait source disponible dans les données chargées.</p>}
-            {sourceUrl && <a className="xd-source" href={sourceUrl} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Ouvrir la source</a>}
+            <div className="xd-item-actions">
+              {selectedStop && <button type="button" className="xd-mini" onClick={() => copyCitation(selectedNode, selectedStop.publication)}>{copied === selectedNode.node_id ? 'Copié ✓' : 'Copier la référence'}</button>}
+              {sourceUrl && <a className="xd-source" href={sourceUrl} target="_blank" rel="noreferrer"><Icon name="external" size={15}/>Ouvrir la source</a>}
+            </div>
           </div>}
         </>}
       </aside>
-    </div>
+    </div>}
   </main>
 }
 
