@@ -10,6 +10,14 @@ export const VIDEOS = {
     href: VIDEO_PAGE + '#atlas',
     image: VIDEO_PAGE + 'vignette_atlas.jpg',
   },
+  explorer: {
+    id: 'explorer',
+    title: 'Explorer une publication',
+    lead: 'Prise en main de l’onglet : choisir une publication, lire son graphe de connaissances, interroger le graphe et retrouver la preuve à la page.',
+    duration: '7 min 11',
+    href: VIDEO_PAGE + '#explorer',
+    image: VIDEO_PAGE + 'vignette_explorer.jpg',
+  },
   atelier: {
     id: 'atelier',
     title: 'L’Atelier de veille',
@@ -24,5 +32,6 @@ export const VIDEOS = {
 // La vidéo de lancement (teaser.html) sert à la diffusion extérieure : elle n'est pas proposée ici.
 export const TAB_VIDEO = {
   expertises: 'atlas',
+  explorer: 'explorer',
   atelier: 'atelier',
 }
