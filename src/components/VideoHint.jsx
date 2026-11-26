@@ -4,7 +4,8 @@ import '../video-hint.css'
 
 // Fenêtre proposant la vidéo de l'onglet, avec lien vers le dépôt des vidéos.
 // « Plus tard » / × / Échap : masquée pour cet onglet jusqu'à la prochaine visite.
-// « Ne plus afficher » : masquée définitivement, sur tous les onglets.
+// « Ne plus afficher » : masquée sur tous les onglets jusqu'à la fermeture de l'onglet du navigateur
+// (rien n'est conservé au-delà, cf. page Données personnelles).
 const OFF_KEY = 'qvl:video-hint:off'
 const CLOSED_KEY = tab => `qvl:video-hint:closed:${tab}`
 
@@ -19,14 +20,14 @@ export default function VideoHint({ tab }) {
   useEffect(() => {
     setVisible(false)
     if (!video) return
-    if (read('localStorage', OFF_KEY) === '1') return
+    if (read('sessionStorage', OFF_KEY) === '1') return
     if (read('sessionStorage', CLOSED_KEY(tab)) === '1') return
     const timer = setTimeout(() => setVisible(true), 600)
     return () => clearTimeout(timer)
   }, [tab, video])
 
   const close = () => { write('sessionStorage', CLOSED_KEY(tab)); setVisible(false) }
-  const never = () => { write('localStorage', OFF_KEY); setVisible(false) }
+  const never = () => { write('sessionStorage', OFF_KEY); setVisible(false) }
 
   useEffect(() => {
     if (!visible) return

@@ -1559,9 +1559,9 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
     return XD_TYPE_ORDER.map(t => ({ type: t, items: items.filter(x => x.node.type_noeud === t) })).filter(g => g.items.length)
   }, [stops, pubFilter])
   useEffect(() => { setTypeFilter(null); setPubFilter(null); setOpenProof(null); setMode('eclairages'); setAnimate(false); setSelNode(null); setExpanded({}); setEclView('dim'); setShowAll(false); setShowAllPubs(false)
-    let saved = []; try { saved = JSON.parse(localStorage.getItem(`qvl:notion-picks:${notionId}`) || '[]') } catch { /* stockage indisponible */ }
+    let saved = []; try { saved = JSON.parse(sessionStorage.getItem(`qvl:notion-picks:${notionId}`) || '[]') } catch { /* stockage indisponible */ }
     setPicked(Array.isArray(saved) ? saved : []) }, [notionId])
-  useEffect(() => { if (!notionId) return; try { localStorage.setItem(`qvl:notion-picks:${notionId}`, JSON.stringify(picked)) } catch { /* stockage indisponible */ } }, [picked, notionId])
+  useEffect(() => { if (!notionId) return; try { sessionStorage.setItem(`qvl:notion-picks:${notionId}`, JSON.stringify(picked)) } catch { /* stockage indisponible */ } }, [picked, notionId])
   const togglePick = id => setPicked(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id])
   const pickedItems = () => stops.flatMap(st => st.nodes.filter(n => picked.includes(n.node_id)).map(node => ({ node, stop: st })))
   const copyPicked = async () => {

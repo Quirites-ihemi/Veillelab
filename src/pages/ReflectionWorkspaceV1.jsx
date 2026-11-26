@@ -243,10 +243,10 @@ function makeCanvasCard({ kind = 'Note', title = '', text = '', tone = 'lilac', 
   }
 }
 
-// Le canevas est conservé dans le navigateur (localStorage) : il survit à la fermeture de l'onglet.
-// Lecture de secours dans sessionStorage pour reprendre un canevas enregistré par l'ancienne version.
+// Le canevas est conservé le temps de la session (sessionStorage) : il disparaît à la fermeture de l'onglet
+// (rien n'est conservé au-delà, cf. page Données personnelles).
 function readStored(key) {
-  try { return localStorage.getItem(key) || sessionStorage.getItem(key) } catch { return null }
+  try { return sessionStorage.getItem(key) } catch { return null }
 }
 
 function restoreWorkspace() {
@@ -322,7 +322,7 @@ export default function ReflectionWorkspaceV1({ onBack, data }) {
   const keptIds = useMemo(() => new Set(cards.map(card => card.materialId).filter(Boolean)), [cards])
 
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ cards, links, activeSubject })) } catch {}
   }, [cards, links, activeSubject])
 
   useEffect(() => {

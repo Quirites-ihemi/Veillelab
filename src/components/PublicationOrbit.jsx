@@ -207,11 +207,11 @@ export default function PublicationOrbit({
   // Bouton « Noms » : nomme aussi les éléments des cercles extérieurs
   // (indispensable sur tablette, où le survol n'existe pas).
   const [showNames, setShowNames] = useState(() => {
-    try { return localStorage.getItem('qvl:explorer:showNames') !== '0' } catch { return true }
+    try { return sessionStorage.getItem('qvl:explorer:showNames') !== '0' } catch { return true }
   })
   const toggleNames = () => setShowNames(value => {
     const next = !value
-    try { localStorage.setItem('qvl:explorer:showNames', next ? '1' : '0') } catch {}
+    try { sessionStorage.setItem('qvl:explorer:showNames', next ? '1' : '0') } catch {}
     return next
   })
   const [pan, setPan] = useState({ x: 0, y: 0 })
