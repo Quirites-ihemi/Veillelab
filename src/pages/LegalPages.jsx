@@ -78,7 +78,7 @@ export function DonneesPersonnelles() {
       <p>Lorsque vous posez une question à une publication ou utilisez un outil de l’Atelier, votre question et les éléments sélectionnés sont transmis au service d’IA hébergé par <V value={LEGAL.hebergementIA} />, afin de produire la réponse.</p>
       <p>N’y saisissez pas de données personnelles ou sensibles. Durée de conservation : <V value={LEGAL.conservationQuestionsIA} />.</p>
       <h2>Vos droits</h2>
-      <p>Vous disposez d’un droit d’accès, de rectification et d’effacement des données vous concernant. Pour l’exercer : <V value={LEGAL.dpo} />. Vous pouvez également adresser une réclamation à la CNIL (cnil.fr).</p>
+      <p>Vous disposez d’un droit d’accès, de rectification et d’effacement des données vous concernant. Pour l’exercer, écrivez à <Mail />. Vous pouvez aussi contacter la ou le délégué à la protection des données : <V value={LEGAL.dpo} />. Vous pouvez également adresser une réclamation à la CNIL (cnil.fr).</p>
     </Page>
   )
 }

@@ -9,7 +9,8 @@ const cguDraft = [
   'Les contenus, résultats, rapprochements et visualisations proposés dépendent du périmètre du corpus actif et peuvent être incomplets.',
   'L’utilisateur reste responsable de l’interprétation, de la vérification et de l’usage des informations produites par l’application.',
   'Les fonctionnalités d’assistance ne se substituent ni à l’analyse professionnelle ni à la consultation des sources originales.',
-  'Les conditions d’utilisation peuvent être actualisées.'
+  'Les conditions d’utilisation peuvent être actualisées.',
+  'Pour toute question : quirites@interieur.gouv.fr.'
 ]
 
 export default function LandingPage({ onEnter }) {
