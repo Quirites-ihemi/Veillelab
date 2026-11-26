@@ -30,7 +30,6 @@ export default function Header({active,onChange}){
       </button>)}
     </nav>
     <div className="top-actions">
-      <button className="round-action" aria-label="Aide">?</button>
     </div>
   </header>
 }
