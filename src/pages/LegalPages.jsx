@@ -6,6 +6,11 @@ function V({ value }) {
   return isPlaceholder(value) ? <mark className="legal-todo">{value}</mark> : <>{value}</>
 }
 
+function Mail() {
+  const v = LEGAL.contactEmail
+  return isPlaceholder(v) ? <V value={v} /> : <a href={`mailto:${v}`}>{v}</a>
+}
+
 function Page({ title, children }) {
   return (
     <main className="legal-page">
@@ -20,7 +25,7 @@ export function MentionsLegales() {
   return (
     <Page title="Mentions légales">
       <h2>Éditeur</h2>
-      <p><V value={LEGAL.editeur} /><br /><V value={LEGAL.adresseEditeur} /></p>
+      <p><V value={LEGAL.editeur} /><br /><V value={LEGAL.adresseEditeur} /><br /><V value={LEGAL.codePostalVilleEditeur} /></p>
       <h2>Direction de la publication</h2>
       <p><V value={LEGAL.directionPublication} /></p>
       <h2>Hébergement</h2>
@@ -30,7 +35,7 @@ export function MentionsLegales() {
       <p>Les publications présentées restent la propriété de leurs auteurs et éditeurs. Quiritès Veille Lab en propose une analyse documentaire et renvoie systématiquement aux sources originales, dont les liens sont indiqués pour chaque publication.</p>
       <p>Les textes produits par les fonctions d’intelligence artificielle sont générés à partir des publications du bulletin. Ils peuvent comporter des erreurs et doivent être vérifiés dans les passages sources cités.</p>
       <h2>Contact</h2>
-      <p><V value={LEGAL.contactEmail} /></p>
+      <p><Mail /></p>
     </Page>
   )
 }
@@ -51,7 +56,7 @@ export function Accessibilite() {
       <h2>Établissement de cette déclaration</h2>
       <p>Cette déclaration a été établie le {LEGAL.dateDeclarationAccessibilite}.</p>
       <h2>Retour d’information et contact</h2>
-      <p>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez nous contacter pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme : <V value={LEGAL.contactEmail} />.</p>
+      <p>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez nous contacter pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme : <Mail />.</p>
       <h2>Voies de recours</h2>
       <p>Si vous constatez un défaut d’accessibilité vous empêchant d’accéder à un contenu ou à une fonctionnalité, que vous nous le signalez et que vous ne parvenez pas à obtenir une réponse rapide, vous êtes en droit de faire parvenir vos doléances ou une demande de saisine au Défenseur des droits :</p>
       <ul>
@@ -81,7 +86,7 @@ export function DonneesPersonnelles() {
 export function Contact() {
   return (
     <Page title="Contact">
-      <p>Une question, une erreur repérée dans une publication ou un passage source, une suggestion ? Écrivez-nous : <V value={LEGAL.contactEmail} />.</p>
+      <p>Une question, une erreur repérée dans une publication ou un passage source, une suggestion ? Écrivez-nous : <Mail />.</p>
     </Page>
   )
 }
