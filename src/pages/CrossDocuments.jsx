@@ -1652,7 +1652,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
       <strong>Une notion, plusieurs éclairages</strong>
       <span>Explorez une même notion à travers plusieurs publications. Chacune apporte un éclairage différent qui enrichit sa compréhension.</span>
     </div>
-    <nav className="xd-notions" aria-label="Choisir une notion">
+    {notion && <nav className="xd-notions" aria-label="Choisir une notion">
       <span>Notion</span>
       {TRANSVERSAL_NOTIONS.map(n => {
         const count = Object.values(n.selections).reduce((a, x) => a + x.length, 0)
@@ -1660,8 +1660,19 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
           {n.label}<small>{Object.keys(n.selections).length} publications · {count} éléments</small>
         </button>
       })}
-    </nav>
-    {notion && mode === 'eclairages' ? <div className="xd-body">
+    </nav>}
+    {!notion ? <div className="xd-land">
+      <h2>Choisissez une notion</h2>
+      <p>Chaque notion réunit ce que plusieurs publications du bulletin en disent. Vous y retrouvez chaque élément avec sa source, ses pages et l’extrait qui le prouve, et vous pouvez garder ceux qui vous intéressent pour les copier ou les exporter.</p>
+      <div className="xd-land-grid">{[...TRANSVERSAL_NOTIONS].sort((a, b) => Object.keys(b.selections).length - Object.keys(a.selections).length).map(n => {
+        const count = Object.values(n.selections).reduce((a, x) => a + x.length, 0)
+        return <button key={n.id} type="button" className="xd-land-card" onClick={() => chooseNotion(n.id)}>
+          <strong>{n.label}</strong>
+          <span>{Object.keys(n.selections).length} publications · {count} éléments</span>
+          <em>Ouvrir →</em>
+        </button>
+      })}</div>
+    </div> : notion && mode === 'eclairages' ? <div className="xd-body">
       <section className="xd-ecl" ref={eclRef} aria-label={`${notion.label} : la notion au centre, ses éclairages autour`}>
         {eclView === 'dim' ? (() => {
           const all = stops.flatMap(st => st.nodes.map(node => ({ node, stop: st })))

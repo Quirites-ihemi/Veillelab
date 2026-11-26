@@ -293,3 +293,14 @@ a.xd-mini{text-decoration:none;display:inline-block}
 .xd-pick-bar .xd-mini.primary{background:#f2b440;border-color:#f2b440;color:#14213d}
 .xd-mini.on{background:#e8efff;border-color:#2f56d6}
 .xd-stop b{min-width:26px}
+
+/* Suivre une notion : accueil sans notion choisie */
+.xd-land{padding:34px 28px 48px;max-width:1100px;margin:0 auto;width:100%;box-sizing:border-box}
+.xd-land h2{margin:0 0 6px;font-size:26px;color:#14213d}
+.xd-land>p{margin:0 0 22px;max-width:760px;color:#52607a;font-size:16px;line-height:1.55}
+.xd-land-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.xd-land-card{display:grid;gap:6px;text-align:left;padding:18px 18px 16px;border-radius:14px;border:1px solid #dce3ef;background:#fff;box-shadow:0 10px 24px -18px rgba(20,33,61,.45);cursor:pointer;font:inherit;color:#14213d;transition:border-color .15s,box-shadow .15s,transform .15s}
+.xd-land-card:hover{border-color:#9fb3e6;box-shadow:0 16px 30px -18px rgba(20,33,61,.5);transform:translateY(-2px)}
+.xd-land-card strong{font-size:18px}
+.xd-land-card span{font-size:13.5px;color:#5c6982}
+.xd-land-card em{font-style:normal;font-size:13.5px;font-weight:700;color:#2f56d6;margin-top:4px}
