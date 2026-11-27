@@ -13,10 +13,10 @@ export const VIDEOS = {
   explorer: {
     id: 'explorer',
     title: 'Explorer une publication',
-    lead: 'Prise en main de l’onglet : choisir une publication, lire son graphe de connaissances, interroger le graphe et retrouver la preuve à la page.',
-    duration: '7 min 11',
+    lead: 'Prise en main de l’onglet : choisir une publication, filtrer son graphe, lire la preuve d’un élément et interroger le graphe.',
+    duration: '5 min 58',
     href: VIDEO_PAGE + '#explorer',
-    image: VIDEO_PAGE + 'vignette_explorer.jpg',
+    image: VIDEO_PAGE + 'vignette_explorer_v2.jpg',
   },
   atelier: {
     id: 'atelier',
