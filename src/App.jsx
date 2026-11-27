@@ -26,7 +26,7 @@ function Footer() {
         <a href="#/donnees-personnelles" onClick={go('donnees-personnelles')}>Données personnelles</a>
         <a href="#/contact" onClick={go('contact')}>Contact</a>
       </nav>
-      <p>Quiritès Veille Lab · IHEMI · base stabilisée du 22 octobre 2026</p>
+      <p>Quiritès Veille Lab · IHEMI · base stabilisée du 27 novembre 2026</p>
     </footer>
   )
 }

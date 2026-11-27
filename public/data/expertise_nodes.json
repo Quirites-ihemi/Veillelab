@@ -8,8 +8,8 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Démocraties et sujets informationnels",
       "Sécurité publique",
+      "Démocraties et sujets informationnels",
       "Sécurité civile"
     ],
     "publications": [
@@ -86,7 +86,7 @@
         "titre": "Les émotions dans la prise de décision en contexte opérationnel chez les sapeurs-pompiers : éclairages théoriques et méthodologiques à visée applicative",
         "annee": "2026",
         "organisme": "Université de Corse Pascal Paoli",
-        "image_path": null,
+        "image_path": "/images/publications/PUB123.png",
         "url_contenu": "https://theses.hal.science/tel-05769148v1",
         "url_source": "https://theses.hal.science/tel-05769148v1",
         "has_graph": true
@@ -151,7 +151,6 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à comparer les caractéristiques des victimes et des mis en cause selon l’âge, le sexe ou le type d’atteinte.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)",
       "Délégation aux victimes (DAV) — Police nationale"
     ],
@@ -185,7 +184,7 @@
         "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
         "annee": "2026",
         "organisme": "Délégation aux victimes (DAV) — Police nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB124.png",
         "url_contenu": "",
         "url_source": "",
         "has_graph": true
@@ -230,7 +229,7 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Administration territoriale de l'État",
+      "Administration territoriale de l'Etat",
       "Sécurité nationale"
     ],
     "publications": [
@@ -467,7 +466,6 @@
     "definition": "Capacité à objectiver statistiquement des perceptions subjectives relatives à la sécurité ou à l’insécurité.",
     "entities": [
       "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -608,18 +606,17 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à analyser la répartition spatiale d’un phénomène public, d’une population, d’un risque ou d’un fait signalé.",
     "entities": [
-      "Association du corps préfectoral et des hauts fonctionnaires du ministère de l’Intérieur",
-      "Centre d’analyse et de lutte contre les atteintes aux élus",
       "Direction générale des étrangers en France",
-      "Revue du Grasco",
-      "Service statistique ministériel de la sécurité intérieure",
-      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
+      "Centre d’analyse et de lutte contre les atteintes aux élus",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+      "Association du corps préfectoral et des hauts fonctionnaires du ministère de l’Intérieur",
+      "Revue du Grasco"
     ],
     "domains": [
-      "Administration territoriale de l'État",
-      "Criminologie",
       "Migrations/intégration",
-      "Sécurité publique"
+      "Sécurité publique",
+      "Administration territoriale de l'Etat",
+      "Criminologie"
     ],
     "publications": [
       {
@@ -744,7 +741,6 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à suivre sur plusieurs années l’évolution statistique des mineurs victimes et des mineurs mis en cause.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -830,13 +826,16 @@
     "definition": "Capacité à croiser des variables sociales et territoriales pour analyser un phénomène public.",
     "entities": [
       "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)",
-      "Gendarmerie nationale"
+      "Gendarmerie nationale",
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)",
+      "SSMSI ; SSER"
     ],
     "domains": [
       "Sécurité publique",
-      "Criminalité organisée"
+      "Criminalité organisée",
+      "Migrations / Intégration professionnelle / Emploi",
+      "Criminalités / Traite des êtres humains"
     ],
     "publications": [
       {
@@ -864,7 +863,7 @@
         "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
         "annee": "2026",
         "organisme": "Gendarmerie nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB121.png",
         "url_contenu": "",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
         "has_graph": true
@@ -877,6 +876,26 @@
         "image_path": "",
         "url_contenu": "",
         "url_source": "",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB138",
+        "titre": "La délinquance enregistrée contre les élus rémunérés en 2023 : 14,2 infractions pour 100 maires",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB145",
+        "titre": "La traite et l’exploitation des êtres humains : bilan statistique sur 10 ans (2016-2025)",
+        "annee": "2026",
+        "organisme": "SSMSI ; SSER",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "https://www.interieur.gouv.fr/actualites/communiques-de-presse/traite-et-lexploitation-des-etres-humains-bilan-statististique-sur-10-ans-2016-2025",
         "has_graph": true
       }
     ],
@@ -894,6 +913,10 @@
         "count": 1
       },
       {
+        "id": "ME130",
+        "count": 1
+      },
+      {
         "id": "ME158",
         "count": 1
       },
@@ -904,10 +927,14 @@
       {
         "id": "ME175",
         "count": 1
+      },
+      {
+        "id": "ME181",
+        "count": 1
       }
     ],
-    "publication_count": 4,
-    "degree": 6
+    "publication_count": 6,
+    "degree": 8
   },
   {
     "id": "ME027",
@@ -955,9 +982,9 @@
       "Revue du Grasco"
     ],
     "domains": [
-      "Criminalités",
+      "Sécurité publique",
       "Criminologie",
-      "Sécurité publique"
+      "Criminalités"
     ],
     "publications": [
       {
@@ -1065,8 +1092,8 @@
       "Inspection générale de l’administration"
     ],
     "domains": [
-      "Administration territoriale de l'État",
-      "Sécurité nationale"
+      "Administration territoriale de l'Etat",
+      "Sécurité publique"
     ],
     "publications": [
       {
@@ -1183,13 +1210,13 @@
     "id": "ME036",
     "label": "Documentation des situations professionnelles de terrain",
     "family": "Méthode / savoir-faire",
-    "definition": "",
+    "definition": "Capacité à recueillir et analyser les expériences professionnelles pour documenter les pratiques et les difficultés rencontrées sur le terrain.",
     "entities": [
       "Préfecture de la région Auvergne-Rhône-Alpes",
       "IHEMI / ENSOSP"
     ],
     "domains": [
-      "Administration territoriale de l'État",
+      "Administration territoriale de l'Etat",
       "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
@@ -1208,7 +1235,7 @@
         "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
         "annee": "2026",
         "organisme": "IHEMI / ENSOSP",
-        "image_path": null,
+        "image_path": "/images/publications/PUB122.png",
         "url_contenu": "",
         "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
@@ -1237,7 +1264,6 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -1278,7 +1304,6 @@
     "family": "Problème public",
     "definition": "Faits enregistrés par les services de sécurité intérieure dans lesquels des mineurs sont mis en cause.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -1319,7 +1344,6 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -1444,7 +1468,6 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à interroger, structurer et analyser les bases d’infractions enregistrées par les forces de sécurité intérieure.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -1536,7 +1559,6 @@
     "definition": "Capacité à exploiter des enquêtes déclaratives portant sur les victimations, les expériences de sécurité ou les ressentis.",
     "entities": [
       "Agence nationale de la cohésion des territoires / Observatoire national de la politique de la ville",
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -1605,13 +1627,14 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à exploiter statistiquement les procédures enregistrées par les services de police et de gendarmerie.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)",
-      "Délégation aux victimes (DAV) — Police nationale"
+      "Délégation aux victimes (DAV) — Police nationale",
+      "SSMSI ; SSER"
     ],
     "domains": [
       "Sécurité publique",
-      "Violences conjugales / Homicides"
+      "Violences conjugales / Homicides",
+      "Criminalités / Traite des êtres humains"
     ],
     "publications": [
       {
@@ -1629,9 +1652,19 @@
         "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
         "annee": "2026",
         "organisme": "Délégation aux victimes (DAV) — Police nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB124.png",
         "url_contenu": "",
         "url_source": "",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB145",
+        "titre": "La traite et l’exploitation des êtres humains : bilan statistique sur 10 ans (2016-2025)",
+        "annee": "2026",
+        "organisme": "SSMSI ; SSER",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "https://www.interieur.gouv.fr/actualites/communiques-de-presse/traite-et-lexploitation-des-etres-humains-bilan-statististique-sur-10-ans-2016-2025",
         "has_graph": true
       }
     ],
@@ -1653,7 +1686,7 @@
         "count": 1
       }
     ],
-    "publication_count": 2,
+    "publication_count": 3,
     "degree": 4
   },
   {
@@ -1662,7 +1695,6 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à consolider, contrôler et améliorer la qualité des indicateurs issus de la délinquance enregistrée.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -1773,14 +1805,14 @@
     "id": "ME052",
     "label": "Formulation de recommandations interadministratives",
     "family": "Méthode / savoir-faire",
-    "definition": "",
+    "definition": "Capacité à élaborer des préconisations opérationnelles et organisationnelles mobilisant plusieurs administrations ou services.",
     "entities": [
       "Inspection générale de l’administration",
       "IHEMI / ENSOSP"
     ],
     "domains": [
-      "Administration territoriale de l'État",
-      "Sécurité nationale",
+      "Administration territoriale de l'Etat",
+      "Sécurité publique",
       "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
@@ -1809,7 +1841,7 @@
         "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
         "annee": "2026",
         "organisme": "IHEMI / ENSOSP",
-        "image_path": null,
+        "image_path": "/images/publications/PUB122.png",
         "url_contenu": "",
         "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
@@ -2025,7 +2057,7 @@
       "Inspection générale de l’administration"
     ],
     "domains": [
-      "Administration territoriale de l'État"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -2102,7 +2134,6 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -2254,8 +2285,8 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Sécurité nationale",
-      "Sécurité publique"
+      "Sécurité publique",
+      "Sécurité nationale"
     ],
     "publications": [
       {
@@ -2302,9 +2333,8 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à mobiliser les catégories d’infractions pour produire des indicateurs statistiques fiables et comparables.",
     "entities": [
-      "Les cahiers français",
-      "Service statistique ministériel de la sécurité intérieure",
-      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+      "Les cahiers français"
     ],
     "domains": [
       "Sécurité publique",
@@ -2421,8 +2451,8 @@
     "family": "Problème public",
     "definition": "Menaces combinant dimensions cyber, informationnelles, géopolitiques, criminelles ou physiques dans les espaces numériques.",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale",
-      "Commandement du ministère de l’Intérieur dans le cyberespace / Centre d’analyse des cybermenaces"
+      "Commandement du ministère de l’Intérieur dans le cyberespace / Centre d’analyse des cybermenaces",
+      "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
       "Criminalités",
@@ -2469,7 +2499,6 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à interpréter des évolutions statistiques à la lumière de changements législatifs, réglementaires ou méthodologiques.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -2508,7 +2537,8 @@
     "entities": [
       "Les cahiers français",
       "Centre de recherche de la Gendarmerie nationale",
-      "Le Collimateur"
+      "Le Collimateur",
+      "Institut des hautes études du ministère de l’Intérieur (IHEMI)"
     ],
     "domains": [
       "Sécurité publique",
@@ -2541,9 +2571,19 @@
         "titre": "Penser le maintien de l'ordre en France aujourd'hui",
         "annee": "2026",
         "organisme": "Le Collimateur",
-        "image_path": null,
+        "image_path": "/images/publications/PUB120.png",
         "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
         "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB139",
+        "titre": "Police et gendarmerie : histoire d’une coopération institutionnelle",
+        "annee": "2026",
+        "organisme": "Institut des hautes études du ministère de l’Intérieur (IHEMI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
         "has_graph": true
       }
     ],
@@ -2558,11 +2598,15 @@
       },
       {
         "id": "ME166",
+        "count": 2
+      },
+      {
+        "id": "ME182",
         "count": 1
       }
     ],
-    "publication_count": 3,
-    "degree": 3
+    "publication_count": 4,
+    "degree": 4
   },
   {
     "id": "ME073",
@@ -2570,12 +2614,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Préfecture de la région Auvergne-Rhône-Alpes",
-      "École nationale supérieure de la police"
+      "École nationale supérieure de la police",
+      "Préfecture de la région Auvergne-Rhône-Alpes"
     ],
     "domains": [
-      "Administration territoriale de l'État",
-      "Travail, emploi, formation"
+      "Travail, emploi, formation",
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -2626,7 +2670,6 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à mobiliser des modèles économétriques pour isoler l’association propre de caractéristiques territoriales avec la fréquence d’un phénomène de délinquance, toutes choses égales par ailleurs.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -2671,12 +2714,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Préfecture de la région Auvergne-Rhône-Alpes",
-      "École nationale supérieure de la police"
+      "École nationale supérieure de la police",
+      "Préfecture de la région Auvergne-Rhône-Alpes"
     ],
     "domains": [
-      "Administration territoriale de l'État",
-      "Travail, emploi, formation"
+      "Travail, emploi, formation",
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -2794,7 +2837,7 @@
       "Préfecture de la région Auvergne-Rhône-Alpes"
     ],
     "domains": [
-      "Administration territoriale de l'État"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -3223,8 +3266,8 @@
       "Centre de recherche de la Gendarmerie nationale"
     ],
     "domains": [
-      "Sécurité nationale",
-      "Travail, emploi, formation"
+      "Travail, emploi, formation",
+      "Sécurité nationale"
     ],
     "publications": [
       {
@@ -3667,7 +3710,6 @@
     "family": "Problème public",
     "definition": "Faits enregistrés par les services de sécurité intérieure dont les mineurs sont victimes.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -3711,7 +3753,7 @@
       "Association du corps préfectoral et des hauts fonctionnaires du ministère de l’Intérieur"
     ],
     "domains": [
-      "Administration territoriale de l'État"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -3747,7 +3789,7 @@
       "Inspection générale de l’administration"
     ],
     "domains": [
-      "Administration territoriale de l'État"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -3778,13 +3820,13 @@
     "id": "ME111",
     "label": "Évaluation des doctrines de prévention des risques naturels",
     "family": "Méthode / savoir-faire",
-    "definition": "",
+    "definition": "Capacité à examiner les dispositifs et doctrines de prévention des risques naturels pour identifier leurs limites et leurs besoins d'adaptation.",
     "entities": [
       "Inspection générale de l’administration",
       "IHEMI / ENSOSP"
     ],
     "domains": [
-      "Administration territoriale de l'État",
+      "Administration territoriale de l'Etat",
       "Sécurité civile / Résilience des primo-intervenants"
     ],
     "publications": [
@@ -3803,7 +3845,7 @@
         "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
         "annee": "2026",
         "organisme": "IHEMI / ENSOSP",
-        "image_path": null,
+        "image_path": "/images/publications/PUB122.png",
         "url_contenu": "",
         "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
@@ -3832,7 +3874,6 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -3897,7 +3938,6 @@
     "family": "Problème public",
     "definition": "Perception subjective de l’insécurité et craintes exprimées par les individus face au risque d’être victime.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -3956,17 +3996,15 @@
     "family": "Méthode / savoir-faire",
     "definition": "",
     "entities": [
-      "Inspection générale de l’administration",
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
       "Revue du Grasco",
-      "Service statistique ministériel de la sécurité intérieure",
-      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
+      "Inspection générale de l’administration"
     ],
     "domains": [
-      "Criminalités",
-      "Criminologie",
-      "Sécurité nationale",
       "Sécurité publique",
-      "Sécurité routière"
+      "Sécurité routière",
+      "Criminologie",
+      "Criminalités"
     ],
     "publications": [
       {
@@ -4092,7 +4130,7 @@
       "Association du corps préfectoral et des hauts fonctionnaires du ministère de l’Intérieur"
     ],
     "domains": [
-      "Administration territoriale de l'État"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -4161,7 +4199,6 @@
     "family": "Problème public",
     "definition": "",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -4201,7 +4238,7 @@
       "Inspection générale de l’administration"
     ],
     "domains": [
-      "Sécurité nationale"
+      "Sécurité publique"
     ],
     "publications": [
       {
@@ -4351,12 +4388,13 @@
     "definition": "Capacité à décrire les caractéristiques, fréquences et configurations d’un phénomène criminel à partir des données disponibles.",
     "entities": [
       "Revue du Grasco",
-      "Service statistique ministériel de la sécurité intérieure",
-      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+      "SSMSI ; SSER"
     ],
     "domains": [
       "Criminologie",
-      "Sécurité publique"
+      "Sécurité publique",
+      "Criminalités / Traite des êtres humains"
     ],
     "publications": [
       {
@@ -4378,9 +4416,33 @@
         "url_contenu": "https://www.interieur.gouv.fr/sites/minint/files/medias/documents/2026-09/IR67%20La%20de%CC%81linquance%20enregistre%CC%81e%20dans%20les%20transports%20en%20commun%20poursuit%20sa%20baisse%20en%202025.pdf",
         "url_source": "https://statistiques.interieur.gouv.fr/ssmsi/publications/la-delinquance-enregistree-dans-les-reseaux-de-transports-en-commun-en-2025",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB138",
+        "titre": "La délinquance enregistrée contre les élus rémunérés en 2023 : 14,2 infractions pour 100 maires",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB145",
+        "titre": "La traite et l’exploitation des êtres humains : bilan statistique sur 10 ans (2016-2025)",
+        "annee": "2026",
+        "organisme": "SSMSI ; SSER",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "https://www.interieur.gouv.fr/actualites/communiques-de-presse/traite-et-lexploitation-des-etres-humains-bilan-statististique-sur-10-ans-2016-2025",
+        "has_graph": true
       }
     ],
     "associated": [
+      {
+        "id": "ME024",
+        "count": 1
+      },
       {
         "id": "ME087",
         "count": 1
@@ -4388,10 +4450,18 @@
       {
         "id": "ME157",
         "count": 1
+      },
+      {
+        "id": "ME180",
+        "count": 1
+      },
+      {
+        "id": "ME181",
+        "count": 1
       }
     ],
-    "publication_count": 2,
-    "degree": 2
+    "publication_count": 4,
+    "degree": 5
   },
   {
     "id": "ME131",
@@ -4454,7 +4524,7 @@
         "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
         "annee": "2026",
         "organisme": "Délégation aux victimes (DAV) — Police nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB124.png",
         "url_contenu": "",
         "url_source": "",
         "has_graph": true
@@ -4544,7 +4614,7 @@
         "titre": "Penser le maintien de l'ordre en France aujourd'hui",
         "annee": "2026",
         "organisme": "Le Collimateur",
-        "image_path": null,
+        "image_path": "/images/publications/PUB120.png",
         "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
         "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
         "has_graph": true
@@ -4554,7 +4624,7 @@
         "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
         "annee": "2026",
         "organisme": "Gendarmerie nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB121.png",
         "url_contenu": "",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
         "has_graph": true
@@ -4614,7 +4684,7 @@
         "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
         "annee": "2026",
         "organisme": "Gendarmerie nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB121.png",
         "url_contenu": "",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
         "has_graph": true
@@ -4624,7 +4694,7 @@
         "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
         "annee": "2026",
         "organisme": "IHEMI / ENSOSP",
-        "image_path": null,
+        "image_path": "/images/publications/PUB122.png",
         "url_contenu": "",
         "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
@@ -4634,7 +4704,7 @@
         "titre": "Les émotions dans la prise de décision en contexte opérationnel chez les sapeurs-pompiers : éclairages théoriques et méthodologiques à visée applicative",
         "annee": "2026",
         "organisme": "Université de Corse Pascal Paoli",
-        "image_path": null,
+        "image_path": "/images/publications/PUB123.png",
         "url_contenu": "https://theses.hal.science/tel-05769148v1",
         "url_source": "https://theses.hal.science/tel-05769148v1",
         "has_graph": true
@@ -4678,7 +4748,7 @@
       "Association du corps préfectoral et des hauts fonctionnaires du ministère de l’Intérieur"
     ],
     "domains": [
-      "Administration territoriale de l'État"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -4718,7 +4788,7 @@
       "Association du corps préfectoral et des hauts fonctionnaires du ministère de l’Intérieur"
     ],
     "domains": [
-      "Administration territoriale de l'État"
+      "Administration territoriale de l'Etat"
     ],
     "publications": [
       {
@@ -4759,7 +4829,6 @@
     "family": "Problème public",
     "definition": "Analyse des violences commises au sein de la famille en dehors des relations conjugales, notamment selon les liens entre victimes et auteurs et les catégories d’infractions.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -4803,7 +4872,7 @@
       "Inspection générale de l’administration"
     ],
     "domains": [
-      "Sécurité nationale"
+      "Sécurité publique"
     ],
     "publications": [
       {
@@ -4872,10 +4941,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à mobiliser le doute, la vérification et la réflexivité comme principes méthodologiques de production de connaissances scientifiques.",
     "entities": [
-      "Centre de recherche de la Gendarmerie nationale"
+      "Centre de recherche de la Gendarmerie nationale",
+      "Institut des hautes études du ministère de l’Intérieur (IHEMI)"
     ],
     "domains": [
-      "Criminalités"
+      "Criminalités",
+      "Sécurité publique"
     ],
     "publications": [
       {
@@ -4887,16 +4958,30 @@
         "url_contenu": "https://www.gendarmerie.interieur.gouv.fr/crgn/content/download/60033/file/PEPS%20-%20Lutte%20contre%20la%20p%C3%A9docriminalit%C3%A9%20-%20Rapport%20V1.pdf",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/crgn/actus/le-rapport-peps-lutte-contre-la-pedocriminalite-est-disponible",
         "has_graph": true
+      },
+      {
+        "publication_id": "PUB139",
+        "titre": "Police et gendarmerie : histoire d’une coopération institutionnelle",
+        "annee": "2026",
+        "organisme": "Institut des hautes études du ministère de l’Intérieur (IHEMI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME154",
         "count": 1
+      },
+      {
+        "id": "ME182",
+        "count": 1
       }
     ],
-    "publication_count": 1,
-    "degree": 1
+    "publication_count": 2,
+    "degree": 2
   },
   {
     "id": "ME148",
@@ -5048,7 +5133,6 @@
     "family": "Problème public",
     "definition": "Faits de délinquance enregistrés par les services de police et de gendarmerie dans les réseaux de transports en commun, analysés selon la nature des atteintes, les profils et les territoires.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -5093,7 +5177,6 @@
     "family": "Problème public",
     "definition": "Faits d’atteintes aux biens ou aux personnes déclarés par les individus dans le cadre d’enquêtes de victimation.",
     "entities": [
-      "Service statistique ministériel de la sécurité intérieure",
       "Service statistique ministériel de la sécurité intérieure (SSMSI)"
     ],
     "domains": [
@@ -5161,7 +5244,7 @@
         "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
         "annee": "2026",
         "organisme": "IHEMI / ENSOSP",
-        "image_path": null,
+        "image_path": "/images/publications/PUB122.png",
         "url_contenu": "",
         "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
@@ -5217,7 +5300,7 @@
         "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
         "annee": "2026",
         "organisme": "IHEMI / ENSOSP",
-        "image_path": null,
+        "image_path": "/images/publications/PUB122.png",
         "url_contenu": "",
         "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
@@ -5326,10 +5409,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à analyser l’adaptation des mesures d’intégration selon l’âge, le genre, la vulnérabilité, les qualifications ou le niveau d’éducation des publics concernés.",
     "entities": [
-      "Réseau européen des migrations (REM) / Direction générale des étrangers en France"
+      "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)"
     ],
     "domains": [
-      "Migrations/intégration"
+      "Migrations/intégration",
+      "Migrations / Intégration professionnelle / Emploi"
     ],
     "publications": [
       {
@@ -5372,10 +5457,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à analyser la répartition des responsabilités et la coopération entre autorités nationales, collectivités territoriales, organismes publics, ONG et autres partenaires dans la mise en œuvre des dispositifs d’intégration.",
     "entities": [
-      "Réseau européen des migrations (REM) / Direction générale des étrangers en France"
+      "Réseau européen des migrations (REM) / Direction générale des étrangers en France",
+      "Réseau européen des migrations (REM) / Organisation de coopération et de développement économiques (OCDE)"
     ],
     "domains": [
-      "Migrations/intégration"
+      "Migrations/intégration",
+      "Migrations / Intégration professionnelle / Emploi"
     ],
     "publications": [
       {
@@ -5454,10 +5541,12 @@
     "family": "Méthode / savoir-faire",
     "definition": "Capacité à faire évoluer les principes et doctrines de maintien de l'ordre en fonction des transformations des manifestations, des contextes opérationnels et des enseignements de l'expérience.",
     "entities": [
-      "Le Collimateur"
+      "Le Collimateur",
+      "Institut des hautes études du ministère de l’Intérieur (IHEMI)"
     ],
     "domains": [
-      "Maintien de l'ordre / Sécurité intérieure"
+      "Maintien de l'ordre / Sécurité intérieure",
+      "Sécurité publique"
     ],
     "publications": [
       {
@@ -5465,23 +5554,33 @@
         "titre": "Penser le maintien de l'ordre en France aujourd'hui",
         "annee": "2026",
         "organisme": "Le Collimateur",
-        "image_path": null,
+        "image_path": "/images/publications/PUB120.png",
         "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
         "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB139",
+        "titre": "Police et gendarmerie : histoire d’une coopération institutionnelle",
+        "annee": "2026",
+        "organisme": "Institut des hautes études du ministère de l’Intérieur (IHEMI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
         "has_graph": true
       }
     ],
     "associated": [
       {
         "id": "ME071",
-        "count": 1
+        "count": 2
       },
       {
         "id": "ME167",
         "count": 1
       }
     ],
-    "publication_count": 1,
+    "publication_count": 2,
     "degree": 2
   },
   {
@@ -5501,7 +5600,7 @@
         "titre": "Penser le maintien de l'ordre en France aujourd'hui",
         "annee": "2026",
         "organisme": "Le Collimateur",
-        "image_path": null,
+        "image_path": "/images/publications/PUB120.png",
         "url_contenu": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
         "url_source": "https://www.youtube.com/watch?v=ZOKdqh7BadM",
         "has_graph": true
@@ -5537,7 +5636,7 @@
         "titre": "Face au crime organisé — Empreintes, Revue de la Gendarmerie nationale, n° 274",
         "annee": "2026",
         "organisme": "Gendarmerie nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB121.png",
         "url_contenu": "",
         "url_source": "https://www.gendarmerie.interieur.gouv.fr/empreintes",
         "has_graph": true
@@ -5573,7 +5672,7 @@
         "titre": "Recherche sur les facteurs de résilience des primo-intervenants face aux événements climatiques extrêmes",
         "annee": "2026",
         "organisme": "IHEMI / ENSOSP",
-        "image_path": null,
+        "image_path": "/images/publications/PUB122.png",
         "url_contenu": "",
         "url_source": "https://www.ihemi.fr/recherche-sur-les-facteurs-de-resilience-des-primo-intervenants-face-aux-evenements-climatiques-extremes",
         "has_graph": true
@@ -5609,7 +5708,7 @@
         "titre": "Les émotions dans la prise de décision en contexte opérationnel chez les sapeurs-pompiers : éclairages théoriques et méthodologiques à visée applicative",
         "annee": "2026",
         "organisme": "Université de Corse Pascal Paoli",
-        "image_path": null,
+        "image_path": "/images/publications/PUB123.png",
         "url_contenu": "https://theses.hal.science/tel-05769148v1",
         "url_source": "https://theses.hal.science/tel-05769148v1",
         "has_graph": true
@@ -5645,7 +5744,7 @@
         "titre": "Étude nationale sur les morts violentes au sein du couple — 2025",
         "annee": "2026",
         "organisme": "Délégation aux victimes (DAV) — Police nationale",
-        "image_path": null,
+        "image_path": "/images/publications/PUB124.png",
         "url_contenu": "",
         "url_source": "",
         "has_graph": true
@@ -5681,7 +5780,7 @@
         "titre": "Espion, es-tu là ? Comment la DGSI lutte contre les espions infiltrés sur notre territoire ?",
         "annee": "2026",
         "organisme": "IHEMI — Département de l'analyse / Centre de réflexion",
-        "image_path": null,
+        "image_path": "/images/publications/PUB125.png",
         "url_contenu": "",
         "url_source": "",
         "has_graph": true
@@ -5717,7 +5816,7 @@
         "titre": "Espion, es-tu là ? Comment la DGSI lutte contre les espions infiltrés sur notre territoire ?",
         "annee": "2026",
         "organisme": "IHEMI — Département de l'analyse / Centre de réflexion",
-        "image_path": null,
+        "image_path": "/images/publications/PUB125.png",
         "url_contenu": "",
         "url_source": "",
         "has_graph": true
@@ -5749,7 +5848,7 @@
         "titre": "Espion, es-tu là ? Comment la DGSI lutte contre les espions infiltrés sur notre territoire ?",
         "annee": "2026",
         "organisme": "IHEMI — Département de l'analyse / Centre de réflexion",
-        "image_path": null,
+        "image_path": "/images/publications/PUB125.png",
         "url_contenu": "",
         "url_source": "",
         "has_graph": true
@@ -5789,6 +5888,10 @@
     ],
     "associated": [
       {
+        "id": "ME024",
+        "count": 1
+      },
+      {
         "id": "ME177",
         "count": 1
       },
@@ -5798,10 +5901,6 @@
       },
       {
         "id": "ME179",
-        "count": 1
-      },
-      {
-        "id": "ME024",
         "count": 1
       }
     ],
@@ -5928,15 +6027,15 @@
     ],
     "associated": [
       {
-        "id": "ME175",
-        "count": 1
-      },
-      {
         "id": "ME163",
         "count": 1
       },
       {
         "id": "ME164",
+        "count": 1
+      },
+      {
+        "id": "ME175",
         "count": 1
       },
       {
@@ -5946,5 +6045,148 @@
     ],
     "publication_count": 1,
     "degree": 4
+  },
+  {
+    "id": "ME180",
+    "label": "Rapprochement de bases de données administratives",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à apparier des données issues de différentes sources administratives afin de produire des connaissances statistiques.",
+    "entities": [
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)"
+    ],
+    "domains": [
+      "Sécurité publique"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB138",
+        "titre": "La délinquance enregistrée contre les élus rémunérés en 2023 : 14,2 infractions pour 100 maires",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME130",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 1
+  },
+  {
+    "id": "ME181",
+    "label": "Mesure statistique de la survictimation",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à mesurer la surexposition d'une population aux atteintes par comparaison avec une population de référence aux caractéristiques comparables.",
+    "entities": [
+      "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+      "SSMSI ; SSER"
+    ],
+    "domains": [
+      "Sécurité publique",
+      "Criminalités / Traite des êtres humains"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB138",
+        "titre": "La délinquance enregistrée contre les élus rémunérés en 2023 : 14,2 infractions pour 100 maires",
+        "annee": "2026",
+        "organisme": "Service statistique ministériel de la sécurité intérieure (SSMSI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      },
+      {
+        "publication_id": "PUB145",
+        "titre": "La traite et l’exploitation des êtres humains : bilan statistique sur 10 ans (2016-2025)",
+        "annee": "2026",
+        "organisme": "SSMSI ; SSER",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "https://www.interieur.gouv.fr/actualites/communiques-de-presse/traite-et-lexploitation-des-etres-humains-bilan-statististique-sur-10-ans-2016-2025",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME024",
+        "count": 1
+      },
+      {
+        "id": "ME130",
+        "count": 1
+      }
+    ],
+    "publication_count": 2,
+    "degree": 2
+  },
+  {
+    "id": "ME182",
+    "label": "Analyse historique des coopérations entre forces de sécurité",
+    "family": "Méthode / savoir-faire",
+    "definition": "Capacité à analyser les complémentarités institutionnelles et opérationnelles entre forces de sécurité à partir de sources historiques et de fonds d’archives croisés.",
+    "entities": [
+      "Institut des hautes études du ministère de l’Intérieur (IHEMI)"
+    ],
+    "domains": [
+      "Sécurité publique"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB139",
+        "titre": "Police et gendarmerie : histoire d’une coopération institutionnelle",
+        "annee": "2026",
+        "organisme": "Institut des hautes études du ministère de l’Intérieur (IHEMI)",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "",
+        "has_graph": true
+      }
+    ],
+    "associated": [
+      {
+        "id": "ME071",
+        "count": 1
+      },
+      {
+        "id": "ME145",
+        "count": 1
+      }
+    ],
+    "publication_count": 1,
+    "degree": 2
+  },
+  {
+    "id": "ME183",
+    "label": "Rapprochement des données individuelles par identifiant statistique unique",
+    "family": "Méthode / savoir-faire",
+    "definition": "Rapprochement statistique des procédures concernant une même personne afin d’étudier ses parcours de victimation.",
+    "entities": [
+      "SSMSI ; SSER"
+    ],
+    "domains": [
+      "Criminalités / Traite des êtres humains"
+    ],
+    "publications": [
+      {
+        "publication_id": "PUB145",
+        "titre": "La traite et l’exploitation des êtres humains : bilan statistique sur 10 ans (2016-2025)",
+        "annee": "2026",
+        "organisme": "SSMSI ; SSER",
+        "image_path": "",
+        "url_contenu": "",
+        "url_source": "https://www.interieur.gouv.fr/actualites/communiques-de-presse/traite-et-lexploitation-des-etres-humains-bilan-statististique-sur-10-ans-2016-2025",
+        "has_graph": true
+      }
+    ],
+    "associated": [],
+    "publication_count": 1,
+    "degree": 0
   }
 ]

@@ -129,3 +129,4 @@ button.nb-more{border:0;background:none;color:#2f56d6;font-family:inherit;font-w
 .nb-side .nb-side-meta{margin:0 0 4px;line-height:1.45}
 .nb-crown[style*="--n: 1"],.nb-crown[style*="--n:1"]{max-width:760px;margin-left:auto;margin-right:auto}
 .nb-why{margin:4px 0 12px;font-size:14.5px;line-height:1.5;color:#33415c}
+.nb-trunk-noimg{flex:none;width:110px;height:146px;border-radius:6px;background:#eef2f8;display:grid;place-items:center;font-size:12px;color:#6b7891;font-weight:700}

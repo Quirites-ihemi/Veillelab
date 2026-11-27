@@ -1,13 +1,13 @@
 {
-  "source_workbook": "Quirites_BDD_MAJ_PUB134_137_tracabilite_FIDELE.xlsx",
+  "source_workbook": "Quirites_BDD_70_publications_corrigee_avec_rapprochements.xlsx",
   "counts": {
-    "publications": 62,
-    "nodes": 1562,
-    "relations": 1333,
+    "publications": 70,
+    "nodes": 1921,
+    "relations": 1619,
     "treatments": 10,
-    "contents": 1272,
-    "expertise_nodes": 136,
-    "expertise_edges": 188
+    "contents": 1459,
+    "expertise_nodes": 140,
+    "expertise_edges": 194
   },
   "graph_publications": [
     "PUB001",
@@ -71,7 +71,15 @@
     "PUB134",
     "PUB135",
     "PUB136",
-    "PUB137"
+    "PUB137",
+    "PUB138",
+    "PUB139",
+    "PUB140",
+    "PUB141",
+    "PUB142",
+    "PUB143",
+    "PUB144",
+    "PUB145"
   ],
   "chunk_publications": [
     "PUB001",
@@ -99,6 +107,7 @@
     "PUB033",
     "PUB034",
     "PUB051",
+    "PUB052",
     "PUB053",
     "PUB054",
     "PUB057",
@@ -128,18 +137,26 @@
     "PUB134",
     "PUB135",
     "PUB136",
-    "PUB137"
+    "PUB137",
+    "PUB138",
+    "PUB139",
+    "PUB140",
+    "PUB141",
+    "PUB142",
+    "PUB143",
+    "PUB145"
   ],
   "graph_publications_without_chunks": [
-    "PUB052",
     "PUB058",
     "PUB060",
     "PUB068",
     "PUB116",
     "PUB117",
-    "PUB133"
+    "PUB133",
+    "PUB144"
   ],
   "images": [
+    "CONTROLE_SOURCES_IMAGES.txt",
     "PUB001.png",
     "PUB002.png",
     "PUB003.png",
@@ -193,19 +210,28 @@
     "PUB117.png",
     "PUB118.png",
     "PUB119.png",
+    "PUB120.png",
+    "PUB121.png",
+    "PUB122.png",
+    "PUB123.PNG",
+    "PUB123.png",
+    "PUB124.png",
+    "PUB125.png",
+    "PUB126.png",
+    "PUB127.png",
     "atelier.jpg",
     "atlas.jpg",
     "expertises-intro-sobre.png",
     "explorer.jpg",
     "frise.jpg"
   ],
-  "expertise_source_workbook": "Quirites_BDD_auditee_sans_doublons_SN003.xlsx",
-  "expertise_update": "PUB134 : huit rattachements et sept associations ajoutés ; coordonnées Gephi anciennes conservées ; ME175 à ME179 sans coordonnées nouvelles",
-  "active_publication_limit": 62,
+  "expertise_source_workbook": "Quirites_BDD_70_publications_corrigee_avec_rapprochements.xlsx",
+  "expertise_update": "Base à 70 publications : ME180 à ME183 ajoutées sans coordonnées Gephi nouvelles (comme ME166 à ME179)",
+  "active_publication_limit": 70,
   "provenance_levels": {
     "A": 55,
     "B": 6,
     "C": 1
   },
-  "transversal_notions_update": "7 notions synchronisées depuis TRANSVERSAL_NOTIONS, SN006 includes PUB137 (9 jalons)"
+  "transversal_notions_update": "10 notions synchronisées depuis TRANSVERSAL_NOTIONS (dont Cybercriminalité, Intelligence et sécurité économiques, Traite et exploitation des êtres humains)"
 }

@@ -9,7 +9,7 @@ function publicationImageSrc(publication = {}) {
   const base = import.meta.env.BASE_URL || '/'
   const raw = String(publication.image_path || publication.image_publication || '').trim()
   if (/^https?:\/\//i.test(raw)) return raw
-  const normalized = raw ? raw.replace(/^\.?\/+/, '') : `images/publications/${publication.publication_id}.png`
+  const normalized = raw.replace(/^\.?\/+/, '')
   return `${base}${normalized}`
 }
 const sentenceCase = (v = '') => { const s = String(v || '').trim(); return s ? s.charAt(0).toUpperCase() + s.slice(1) : '' }
@@ -131,7 +131,7 @@ export default function DocumentLinksWorkspace({ data, onBack, initialPublicatio
           </svg>
         </> : <p className="nb-empty">Aucune autre publication n’a encore été rapprochée de celle-ci.</p>}
         <article className="nb-trunk">
-          <img src={publicationImageSrc(source)} alt="" />
+          {source.image_path ? <img src={publicationImageSrc(source)} alt="" onError={e => { e.currentTarget.style.display = 'none' }}/> : <span className="nb-trunk-noimg" aria-hidden="true">{publicationId}</span>}
           <div><small>PUBLICATION DE DÉPART · {publicationId}</small><h2>{titleOf(source, publicationId)}</h2><p>{metaOf(source)}{branches.length ? ` · ${branches.length} publication${branches.length > 1 ? 's' : ''} rapprochée${branches.length > 1 ? 's' : ''}` : ''}</p></div>
         </article>
       </div>

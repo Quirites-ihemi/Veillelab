@@ -1,3 +1,4 @@
+import RAPPROCHEMENTS from '../data_rapprochements.json'
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ExportShare from '../components/ExportShare.jsx'
@@ -61,6 +62,28 @@ export const TRANSVERSAL_NOTIONS = [
         "N0941",
         "N0944",
         "N0953"
+      ],
+      "PUB141": [
+        "N1831",
+        "N1836",
+        "N1840"
+      ],
+      "PUB143": [
+        "N1913",
+        "N1916",
+        "N1912",
+        "N1914",
+        "N1931",
+        "N1917",
+        "N1915"
+      ],
+      "PUB144": [
+        "N1983"
+      ],
+      "PUB145": [
+        "N2013",
+        "N2017",
+        "N2021"
       ]
     }
   },
@@ -111,6 +134,21 @@ export const TRANSVERSAL_NOTIONS = [
       "PUB090": [
         "N1156",
         "N1157"
+      ],
+      "PUB142": [
+        "N1860",
+        "N1863",
+        "N1872",
+        "N1874",
+        "N1875",
+        "N1887",
+        "N1858",
+        "N1907"
+      ],
+      "PUB145": [
+        "N2011",
+        "N2012",
+        "N2059"
       ]
     }
   },
@@ -161,6 +199,20 @@ export const TRANSVERSAL_NOTIONS = [
         "N1729",
         "N1735",
         "N1737"
+      ],
+      "PUB140": [
+        "N1780",
+        "N1781",
+        "N1788",
+        "N1794",
+        "N1798",
+        "N1809",
+        "N1812"
+      ],
+      "PUB141": [
+        "N1821",
+        "N1823",
+        "N1825"
       ]
     }
   },
@@ -245,6 +297,77 @@ export const TRANSVERSAL_NOTIONS = [
       "PUB122": [
         "N1503",
         "N1505"
+      ]
+    }
+  },
+  {
+    "id": "cybercriminalite",
+    "label": "Cybercriminalité",
+    "icon": "graph",
+    "accent": "#3b5fc0",
+    "selections": {
+      "PUB141": [
+        "N1851",
+        "N1822",
+        "N1826",
+        "N1829",
+        "N1830",
+        "N1833",
+        "N1835",
+        "N1843",
+        "N1846",
+        "N1847"
+      ],
+      "PUB142": [
+        "N1868",
+        "N1870",
+        "N1884"
+      ],
+      "PUB143": [
+        "N1941",
+        "N1943"
+      ]
+    }
+  },
+  {
+    "id": "intelligence-economique",
+    "label": "Intelligence et sécurité économiques",
+    "icon": "compass",
+    "accent": "#2b7f8f",
+    "selections": {
+      "PUB143": [
+        "N1910",
+        "N1919",
+        "N1911",
+        "N1975"
+      ]
+    }
+  },
+  {
+    "id": "traite-etres-humains",
+    "label": "Traite et exploitation des êtres humains",
+    "icon": "target",
+    "accent": "#9a5a7e",
+    "selections": {
+      "PUB144": [
+        "N1982",
+        "N1913",
+        "N1983",
+        "N1984",
+        "N1980",
+        "N1981"
+      ],
+      "PUB145": [
+        "N2013",
+        "N2053",
+        "N2054",
+        "N2060",
+        "N2043",
+        "N2036",
+        "N2040",
+        "N2030",
+        "N2032",
+        "N2049"
       ]
     }
   }
@@ -641,6 +764,11 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
     return { publications: new Set(els.map(e => e.publication_id)).size, elements: els.length }
   }, [chronology])
 
+  const rapprochementCount = useMemo(() => {
+    const ids = new Set((data?.publications || []).map(p => p.publication_id))
+    return (RAPPROCHEMENTS.rapprochements || []).filter(r => ids.has(r.a) && ids.has(r.b)).length
+  }, [data])
+
   const features = [
     { key: 'chrono', color: '#e3a73b', tag: 'Chronologie', title: 'Du texte à la frise',
       lead: 'Faites apparaître la trame temporelle d’une publication : jalons, événements, tendances et inflexions replacés dans le temps et reliés à leur preuve.',
@@ -653,9 +781,9 @@ function CrossDocumentsHome({ data, onOpenChronology, onOpenNotions, onOpenRecom
       meta: `${TRANSVERSAL_NOTIONS.length} notions · éléments déjà validés`,
       open: onOpenNotions, visual: <XdaNotion publications={publications}/> },
     { key: 'reco', color: '#2552c4', tag: 'Recommandations', title: 'L’arbre des recommandations',
-      lead: 'Partez d’une publication : ses fils de lecture se séparent en publications liées et en pistes pour aller plus loin, chacun justifié par les passages des deux documents.',
-      you: 'Une publication', get: 'Son arbre de recommandations, relié aux passages sources',
-      meta: `${recommendationsCatalog.length} publications · publications liées et pistes précalculées`,
+      lead: 'Partez d’une publication : chaque branche porte un sujet qu’elle partage avec une autre publication, justifié par les passages des deux documents.',
+      you: 'Une publication', get: 'Les publications qui traitent du même sujet, reliées aux passages sources',
+      meta: `${rapprochementCount} rapprochements validés`,
       open: onOpenRecommendations, visual: <XdaTree publications={publications}/> },
   ]
 
@@ -1657,7 +1785,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
       {TRANSVERSAL_NOTIONS.map(n => {
         const count = Object.values(n.selections).reduce((a, x) => a + x.length, 0)
         return <button key={n.id} type="button" className={`xd-notion-chip ${notionId === n.id ? 'on' : ''}`} onClick={() => chooseNotion(n.id)}>
-          {n.label}<small>{Object.keys(n.selections).length} publications · {count} éléments</small>
+          {n.label}<small>{Object.keys(n.selections).length} publication{Object.keys(n.selections).length > 1 ? 's' : ''} · {count} élément{count > 1 ? 's' : ''}</small>
         </button>
       })}
     </nav>}
