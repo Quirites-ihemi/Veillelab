@@ -1648,10 +1648,10 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
           </>}
       </div> : <ExportShare waitingFor="Choisissez une notion pour exporter ou partager." showShareWhenWaiting />}
     </header>
-    <div className="xd-notion-intro" role="note">
+    {notion && <div className="xd-notion-intro" role="note">
       <strong>Une notion, plusieurs éclairages</strong>
       <span>Explorez une même notion à travers plusieurs publications. Chacune apporte un éclairage différent qui enrichit sa compréhension.</span>
-    </div>
+    </div>}
     {notion && <nav className="xd-notions" aria-label="Choisir une notion">
       <span>Notion</span>
       {TRANSVERSAL_NOTIONS.map(n => {
@@ -1662,8 +1662,8 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
       })}
     </nav>}
     {!notion ? <div className="xd-land">
-      <h2>Choisissez une notion</h2>
-      <p>Chaque notion réunit ce que plusieurs publications du bulletin en disent. Vous y retrouvez chaque élément avec sa source, ses pages et l’extrait qui le prouve, et vous pouvez garder ceux qui vous intéressent pour les copier ou les exporter.</p>
+      <h2>Une notion, plusieurs regards professionnels</h2>
+      <p>Explorez une même notion à travers plusieurs publications du bulletin. Chacune apporte un éclairage différent, celui d’un service, d’un métier ou d’une discipline, qui enrichit sa compréhension. Chaque élément renvoie à sa source et à l’extrait qui le prouve ; gardez ceux qui vous intéressent pour les copier ou les exporter.</p>
       <div className="xd-land-grid">{[...TRANSVERSAL_NOTIONS].sort((a, b) => Object.keys(b.selections).length - Object.keys(a.selections).length).map(n => {
         const count = Object.values(n.selections).reduce((a, x) => a + x.length, 0)
         return <button key={n.id} type="button" className="xd-land-card" onClick={() => chooseNotion(n.id)}>
