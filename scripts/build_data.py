@@ -39,14 +39,27 @@ rels = rows(R, ['relation_id', 'publication_id', 'source_id', 'type_relation', '
 contents = rows(C, ['chunk_id', 'publication_id', 'ordre', 'section', 'page_debut', 'page_fin', 'texte'])
 
 images = sorted(os.listdir(imgdir))
+lower = {}
+for f in images:
+    lower.setdefault(f.lower(), f)
+
+
+def find_image(pid, declared):
+    # Nom déclaré dans la base, sinon PUBxxx.png/.jpg ; casse indifférente (GitHub Pages la distingue).
+    for name in [declared] + [f'{pid}.{e}' for e in ('png', 'jpg', 'jpeg', 'webp')]:
+        if name and name in images:
+            return name
+        if name and name.lower() in lower:
+            return lower[name.lower()]
+    return ''
 nc, rc, cc = (collections.Counter(x['publication_id'] for x in L) for L in (nodes, rels, contents))
 PCOLS = ['publication_id', 'titre', 'année_publication', 'image_publication', 'auteurs_MI', 'organisme_producteur',
          'type_document', 'domaine', 'url_contenu', 'url_source']
 publications = []
 for p in rows(P, PCOLS):
     pid = p['publication_id']
-    img = p['image_publication']
-    has_img = bool(img) and img in images
+    img = find_image(pid, p['image_publication'])
+    has_img = bool(img)
     p.update(node_count=nc[pid], relation_count=rc[pid], chunk_count=cc[pid], has_graph=nc[pid] > 0,
              has_image=has_img, image_path=f'/images/publications/{img}' if has_img else '')
     publications.append(p)

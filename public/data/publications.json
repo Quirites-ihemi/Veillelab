@@ -590,8 +590,8 @@
     "relation_count": 14,
     "chunk_count": 0,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB068.png"
   },
   {
     "publication_id": "PUB090",
@@ -950,8 +950,8 @@
     "relation_count": 9,
     "chunk_count": 14,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB128.png"
   },
   {
     "publication_id": "PUB129",
@@ -968,8 +968,8 @@
     "relation_count": 5,
     "chunk_count": 11,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB129.png"
   },
   {
     "publication_id": "PUB130",
@@ -986,8 +986,8 @@
     "relation_count": 6,
     "chunk_count": 10,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB130.png"
   },
   {
     "publication_id": "PUB131",
@@ -1004,8 +1004,8 @@
     "relation_count": 9,
     "chunk_count": 16,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB131.png"
   },
   {
     "publication_id": "PUB132",
@@ -1022,8 +1022,8 @@
     "relation_count": 15,
     "chunk_count": 28,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB132.png"
   },
   {
     "publication_id": "PUB133",
@@ -1040,8 +1040,8 @@
     "relation_count": 12,
     "chunk_count": 0,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB133.png"
   },
   {
     "publication_id": "PUB134",
@@ -1058,8 +1058,8 @@
     "relation_count": 16,
     "chunk_count": 30,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB134.png"
   },
   {
     "publication_id": "PUB135",
@@ -1076,8 +1076,8 @@
     "relation_count": 8,
     "chunk_count": 21,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB135.png"
   },
   {
     "publication_id": "PUB136",
@@ -1094,8 +1094,8 @@
     "relation_count": 17,
     "chunk_count": 35,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB136.png"
   },
   {
     "publication_id": "PUB137",
@@ -1112,8 +1112,8 @@
     "relation_count": 12,
     "chunk_count": 25,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB137.PNG"
   },
   {
     "publication_id": "PUB138",
@@ -1130,8 +1130,8 @@
     "relation_count": 24,
     "chunk_count": 13,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB138.png"
   },
   {
     "publication_id": "PUB139",
@@ -1148,8 +1148,8 @@
     "relation_count": 24,
     "chunk_count": 14,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB139.png"
   },
   {
     "publication_id": "PUB140",
@@ -1166,8 +1166,8 @@
     "relation_count": 35,
     "chunk_count": 23,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB140.png"
   },
   {
     "publication_id": "PUB141",
@@ -1184,8 +1184,8 @@
     "relation_count": 40,
     "chunk_count": 29,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB141.PNG"
   },
   {
     "publication_id": "PUB142",
@@ -1202,8 +1202,8 @@
     "relation_count": 41,
     "chunk_count": 32,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB142.png"
   },
   {
     "publication_id": "PUB143",
@@ -1220,8 +1220,8 @@
     "relation_count": 59,
     "chunk_count": 23,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB143.PNG"
   },
   {
     "publication_id": "PUB144",
@@ -1238,8 +1238,8 @@
     "relation_count": 22,
     "chunk_count": 0,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB144.PNG"
   },
   {
     "publication_id": "PUB145",
@@ -1256,7 +1256,7 @@
     "relation_count": 42,
     "chunk_count": 27,
     "has_graph": true,
-    "has_image": false,
-    "image_path": ""
+    "has_image": true,
+    "image_path": "/images/publications/PUB145.png"
   }
 ]
