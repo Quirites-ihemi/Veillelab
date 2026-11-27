@@ -82,3 +82,8 @@
   .home-service ul{font-size:15px}
   .home-about{padding:20px}
 }
+
+/* Liens courts de la carte « D'un document à l'autre » */
+.home-links{list-style:none;margin:4px 0 0!important;padding:0!important;display:grid;gap:8px}
+.home-links a{font-weight:700;text-decoration:none}
+.home-links a:hover{text-decoration:underline}

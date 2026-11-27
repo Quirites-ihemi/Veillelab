@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useState } from 'react'
 import { navigate } from '../lib/router.js'
-import { ELIGIBLE_PUBLICATIONS, TRANSVERSAL_NOTIONS } from './CrossDocuments.jsx'
 import '../home.css'
+import '../publications.css'
 
 // Libellés d'affichage des domaines de la base (colonne « domaine »).
 // Un domaine absent de cette table s'affiche tel quel.
@@ -14,49 +14,15 @@ export const DOMAIN_LABELS = {
 }
 export const domainLabel = d => DOMAIN_LABELS[d] || d
 
-// Un thème devient une vignette à partir de ce nombre de publications ;
-// en dessous, il est cité dans la ligne « Aussi ».
-const MIN_TILE = 3
-const TINTS = ['#e6edff', '#fde8ec', '#fbf3d9', '#ecebff', '#fff0e3', '#e3f7f1', '#e2f4fb', '#edf1f6']
-
-function imageSrc(p) {
-  const base = import.meta.env.BASE_URL || '/'
-  const raw = String(p?.image_path || '').trim()
-  if (!raw) return ''
-  if (/^https?:\/\//i.test(raw)) return raw
-  return `${base}${raw.replace(/^\.?\/+/, '')}`
-}
 
 
 function Arrow() { return <span aria-hidden="true"> →</span> }
 
 export default function Home({ data }) {
   const pubs = data.publications || []
-  const expertiseCount = (data.expertise_nodes || []).length
 
-  const themes = useMemo(() => {
-    const byDomain = new Map()
-    pubs.forEach(p => {
-      const d = String(p.domaine || '').trim() || 'Autres'
-      if (!byDomain.has(d)) byDomain.set(d, [])
-      byDomain.get(d).push(p)
-    })
-    return [...byDomain.entries()]
-      .map(([domain, list]) => ({
-        domain,
-        label: domainLabel(domain),
-        count: list.length,
-        covers: [...list]
-          .filter(p => p.has_image !== false && p.image_path)
-          .sort((a, b) => String(b.année_publication || '').localeCompare(String(a.année_publication || '')) || String(b.publication_id).localeCompare(String(a.publication_id)))
-          .slice(0, 3),
-      }))
-      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'fr'))
-  }, [pubs])
-
-  const tiles = themes.filter(t => t.count >= MIN_TILE)
-  const others = themes.filter(t => t.count < MIN_TILE)
   const go = parts => e => { e.preventDefault(); navigate(parts) }
+  const [find, setFind] = useState('')
 
   return (
     <main className="home">
@@ -67,18 +33,20 @@ export default function Home({ data }) {
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z" /></svg>
           {pubs.length} publications à ce jour · une dizaine ajoutée chaque mois
         </p>
-        <p className="home-lead">Chaque information affichée renvoie à sa publication, à sa page et au passage source. Voici ce que vous pouvez faire, onglet par onglet.</p>
+        <p className="home-lead">Chaque information affichée renvoie à sa publication, à sa page et au passage source.</p>
+        <div className="home-find">
+          <form role="search" onSubmit={e => { e.preventDefault(); navigate(find.trim() ? ['publications', 'recherche', find.trim()] : ['publications']) }}>
+            <input value={find} onChange={e => setFind(e.target.value)} placeholder="Chercher une publication : un sujet, un titre, un organisme…" aria-label="Chercher une publication" />
+            <button type="submit">Chercher</button>
+          </form>
+          <p>Ou <a href="#/publications" onClick={go(['publications'])}>parcourir les {pubs.length} publications</a>, par thème, organisme, type ou année.</p>
+        </div>
       </section>
 
       <section className="home-services" aria-label="Les services de l’application">
         <article className="home-service s-atlas">
           <p className="home-service-tab">Atlas des expertises ministérielles</p>
           <h2>Repérer les expertises du ministère que révèlent les publications.</h2>
-          <ul>
-            <li>Parcourir la carte des {expertiseCount} expertises, regroupées en familles.</li>
-            <li>Filtrer par direction ou service, et par type : problème public, méthode, instrument.</li>
-            <li>Ouvrir une fiche : définition, expertises voisines, publications qui en témoignent.</li>
-          </ul>
           <a className="home-cta" href="#/atlas" onClick={go(['atlas'])}>Ouvrir l’Atlas<Arrow /></a>
         </article>
 
@@ -86,23 +54,13 @@ export default function Home({ data }) {
           <p className="home-service-tab">Explorer une publication</p>
           <h2>Lire une publication autrement : voir d’un coup d’œil qui agit, face à quel problème, avec quelles réponses.</h2>
           <p className="home-service-lead">Chaque publication est mise à plat en idées clés reliées entre elles. Ce que la lecture page après page disperse devient visible.</p>
-          <ul>
-            <li>Saisir l’architecture d’un texte : problèmes, acteurs, actions, recommandations et tendances.</li>
-            <li>Suivre les liens plutôt que les pages : à quel problème répond une recommandation, qui la porte, ce qui y contribue.</li>
-            <li>Retrouver pour chaque idée sa page, ou son timecode, et le passage source.</li>
-            <li>Interroger le graphe (IA) de la publication. Réponse générée par IA, à vérifier dans les passages cités.</li>
-          </ul>
           <a className="home-cta" href="#/explorer" onClick={go(['explorer'])}>Explorer une publication<Arrow /></a>
         </article>
 
         <article className="home-service s-atelier">
           <p className="home-service-tab">Atelier de veille</p>
           <h2>Construire vos propres travaux avec une IA qui s’appuie uniquement sur les publications.</h2>
-          <p className="home-service-lead">Six outils, de la synthèse d’une publication à la construction d’un scénario :</p>
-          <div className="home-chips">
-            <span>Résumé analytique</span><span>Glossaire</span><span>Extraction de recommandations</span><span>Experts ministériels</span><span>Scénario de veille</span><span>Avancer avec le corpus</span>
-          </div>
-          <p className="home-ai-note">Textes générés par IA, reliés aux passages sources : à relire et vérifier avant usage.</p>
+                    <p className="home-ai-note">Textes générés par IA, reliés aux passages sources : à relire et vérifier avant usage.</p>
           <a className="home-cta" href="#/atelier" onClick={go(['atelier'])}>Ouvrir l’Atelier<Arrow /></a>
         </article>
 
@@ -110,44 +68,15 @@ export default function Home({ data }) {
           <p className="home-service-tab">D’un document à l’autre</p>
           <h2>Voir les textes se recomposer sous vos yeux : en frise, en parcours, en arbre de lecture.</h2>
           <p className="home-service-lead">Explorez les liens entre les publications et leurs passages sources.</p>
-          <ul className="home-status-list">
-            <li><span><a href="#/documents/frise" onClick={go(['documents', 'frise'])}><strong>Du texte à la frise</strong></a> : la trame temporelle d’une publication apparaît, dates, jalons et tendances, chaque repère relié à son passage ({ELIGIBLE_PUBLICATIONS.length} publications).</span></li>
-            <li><span><a href="#/documents/notions" onClick={go(['documents', 'notions'])}><strong>Suivre une notion</strong></a> : une notion passe d’une publication à l’autre ({TRANSVERSAL_NOTIONS.length} notions).</span></li>
-            <li><span className="status ok">Disponible</span><span><a href="#/documents/recommandations" onClick={go(['documents', 'recommandations'])}><strong>L’arbre des recommandations</strong></a> : à partir d’une publication, ses fils de lecture se séparent en publications liées et en pistes pour aller plus loin (toutes les publications).</span></li>
+          <ul className="home-links">
+            <li><a href="#/documents/frise" onClick={go(['documents', 'frise'])}>Du texte à la frise</a></li>
+            <li><a href="#/documents/notions" onClick={go(['documents', 'notions'])}>Suivre une notion</a></li>
+            <li><a href="#/documents/recommandations" onClick={go(['documents', 'recommandations'])}>L’arbre des recommandations</a></li>
           </ul>
           <a className="home-cta" href="#/documents" onClick={go(['documents'])}>Ouvrir D’un document à l’autre<Arrow /></a>
         </article>
       </section>
 
-      <section className="home-corpus" aria-labelledby="home-corpus-title">
-        <div className="home-section-head">
-          <h2 id="home-corpus-title">Les publications en un coup d’œil</h2>
-          <a href="#/explorer/publications" onClick={go(['explorer', 'publications'])}>Toutes les publications<Arrow /></a>
-        </div>
-        <div className="home-themes">
-          {tiles.map((t, i) => (
-            <a key={t.domain} className="home-theme" href={`#/explorer/theme/${encodeURIComponent(t.domain)}`} onClick={go(['explorer', 'theme', t.domain])}>
-              <span className="home-theme-covers" style={{ background: TINTS[i % TINTS.length] }} aria-hidden="true">
-                {t.covers.map(p => <img key={p.publication_id} src={imageSrc(p)} alt="" loading="lazy" />)}
-              </span>
-              <span className="home-theme-text">
-                <strong>{t.label}</strong>
-                <span>{t.count} publication{t.count > 1 ? 's' : ''}</span>
-              </span>
-            </a>
-          ))}
-        </div>
-        {others.length > 0 && (
-          <p className="home-others">Aussi :{' '}
-            {others.map((t, i) => (
-              <React.Fragment key={t.domain}>
-                {i > 0 && ' · '}
-                <a href={`#/explorer/theme/${encodeURIComponent(t.domain)}`} onClick={go(['explorer', 'theme', t.domain])}>{t.label}</a> ({t.count})
-              </React.Fragment>
-            ))}
-          </p>
-        )}
-      </section>
 
       <section className="home-about" aria-label="La démarche">
         <div>

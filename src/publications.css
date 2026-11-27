@@ -1,0 +1,45 @@
+/* Page « Les publications » */
+.pl-page{max-width:1240px;margin:0 auto;padding:28px 24px 48px;box-sizing:border-box;width:100%}
+.pl-kicker{margin:0 0 6px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#2f56d6}
+.pl-head h1{margin:0 0 16px;font-size:30px;color:#14213d}
+.pl-search{display:flex;gap:10px;max-width:820px}
+.pl-search input{flex:1;height:54px;border:1px solid #c9d3ea;border-radius:14px;padding:0 18px;font:inherit;font-size:17px;background:#fff}
+.pl-search input:focus{outline:3px solid #9fc1ff;border-color:#2f56d6}
+.pl-search button{height:54px;border:0;border-radius:14px;background:#1f3fae;color:#fff;font-family:inherit;font-weight:700;font-size:16px;line-height:1;padding:0 24px;cursor:pointer}
+.pl-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:14px}
+.pl-select{display:grid;gap:4px;font-size:12.5px;font-weight:700;color:#5c6982}
+.pl-select select{height:40px;min-width:170px;max-width:280px;border:1px solid #c9d3ea;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;color:#14213d;background:#fff}
+.pl-reset{height:40px;border:0;background:none;color:#2f56d6;font-family:inherit;font-weight:600;font-size:14px;line-height:1;cursor:pointer;text-decoration:underline}
+.pl-results{margin-top:26px}
+.pl-results h2{font-size:18px;color:#14213d;margin:0 0 12px}
+.pl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.pl-card{display:flex;gap:14px;padding:14px;border-radius:14px;background:#fff;border:1px solid #dce3ef;box-shadow:0 10px 24px -20px rgba(20,33,61,.5)}
+.pl-grid.near .pl-card{background:#fbfcfe;border-style:dashed}
+.pl-cover{flex:none;width:76px;height:100px;border-radius:6px;overflow:hidden;background:#eef2f8;display:grid;place-items:center;font-size:11px;color:#6b7891}
+.pl-cover img{width:100%;height:100%;object-fit:cover}
+.pl-body{min-width:0;display:grid;gap:4px;align-content:start}
+.pl-meta{margin:0;font-size:12px;color:#6b7891;font-weight:600}
+.pl-body h3{margin:0;font-size:15.5px;line-height:1.35;color:#14213d}
+.pl-org{margin:0;font-size:13px;color:#5c6982}
+.pl-themes{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.pl-themes button{border:1px solid #d6def0;background:#f3f6fc;color:#33415c;border-radius:999px;padding:2px 9px;font-family:inherit;font-weight:600;font-size:12px;line-height:1.5;cursor:pointer}
+.pl-themes button:hover,.pl-themes button.on{background:#1f3fae;color:#fff;border-color:#1f3fae}
+.pl-why{margin:2px 0 0;font-size:12.5px;color:#17704f;line-height:1.4}
+.pl-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+.pl-actions a{font-size:13.5px;font-weight:700;color:#2f56d6;text-decoration:none}
+.pl-actions a:hover{text-decoration:underline}
+.pl-near-title{margin-top:30px!important;display:flex;align-items:center;gap:10px}
+.pl-near-title span{font-size:13px;font-weight:600;color:#6b7891}
+.pl-near-lead{margin:-4px 0 12px;color:#5c6982;font-size:14.5px}
+.pl-empty{color:#5c6982}
+:focus-visible{outline-offset:2px}
+@media(max-width:600px){.pl-grid{grid-template-columns:1fr}.pl-search{flex-direction:column}.pl-search button{height:48px}}
+
+/* Accueil : recherche de publications mise en avant */
+.home-find{margin:22px 0 0;max-width:760px}
+.home-find form{display:flex;gap:10px}
+.home-find input{flex:1;height:56px;border:1px solid #c9d3ea;border-radius:14px;padding:0 18px;font:inherit;font-size:17px;background:#fff}
+.home-find button{height:56px;border:0;border-radius:14px;background:#1f3fae;color:#fff;font-family:inherit;font-weight:700;font-size:16px;line-height:1;padding:0 22px;cursor:pointer}
+.home-find p{margin:8px 2px 0;font-size:14px;color:#5c6982}
+.home-find p a{font-weight:700}
+@media(max-width:600px){.home-find form{flex-direction:column}}

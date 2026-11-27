@@ -8,12 +8,13 @@ import Atelier from './pages/Atelier.jsx'
 import About from './pages/About.jsx'
 import Home from './pages/Home.jsx'
 import CrossDocuments from './pages/CrossDocuments.jsx'
+import Publications from './pages/Publications.jsx'
 import { MentionsLegales, Accessibilite, DonneesPersonnelles, Contact } from './pages/LegalPages.jsx'
 import { useHashRoute, navigate, VIEW_TO_TAB, TAB_TO_VIEW } from './lib/router.js'
 import VideoHint from './components/VideoHint.jsx'
 import './site.css'
 
-const FOOTER_TABS = new Set(['home', 'atelier', 'documents', 'about', 'legal', 'accessibility', 'privacy', 'contact'])
+const FOOTER_TABS = new Set(['home', 'atelier', 'documents', 'publications', 'about', 'legal', 'accessibility', 'privacy', 'contact'])
 
 function Footer() {
   const go = view => e => { e.preventDefault(); navigate([view]) }
@@ -31,7 +32,7 @@ function Footer() {
 }
 
 export default function App(){
-  const [showLanding,setShowLanding]=useState(() => !/^#\/(?:atlas|explorer|documents)(?:\/|$)/.test(window.location.hash))
+  const [showLanding,setShowLanding]=useState(() => !/^#\/(?:atlas|explorer|documents|publications)(?:\/|$)/.test(window.location.hash))
   const route=useHashRoute()
   const {data,error}=useData()
   const active=VIEW_TO_TAB[route.view] ?? 'home'
@@ -76,6 +77,7 @@ export default function App(){
       onOpenAtlas={id=>navigate(['atlas',id])}/>}
     {active==='atelier'&&<Atelier data={data}/>}
     {active==='documents'&&<CrossDocuments data={data} sub={a[0]||''} deepArgs={a.slice(1)} onSub={s=>navigate(['documents',s])} onDeepRoute={parts=>navigate(['documents',...parts],{replace:true})}/>}
+    {active==='publications'&&<Publications data={data} args={a}/>}
     {active==='about'&&<About data={data}/>}
     {active==='legal'&&<MentionsLegales/>}
     {active==='accessibility'&&<Accessibilite/>}
