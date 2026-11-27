@@ -304,3 +304,5 @@ a.xd-mini{text-decoration:none;display:inline-block}
 .xd-land-card strong{font-size:18px}
 .xd-land-card span{font-size:13.5px;color:#5c6982}
 .xd-land-card em{font-style:normal;font-size:13.5px;font-weight:700;color:#2f56d6;margin-top:4px}
+/* Accueil des notions : la page s'allonge avec le nombre de cartes */
+.xd-screen.xd-landing{height:auto;min-height:calc(100vh - 124px)}

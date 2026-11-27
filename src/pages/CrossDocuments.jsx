@@ -1751,7 +1751,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
     return placed.map(({ node, c, y }, k) => ({ node, w: cw, x: x0 + c * (cw + gap), y: y0 + y, dot: geo.dots[activeStop][k] }))
   })() : []
 
-  return <main className="xd-screen xd-notion">
+  return <main className={`xd-screen xd-notion ${notion ? '' : 'xd-landing'}`}>
     <header className="xd-bar">
       <button type="button" className="xd-back" onClick={onBack}><Icon name="back" size={16}/>D’un document à l’autre</button>
       <h1>Suivre une notion</h1>
@@ -1796,7 +1796,7 @@ function NotionSpace({ data, onBack, initialNotionId = '', onNotionChange = null
         const count = Object.values(n.selections).reduce((a, x) => a + x.length, 0)
         return <button key={n.id} type="button" className="xd-land-card" onClick={() => chooseNotion(n.id)}>
           <strong>{n.label}</strong>
-          <span>{Object.keys(n.selections).length} publications · {count} éléments</span>
+          <span>{Object.keys(n.selections).length} publication{Object.keys(n.selections).length > 1 ? 's' : ''} · {count} élément{count > 1 ? 's' : ''}</span>
           <em>Ouvrir →</em>
         </button>
       })}</div>
