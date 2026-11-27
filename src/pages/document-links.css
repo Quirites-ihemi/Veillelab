@@ -116,3 +116,16 @@
 @media(max-width:1100px){.nb-wrap{grid-template-columns:1fr}.nb-side{position:static;max-height:none}}
 @media(max-width:760px){.nb-crown{grid-template-columns:1fr}.nb-limbs{display:none}}
 .nb-more{margin:2px 4px 0;font-size:12.5px;color:#17704f;font-weight:600}
+
+/* Arbre par thèmes */
+.nb-subject em{display:block;font-style:normal;font-size:12px;opacity:.8;margin-top:2px}
+button.nb-more{border:0;background:none;color:#2f56d6;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;padding:4px 0;text-align:left}
+.nb-cover{width:84px;border-radius:6px;box-shadow:0 6px 16px -10px rgba(20,33,61,.6);margin-bottom:8px}
+.nb-themes{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.nb-themes span{border:1px solid #d6def0;background:#f3f6fc;color:#5c6982;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:600}
+.nb-themes span.on{background:#6b4a2b;border-color:#6b4a2b;color:#fff}
+.nb-side .nb-close,.nb-side .nb-cover,.nb-side .nb-side-meta{display:block}
+.nb-side .nb-close{margin-bottom:12px}
+.nb-side .nb-side-meta{margin:0 0 4px;line-height:1.45}
+.nb-crown[style*="--n: 1"],.nb-crown[style*="--n:1"]{max-width:760px;margin-left:auto;margin-right:auto}
+.nb-why{margin:4px 0 12px;font-size:14.5px;line-height:1.5;color:#33415c}

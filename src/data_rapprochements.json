@@ -1,0 +1,850 @@
+{
+ "source": "Quirites_arbre_recommandations1.xlsx",
+ "rapprochements": [
+  {
+   "a": "PUB001",
+   "b": "PUB136",
+   "sujet": "Protection temporaire des Ukrainiens et transition vers l’asile",
+   "justification": "La première étudie les Ukrainiens protégés temporairement en France, la seconde documente leur basculement vers la procédure d’asile.",
+   "nodesA": [
+    "N0002"
+   ],
+   "nodesB": [
+    "N1690"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB001",
+   "b": "PUB145",
+   "sujet": "Titres de séjour de populations étrangères vulnérables",
+   "justification": "Les deux étudient les droits au séjour de populations étrangères vulnérables, dans des cadres juridiques distincts (déplacement lié à la guerre et exploitation).",
+   "nodesA": [
+    "N0006"
+   ],
+   "nodesB": [
+    "N2036"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB002",
+   "b": "PUB138",
+   "sujet": "Atteintes aux élus et disparités territoriales",
+   "justification": "Le rapport d’activité présente la territorialisation des atteintes aux élus et l’étude statistique mesure leur incidence selon les territoires et les mandats.",
+   "nodesA": [
+    "N0025"
+   ],
+   "nodesB": [
+    "N0025"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB004",
+   "b": "PUB112",
+   "sujet": "Victimation et perception de l’insécurité",
+   "justification": "Les deux études confrontent les expériences de victimation et le ressenti d’insécurité à des échelles territoriales différentes.",
+   "nodesA": [
+    "N0081"
+   ],
+   "nodesB": [
+    "N1240"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB005",
+   "b": "PUB033",
+   "sujet": "Maîtrise souveraine des technologies numériques",
+   "justification": "Les deux interrogent la capacité des pouvoirs publics à maîtriser les infrastructures et les technologies numériques dont ils dépendent.",
+   "nodesA": [
+    "N0125"
+   ],
+   "nodesB": [
+    "N1105"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB006",
+   "b": "PUB057",
+   "sujet": "Intelligence artificielle et industrialisation du cybercrime",
+   "justification": "Les deux décrivent l’usage de l’IA pour faciliter ou amplifier les activités cybercriminelles.",
+   "nodesA": [
+    "N0096"
+   ],
+   "nodesB": [
+    "N0926"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB006",
+   "b": "PUB133",
+   "sujet": "Cyberattaques et vols de données sensibles",
+   "justification": "Le panorama cybercriminel documente le vol et la revente de données tandis que le podcast analyse l’exposition des fichiers sensibles de l’État.",
+   "nodesA": [
+    "N0101"
+   ],
+   "nodesB": [
+    "N1611"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB006",
+   "b": "PUB141",
+   "sujet": "Détournement de l’IA par les acteurs criminels en ligne",
+   "justification": "Le rapport examine les usages cybercriminels de l’IA et l’étude des marchés du Darknet décrit le détournement des IA commerciales par leurs acteurs.",
+   "nodesA": [
+    "N0096"
+   ],
+   "nodesB": [
+    "N1848"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB008",
+   "b": "PUB031",
+   "sujet": "Violences intrafamiliales subies par les mineurs",
+   "justification": "Les deux analyses statistiques documentent les violences intrafamiliales dont les enfants sont victimes.",
+   "nodesA": [
+    "N0233"
+   ],
+   "nodesB": [
+    "N1086"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB008",
+   "b": "PUB090",
+   "sujet": "Violences sexuelles sur mineurs",
+   "justification": "Le bilan statistique des mineurs et les propositions de lutte contre la pédocriminalité traitent tous deux des violences sexuelles subies par les enfants.",
+   "nodesA": [
+    "N0230"
+   ],
+   "nodesB": [
+    "N1156"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB008",
+   "b": "PUB131",
+   "sujet": "Âge et parcours pénaux des mineurs mis en cause",
+   "justification": "Les deux décrivent la distribution par âge de la délinquance des jeunes, avec une attention aux âges proches de la majorité.",
+   "nodesA": [
+    "N0214"
+   ],
+   "nodesB": [
+    "N1571"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB008",
+   "b": "PUB135",
+   "sujet": "Harcèlement subi par les mineurs",
+   "justification": "Le bilan de délinquance enregistre le harcèlement des mineurs et le rapport de médiation traite du harcèlement dans le cadre scolaire.",
+   "nodesA": [
+    "N0251"
+   ],
+   "nodesB": [
+    "N0252"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB008",
+   "b": "PUB142",
+   "sujet": "Violences et exploitation sexuelles avant 18 ans",
+   "justification": "Les deux documentent les violences sexuelles et l’exploitation sexuelle des mineurs, à partir de données enregistrées ou déclarées.",
+   "nodesA": [
+    "N0225"
+   ],
+   "nodesB": [
+    "N1882"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB008",
+   "b": "PUB145",
+   "sujet": "Exploitation sexuelle des mineurs",
+   "justification": "Le bilan des mineurs et le bilan de la traite traitent tous deux de l’exploitation sexuelle des enfants, le second détaillant le proxénétisme.",
+   "nodesA": [
+    "N0225"
+   ],
+   "nodesB": [
+    "N0225"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB013",
+   "b": "PUB026",
+   "sujet": "Discriminations dans les interactions policières",
+   "justification": "L’enquête VRS étudie les discriminations attribuées aux forces de sécurité et le rapport sur les jeunesses analyse les contrôles d’identité discriminatoires.",
+   "nodesA": [
+    "N0369"
+   ],
+   "nodesB": [
+    "N0748"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB013",
+   "b": "PUB068",
+   "sujet": "Relations police-population et confiance",
+   "justification": "Les deux étudient les interactions ordinaires entre forces de sécurité et citoyens et leurs enjeux de confiance.",
+   "nodesA": [
+    "N0361"
+   ],
+   "nodesB": [
+    "N1065"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB013",
+   "b": "PUB116",
+   "sujet": "Relations entre police et population",
+   "justification": "L’enquête décrit les expériences des usagers et le podcast examine les pratiques policières et leur rapport aux populations.",
+   "nodesA": [
+    "N0361"
+   ],
+   "nodesB": [
+    "N1357"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB015",
+   "b": "PUB116",
+   "sujet": "Sciences sociales appliquées à la pratique policière",
+   "justification": "Les deux examinent l’intégration des sciences sociales dans le travail ou la formation des policiers.",
+   "nodesA": [
+    "N0427"
+   ],
+   "nodesB": [
+    "N1358"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB016",
+   "b": "PUB120",
+   "sujet": "Formation et doctrine du maintien de l’ordre",
+   "justification": "Le podcast sur l’école décrit la mise en pratique du maintien de l’ordre et l’entretien doctrinal en expose les principes et les évolutions.",
+   "nodesA": [
+    "N0466"
+   ],
+   "nodesB": [
+    "N1479"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB018",
+   "b": "PUB111",
+   "sujet": "Vols sans violence et infrastructures de transport",
+   "justification": "L’étude communale relève une association entre infrastructures de transport et vols sans violence, tandis que le bilan des transports mesure directement ces vols.",
+   "nodesA": [
+    "N0513"
+   ],
+   "nodesB": [
+    "N1217"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB018",
+   "b": "PUB112",
+   "sujet": "Concentration territoriale des vols sans violence",
+   "justification": "Les deux études analysent les disparités territoriales des vols sans violence à des échelles communale et départementale.",
+   "nodesA": [
+    "N0510"
+   ],
+   "nodesB": [
+    "N1249"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB021",
+   "b": "PUB126",
+   "sujet": "Enquêtes judiciaires environnementales",
+   "justification": "Les deux décrivent les missions de police judiciaire environnementale et les compétences requises pour leur exercice.",
+   "nodesA": [
+    "N0558"
+   ],
+   "nodesB": [
+    "N0558"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB024",
+   "b": "PUB025",
+   "sujet": "Routes maritimes et logistique portuaire de la cocaïne",
+   "justification": "Les deux décrivent la place des ports et du transport maritime dans l’approvisionnement européen ou français en cocaïne.",
+   "nodesA": [
+    "N0608"
+   ],
+   "nodesB": [
+    "N0670"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB024",
+   "b": "PUB129",
+   "sujet": "Corruption liée au narcotrafic",
+   "justification": "L’analyse des corridors décrit les complicités portuaires et aéroportuaires et l’étude de l’État de droit traite de la corruption des services de lutte contre les trafics.",
+   "nodesA": [
+    "N0630"
+   ],
+   "nodesB": [
+    "N1629"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB024",
+   "b": "PUB137",
+   "sujet": "Corruption des chaînes logistiques portuaires du narcotrafic",
+   "justification": "Les deux identifient la corruption des personnels ou des interfaces portuaires comme un facteur de facilitation du trafic de drogues.",
+   "nodesA": [
+    "N0630"
+   ],
+   "nodesB": [
+    "N1718"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB025",
+   "b": "PUB137",
+   "sujet": "Expansion de l’offre de cocaïne",
+   "justification": "Les bilans français et européen analysent l’expansion de l’offre de cocaïne et les transformations des marchés d’approvisionnement.",
+   "nodesA": [
+    "N0667"
+   ],
+   "nodesB": [
+    "N0667"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB025",
+   "b": "PUB140",
+   "sujet": "Transformation des modalités de vente de drogues en France",
+   "justification": "Les deux travaux de l’OFDT documentent l’adaptation des marchés illicites et la diversification de la distribution.",
+   "nodesA": [
+    "N0678"
+   ],
+   "nodesB": [
+    "N0678"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB025",
+   "b": "PUB141",
+   "sujet": "Marchés de drogues sur le Darknet",
+   "justification": "Le bilan de l’offre identifie les dark markets comme canal d’approvisionnement et l’étude du Darknet examine leur organisation interne.",
+   "nodesA": [
+    "N0676"
+   ],
+   "nodesB": [
+    "N1819"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB026",
+   "b": "PUB068",
+   "sujet": "Contrôles d’identité discriminatoires",
+   "justification": "Les deux étudient la sélectivité des contrôles d’identité visant les jeunes issus de minorités visibles.",
+   "nodesA": [
+    "N0748"
+   ],
+   "nodesB": [
+    "N1076"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB026",
+   "b": "PUB134",
+   "sujet": "Discrimination liée à l’origine dans l’accès à l’emploi",
+   "justification": "Le rapport sur les jeunes traite de l’insertion professionnelle et l’étude sur les migrants analyse la discrimination lors du recrutement.",
+   "nodesA": [
+    "N0741"
+   ],
+   "nodesB": [
+    "N1638"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB031",
+   "b": "PUB142",
+   "sujet": "Violences sexuelles intrafamiliales pendant l’enfance",
+   "justification": "Les statistiques policières et l’enquête épidémiologique éclairent toutes deux les violences sexuelles intrafamiliales subies à un jeune âge.",
+   "nodesA": [
+    "N1088"
+   ],
+   "nodesB": [
+    "N1875"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB033",
+   "b": "PUB051",
+   "sujet": "Souveraineté et dépendances des infrastructures numériques",
+   "justification": "Les deux analysent la maîtrise stratégique des infrastructures, des données et des technologies numériques.",
+   "nodesA": [
+    "N1104"
+   ],
+   "nodesB": [
+    "N0882"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB034",
+   "b": "PUB068",
+   "sujet": "Encadrement de la force et prévention des violences policières",
+   "justification": "Le texte déontologique encadre la violence non légitime et l’étude police-citoyens analyse les facteurs institutionnels et individuels des violences policières.",
+   "nodesA": [
+    "N1138"
+   ],
+   "nodesB": [
+    "N1068"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB034",
+   "b": "PUB116",
+   "sujet": "Usage légitime de la force policière",
+   "justification": "Les deux interrogent les limites professionnelles et normatives de l’exercice de la force par les policiers.",
+   "nodesA": [
+    "N1137"
+   ],
+   "nodesB": [
+    "N1374"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB052",
+   "b": "PUB068",
+   "sujet": "Culture du chiffre dans l’activité policière",
+   "justification": "La généalogie décrit les effets du pilotage statistique et le podcast analyse les incitations problématiques de la politique du chiffre.",
+   "nodesA": [
+    "N0997"
+   ],
+   "nodesB": [
+    "N1078"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB052",
+   "b": "PUB116",
+   "sujet": "Pilotage par les résultats chiffrés de la police",
+   "justification": "Les deux abordent les effets de la mise en chiffres de l’activité policière sur les priorités professionnelles.",
+   "nodesA": [
+    "N0997"
+   ],
+   "nodesB": [
+    "N1370"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB052",
+   "b": "PUB125",
+   "sujet": "Encadrement juridique des techniques de renseignement",
+   "justification": "La généalogie replace la loi du 24 juillet 2015 dans l’évolution du renseignement et le podcast sur la DGSI l’inscrit dans la pratique du contre-espionnage.",
+   "nodesA": [
+    "N1001"
+   ],
+   "nodesB": [
+    "N1001"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB052",
+   "b": "PUB129",
+   "sujet": "Narcotrafic et fragilisation de l’État de droit",
+   "justification": "Les deux présentent le narcotrafic comme une menace institutionnelle liée notamment à la corruption et à l’affaiblissement de l’État.",
+   "nodesA": [
+    "N1004"
+   ],
+   "nodesB": [
+    "N1555"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB052",
+   "b": "PUB139",
+   "sujet": "Évolution institutionnelle des rapports police-gendarmerie",
+   "justification": "La généalogie traite du rapprochement institutionnel des forces et l’entretien historique retrace les formes de leur coopération.",
+   "nodesA": [
+    "N0996"
+   ],
+   "nodesB": [
+    "N1766"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB057",
+   "b": "PUB141",
+   "sujet": "Résilience des marchés criminels du Darknet",
+   "justification": "Les deux abordent la reconstitution des marchés illicites numériques après leur démantèlement.",
+   "nodesA": [
+    "N0932"
+   ],
+   "nodesB": [
+    "N0932"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB062",
+   "b": "PUB117",
+   "sujet": "Désinformation et rapport à la vérité",
+   "justification": "Les deux étudient les fausses informations et les transformations de la relation collective à la vérité.",
+   "nodesA": [
+    "N1041"
+   ],
+   "nodesB": [
+    "N1384"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB068",
+   "b": "PUB116",
+   "sujet": "Sélectivité sociale des contrôles policiers",
+   "justification": "Les deux décrivent les mécanismes de sélection des personnes contrôlées et leurs effets sur les relations police-population.",
+   "nodesA": [
+    "N1076"
+   ],
+   "nodesB": [
+    "N1368"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB068",
+   "b": "PUB120",
+   "sujet": "Doctrine et pratiques françaises du maintien de l’ordre",
+   "justification": "Les deux interrogent les principes du maintien de l’ordre et la responsabilité des institutions dans leur mise en œuvre.",
+   "nodesA": [
+    "N1069"
+   ],
+   "nodesB": [
+    "N1479"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB090",
+   "b": "PUB142",
+   "sujet": "Prévention des violences sexuelles sur mineurs",
+   "justification": "Le rapport de lutte contre la pédocriminalité propose des mesures de prévention et l’enquête VAVISA documente les violences et formule des pistes préventives.",
+   "nodesA": [
+    "N1156"
+   ],
+   "nodesB": [
+    "N1156"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB090",
+   "b": "PUB145",
+   "sujet": "Exploitation sexuelle des mineurs",
+   "justification": "Le rapport de lutte contre la pédocriminalité traite de la protection face à l’exploitation sexuelle et le bilan de la traite mesure la part croissante des mineurs victimes de proxénétisme.",
+   "nodesA": [
+    "N1176"
+   ],
+   "nodesB": [
+    "N2011"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB113",
+   "b": "PUB122",
+   "sujet": "Feux de forêt et réponse opérationnelle",
+   "justification": "L’histoire des missions de la gendarmerie face aux incendies et l’étude des primo-intervenants analysent la réponse aux feux de végétation.",
+   "nodesA": [
+    "N1266"
+   ],
+   "nodesB": [
+    "N1501"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB114",
+   "b": "PUB134",
+   "sujet": "Insertion professionnelle et formation des migrants",
+   "justification": "Les deux examinent les mesures de formation et d’accompagnement destinées à faciliter l’intégration professionnelle de populations migrantes.",
+   "nodesA": [
+    "N1290"
+   ],
+   "nodesB": [
+    "N1647"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB114",
+   "b": "PUB136",
+   "sujet": "Accompagnement des demandeurs d’asile et des réfugiés",
+   "justification": "Le premier document analyse l’intégration pendant l’asile et le second décrit notamment l’accompagnement des bénéficiaires de protection.",
+   "nodesA": [
+    "N1286"
+   ],
+   "nodesB": [
+    "N1702"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB118",
+   "b": "PUB122",
+   "sujet": "Stress traumatique des personnels opérationnels",
+   "justification": "Les deux examinent les blessures psychiques, le stress traumatique et les ressources d’adaptation des intervenants.",
+   "nodesA": [
+    "N1414"
+   ],
+   "nodesB": [
+    "N1414"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB118",
+   "b": "PUB123",
+   "sujet": "Décision sous stress et émotions en contexte opérationnel",
+   "justification": "Les deux analysent les effets des états cognitifs ou émotionnels sur la prise de décision en situation opérationnelle.",
+   "nodesA": [
+    "N1408"
+   ],
+   "nodesB": [
+    "N1408"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB120",
+   "b": "PUB139",
+   "sujet": "Autorité civile et organisation du maintien de l’ordre",
+   "justification": "Les deux décrivent les rapports d’autorité et de subordination qui organisent l’action des forces de maintien de l’ordre.",
+   "nodesA": [
+    "N1481"
+   ],
+   "nodesB": [
+    "N1771"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB121",
+   "b": "PUB129",
+   "sujet": "Corruption des institutions par la criminalité organisée",
+   "justification": "Les deux traitent de la capacité des organisations criminelles à corrompre les institutions et à fragiliser l’autorité publique.",
+   "nodesA": [
+    "N1493"
+   ],
+   "nodesB": [
+    "N1555"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB121",
+   "b": "PUB143",
+   "sujet": "Diversification des activités des organisations criminelles",
+   "justification": "La revue décrit la diversification des activités criminelles et l’étude pharmaceutique analyse la convergence des marchés et des infrastructures illicites.",
+   "nodesA": [
+    "N1500"
+   ],
+   "nodesB": [
+    "N1500"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB122",
+   "b": "PUB123",
+   "sujet": "Régulation émotionnelle et décision des intervenants en crise",
+   "justification": "Les deux examinent les capacités psychosociales et émotionnelles des intervenants face aux décisions difficiles en opération.",
+   "nodesA": [
+    "N1408"
+   ],
+   "nodesB": [
+    "N1509"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB125",
+   "b": "PUB128",
+   "sujet": "Transformation du renseignement en preuve judiciaire",
+   "justification": "Les deux abordent l’articulation du renseignement avec la procédure judiciaire dans des cadres institutionnels nationaux distincts.",
+   "nodesA": [
+    "N1525"
+   ],
+   "nodesB": [
+    "N1525"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB126",
+   "b": "PUB143",
+   "sujet": "Fragmentation de la lutte contre la criminalité environnementale",
+   "justification": "L’étude des modèles européens et le travail sur les convergences criminelles décrivent les difficultés du cloisonnement des réponses aux atteintes environnementales.",
+   "nodesA": [
+    "N1528"
+   ],
+   "nodesB": [
+    "N1528"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB129",
+   "b": "PUB137",
+   "sujet": "Violences liées au narcotrafic et mobilisation de jeunes",
+   "justification": "Les deux abordent les violences associées aux marchés de drogues, l’étude européenne précisant le recrutement de jeunes vulnérables pour ces violences.",
+   "nodesA": [
+    "N1554"
+   ],
+   "nodesB": [
+    "N1720"
+   ],
+   "degre": "moyen"
+  },
+  {
+   "a": "PUB129",
+   "b": "PUB140",
+   "sujet": "Extension et intensification des violences liées au narcotrafic",
+   "justification": "Les deux décrivent les transformations des violences liées aux trafics de drogues dans les territoires.",
+   "nodesA": [
+    "N1554"
+   ],
+   "nodesB": [
+    "N1785"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB130",
+   "b": "PUB137",
+   "sujet": "Prise en charge sanitaire et réduction des risques liés aux drogues",
+   "justification": "Les deux étudient les réponses de santé publique aux usages de drogues et les insuffisances des dispositifs de prise en charge.",
+   "nodesA": [
+    "N1566"
+   ],
+   "nodesB": [
+    "N1733"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB130",
+   "b": "PUB140",
+   "sujet": "Diffusion territoriale et sociale des usages de drogues",
+   "justification": "Les deux documentent l’extension des usages et les besoins d’adaptation des réponses sanitaires et sociales.",
+   "nodesA": [
+    "N1561"
+   ],
+   "nodesB": [
+    "N1561"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB137",
+   "b": "PUB140",
+   "sujet": "Diversification des cathinones de synthèse",
+   "justification": "Les deux bilans examinent la diversification de l’offre de cathinones et les incertitudes sur les substances en circulation.",
+   "nodesA": [
+    "N1724"
+   ],
+   "nodesB": [
+    "N1793"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB137",
+   "b": "PUB143",
+   "sujet": "Détournement de médicaments et convergence des marchés de drogues",
+   "justification": "Les deux décrivent l’articulation des marchés de drogues et de médicaments détournés.",
+   "nodesA": [
+    "N1716"
+   ],
+   "nodesB": [
+    "N1716"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB142",
+   "b": "PUB144",
+   "sujet": "Exploitation sexuelle des mineurs",
+   "justification": "L’enquête VAVISA mesure les faits d’exploitation sexuelle avant 18 ans et l’ouvrage décrit l’économie de l’exploitation sexuelle des enfants.",
+   "nodesA": [
+    "N1882"
+   ],
+   "nodesB": [
+    "N0225"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB142",
+   "b": "PUB145",
+   "sujet": "Exploitation sexuelle des jeunes et mineurs",
+   "justification": "L’enquête de victimation et le bilan administratif de la traite éclairent tous deux l’exploitation sexuelle des mineurs, sans que leurs chiffres soient directement comparables.",
+   "nodesA": [
+    "N1882"
+   ],
+   "nodesB": [
+    "N2011"
+   ],
+   "degre": "fort"
+  },
+  {
+   "a": "PUB144",
+   "b": "PUB145",
+   "sujet": "Traite des êtres humains et exploitation par le travail",
+   "justification": "L’ouvrage analyse le travail forcé au sein de l’économie de la traite et le bilan statistique documente l’exploitation par le travail enregistrée en France.",
+   "nodesA": [
+    "N1978"
+   ],
+   "nodesB": [
+    "N2007"
+   ],
+   "degre": "fort"
+  }
+ ]
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ExportShare from '../components/ExportShare.jsx'
 import { exportDocx, pubLabel, sourceLink } from '../utils/knowledgeExport.js'
-import { buildNeighbourIndex, branchesFor } from '../lib/neighbours.js'
+import RAPPROCHEMENTS from '../data_rapprochements.json'
 import './document-links.css'
 
 function publicationImageSrc(publication = {}) {
@@ -15,15 +15,32 @@ function publicationImageSrc(publication = {}) {
 const sentenceCase = (v = '') => { const s = String(v || '').trim(); return s ? s.charAt(0).toUpperCase() + s.slice(1) : '' }
 const titleOf = (p = {}, id = '') => sentenceCase(p.titre || p.title || id)
 const metaOf = (p = {}) => [p.organisme_producteur || p.organisme, p['année_publication'] || p.annee].filter(Boolean).join(' · ')
-const pagesOf = node => { const p = String(node?.page_source || '').split(';').map(x => x.trim()).filter(Boolean); return p.length ? `p. ${p.slice(0, 6).join(', ')}${p.length > 6 ? '…' : ''}` : '' }
+const pagesOf = node => { const p = String(node?.page_source || '').split(';').map(x => x.trim()).filter(Boolean); return p.length ? `${/:/.test(p[0]) ? '' : 'p. '}${p.slice(0, 6).join(', ')}${p.length > 6 ? '…' : ''}` : '' }
+const RANK = { fort: 0, moyen: 1 }
+const DEGRE = { fort: 'forte', moyen: 'moyenne' }
 
-function Passage({ node, publication, contentsById, label }) {
-  const chunk = String(node.chunk_id_source || '').split(';').map(x => contentsById[x.trim()]).find(Boolean)
+// Rapprochements validés éditorialement (fichier Quirites_arbre_recommandations1.xlsx).
+// Une branche par rapprochement : le sujet commun, et la publication voisine au bout.
+function branchesFor(id, byId) {
+  return (RAPPROCHEMENTS.rapprochements || [])
+    .filter(r => (r.a === id || r.b === id) && byId[r.a] && byId[r.b])
+    .map(r => {
+      const mine = r.a === id
+      return { other: mine ? r.b : r.a, sujet: r.sujet, justification: r.justification, degre: r.degre,
+        nodesHere: mine ? r.nodesA : r.nodesB, nodesThere: mine ? r.nodesB : r.nodesA }
+    })
+    .sort((x, y) => (RANK[x.degre] ?? 2) - (RANK[y.degre] ?? 2) || x.other.localeCompare(y.other))
+}
+
+function Passage({ nodeIds = [], publicationId, publication, nodesByKey, contentsById, label }) {
+  const nodes = nodeIds.map(n => nodesByKey[`${publicationId}|${n}`]).filter(Boolean)
+  const node = nodes[0]
+  const chunk = node && String(node.chunk_id_source || '').split(';').map(x => contentsById[x.trim()]).find(Boolean)
   return <div className="nb-passage">
     <small>{label}</small>
-    <strong>{node.libelle}</strong>
-    <span className="nb-passage-meta">{publication?.publication_id} · {titleOf(publication, node.publication_id)}{pagesOf(node) ? ` · ${pagesOf(node)}` : ''}</span>
-    {chunk ? <blockquote>{chunk.texte}</blockquote> : <p className="nb-muted">Pas d’extrait disponible dans les données chargées.</p>}
+    {nodes.length ? nodes.map(n => <strong key={n.node_id}>{n.libelle}</strong>) : <strong>—</strong>}
+    <span className="nb-passage-meta">{publicationId} · {titleOf(publication, publicationId)}{node && pagesOf(node) ? ` · ${pagesOf(node)}` : ''}</span>
+    {chunk ? <blockquote>{chunk.texte}</blockquote> : <p className="nb-muted">Pas d’extrait disponible pour cette publication.</p>}
   </div>
 }
 
@@ -31,16 +48,16 @@ export default function DocumentLinksWorkspace({ data, onBack, initialPublicatio
   const publications = useMemo(() => (data.publications || []).filter(p => p.publication_id).sort((a, b) => a.publication_id.localeCompare(b.publication_id)), [data.publications])
   const byId = useMemo(() => Object.fromEntries(publications.map(p => [p.publication_id, p])), [publications])
   const contentsById = useMemo(() => Object.fromEntries((data.contents || []).map(c => [c.chunk_id, c])), [data.contents])
-  const index = useMemo(() => buildNeighbourIndex(data.nodes || [], data.relations || []), [data.nodes, data.relations])
+  const nodesByKey = useMemo(() => Object.fromEntries((data.nodes || []).map(n => [`${n.publication_id}|${n.node_id}`, n])), [data.nodes])
   const [publicationId, setPublicationId] = useState(initialPublicationId)
   const [query, setQuery] = useState('')
   const [history, setHistory] = useState([])
   const [selected, setSelected] = useState(null)
 
-  useEffect(() => { if (initialPublicationId) setPublicationId(initialPublicationId) }, [initialPublicationId])
-  const branches = useMemo(() => publicationId && byId[publicationId] ? branchesFor(index, publicationId) : [], [index, publicationId, byId])
+  useEffect(() => { if (initialPublicationId) { setPublicationId(initialPublicationId); setSelected(null) } }, [initialPublicationId])
+  const branches = useMemo(() => publicationId && byId[publicationId] ? branchesFor(publicationId, byId) : [], [publicationId, byId])
   const source = byId[publicationId]
-  const neighbourCount = new Set(branches.flatMap(b => b.leaves.map(l => l.publicationId))).size
+  const withLinks = useMemo(() => new Set(publications.filter(p => branchesFor(p.publication_id, byId).length).map(p => p.publication_id)), [publications, byId])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -57,11 +74,12 @@ export default function DocumentLinksWorkspace({ data, onBack, initialPublicatio
 
   const exportTree = () => exportDocx(`Arbre_${publicationId}`, `Arbre des recommandations — ${titleOf(source, publicationId)}`, [
     { text: pubLabel(source) }, ...(sourceLink(source) ? [{ text: `Source : ${sourceLink(source)}` }] : []),
-    ...branches.flatMap(b => [{ heading: true, text: b.subject.libelle },
-      ...b.leaves.flatMap(l => [{ text: `${pubLabel(byId[l.publicationId]) || l.publicationId}` }, { text: `Élément commun : ${l.node.libelle}${pagesOf(l.node) ? ` (${pagesOf(l.node)})` : ''}` }, ...(sourceLink(byId[l.publicationId]) ? [{ text: `Document : ${sourceLink(byId[l.publicationId])}` }] : [])])]),
+    ...branches.flatMap(b => [{ heading: true, text: b.sujet },
+      { text: `${pubLabel(byId[b.other]) || b.other} (proximité ${DEGRE[b.degre] || b.degre})` }, { text: b.justification },
+      ...(sourceLink(byId[b.other]) ? [{ text: `Document : ${sourceLink(byId[b.other])}` }] : [])]),
   ])
 
-  const sel = selected && branches[selected.b]?.leaves[selected.l] ? { branch: branches[selected.b], leaf: branches[selected.b].leaves[selected.l] } : null
+  const sel = selected != null && branches[selected] ? branches[selected] : null
 
   return <main className="page doclinks-workspace">
     <div className="doclinks-topbar">
@@ -69,70 +87,71 @@ export default function DocumentLinksWorkspace({ data, onBack, initialPublicatio
       {history.length > 0 && <button className="doclinks-history-back" type="button" onClick={back}><Icon name="back" size={14}/> Publication précédente</button>}
       <span style={{ flex: 1 }}/>
       {source && branches.length ? <ExportShare shareParts={['documents', 'recommandations', publicationId]} label={`Arbre des recommandations · ${titleOf(source, publicationId)}`}
-        formats={[{ label: 'Arbre et éléments communs · Word', action: exportTree }]}/> : <ExportShare waitingFor="Choisissez une publication pour exporter ou partager l’arbre." showShareWhenWaiting />}
+        formats={[{ label: 'Arbre et rapprochements · Word', action: exportTree }]}/> : <ExportShare waitingFor="Choisissez une publication pour exporter ou partager l’arbre." showShareWhenWaiting />}
     </div>
 
     <header className={`doclinks-hero ${source ? '' : 'doclinks-hero-big'}`}>
       <div className="crossdoc-kicker">L’ARBRE DES RECOMMANDATIONS</div>
-      <h1>Choisissez une publication,<span> voyez par quels sujets elle rejoint les autres.</span></h1>
+      <h1>Choisissez une publication,<span> voyez celles qui traitent du même sujet.</span></h1>
     </header>
 
     <section className="doclinks-selector-panel">
-<div className="doclinks-selector-heading"><div><h2>Rechercher parmi les {publications.length} publications</h2></div></div>
+      <div className="doclinks-selector-heading"><div><h2>Rechercher parmi les {publications.length} publications</h2></div></div>
       <div className="doclinks-selector-controls">
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Rechercher un titre, un organisme ou un identifiant…" />
         <select value={publicationId} onChange={e => choose(e.target.value)} aria-label="Publication">
           <option value="" disabled>Sélectionnez une publication…</option>
-          {filtered.map(p => <option key={p.publication_id} value={p.publication_id}>{p.publication_id} — {titleOf(p, p.publication_id)}</option>)}
+          {filtered.map(p => <option key={p.publication_id} value={p.publication_id}>{p.publication_id} — {titleOf(p, p.publication_id)}{withLinks.has(p.publication_id) ? '' : ' (sans rapprochement)'}</option>)}
         </select>
       </div>
     </section>
 
     {source && <section className="nb-wrap">
-      <div className="nb-tree" aria-label={`Arbre de ${titleOf(source)} : ${branches.length} sujets, ${neighbourCount} publications voisines`}>
+      <div className="nb-tree" aria-label={`Arbre de ${titleOf(source)} : ${branches.length} publications rapprochées`}>
         {branches.length ? <>
           <div className="nb-crown" style={{ '--n': branches.length }}>
-            {branches.map((b, bi) => <div className="nb-branch" key={b.subject.node_id}>
-              <div className="nb-leaves">{b.leaves.map((l, li) => {
-                const p = byId[l.publicationId] || {}
-                const on = selected?.b === bi && selected?.l === li
-                return <button type="button" key={l.publicationId} className={`nb-leaf ${on ? 'on' : ''}`} onClick={() => setSelected(on ? null : { b: bi, l: li })}>
-                  <small>{l.publicationId} · {metaOf(p)}</small>
-                  <strong>{titleOf(p, l.publicationId)}</strong>
-                  <span>via : {l.node.libelle}</span>
-                </button>
-              })}{b.more > 0 && <p className="nb-more">+ {b.more} autre{b.more > 1 ? 's' : ''} publication{b.more > 1 ? 's' : ''}</p>}</div>
-              <svg className="nb-twig" viewBox="0 0 10 40" preserveAspectRatio="none" aria-hidden="true"><path d="M5 40 L5 0"/></svg>
-              <div className="nb-subject"><small>Sujet</small><strong>{b.subject.libelle}</strong></div>
-            </div>)}
+            {branches.map((b, i) => {
+              const p = byId[b.other] || {}
+              const on = selected === i
+              return <div className="nb-branch" key={b.other}>
+                <div className="nb-leaves">
+                  <button type="button" className={`nb-leaf ${on ? 'on' : ''}`} onClick={() => setSelected(on ? null : i)}>
+                    <small>{b.other} · {metaOf(p)}</small>
+                    <strong>{titleOf(p, b.other)}</strong>
+                    <span>Proximité {DEGRE[b.degre] || b.degre}</span>
+                  </button>
+                </div>
+                <svg className="nb-twig" viewBox="0 0 10 40" preserveAspectRatio="none" aria-hidden="true"><path d="M5 40 L5 0"/></svg>
+                <div className="nb-subject"><small>Sujet commun</small><strong>{b.sujet}</strong></div>
+              </div>
+            })}
           </div>
           <svg className="nb-limbs" viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true">
             {branches.map((_, i) => { const x = (i + .5) * 1000 / branches.length; return <path key={i} d={`M500 90 C 500 50, ${x} 50, ${x} 0`}/> })}
           </svg>
-        </> : <p className="nb-empty">Aucun sujet de cette publication n’a été rapproché d’une autre publication du corpus pour l’instant.</p>}
+        </> : <p className="nb-empty">Aucune autre publication n’a encore été rapprochée de celle-ci.</p>}
         <article className="nb-trunk">
           <img src={publicationImageSrc(source)} alt="" />
-          <div><small>PUBLICATION DE DÉPART · {publicationId}</small><h2>{titleOf(source, publicationId)}</h2><p>{metaOf(source)}{branches.length ? ` · ${branches.length} sujet${branches.length > 1 ? 's' : ''} · ${neighbourCount} publication${neighbourCount > 1 ? 's' : ''} voisine${neighbourCount > 1 ? 's' : ''}` : ''}</p></div>
+          <div><small>PUBLICATION DE DÉPART · {publicationId}</small><h2>{titleOf(source, publicationId)}</h2><p>{metaOf(source)}{branches.length ? ` · ${branches.length} publication${branches.length > 1 ? 's' : ''} rapprochée${branches.length > 1 ? 's' : ''}` : ''}</p></div>
         </article>
       </div>
 
       <aside className="nb-side">
         {sel ? <>
-          <button type="button" className="nb-close" onClick={() => setSelected(null)}>← Tous les sujets</button>
-          <h3>Pourquoi ce rapprochement ?</h3>
-          <p className="nb-muted">Les deux publications traitent d’un sujet proche. Lisez les deux passages pour en juger.</p>
-          <Passage node={sel.branch.subject} publication={source} contentsById={contentsById} label="Dans la publication de départ"/>
-          <Passage node={sel.leaf.node} publication={byId[sel.leaf.publicationId]} contentsById={contentsById} label="Dans la publication voisine"/>
+          <button type="button" className="nb-close" onClick={() => setSelected(null)}>← Tous les rapprochements</button>
+          <h3>{sel.sujet}</h3>
+          <p className="nb-why">{sel.justification}</p>
+          <Passage nodeIds={sel.nodesHere} publicationId={publicationId} publication={source} nodesByKey={nodesByKey} contentsById={contentsById} label="Dans la publication de départ"/>
+          <Passage nodeIds={sel.nodesThere} publicationId={sel.other} publication={byId[sel.other]} nodesByKey={nodesByKey} contentsById={contentsById} label="Dans la publication rapprochée"/>
           <div className="nb-actions">
-            <button type="button" className="nb-primary" onClick={() => choose(sel.leaf.publicationId, { addHistory: true })}>Voir l’arbre de cette publication →</button>
-            <a href={`#/explorer/${sel.leaf.publicationId}`}>Ouvrir dans Explorer</a>
-            {sourceLink(byId[sel.leaf.publicationId]) && <a href={sourceLink(byId[sel.leaf.publicationId])} target="_blank" rel="noreferrer">Source ↗</a>}
+            <button type="button" className="nb-primary" onClick={() => choose(sel.other, { addHistory: true })}>Voir l’arbre de cette publication →</button>
+            {byId[sel.other]?.has_graph !== false && <a href={`#/explorer/${sel.other}`}>Ouvrir dans Explorer</a>}
+            {sourceLink(byId[sel.other]) && <a href={sourceLink(byId[sel.other])} target="_blank" rel="noreferrer">Source ↗</a>}
           </div>
         </> : <>
           <h3>Lire l’arbre</h3>
-          <p className="nb-muted">En bas, la publication choisie. Chaque branche est l’un de ses grands sujets ; sur la branche, les publications du corpus qui en traitent aussi, avec l’élément qui les relie.</p>
-          <p className="nb-muted">Cliquez sur une publication voisine pour comparer les deux passages, puis passez à son propre arbre pour continuer de proche en proche.</p>
-          <p className="nb-note">Les rapprochements sont calculés automatiquement à partir des éléments des publications : vérifiez-les toujours à l’aide des passages.</p>
+          <p className="nb-muted">En bas, la publication choisie. Chaque branche porte un sujet qu’elle partage avec une autre publication du corpus, placée au bout de la branche.</p>
+          <p className="nb-muted">Cliquez sur une publication pour lire pourquoi elle est rapprochée et les deux passages qui le montrent, puis passez à son propre arbre pour continuer de proche en proche.</p>
         </>}
       </aside>
     </section>}
