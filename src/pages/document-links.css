@@ -74,3 +74,45 @@
 .doclinks-workspace .doclinks-hero-big h1{font-size:42px;line-height:1.12;letter-spacing:-.02em;margin:6px 0 0}
 .doclinks-workspace .doclinks-hero h1 span{display:block;color:#2e6fc4;font-weight:600}
 .doclinks-workspace .doclinks-hero:not(.doclinks-hero-big) h1 span{display:inline}
+
+/* Arbre des recommandations — branches par sujet, publications voisines */
+.nb-wrap{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start;margin-top:22px}
+.nb-tree{display:flex;flex-direction:column;align-items:center}
+.nb-crown{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:14px;width:100%;align-items:end}
+.nb-branch{display:flex;flex-direction:column;align-items:stretch;min-width:0}
+.nb-leaves{display:grid;gap:8px}
+.nb-leaf{display:grid;gap:3px;text-align:left;padding:10px 12px;border-radius:14px 14px 14px 4px;border:1px solid #cfe7da;background:#f2fbf6;cursor:pointer;font:inherit;color:#14213d;box-shadow:0 8px 18px -14px rgba(20,60,40,.5);transition:border-color .15s,box-shadow .15s,transform .15s}
+.nb-leaf:hover{border-color:#1f9d6b;transform:translateY(-1px)}
+.nb-leaf.on{border:2px solid #1f9d6b;padding:9px 11px;box-shadow:0 0 0 4px rgba(31,157,107,.15)}
+.nb-leaf small{font-size:11.5px;color:#5c6982;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nb-leaf strong{font-size:13.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nb-leaf span{font-size:12.5px;color:#17704f;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nb-twig{width:10px;height:26px;align-self:center}
+.nb-twig path,.nb-limbs path{stroke:#7a5a3c;stroke-width:4;fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.nb-subject{padding:10px 12px;border-radius:12px;background:#6b4a2e;color:#fff;text-align:center}
+.nb-subject small{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#f1d9b5;font-weight:700}
+.nb-subject strong{font-size:13.5px;line-height:1.3}
+.nb-limbs{width:100%;height:70px;display:block}
+.nb-trunk{display:flex;gap:16px;align-items:center;max-width:760px;width:100%;padding:16px 18px;border-radius:18px;background:#fff;border:1px solid #dce3ef;border-top:6px solid #6b4a2e;box-shadow:0 14px 30px -20px rgba(20,33,61,.5)}
+.nb-trunk img{width:84px;height:110px;object-fit:cover;border-radius:6px;border:1px solid #e1e6ef;flex:none}
+.nb-trunk small{font-size:11.5px;letter-spacing:.1em;color:#6b4a2e;font-weight:700}
+.nb-trunk h2{margin:4px 0;font-size:20px;line-height:1.25;color:#14213d}
+.nb-trunk p{margin:0;color:#5c6982;font-size:14px}
+.nb-empty{padding:30px;color:#5c6982;text-align:center}
+.nb-side{position:sticky;top:12px;background:#fff;border:1px solid #dce3ef;border-radius:16px;padding:16px 18px;max-height:calc(100vh - 40px);overflow:auto;box-sizing:border-box}
+.nb-side h3{margin:0 0 6px;font-size:17px;color:#14213d}
+.nb-muted{color:#5c6982;font-size:14px;line-height:1.5;margin:0 0 10px}
+.nb-note{font-size:13px;color:#7a5a3c;background:#fbf5ec;border-radius:10px;padding:8px 10px;line-height:1.45}
+.nb-close{border:0;background:none;color:#2f56d6;font:600 13.5px/1.2 inherit;cursor:pointer;padding:0;margin-bottom:10px}
+.nb-passage{border:1px solid #e1e6ef;border-radius:12px;padding:10px 12px;margin-bottom:10px;display:grid;gap:4px}
+.nb-passage small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6b7891;font-weight:700}
+.nb-passage strong{font-size:14.5px;color:#14213d;line-height:1.35}
+.nb-passage-meta{font-size:12.5px;color:#5c6982}
+.nb-passage blockquote{margin:4px 0 0;padding:8px 10px;border-left:3px solid #1f9d6b;background:#f6f9fc;font-size:13px;line-height:1.5;color:#33415c;max-height:180px;overflow:auto}
+.nb-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.nb-actions a{font-size:13.5px;font-weight:600;color:#2f56d6}
+.nb-primary{border:0;border-radius:999px;background:#1f9d6b;color:#fff;font:700 14px/1.2 inherit;padding:9px 14px;cursor:pointer}
+.nb-primary:hover{background:#178258}
+@media(max-width:1100px){.nb-wrap{grid-template-columns:1fr}.nb-side{position:static;max-height:none}}
+@media(max-width:760px){.nb-crown{grid-template-columns:1fr}.nb-limbs{display:none}}
+.nb-more{margin:2px 4px 0;font-size:12.5px;color:#17704f;font-weight:600}
